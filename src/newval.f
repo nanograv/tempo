@@ -341,7 +341,7 @@ C Close output .par file
 	  write(31,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
           if (.not.quiet)
      +      write(*,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
-1110	  format(' Chisqr/nfree:',f9.2,'/',i5,' =',f9.4,
+1110	  format(' Chisqr/nfree:',f9.2,'/',i5,' =',f15.9,
      +    '   pre/post:',f7.2,'   Wmax:',f7.1)
 	endif
 
