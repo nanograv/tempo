@@ -129,6 +129,7 @@ c      $Id$
       usefixeddist = .false.
 
       solarn0 = 10      
+      solarn01 = 0      
 
       return
       end
@@ -704,8 +705,10 @@ C  Glitches
        else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
          read(value,*) dct(ikey)
 
-       else if(key(1:7).eq.'SOLARN0'.and.lk.eq.7) then
+       else if(key(1:7).eq.'SOLARN0'.and.(lk.eq.7.or.ikey.eq.0)) then
          read (value,*) solarn0
+       else if(key(1:7).eq.'SOLARN0'.and.ikey.eq.1) then
+         read (value,*) solarn01
 
 c Do nothing parameters
       else if(key(1:4).eq.'HEAD') then
