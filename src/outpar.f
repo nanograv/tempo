@@ -617,9 +617,9 @@ c=======================================================================
         else
           write (71,1092) i,dct(i),fit1,ferr(NPAR2+i)/f0
         endif
- 1090   format('JUMP_',i1,f20.8,a,f20.8)
- 1091   format('JUMP_',i2,f19.8,a,f20.8)
- 1092   format('JUMP_',i3,f18.8,a,f20.8)
+ 1090   format('JUMP_',i1,f20.9,a,f20.9)
+ 1091   format('JUMP_',i2,f19.9,a,f20.9)
+ 1092   format('JUMP_',i3,f18.9,a,f20.9)
       enddo
 
       return

@@ -50,7 +50,7 @@ C Parse numerical parameter
 	parm = 0.
 	do 18 i = index(card,' ')+1, 70
 	    if (card(i:i).ne.' ') then
-		read(card(i:i+9),fmt='(f10.0)') parm
+		read(card(i:i+12),fmt='(f13.0)') parm
 		goto 19
 	    endif
  18         continue
@@ -69,7 +69,7 @@ C  TO ALL SUBSEQUENT ARRIVAL TIMES.
 
 	DELTAT=DELTAT+PARM
 	WRITE(31,1015) N,FUT,CARD(1:6),PARM,DELTAT
-1015	FORMAT(I5,F11.4,1X,A6,13X,2F11.6)
+1015	FORMAT(I5,F11.4,1X,A6,13X,2F14.9)
 	go to 200
 
 20    IF(CARD(1:4).NE.'PHAS') GO TO 22
