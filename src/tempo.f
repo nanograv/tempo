@@ -184,6 +184,9 @@ c  Get command-line arguments
 		 gro=.true.
 		 obsflag='P'
 		 if(infile(3:3).ne.' ') obsflag=infile(3:3)
+
+	       else if (infile(2:2).eq.'h') then
+		 goto 9998
 		 
 	      else if(infile(2:2).eq.'o')then
 		 oldpar=.true.
