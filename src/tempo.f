@@ -355,12 +355,14 @@ c  Open TDB-TDT clock offset file
 
 	if (tz) then  ! generate predictive ephemeris (polyco.dat),like old TZ
 
-	   if(infile(1:1).eq.'-')then
-	      tzfile='tz.in'
-	   else
-	      tzfile=infile
-	   endif
-	   infile='tz.tmp'
+	  jits = 0
+
+	  if(infile(1:1).eq.'-')then
+	    tzfile='tz.in'
+	  else
+	    tzfile=infile
+	  endif
+	  infile='tz.tmp'
 
 	  if(.not.oldpar)parunit=49
 	  open(50,file=infile,status='unknown')

@@ -156,10 +156,11 @@ c       N. Wex transformations at pepoch
 10501	  format(a1,14x,f9.0,i6,f14.13,a9,15x,f10.0)
 	  if(nfmjd.lt.30000)nfmjd=nfmjd+39126           ! Convert 1966 days to MJD
 
-	  do 52 i=1,9
-52	  if(aterr(i:i).eq.' ') iz=i
+	  do i=1,9
+ 	    if(aterr(i:i).eq.' ') iz=i
+	  end do
 	  terr=0.
-	  read(aterr(iz:9),*,err=54,end=54) terr
+	  if (iz.le.9) read(aterr(iz:9),*,err=54,end=54) terr
 54	  continue
 
 	else if(nfmt.eq.1) then				! Parkes format
