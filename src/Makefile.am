@@ -5,7 +5,6 @@ AUTOMAKE_OPTIONS = no-dependencies
 
 #  To make programs:
 #     make tempo
-#     make matrix
 #     make tdbtrans
 
 #  To make an archive file:
@@ -26,7 +25,7 @@ CCFLAGS =
 # source code for tempo itself.  
 # (note: variables SRC3 and SRC4 are used for making archives)
 
-bin_PROGRAMS = tempo matrix tdbtrans
+bin_PROGRAMS = tempo tdbtrans
 
 tempo_SOURCES = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.f \
         bnrybt.f bnrydd.f bnryddgr.f bnryddt.f bnryeh.f bnryell1.f bnrymss.f \
@@ -44,9 +43,6 @@ tempo_SOURCES = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.
 tempo_LINK = $(FC) $(FFLAGS) -o $@
 
 SRC4 = Makefile
-
-matrix_SOURCES = matrix.f
-matrix_LINK = $(FC) $(FFLAGS) -o $@
 
 tdbtrans_SOURCES = tdbgen.f tdb1ns.f bigendian.f cutil.c
 tdbtrans_LINK = $(FC) -o $@
