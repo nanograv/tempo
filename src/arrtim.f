@@ -384,10 +384,11 @@ c   Back to processing of all TOAs
      +       then
 	  nblk=nblk+1
 	  call pcard(card2,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
-     +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search)
+     +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
+     +     lw)
 	  if(nblk.ge.2) call pcard(card2,mode,zawgt,deltat,fmjd,
      +      dphase,sigm,offset,jdcatc,
-     +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search)
+     +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw)
 	endif
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd
