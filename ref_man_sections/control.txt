@@ -40,3 +40,6 @@ FINISH Ignore TOAs after this date (MJD) (if flag is nonzero)
        Allowed values:  single-precision real numbers
        Allowed flags:  integers; FINISH will be used only if flag is nonzero
 
+GAIN   Fraction of correction added to each parameter on each iteration
+       Allowed values:  positive real numbers
+       Default value: 1

@@ -1,5 +1,5 @@
 
-INSTALLDIR = /usr/local/apache/share/htdocs/tempo
+INSTALLDIR = /usr/local/src/apache_1.2b3/htdocs/tempo
 
 
 REFINSTALLDIR = $(INSTALLDIR)/ref_man_sections
@@ -51,5 +51,5 @@ install:
           fi
 
 archive:
-	tar -cvf tpowww.tar Makefile $(TPO_PAGES) $(REFDIR)/*.txt
+	tar -cvf tpowww.tar Makefile.am $(TPO_PAGES) $(REFDIR)/*.txt
 	gzip tpowww.tar
