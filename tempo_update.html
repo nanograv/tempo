@@ -35,15 +35,17 @@
             "INFO" may be included in the TOA section of the input file.
             If such cards are present, an ASCII file "info.tmp" is written 
             with one line per TOA.  Each line lists the information on the
-            most recent "INFO" card.  This is useful for storing extra 
-            information about large subsets of data, e.g., if mixing TOAs
+            most recent "INFO" card.  This is useful for separating
+            different subsets of data in post-Tempo processing.  For example,
+            if a Tempo file contains TOAs
             from two data recording systems, put card "INFO 1" before
             TOAs from system 1 and "INFO 2" before TOAs from system 2.
             Plotting programs can then read "info.tmp" and determine which
             TOAs came from which system.  "INFO" cards may have any mix
             of ASCII characters, including spaces.
-          <li> Added -c option to force iteration even if rms change is less 
-            than 1 part in 1e4 (the usual stop criterion).  
+          <li> Added -c option to force iteration even if the rms
+            changes by less than 
+            1 part in 1e4 (the usual stop criterion).  
           <li> Added "EMAX xxx" and "EMAP yyy" to ignore TOAs with error
             higher than xxx microseconds or yyy periods.
           <li> Re-wrote command line parser to allow flexible ordering of
