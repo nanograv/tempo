@@ -11,13 +11,11 @@ C           ATUT     - VALUE OF A.1 - UTC AT NMJD+FMJD  (IN SEC)
 C  OUTPUT:  UT1      - VALUE OF UT1 - UTC AT NMJD+FMJD  (IN SEC)
 
       IMPLICIT REAL*8 (A-H,O-Z)
-      parameter (NUTMAX=3000)
+      include 'dim.h'
 
       DIMENSION TAB(4),Y1(2),Y2(2),IUT(NUTMAX)
       CHARACTER VARFMT*32,flag*3
 
-      SAVE
-      
       DATA JUT1/42/,nmsg/2/
 
 C         THE EXTERNAL DATA SET (JUT1) MUST HAVE THE FOLLOWING FORM
@@ -37,6 +35,7 @@ C                     MUST BE OF THE FORM INTEGER MJD FOLOWED BY UP
 C                     TO 12 INTEGER VALUES OF UT1.  IF A RECORD IS
 C                     SHORT, THE NUMBER OF VALUES IN THAT RECORD IS
 C                     GIVEN IN COLUMNS 79-80 (I2).
+      save
 
       IF(nmjd.eq.0)then
 
@@ -94,17 +93,6 @@ C     CALCULATE INTERPOLATION TIMES AND VALUE OF TABULAR POINTS
 C        SECOND DIFFERENCE INTERPOLATION
          UT1=(T*(Y1(2)+T*T*Y2(2)) + S*(Y1(1)+S*S*Y2(1)))*UNITS
 
-C           CONVERT TABLE VALUES TO UT1-UTC
-
-         if(kind.eq.1)then
-            return                      ! Table is already UT1 - UTC
-         else if(kind.eq.2)then
-            ut1=atut -0.0343817d0 - ut1 ! Table is TAI-UT1
-C                                       UT1-UTC = A1-UTC +  (TAI-A1) - (TAI-UT1)
-         else if(kind.eq.3)then
-            ut1=atut-ut1                ! Table is A1-UT1
-C                                       UT1-UTC = A1-UTC - (A1-UT1)
-         endif
       else
          imsg=imsg+1
          if(imsg.lt.nmsg)then
@@ -117,7 +105,28 @@ C                                       UT1-UTC = A1-UTC - (A1-UT1)
             write(31,510)
  510        format(' *** Warning - Further UT1 messages suppressed')     
          endif
+C     Extrapolate using last value in table
+         if (mjd.le.mjd1) then
+           ut1 = 0.
+         else
+           ut1=iut(nvtot)*units   
+         endif
       endif
+
+C     CONVERT TABLE VALUES TO UT1-UTC
+      if(kind.eq.1)then
+         return                 ! Table is already UT1 - UTC
+      else if(kind.eq.2)then
+         ut1=atut -0.0343817d0 - ut1 ! Table is TAI-UT1
+C     UT1-UTC = A1-UTC +  (TAI-A1) - (TAI-UT1)
+      else if(kind.eq.3)then
+         ut1=atut-ut1           ! Table is A1-UT1
+C     UT1-UTC = A1-UTC - (A1-UT1)
+      endif
+
       RETURN
 
       END
+
+
+
