@@ -85,7 +85,7 @@ c                                                  --DJN 19 Dec 2001
 !PARAMETERS 50 THROUGH 59 HAVE BEEN SUPERCEDED ... NO LONGER DM derivatitves
 !NOT CURRENTLY IN USE
 	else if(jj.le.50) then     
-          write(*,jj) 1017
+          write(*,1017) jj
  1017	  format ('Internal tempo error.  Parameter number ',ii/
      +         'encountered in mxprt.f, but it is not currently'/
      +         'assigned to any parameter.')
