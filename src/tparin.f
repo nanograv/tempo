@@ -44,7 +44,7 @@ c     variables used internally in this routine:
       integer i, ii
       character*160 s, s2
 
-      character*80 getparm  ! external function
+      character*160 getparm  ! external function
 
 
 c     default values of parameters
