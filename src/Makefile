@@ -7,7 +7,6 @@
 
 #  To make programs:
 #     make tempo
-#     make matrix
 #     make tdbtrans
 
 #  To make an archive file (in Princeton):
@@ -47,8 +46,8 @@ OBJS = $(SRC1:.f=.o) $(SRC2:.c=.o)
 
 # source code for "matrix"
 
-MATRIX_SRC = matrix.f
-MATRIX_OBJS = $(MATRIX_SRC:.f=.o)
+MATRIX_DIR = ../contrib/matrix/
+MATRIX_SRC = $(MATRIX_DIR)matrix.f
 
 # source code  for "tdbgen"
 
@@ -60,13 +59,10 @@ TDBGEN_OBJS = $(TDBGEN_SRC_F:.f=.o) $(TDBGEN_SRC_C:.c=.o)
 
 
 
-all:	tempo matrix
+all:	tempo 
 
 tempo:	$(OBJS)
 	$(FC) $(FFLAGS) -o tempo $(OBJS)
-
-matrix:	$(MATRIX_OBJS) dim.h
-	$(FC) $(FFLAGS) -o matrix $(MATRIX_OBJS)
 
 tdbgen: $(TDBGEN_OBJS)
 	$(FC) $(FFLAGS) -o tdbgen $(TDBGEN_OBJS)
