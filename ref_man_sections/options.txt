@@ -1,0 +1,56 @@
+SYNOPSIS
+
+tempo [-d <path>] [-f <par>] [-g[O]] [-o] [-p] [-r] [-v] [-x] [-z] <fname>
+
+where	-d <path>   Path to 'tempo.cfg'; overrides env. variable 'TEMPO'
+	-f <par>    overrides the default parameter file name
+    	-g[X]	    GRO mode; 'X' is single-letter observatory code
+	-o          'Old-style' parameters at head of <fname>
+	-p          Parameters corrected for pulsar space motion
+	-r	    Save the partial-derivatives file, resid1.tmp 
+	-v	    Print out version number
+	-x	    Make an export file in ITOA format
+	-z	    Compute polonomial coefficients
+
+Options may be in any order, but <fname> must be last.
+
+
+ENVIRONMENT
+
+The 'TEMPO' environment variable is normally set to the name of the
+directory containing the 'tempo.cfg' configuration file. The -d option
+overrides the environment variable.
+
+OPTIONS
+
+-d <path> 
+   override environment variable 'TEMPO' with <path>. Path may be '.'. 
+
+-f <par>
+   override default name for free-format input parameter file (see INPUT
+   FILES below).
+
+-g[O] 
+   Write post-fit parameters to file 'gro.1' (and, for binaries, gro.2)
+   in the format used for interchange with Gamma Ray Observatory 
+   investigators.  Single-letter observatory code, O, is optional;  default 
+   is P (for Princeton). If PEPOCH is not at the centre of the data span,
+   adjusted parameters are written to gro.99.
+
+-o selects 'fixed-format header' input file.  See INPUT FILE below.
+
+-p calculate pulsar parameters compensating for effects of pulsar space
+   velocity.
+
+-r write pre-fit residuals and their derivatives with respect
+   to each parameter to file 'resid1.tmp'
+
+-v report version number
+
+-x write TOAs in interchange time of arrival (ITOA) format to file 'itoa.out'
+
+-z run prediction mode, in which predicted pulsar ephemerides are written
+   to file polyco.dat (see PREDICTION MODE). If given, <fname> overrides
+   'tz.in' for the file listing default prediction parameters and source list.
+
+

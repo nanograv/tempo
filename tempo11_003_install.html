@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Tempo Installation</title>
+  </head>
+
+  <body>
+      <h1>Tempo Installation (v. 11.003)</h1>
+
+      Use the following procedure for installing tempo version 11.003.
+      (It is slightly different than the procedure for installing
+      <a href=":tempo11_install.html">tempo version 11.000</a>.)
+      Installation has been tested on systems running Solaris, Linux,
+      and OSF/1.  The procedure below should work without modification
+      under Solaris 2.5.1.  Notes for other systems are listed at the
+      end of this document.
+
+      <ul>
+	<li>
+	  Create a directory (e.g. tempo11) and cd to it.<br><br>
+	<li>
+	  Download the following files from ATNF (Australia) or 
+Princeton (USA):<br><br>
+	  <ul>
+	    <li><pre>tempo11_003.tar.gz: <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/tempo11_003.tar.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/tempo11_003.tar.gz">Princeton</a></pre>
+	    <li><pre>DE200.1950.2000.gz: <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/DE200.1950.2050.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/DE200.1950.2050.gz">Princeton</a></pre>
+	    <li><pre>DE405.1950.2000.gz: <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/DE405.1950.2050.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/DE405.1950.2050.gz">Princeton</a></pre>
+	    <li><pre>TDB.1950.2050.gz:   <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/TDB.1950.2050.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/TDB.1950.2050.gz">Princeton</a></pre>
+	  </ul><br>
+	  Note: these are large files.  It may be easier to use anonymous-ftp
+	  directly to download the files rather than downloading them via a
+	  web browser.<br><br>
+
+	<li>
+	  Uncompress the ephemeris files. It is recommended that these be
+	  moved to to a parallel directory, e.g. tempo_ephem.<br>
+	  <pre>gunzip DE200.1950.2050.gz DE405.1950.2050.gz TDB1950.2050.gz
+mkdir ../tempo_ephem
+mv *2050 ../tempo_ephem
+
+</pre>
+          
+
+	<li> 
+	  Un-compress the source files:<br>
+	  <pre>gunzip tempo11_003.tar.gz </pre>
+          
+	<li>
+	  Un-tar the source code and support files:<br>
+	  <pre>tar -xf tempo11_003.tar</pre>
+
+	<li>
+	  This creates several subdirectories, including `src' which
+               contains the source code.  Go to this directory:<br>
+	  <pre>cd src</pre>
+
+	<li> If necessary, edit the `Makefile' to reflect the compilers
+	  and compiler flags appropriate to your system.<br><br>
+
+	<li>
+	  Compile the code.  The executable will be `tempo11/tempo'
+	  <pre>make tempo</pre>
+
+	<li>
+	  Go to the tempo11 directory:
+	  <pre>cd ..</pre>
+
+	<li>
+	  Set environment variable TEMPO to point to the tempo11 directory
+	  using the full path name.  For example, using csh in the directory `/disk1':
+	  <pre>setenv TEMPO /disk1/tempo11</pre>
+
+	<li>
+	  Edit tempo.cfg.  Change the EPHDIR entry to the name of the directory
+          containing the ephemeris files, including a trailing slash.  
+          Change the CLKDIR and PARDIR entries to the full path of the
+          tempo11 directory plus `clock/' (for CLKDIR) or `tzpar/'
+          (for PARDIR).
+	  Change OBSYS to the full path of the file
+	  tempo11/obsys.dat.  For example, if the root directory is
+	  `/disk1', these entries in tempo.cfg would be
+	  <pre>CLKDIR     /disk1/tempo11/clock/
+PARDIR     /disk1/tempo11/tzpar/
+EPHDIR     /disk1/tempo_ephem/
+OBSYS      /disk1/tempo11/obsys.dat   
+	  </pre>
+
+
+	<li>
+	  Run tempo on a test file:
+	  <pre>cd test
+../tempo 0437.tim</pre>
+ 
+	<li>
+	  Compare the 'tempo.lis' and '0437-4715.par' output files with the 
+	  files from the distribution:
+	  <pre>diff tempo.lis tempo.lis.original
+diff 0437-4715.par 0437-4715.par.original</pre> 
+	  Ideally the 'par' files will be idential and the 'tempo.lis' files
+	  will differ in only two lines (date and input file name).  In 
+	  practice, parameter values often differ slighly in their least
+	  significant digits.  
+	<li>
+	  Optionally get rid of the 'tar' file:
+	  <pre>rm tempo11_003.tar</pre>
+      </ul>
+
+      System-specific notes:
+
+      <ul>
+	<li> DEC Fortran (tested under OSF/1)
+	  <ul>
+	    <li> In ephinit.f and tdbinit.f, change ``nrecl=4'' to ``nrecl=1''.
+	  </ul>
+	<li> Linux (tested on x86 and alpha using RedHat v 5.0 and egcs g77 compiler)
+	  <ul>
+	    <li> File output is inefficient (possibly an inherent problem
+	      in the g77 write routine).  This is most noticable when output
+	      files are written to cross-mounted disks.  The solution is
+	      to run tempo from a working directory (i.e., the directory
+	      where tempo.lis and resid2.tmp are written) which is not
+	      cross-mounted.
+	  </ul>
+      </ul>
+
+
+  </body>
+</html>

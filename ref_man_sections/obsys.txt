@@ -1,0 +1,26 @@
+OBSERVATORY COORDINATE FILE (typically 'obsys.dat')
+
+This file contains geographical locations of observatories.  There is
+one line per observatory.  The information in the first line is used
+for TOAs tagged with observatory number 1, the second line for number
+2, and so on.  The tenth line corresponds to observatory 'a', the
+eleventh to 'b', and so on.
+
+    Col       Item
+   -----     ---------------
+    1-15     coordinate 1
+   16-30     coordinate 2
+   31-45     coordinate 3
+   48-48     flag
+   51-62     observatory name
+   71-71     observatory number
+   74-75     observatory code
+
+If the flag is blank or zero, the coordinates are taken to be latitude
+(ddmmss.ss), longitude (ddmmss.ss), and elevation (m).  If the flag is
+non-blank, the coordinates are taken as X, Y, Z (m) about the
+geocenter.
+
+The observatory code is a 2-character code used in ITOA format.
+
+

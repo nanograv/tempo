@@ -1,0 +1,48 @@
+TOA LINES
+
+TOAs are entered, one per line, in one of three formats, called
+'Princeton', 'Parkes', and 'Interchange TOA (ITOA)' format.  TOAs in
+Princeton and Parkes formats are assumed to be referenced in an
+observatory time scale (see TIME SCALES, below).  TOAs in ITOA format
+are assumed to be referenced to UTC.  TOAs are reported as MJD, except
+that TOAs reported using the Princeton format may also be MJD-39126
+(also called '1966 day number').  Use of the latter is discouraged.
+
+One-character observatory codes correspond to lines in the observatory
+coordinate file for '1' through '9' and 'a' through 'z'.  Code '0' indicates
+the geocenter.  Code '@' indicates the solar system barycenter (for which
+neither geometric nor clock corrections are applied).  The two-character
+observatory codes used in the ITOA format are given in the observatory
+coordinate file.
+
+Princeton Format
+
+  columns     item
+    1-1     Observatory (one-character code)
+    2-2     must be blank
+    16-24   Observing frequency (MHz)
+    25-44   TOA (decimal point must be in column 30 or column 31)
+    45-53   TOA uncertainty 
+    69-78   DM correction (pc cm^-3)
+
+Parkes Format
+
+  columns     item
+    1-1     must be blank
+    26-34   Observing frequency (MHz)
+    35-55   TOA (decimal point must be in column 42)
+    56-63   Phase offset (fraction of P0, added to TOA)
+    64-71   TOA uncertainty
+    80-80   Observatory (one-character code)
+
+ITOA Format
+
+  columns     item
+    1-2     ignored, but must not be blank (often PSRNAME goes here)
+   10-28    TOA (decimal point must be in column 15)
+   29-34    TOA uncertainty 
+   35-45    Observing frequency (MHz)
+   46-55    DM correction (pc cm^-3)
+   58-59    Observatory (two-letter code)
+ 
+
