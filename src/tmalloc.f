@@ -3,15 +3,14 @@
         implicit none
 
 	integer nptsmax, nbuf
-        integer mallocx         ! external function in cutil.c
 
 	include 'array.h'
 
-        dnplsptr =  mallocx(dnpls,nptsmax,8,dnplsoff)
-        ddmchptr =  mallocx(ddmch,nptsmax,8,ddmchoff)
-        ksavptr =  mallocx(ksav,nptsmax,4,ksavoff)
-        npmsavptr =  mallocx(npmsav,nptsmax,4,npmsavoff)
-        bufptr =  mallocx(buf,nbuf,8,bufoff)
+        call mallocx(dnpls,nptsmax,8,dnplsoff)
+        call mallocx(ddmch,nptsmax,8,ddmchoff)
+        call mallocx(ksav,nptsmax,4,ksavoff)
+        call mallocx(npmsav,nptsmax,4,npmsavoff)
+        call mallocx(buf,nbuf,8,bufoff)
 
         return
         end
@@ -24,11 +23,11 @@ C----------------------------------------------------------------
         implicit none
         include 'array.h'
 
-        call freex(dnplsptr)
-        call freex(ddmchptr)
-        call freex(ksavptr)
-        call freex(npmsavptr)
-        call freex(bufptr)
+        call freex(dnpls)
+        call freex(ddmch)
+        call freex(ksav)
+        call freex(npmsav)
+        call freex(buf)
 
         return
         end

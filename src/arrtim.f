@@ -231,6 +231,12 @@ c    two cases by searching for the "+" or "-" indicative of a pulsar name.
 C Arrival time
 	n=n+1
 
+        if (n.gt.nptsmax) then
+	  if (tz) stop ' Too many points for tempo -z'
+          memerr = .true.  !too many points.  continue through the file
+	  goto 10          !to figure out how many points total we will have
+        endif
+
 C Store toa for tz reference phase
 	if(ntzref.eq.0.and.fmjd.gt.pepoch)then
 	   ntzref=n
@@ -372,13 +378,6 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
 
 	if(last) wgt=1.d-10*wgt
 	wt=wgt
-	ntmp=min(n,nptsmax)
-	if(tz.and.n.gt.nptsmax) stop ' Too many points for tempo -z'
-        if (n.gt.nptsmax) then
-	  if (tz) stop ' Too many points for tempo -z'
-          memerr = .true.  !too many points.  continue through the file
-	  goto 10          !to figure out how many points total we will have
-        endif
 
 	if(xitoa) then				!Write the ITOA file
 C  Write itoa file correctly, including observatory code.  (VMK, June94)
@@ -397,7 +396,7 @@ C  Write itoa file correctly, including observatory code.  (VMK, June94)
 1080	  format(a9,i5,a14,f6.2,f11.4,f10.6,2x,a2,2x,a8)
 	endif
 
-	call resid(nct,fct,dn,dphase,dnpls(ntmp),nits,jits)
+	call resid(nct,fct,dn,dphase,dnpls(n),nits,jits)
 
 	if(track.and.n.gt.1) then
 	  dt=dt+ntrk

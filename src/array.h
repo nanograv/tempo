@@ -1,17 +1,16 @@
 c  Adjustable arrays:
-	integer dnplsoff,dnplsptr
+	integer dnplsoff
 	real*8 dnpls(1)
-        integer ddmchoff,ddmchptr
+        integer ddmchoff
         real*8 ddmch(1)
-        integer bufoff,bufptr
+        integer bufoff
         real*8 buf(1)
-        integer npmsavoff,npmsavptr
+        integer npmsavoff
         integer npmsav(1)
-        integer ksavoff,ksavptr
+        integer ksavoff
         integer ksav(1)
 
         common /array/
-     +    dnplsoff,ddmchoff,bufoff,npmsavoff,ksavoff,
-     +    dnplsptr,ddmchptr,bufptr,npmsavptr,ksavptr,
-     +    dnpls,   ddmch,   buf,   npmsav,   ksav
+     +    dnpls,   ddmch,   buf,   npmsav,   ksav,
+     +    dnplsoff,ddmchoff,bufoff,npmsavoff,ksavoff
 

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
 
 /*  FORTRAN:  fd = close(filedes)      */
 close_(filedes)
@@ -171,21 +172,60 @@ void usleep_(long int *n)
       call freex(ipointer)
 */
 
-void *mallocx_(void *ref, int *nelem, int *size, int *indeks) {
-        long nbytes;    /*  long integer necessary on 64-bit systems */
-        void *x;
-        nbytes = (*nelem)  * (*size) ;
-        x =  malloc(nbytes);
-        if (x == (char *) NULL)
-          { fprintf(stderr,"Out of memory");exit(1); }
-        nbytes = (long) ((char *)x - (char *)ref); 
-        *indeks = nbytes / (*size);
-        return x;
+/* use global storage to retain "original" address of arrays and
+   "malloc'd" address of arrays  */
+
+#define MAXADDR 10
+int naddr=0;
+void *addr1[MAXADDR], *addr2[MAXADDR];
+
+void mallocx_(void *a, int *nelem, int *size, int *idx) {
+
+  long n;   /*  use "long" to keep 64-bit alpha happy  */
+
+  if (naddr==MAXADDR) {
+    printf ("Error: can't allocate more than %d arrays\n", MAXADDR); exit (1); }
+
+  /* Following prevents use of mmap() in gcc/glibc.  This is necessary
+     because use of mmap on alphas may produce pointers separated by
+     more than 2^31, which can't be handled by fortran INT*4     */
+#ifdef M_MMAP_MAX
+  mallopt(M_MMAP_MAX,0);
+#endif
+
+  addr1[naddr] = a;                          /* store original address */
+  addr2[naddr] = malloc((*nelem)*(*size));   /* allocate the memory    */
+  if (addr2[naddr]==(void *)NULL)
+    { printf ("Error: out of memory\n"); exit(1); }
+       /* char* cast in next line forces calculation to be done in bytes */
+
+                                             /* calculate array offset */
+  n = (long)((char *)addr2[naddr]-(char *)addr1[naddr])/(*size);
+      /* catch cases when n can't be cast to int in 64-bit systems */
+  if (n>2147483647 || n<-2147483647)    
+    { printf ("Error: array address more than 2^31 from original location\n");
+      exit(1); }
+  *idx = n;
+
+  naddr++;
 }
 
-
-void freex_(char *(*where)) {
-        free(*where);
+void freex_(void *a) {
+  int i;
+  int flag;
+  flag = 1;
+  for (i=0; i<naddr; i++) {
+    if (addr1[i]==a) {
+      free(addr2[i]);
+      naddr--;    /* shorten the array */
+      addr1[i] = addr1[naddr];
+      addr2[i] = addr2[naddr];
+      flag = 0;
+      break;
+    }
+  }
+  if (flag)
+    printf ("Warning: can't free array\n"); 
 }
 
 

@@ -414,11 +414,6 @@ c  Open parameter and residual files
 
 	  call setup(version,infile,obsyfile,alng,nsmax,parfile)
 
-c         Allocate large arrays:  
- 58       continue
-	  nbuf = nptsmax * (nparmax+8) 
-	  call tmalloc(nptsmax,nbuf) ! allocate large arrays
-
 C         The main loop:
  60       continue
           call newsrc(nits,jits,nboot)

@@ -38,7 +38,7 @@ SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
         vmemw.f  ztim.f 
 SRC2 = cutil.c
-SRC3 = acom.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
+SRC3 = acom.h array.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
 	orbit.h tdbcom.h trnsfr.h tz.h vcom.h 
 SRC4 = Makefile
 
