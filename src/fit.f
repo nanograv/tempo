@@ -1,7 +1,8 @@
 c      $Id$
       subroutine fit(npts,mode,chisqr,varfit,xmean,ymean,sum,nz,
      +     wmax,lw,ddmch,
-     +     buf,npmsav,ksav)
+     +     buf,npmsav,ksav,
+     +     resfile2)
 
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
@@ -28,8 +29,35 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
         real*8 buf(*)
         integer npmsav(*), ksav(*)
 	character mark*1,adn*14,date*9,damoyr*9
+	character*80 resfile2
 
-	rewind 32
+cc       Under linux/g77, output is always flushed.  this
+cc       causes huge problems when writing out 80 bytes at
+cc       a time to resid2.tmp (unit 32), especially when 
+cc       running with a cross-mounted nfs disk. 
+cc       A kludgey solution is to gather the resid2.tmp
+cc       data into a single memory block and to dump it
+cc       at once.  
+cc       The data format of fortran output of 72-byte records
+cc       is emulated:  in particular, there is a 4-byte integer
+cc       with the record length ("72"), followed by the 72 bytes
+cc       of actual data, followed by the record length ("72") again,
+cc       so that the whole thing ends up being 80 bytes of output
+cc       per record.
+  
+        integer resn(20)  ! small buffer to hold one toa's worth of information
+	real*8 resr(9)
+        equivalence (resn(2),resr(1)) ! real*8 will not be on 8-byte boundaries
+c	integer ipointer, resboff
+c	integer resb(1)   ! the big buffer dumped to resid2.tmp; malloc'd below
+
+	integer fd
+	integer nwrt
+	integer flags, mode
+ 	integer open, close, write
+
+c	rewind 32
+
 	mprt=10**nprnt
 	sigma=0.
 	chisq=0.
@@ -111,6 +139,15 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
           aa0=aa0-a(j)*xmean(j)
  106    continue
 
+c        open(32,file=resfile2,form='unformatted',status='unknown',
+c     +		recl = 80*npts)
+c	ipointer = mallocxi(resb(1),20*npts,4,resboff)
+	flags = 1*512 + 1*64 + 2        ! octal 1102 = O_TRUNC || O_CREAT || O_RDWR
+	mode  = 6*64 + 6*8 + 2  ! octal 662 = rw-rw-r--
+	fd = open(resfile2,flags,mode);
+	resn(1) = 72
+	resn(20) = 72
+
 	do 108 i=1,npts
           call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
      +     buf,npmsav,ksav)
@@ -149,11 +186,28 @@ C Correct tz ref TOA
             endif
           endif
 
-          if((i.lt.npts.or.(.not.gro)).and.lw) write(32) ct,dt2,
-     +         dt2sec,phase,frq,weight,terr,y,ddmch(i)
+c          if((i.lt.npts.or.(.not.gro)).and.lw) write(32,rec=i) 
+c     +         ct,dt2,dt2sec,phase,frq,weight,terr,y,ddmch(i)
+	  resr(1) = ct
+	  resr(2) = dt2
+	  resr(3) = dt2sec
+	  resr(4) = phase
+	  resr(5) = frq
+	  resr(6) = weight
+	  resr(7) = terr
+	  resr(8) = y
+	  resr(9) = ddmch(i)
+c	  do j = 1, 20
+c            resb(20*(i-1)+j+resboff) = resn(j)
+c          enddo
+          nwrt = write(fd,resn,80)
           wmax=max(wmax,weight)
           chisq=chisq+weight*dt2**2
  108    continue
+c	write (32,rec=1) (resb(resboff+i),i=1,npts)
+c	call freexi(ipointer)
+c	close (32)
+	nwrt = close(fd)
 
 	freen=fnpts-nterms-1
 	chisqr=chisq*wmean/freen

@@ -10,12 +10,13 @@ int *filedes;
 {
 return(close(*filedes));
 }
-/*  FORTRAN:  fd = open(filnam,mode)  */
-open_(filnam,mode)
+/*  FORTRAN:  fd = open(filnam,flags,mode)  */
+int open_(filnam,flags,mode)
 char filnam[];
+int *flags;
 int *mode;
 {
-  return(open(filnam,*mode));
+  return(open(filnam,*flags,*mode));
 }
 /* FORTRAN:  fd = creat(filnam,mode) */
 creat_(filnam,mode)

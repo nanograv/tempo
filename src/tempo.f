@@ -148,11 +148,13 @@ C  99	gro.99			newval
         real*8 xmean(NPA),alng(36)
 
 	common/leapsec/mjdleap(50),nleaps
-	data resfile1/'resid1.tmp'/,resfile2/'resid2.tmp'/
+	data resfile1/'resid1.tmp'/
         data infofile/'info.tmp'/
-	data listfile/'tempo.lis'/,lw/.true./
+	data listfile/'tempo.lis'/
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
      +       'MSS','ELL1','BTX','BT1P','BT2P'/
+
+        resfile2 = 'resid2.tmp'//char(0)
 
 	version = 11.005
 
@@ -410,7 +412,6 @@ c  Open parameter and residual files
  911	  continue
 
 	  jits=0
-          open(32,file=resfile2,form='unformatted',status='unknown')
 
 	  if(oldpar.or.parunit.eq.50)then
 	     write(*,1050) version,infile(1:nfl)
@@ -458,7 +459,8 @@ C         The main loop:
 	  wmax=0.0
           call fit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,
      +         lw,ddmch(1+ddmchoff),
-     +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff))
+     +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),
+     +	       resfile2)
 
           asig=sqrt(varfit)
 	  if(nboot.gt.0)
