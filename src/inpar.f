@@ -162,6 +162,7 @@ C  The error/comment is ignored by TEMPO
 
 
       gain = 1.d0
+      phimin = 0.d0
 
       seteps    = .false.
       setepsdot = .false.
@@ -170,6 +171,7 @@ C  The error/comment is ignored by TEMPO
       setequ    = .false.
       setpb     = .false.
       setfb     = .false.
+
 
       ll=80
 
@@ -216,6 +218,9 @@ C  Control parameters
 
       else if(key(1:4).eq.'NDDM')then
          read(value,*)nddm
+
+      else if(key(1:6).eq.'PHIMIN')then
+         read(value,*)phimin
 
       else if(key(1:4).eq.'DMX'.and.lk.eq.3)then
          usedmx = .true.
@@ -392,7 +397,7 @@ C  Position parameters
          endif
          ndmx = max(ndmx,ikey)
          read(value,*)dmx(ikey)
-         nfit(NPAR6+ikey)=1
+         read(cfit,*)nfit(NPAR6+ikey)
 
       else if(key(1:6).eq.'DMXR1_') then
          if (ikey.gt.NDMXMAX) then
@@ -401,7 +406,6 @@ C  Position parameters
          endif
          ndmx = max(ndmx,ikey)
          read(value,*)dmxr1(ikey)
-         nfit(NPAR6+ikey)=1
          
       else if(key(1:6).eq.'DMXR2_') then
          if (ikey.gt.NDMXMAX) then
@@ -410,7 +414,6 @@ C  Position parameters
          endif
          ndmx = max(ndmx,ikey)
          read(value,*)dmxr2(ikey)
-         nfit(NPAR6+ikey)=1
          
       else if(key(1:3).eq.'DM0'.or.key(1:2).eq.'DM'.and.lk.eq.2)then
          read(value,*)dm
