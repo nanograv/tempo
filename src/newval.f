@@ -16,6 +16,12 @@ c      $Id$
 
 	data label/'Offset'/
 
+	if(gain.ne.1.d0) then
+	  do i = 1, NPAP1
+	    freq(i)=freq(i)*gain
+	  enddo
+	endif
+
 	if(jits.lt.nits)jits=jits+1
 
 	if(posepoch.eq.0.)then

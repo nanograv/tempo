@@ -139,6 +139,9 @@ C  The error/comment is ignored by TEMPO
       logical setecl, setequ    ! indicate when some ecliptic or
 	                        ! equatorial coordinate has been set
 
+
+      gain = 1.d0
+
       seteps    = .false.
       setepsdot = .false.
       set2dot   = .false.
@@ -567,7 +570,8 @@ C  Glitches
          read(value,*) gltd(ikey)
          read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+5)
 
-C  Jumps
+       else if(key(1:4).eq.'GAIN') then
+         read (value,*) gain
 
        else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
          read(value,*) dct(ikey)

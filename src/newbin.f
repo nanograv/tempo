@@ -256,6 +256,8 @@ c  Print updated parameters
 
 	if(nbin.eq.4) then  !  write out calculated values for DDGR
 	   omd=360.d0*365.25d0*xk/pb(1)
+	   call mass2dd(am,am2,a1(1),e(1),twopi/(pb(1)*86400.d0),
+     +      arr,ar,xk,si,gamma,pbdot)
 	   write(31,10511)
 	   write(31,10512) omd
 	   write(31,10513) gamma
