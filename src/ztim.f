@@ -1,5 +1,5 @@
 c      $Id$
-      SUBROUTINE ZTIM(nmjdu,fmjdu,ntdb,ftdb)
+      SUBROUTINE ZTIM(nmjdu,fmjdu,ntdb,ftdb,wflag)
 
 C     DERIVED FROM PROGRAM BAT ('BARYCENTRIC ARRIVAL TIME')
 C ORIGINAL VERSION 1970 BY DAVID RICHARDS, BASED ON CODING IN MIT'S
@@ -32,6 +32,8 @@ C    ntdb,ftdb - SAME AS INPUT, BUT REPRESENTING THE TDB THE
 C              SAME PULSE (AT INFINITE FREQUENCY) WOULD ARRIVE AT THE
 C              SOLAR-SYSTEM BARYCENTER IN THE ABSENCE OF THE SOLAR
 C              SYSTEM.
+C    wflag - set to 0 in timcalc if the weight of this point should be
+C            set to zero because the source-sun angle is less than PHIMIN
 C    IN ADDITION, THE COORDINATES USED IN THE CALCULATIONS
 C    ARE LEFT IN COMMON /CRDS/ (SEE BELOW).
 
@@ -68,6 +70,7 @@ c      fifteen digits of accuracy
 
       implicit real*8(A-H,O-Z)
       save
+      integer wflag
 
 
 c           Common constants
@@ -175,7 +178,7 @@ c     Compute precession-nutation matrix
 
 c     Do the rest of the arrival time calculation in subroutine TIMCALC
 c     Enter with approx CT, return with TDB.
-        call TIMCALC(nmjdu,fmjdu,nmjdc,fmjdc,ctatv,etatc)
+        call TIMCALC(nmjdu,fmjdu,nmjdc,fmjdc,ctatv,etatc,wflag)
         ntdb=nmjdc
         ftdb=fmjdc
 

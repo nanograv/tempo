@@ -1,5 +1,5 @@
 c      $Id$
-      subroutine TIMCALC(nmjdu,fmjdu,nmjdc,fmjdc,ctatv,etatc)
+      subroutine TIMCALC(nmjdu,fmjdu,nmjdc,fmjdc,ctatv,etatc,wflag)
 c
 c     Routines taken (almost) exactly from the old Tempo BARTIM. 
 c     For common block usage, see comments in ZTIM
@@ -19,6 +19,8 @@ c     For common block usage, see comments in ZTIM
       common /OBSP/ SITE(3),POS(3),FREQHZ,BVAL,SITVEL(3)
 	real*8 aa_star(3)
       real*8 VOBS(3), q_s(3)
+      real*8 phisun
+      integer wflag
 
 c     get coordinates of site of observation in lt-sec
       if(ut1flag)call UT1RED(nmjdc,fmjdc,atut,ut1ut)
@@ -162,6 +164,11 @@ C     compute interplanetary effect assuming 10 e-/cc at 1 AU
            PLDIS = PLDIS/2.		
          endif
          TDIS = (BVAL+PLDIS)/FREQF**2
+
+
+         phisun = 360*(PI-THETH)/TWOPI
+         if (phisun.lt.phimin) wflag = 0
+        
 c     
  115     nmjdc=nmjdu
          dt_path = bclt-tdis-dtgr-dt_delay
@@ -250,6 +257,10 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          endif
 		
          TDIS = (BVAL+PLDIS)/FREQF**2
+
+         phisun = 360*(PI-THETH)/TWOPI
+         if (phisun.lt.phimin) wflag = 0
+        
 
  210     continue
          nmjdc=nmjdu
