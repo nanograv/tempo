@@ -1,6 +1,7 @@
 /*  $Id$   */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 /*  FORTRAN:  fd = close(filedes)      */
 close_(filedes)
@@ -172,14 +173,14 @@ void usleep_(long int *n)
 
 void *mallocx_(void *ref, int *nelem, int *size, int *indeks) {
         long nbytes;    /*  long integer necessary on 64-bit systems */
-        void *where;
+        void *x;
         nbytes = (*nelem)  * (*size) ;
-        where = (char *) malloc(nbytes);
-        if (where == (char *) NULL)
+        x =  malloc(nbytes);
+        if (x == (char *) NULL)
           { fprintf(stderr,"Out of memory");exit(1); }
-        nbytes = (long) ((char *)where - (char *)ref);
+        nbytes = (long) ((char *)x - (char *)ref); 
         *indeks = nbytes / (*size);
-        return where;
+        return x;
 }
 
 
