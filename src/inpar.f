@@ -161,13 +161,10 @@ C  Get key, value and cfit
       call upcase(key)
       call citem(line,ll,jn,value,lv)
       call citem(line,ll,jn,temp,lf)
-      if(temp(1:1).eq.'#' .or. lf.eq.0)then
+      if(temp(1:1).eq.'#' .or. lf.ne.1)then
          cfit='0'
-      else if(lf.eq.1)then
+      else 
          cfit=temp(1:1)
-      else
-         write(*,'(''Illegal fit value: '',a)')temp(1:lf)
-         stop
       endif
 
 C  Control parameters
