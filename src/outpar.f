@@ -161,8 +161,16 @@ c      $Id$
  1035 format('F',z1,1p,d24.12,a,d20.12)
 
       write(71,'(''PEPOCH'',f20.6)')pepoch
-      write(71,'(''START'',f21.3)')start
-      write(71,'(''FINISH'',f20.3)')finish
+      if (usestart) then
+        write(71,'(''START'',f21.3,a)')start,fit1
+      else
+        write(71,'(''START'',f21.3)')start
+      endif
+      if (usefinish) then
+        write(71,'(''FINISH'',f20.3,a)')finish,fit1
+      else
+        write(71,'(''FINISH'',f20.3)')finish
+      endif
 
       if(nfit(16).gt.0)then
          write(71,1050)dm,fit1,ferr(16)

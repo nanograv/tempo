@@ -100,6 +100,9 @@ c      $Id$
       ncoord=1
       nell1=0
 
+      usestart = .false.
+      usefinish = .false.
+
       return
       end
 
@@ -219,9 +222,13 @@ C  Control parameters
          
       else if(key(1:5).eq.'START')then
          read(value,*)start
+         read(cfit,*)itmp
+         if (itmp.gt.0) usestart=.true.
 
       else if(key(1:6).eq.'FINISH')then
          read(value,*)finish
+         read(cfit,*)itmp
+         if (itmp.gt.0) usefinish=.true.
 
 C  Period/Frequency parameters
 
@@ -650,7 +657,7 @@ C  Warnings
      +   write(*,'('' WARNING: Fit parameter for F1 out of range'')')
 
       if(nfit(16).lt.0.or.nfit(16).gt.10.or.ndmcalc.lt.0
-     +   .or.ndmcalc.gt.1)
+     +   .or.ndmcalc.gt.10)
      +   write(*,'('' WARNING: Fit parameter for DM out of range'')')
 
       if(setecl)then
