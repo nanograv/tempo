@@ -74,7 +74,7 @@ ARCHIVE_S_0 = $(SRC1) $(SRC2) $(SRC3) $(SRC4) $(MATRIX_SRC) $(TDBGEN_SRC)
 ARCHIVE_S = $(ARCHIVE_S_0:%=src/%)
 
 # files in the 'test' directory
-ARCHIVE_T_0 = 0437.par 0437.tim tempo.lis.original
+ARCHIVE_T_0 = 0437.par 0437.tim tempo.lis.original 0437-4715.par.original
 ARCHIVE_T = $(ARCHIVE_T_0:%=test/%)
 
 # files in the 'clock' directory
@@ -96,7 +96,7 @@ archive:
 
 all:	tempo matrix
 
-matrix:	(MATRIX_OBJS) dim.h
+matrix:	$(MATRIX_OBJS) dim.h
 	$(FC) $(FFLAGS) -o ../matrix $(MATRIX_OBJS)
 
 tdbgen: $(TDBGEN_OBJS)
@@ -170,7 +170,9 @@ tzinit.o: tzinit.f dim.h tz.h
 tpohdr.o: tpohdr.f dim.h tz.h
 	$(FC) -c $(FFLAGS) tpohdr.f
 tzfit.o: tzfit.f dim.h acom.h tz.h
-	$(FC) -c -O1 tzfit.f
+	$(FC) -c $(FFLAGS) tzfit.f
+ut1red.o: ut1red.f dim.h 
+	$(FC) -c $(FFLAGS) ut1red.f
 vmemw.o: vmemw.f dim.h vcom.h
 	$(FC) -c $(FFLAGS) vmemw.f
 ztim.o: ztim.f trnsfr.h
