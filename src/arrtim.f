@@ -291,12 +291,22 @@ C  Get clock corrections
 	endif
 	bval=dmtot/2.41d-16
 	  
-	if (nsite.ge.0) then
-	   call ztim(nfmjd,ffmjd,nct,fct)
-	else
-	   nct = nfmjd
-	   fct = ffmjd
-	endif
+        if (nsite.ge.0) then
+          call ztim(nfmjd,ffmjd,nct,fct)
+        elseif (freqhz.lt.1) then
+          nct = nfmjd
+          fct = ffmjd
+        else
+          nct = nfmjd
+          fct = ffmjd - bval/freqhz**2/SECDAY
+          if (fct.lt.0.) then
+            fct = fct + 1
+            nct = nct - 1
+          elseif (ftc.ge.1.) then
+            fct = fct - 1
+            nct = nct + 1
+          endif
+        endif
 
 	if(search.and.ct00.gt.0.d0.and.((nct+fct-ct00).gt.trkmax)) then
 	  nblk=nblk+1
