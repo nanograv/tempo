@@ -1,0 +1,22 @@
+
+Usage: tempo [options] <filename>
+
+options:
+  -d <path>   Path to 'tempo.cfg', default: environment variable 'TEMPO'
+  -f <par>    Over-rides the default parameter file name with <par>
+  -g[O]       GRO mode; 'O' is single-letter observatory code
+  -o          'Old-style' parameters at head of <fname>
+  -p          Parameters corrected for pulsar space motion
+  -r          Save the partial-derivatives file, resid1.tmp 
+  -v          Print out version number
+  -x          Make an export file in ITOA format
+  -z[m]	      Compute polonomial coefficients [m for MJD dates] 
+
+Options may be in any order, but <fname> must be last.  Options may
+not be grouped (e.g., '-oz' is not allowed; it must be written '-o -z')
+
+For more details, see:
+  http://pulsar.princeton.edu/tempo
+  http://wwwatnf.atnf.csiro.au/research/pulsar/psr/timing/tempo
+
+
