@@ -2,7 +2,7 @@
 INSTALLDIR = /usr/local/src/apache_1.2b3/htdocs/tempo
 
 
-REFINSTALLDIR = $(INSTALLDIR)/reference_manual
+REFINSTALLDIR = $(INSTALLDIR)/ref_man_sections
 
 
 REF_MAN_SECTIONS = description.txt \
@@ -27,7 +27,7 @@ REF_MAN_SECTIONS = description.txt \
 			tz-polyco.txt \
 			notes.txt 
 
-TPO_PAGES = tempo11.html tempo11_003_install.html tempo11_install.html \
+TPO_PAGES = tempo11.html tempo11.000_install.html tempo_install.html \
 		tempo_idx.html tempo_update.html reference_manual.html
 
 REFDIR = ref_man_sections
