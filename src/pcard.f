@@ -10,6 +10,7 @@ C  appropriate action.
 	logical OFFSET,JDCATC,track,search
 	include 'dim.h'
 	include 'acom.h'
+	include 'dp.h'
 
 	if (card(1:2).ne.'C ' .and. card(1:2).ne.'# ') goto 14
 C Don't bother printing it unless this is the first iteration
@@ -95,9 +96,22 @@ C  PRE-FIT RESIDUALS.
 1029	format(i5,1x,a6,f8.2,' MHz.')
 	go to 200
 
-30	if(CARD(1:4) .NE. 'FMAX') goto 50
+30	if(CARD(1:4) .NE. 'FMAX') goto 35
 	fmax = PARM
 	write (31,1029) N, CARD(1:6),fmax
+	go to 200
+
+ 35	if(card(1:4) .NE. 'EMAX') goto 40
+	emax = PARM
+	write (31,1030) N, CARD(1:6),emax
+ 1030	format(i5,1x,a6,f10.4,' us.')
+	go to 200
+
+ 40	if(card(1:4) .ne. 'EMAP') goto 50
+	emax = PARM*P0*1.d6   ! convert fraction of period to usec
+        write (31,1031) N, CARD(1:6),PARM
+        write (31,1030) N, 'EMAX  ',emax
+ 1031	format(i5,1x,a6,f15.8,' periods.')
 	go to 200
 
 50	if(CARD(1:4) .NE. 'JUMP') goto 60

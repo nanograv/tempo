@@ -65,6 +65,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	ct00=-1.d30
 	fmin=0.
 	fmax=1.d30
+	emax=1.d30
 	nblk=0
 	ntrk=0
 	dither=0.
@@ -144,10 +145,34 @@ c       N. Wex transformations at pepoch
 
 50	continue
 	if(card(1:35).eq.'                                   ') goto 10
+
+c  default: Princeton format
 	nfmt=0
+c  first character blank: Parkes format
 	if(card(1:1).eq.' ') nfmt=1
-	if(card(1:1).ne.' ' .and. card(2:2).ne.' ') nfmt=2
-51	if(nfmt.eq.0) then				! Princeton format
+c  first character not blank, second character not blank:
+c    could be either ITOA format, in which case first field is PSR name
+c    or Princeton format, but with "scan number" starting at column 2
+c    (Berkeley sometimes does this).  Differentiate between the 
+c    two cases by searching for the "+" or "-" indicative of a pulsar name.
+	if(card(1:1).ne.' ' .and. card(2:2).ne.' ') then
+	  do i = 1, 80
+	    if(card(i:i).eq." ") then
+	      nfmt=0
+	      goto 51
+	    elseif (card(i:i).eq."+") then
+	      nfmt=2
+	      goto 51
+	    elseif (card(i:i).eq."-") then
+	      nfmt=2
+	      goto 51
+	    endif
+	  enddo
+	  nfmt = 2 ! shouldn't get here....but just in case
+	endif
+ 51	continue
+
+	if(nfmt.eq.0) then				! Princeton format
 	  if(card(30:30).eq.'.') read(card,10500) asite,rfrq,
      +      nfmjd,ffmjd,aterr,ddm
 10500	  format(a1,14x,f9.0,i5,f15.14,a9,15x,f10.0)
@@ -156,6 +181,7 @@ c       N. Wex transformations at pepoch
 10501	  format(a1,14x,f9.0,i6,f14.13,a9,15x,f10.0)
 	  if(nfmjd.lt.30000)nfmjd=nfmjd+39126           ! Convert 1966 days to MJD
 
+	  iz = 1
 	  do i=1,9
  	    if(aterr(i:i).eq.' ') iz=i
 	  end do
@@ -191,6 +217,7 @@ c       N. Wex transformations at pepoch
 
 	fmjd=nfmjd+ffmjd
 	if(rfrq.lt.fmin .or. rfrq.gt.fmax .or. 
+     +      (terr .gt. emax) .or.
      +      (usestart .and. fmjd.lt.start) .or. 
      +      (usefinish .and. fmjd.gt.finish)) go to 10
 
