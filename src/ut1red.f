@@ -111,7 +111,7 @@ C                                       UT1-UTC = A1-UTC - (A1-UT1)
             write(*,500)nmjd,mjd1,mjd2
             write(31,500)nmjd,mjd1,mjd2
  500        format(' *** Warning - MJD =',i6,
-     +            ' outside UT1 table range (',i5,'-',i5')') 
+     +            ' outside UT1 table range (',i5,'-',i5,')') 
          else if(imsg.eq.nmsg)then
             write(*,510)
             write(31,510)
