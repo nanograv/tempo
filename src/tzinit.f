@@ -32,6 +32,8 @@ c Free format, but must be in order
 	   nsite=ichar(tzsite)-48
 	else if(tzsite.ge.'a'.and.tzsite.le.'z')then
 	   nsite = ichar(tzsite)-87
+	else if (tzsite.eq.'@') then
+	   nsite = -1
 	else
 	   write (*,*) 'Don''t understand observing site ''',tzsite,''''
 	   stop
