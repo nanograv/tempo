@@ -166,6 +166,7 @@ C  Get key, value and cfit
       else 
          cfit=temp(1:1)
       endif
+      ikey = keyidx(key)        ! extract xx in keys of form ssss_xx
 
 C  Control parameters
 
@@ -535,65 +536,35 @@ C  Fixed binary parameters
 
 C  Glitches
 
-      else if(key(1:4).eq.'GLEP') then
-         igl = keyidx(key)
-         if (igl.ge.1 .and. igl.le.NGLT) then
-           if (igl.gt.ngl) ngl=igl
-           read(value,*) glepoch(igl)
-         else
-           write(*,'('' Invalid glitch number in key: '',a)')key
-         endif
+      else if(key(1:4).eq.'GLEP'.and.ikey.ge.1.and.ikey.le.NGLT) then
+        if (ikey.gt.ngl) ngl=ikey
+        read(value,*) glepoch(ikey)
+        
+      else if(key(1:4).eq.'GLPH'.and.ikey.ge.1.and.ikey.le.NGLT) then
+        if (ikey.gt.ngl) ngl=ikey
+        read(value,*) glph(ikey)
+        read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+1)
 
-       else if(key(1:4).eq.'GLPH') then
-         igl = keyidx(key)
-         if (igl.ge.1 .and. igl.le.NGLT) then
-           if (igl.gt.ngl) ngl=igl
-           read(value,*) glph(igl)
-           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+1)
-         else
-           write(*,'('' Invalid glitch number in key: '',a)')key
-         endif
+       else if(key(1:4).eq.'GLF1'.and.ikey.ge.1.and.ikey.le.NGLT) then
+         if (ikey.gt.ngl) ngl=ikey
+         read(value,*) glf1(ikey)
+         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+3)
 
-       else if(key(1:4).eq.'GLF1') then
-         igl = keyidx(key)
-         if (igl.ge.1 .and. igl.le.NGLT) then
-           if (igl.gt.ngl) ngl=igl
-           read(value,*) glf1(igl)
-           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+3)
-         else
-           write(*,'('' Invalid glitch number in key: '',a)')key
-         endif
+       else if(key(1:5).eq.'GLF0D'.and.ikey.ge.1.and.ikey.le.NGLT) then
+         if (ikey.gt.ngl) ngl=ikey
+         read(value,*) glf0d(ikey)
+         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+4)
 
-       else if(key(1:5).eq.'GLF0D') then
-         igl = keyidx(key)
-         if (igl.ge.1 .and. igl.le.NGLT) then
-           if (igl.gt.ngl) ngl=igl
-           read(value,*) glf0d(igl)
-           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+4)
-         else
-           write(*,'('' Invalid glitch number in key: '',a)')key
-         endif
-
-       else if(key(1:4).eq.'GLF0') then ! note: must come after GLF0D section
-         igl = keyidx(key)
-         if (igl.ge.1 .and. igl.le.NGLT) then
-           if (igl.gt.ngl) ngl=igl
-           read(value,*) glf0(igl)
-           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+2)
-         else
-           write(*,'('' Invalid glitch number in key: '',a)')key
-         endif
+       else if(key(1:4).eq.'GLF0'.and.ikey.ge.1.and.ikey.le.NGLT) then
+         if (ikey.gt.ngl) ngl=ikey
+         read(value,*) glf0(ikey)
+         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+2)
 
 
-       else if(key(1:4).eq.'GLTD') then
-         igl = keyidx(key)
-         if (igl.ge.1 .and. igl.le.NGLT) then
-           if (igl.gt.ngl) ngl=igl
-           read(value,*) gltd(igl)
-           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+5)
-         else
-           write(*,'('' Invalid glitch number in key: '',a)')key
-         endif
+       else if(key(1:4).eq.'GLTD'.and.ikey.ge.1.and.ikey.le.NGLT) then
+         if (ikey.gt.ngl) ngl=ikey
+         read(value,*) gltd(ikey)
+         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+5)
 
       else if(key(1:4).eq.'HEAD') then
 c        (Do nothing) (DJN)
