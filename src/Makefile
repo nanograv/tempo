@@ -83,8 +83,8 @@ ARCHIVE_T = $(ARCHIVE_T_0:%=test/%)
 ARCHIVE_C_0 = bipmnist.96 leap.sec ut1.dat utccorr.tot time.dat
 ARCHIVE_C = $(ARCHIVE_C_0:%=clock/%)
 
-# include the entire 'tzpar' directory (primarily so it gets created)
-ARCHIVE_Z = tzpar
+# include one file from the 'tzpar' directory (primarily to create directory)
+ARCHIVE_Z = tzpar/1937+21.par
 
 # files in the root directory (except for ephemerdies)
 ARCHIVE_1 = obsys.dat tempo.cfg tempo.hlp 
