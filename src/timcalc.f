@@ -218,7 +218,7 @@ c just the transverse proper motion is taken into account
          
          R=DSQRT(DOT(RSA,RSA))
          CTH = DOT(POS,RSA)/R
-         arg_ln = 1.0D0+CTH
+         arg_ln = (R/AULTSC)*1.0D0+CTH  ! R/AULTSC term added jun'00 
          dt_shapiro = -2.d0*RSCHW*DLOG(arg_ln) 
 
          TDIS = 0D0
