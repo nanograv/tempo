@@ -81,10 +81,13 @@ c       these are passed in common blocks defined above
 	else
 	   z = 0.d0
 	endif
+
+c  log_10 of rms fit error in periods
+	rms = dlog10(1.d-6 * rms * f0)
  
-	write(13,1070) pname(1:10),date,utprint,rfmjd,dmpsr,z,
+	write(13,1070) pname(1:10),date,utprint,rfmjd,dmpsr,z,rms,
      +    rphase,f0,nsite,nspan,ncoeff,tzfreq,binpha	
-1070	format(a10,a9,f12.2,f20.11,f21.6,1x,f6.3/
+1070	format(a10,a9,f12.2,f20.11,f21.6,1x,f6.3,f7.3/
      +    f20.6,f18.12,3i5,f10.3,a16)
 	write(13,1080) (d(i),i=1,ncoeff)		
 1080	format(3d25.17)
@@ -92,3 +95,6 @@ c       these are passed in common blocks defined above
 100	continue
    	return
 	end
+
+
+
