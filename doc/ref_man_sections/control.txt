@@ -1,0 +1,42 @@
+Control commands allowed in free-format headers:
+
+CLK    Terrestrial time standard  
+       Allowed values: 'UNCORR' (default), 'UTC(NIST)', 'UTC(BIPM)', 
+                       'TT(BIPM)', 'PTB', 'AT1'
+
+COORD  Input coordinate system
+       Allowed values: 'B1950', 'J2000' (default)
+
+EPHEM  Solar system ephemeris
+       Allowed values:  First five characters of file names listed
+                        in tempo.cfg file (see below).  Typically
+                        'DE200' and 'DE405'
+
+IBOOT  Bootstrap error analysis, with 2^n iterations
+       Allowed values:  integers n
+
+NDDM   Model DM as an n-th order polynomial expansion in time
+       Allowed values:  integers n
+
+NITS   Iterate solution n times, or fewer if it converges.
+       Allowed values:  integers n
+       Special case: n=9: iterate until convergence
+
+NPRNT  Print every 10^n TOA line in file tempo.lis
+       Allowed values:  integers n
+
+PSR    Pulsar name (normally without the leading B or J)
+       Allowed values:  up to 12 characters
+
+BINARY Binary model to use (see BINARY MODELS, below)
+       Allowed values:  'NONE', 'BT', 'EH', 'DD', 'DDGR', 'H88',
+                        'BT+', 'DDT', 'MSS', 'ELL1', 'BT1P', 'BT2P'
+
+START  Ignore TOAs before this date (MJD) (if flag is nonzero)
+       Allowed values:  single-precision real numbers
+       Allowed flags:  integers; START will be used only if flag is nonzero
+
+FINISH Ignore TOAs after this date (MJD) (if flag is nonzero)
+       Allowed values:  single-precision real numbers
+       Allowed flags:  integers; FINISH will be used only if flag is nonzero
+

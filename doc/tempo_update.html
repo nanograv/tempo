@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Tempo modifications</title>
+  </head>
+
+  <body>
+      <h1>Tempo modifications</h1>
+
+	This document lists, in reverse chronological order, changes
+	made to Tempo since <a href="tempo11.html">version 11.0</a>.
+
+      <ul>
+        <li> Version 11.003 (May 1998)
+          <ul>
+            <li> Minor bug fixes and improvements.
+            <li> More glitches allowed.
+            <li> TASC parameter allowed for binary model BT.
+          </ul>
+        <br>
+	<li> Version 11.002 (March 1998)
+	  <ul>
+	    <li> Added new binary model "ELL1" for low-eccentricity
+	      orbits.  Instead of OMEGA and E, the model fits for
+	      Laplace parameters EPS1 (=E*sin(OMEGA)) and EPS2 (=E*cos(OMEGA)).
+	      Input parameters OMEGA and E will be converted to EPS1
+	      and EPS2 if necessary.  Time of ascending node (T0ASC) must
+	      be used instead of time of periastron passage (T0).  Derivatives
+	      EPS1DOT and EPS2DOT may also be fit.
+	    <li> Model "DD+" renamed "MSS" (for "Main Sequence Star").
+	      Second derivative of OMEGA and X added.
+	    <li> POSEPOCH implemented - epoch (MJD) of position. Defaults to PEPOCH.
+            <li> Control parameters START and FINISH added. On input, if the 
+flag is
+             set, they delimit the MJD range of the fit. On output (in the 
+.par file)
+             they give the actual data range fitted.
+            <li> Improved determination of glitch epoch.
+            <li> Rms fit error added to polyco.dat.
+	    <li> Command line option -h added.
+	  </ul>
+	  <br>
+	<li> Version 11.001 (Jan-Feb 1998)
+	  <ul>
+	    <li> Allow fitting in ecliptic coordinates (BETA, LAMBDA,
+	      PMBETA, PMLAMBDA).
+	    <li> Fixed year-2000 bugs.
+	    <li> Fixed minor bugs found under compilation by g77 and
+	      Microsoft Fortran.
+	  </ul>
+      </ul>
+	  
+      <a href="tempo11_003_install.html"> To the Tempo installation 
+         instructions.</a><br>
+      <a href="reference_manual/reference_manual.html"> To the Tempo 11 
+reference
+         manual.</a><br>
+      <a href="tempo_idx.html"> Back to main Tempo page.</a><br>
+
+  </body>
+</html>
+
+
+
