@@ -21,7 +21,7 @@ FC = f77
 FFLAGS= -O3 
 
 CC = cc
-CCFLAGS = -O3
+CCFLAGS = 
 
 
 
