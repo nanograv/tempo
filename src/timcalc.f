@@ -20,6 +20,7 @@ c     For common block usage, see comments in ZTIM
 	real*8 aa_star(3)
       real*8 VOBS(3), q_s(3)
       real*8 phisun
+      real*8 solarn00
       integer wflag
 
 c     get coordinates of site of observation in lt-sec
@@ -160,7 +161,8 @@ C     compute interplanetary effect assuming 10 e-/cc at 1 AU
          if (SSDMFLAG.eq.0) then
            pldis = 0
          else
-           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn0/10)
+           solarn00 = solarn0 + solarn01*(nmjdu+fmjdu-pepoch)/365.25
+           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn00/10)
            PLDIS = PLDIS/2.		
          endif
          TDIS = (BVAL+PLDIS)/FREQF**2
@@ -252,7 +254,8 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          if (SSDMFLAG.eq.0) then
            PLDIS = 0
          else
-           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn0/10)
+           solarn00 = solarn0 + solarn01*(nmjdu+fmjdu-pepoch)/365.25
+           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn00/10)
            PLDIS = PLDIS/2.
          endif
 		
