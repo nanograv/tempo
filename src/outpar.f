@@ -219,9 +219,9 @@ c      $Id$
             endif
  1064       format('GLF0D_',i1,1p,d19.8,a,d20.8)
             if(nfit(ii+5).gt.0)then
-               write(71,1065)i,gltd(1),fit1,ferr(ii+5)/86400.d0
+               write(71,1065)i,gltd(i),fit1,ferr(ii+5)/86400.d0
             else
-               write(71,1065)i,gltd(1)
+               write(71,1065)i,gltd(i)
             endif
  1065       format('GLTD_',i1,f20.4,a,f20.4)
          enddo
