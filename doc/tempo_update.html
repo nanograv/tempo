@@ -8,9 +8,57 @@
     <h1>Tempo modifications</h1>
     
     This document lists, in reverse chronological order, changes
-    made to Tempo since <a href="tempo11.html">version 11.0</a>.
+    made to Tempo since <a href="tempo11.html">version 11.000</a>.
     
     <ul>
+      <li> Version 11.005 (May 2000)
+        <ul>
+          <li> (Includes contributions and fixes from Z. Arzoumanian,
+            R. Dodson, A. Lommen, C. Cutler, E. Splaver, RNM, DJN).
+          <li> Added new binary model BTX, an extension of the BT
+            model:  uses binary frequency (FB) and its derivatives (FB_x) 
+            instead of binary period;  allows many derivatives of orbit
+            size (XDOT_x); allows instantaneous 'jumps' in binary 
+            frequency (FBJ_x, TFBJ_x).
+          <li> Added dynamic memory allocation.  To override default
+            max number of TOAs or parameters use -m or -l, e.g., 
+            "tempo 0833.a -m 200000" for up to 200000 TOAs.  If
+            max number of TOAs is exceeded, tempo will read through
+            the entire TOA file(s), find the total number of TOAs,
+            re-allocate memory on the fly, and start again.  (This
+            is less efficient than specifying the right number in the
+            first place.)
+          <li> Added NTOA (number of toas) and TRES (residual) to output 
+            xxx.par.
+          <li> Added output of "information" lines.  Cards starting with
+            "INFO" may be included in the TOA section of the input file.
+            If such cards are present, an ASCII file "info.tmp" is written 
+            with one line per TOA.  Each line lists the information on the
+            most recent "INFO" card.  This is useful for storing extra 
+            information about large subsets of data, e.g., if mixing TOAs
+            from two data recording systems, put card "INFO 1" before
+            TOAs from system 1 and "INFO 2" before TOAs from system 2.
+            Plotting programs can then read "info.tmp" and determine which
+            TOAs came from which system.  "INFO" cards may have any mix
+            of ASCII characters, including spaces.
+          <li> Added -c option to force iteration even if rms change is less 
+            than 1 part in 1e4 (the usual stop criterion).  
+          <li> Added "EMAX xxx" and "EMAP yyy" to ignore TOAs with error
+            higher than xxx microseconds or yyy periods.
+          <li> Re-wrote command line parser to allow flexible ordering of
+            options and parameters as well as combination of options
+            (e.g., "tempo -oz" for "tempo -o -z").
+          <li> Improved accuracy of Solar System Shapiro delay calculation.
+            (Formerly used circular model for Earth's orbit.)
+          <li> Allow Princeton-style TOAs with non-blank column 2.  
+          <li> Reworked internal indexing of parameters to ease future
+            addition of new parameters.
+          <li> Use higher precision on tz reference and interally calculated
+            TOAs throughout the code, eliminating several-hundred nanosecond
+            jitter between polyco.dat blocks.
+          <li> Numerous minor bug fixes.
+        </ul>
+        <br>
       <li> Version 11.004 (October 1998)
         <ul>
           <li> Added option '-no xxx' to write pulse numbers to file xxx.

@@ -1,21 +1,26 @@
 SYNOPSIS
 
-tempo [options] <fname>
+tempo [options] [filename]
 
-Options may be in any order, but may not be combied.  <fname> must be last.
 
-where	-d <path>   Path to 'tempo.cfg'; overrides env. variable 'TEMPO'
-	-f <par>    overrides the default parameter file name
-    	-g[X]	    GRO mode; 'X' is single-letter observatory code
-        -j          Include offsets in paramter file
-        -ni <file>  Read pulse numbers from file
-        -no <file>  Write pulse numbers to file
-	-o          'Old-style' parameters at head of <fname>
-	-p          Parameters corrected for pulsar space motion
-	-r	    Save the partial-derivatives file, resid1.tmp 
-	-v	    Print out version number
-	-x	    Make an export file in ITOA format
-	-z	    Compute polonomial coefficients
+options:
+  -c          Do all requested iterations, even if apparently converged
+  -d<path>    Path to 'tempo.cfg', default: environment variable 'TEMPO'
+  -f<par>     Over-rides the default parameter file name with <par>
+  -g[O]       GRO mode; 'O' is single-letter observatory code
+  -h          Help message
+  -j          Output JUMP values in xxx.par file
+  -l<xx>      Max number of parameters to be fit (guides memory allocation)
+  -m<xx>      Max number of TOAs to be fit (guides memory allocation)
+  -no<file>   Write out absolute pulse numbers to file
+  -ni<file>   Get absolute pulse numbers from file
+  -o          'Old-style' parameters at head of <fname>
+  -p          Parameters corrected for pulsar space motion
+  -r          Save the partial-derivatives file, resid1.tmp 
+  -v          Print out version number
+  -x          Make an export file in ITOA format
+  -z	      Compute polonomial coefficients for predictions 
+
 
 
 ENVIRONMENT
@@ -25,6 +30,10 @@ directory containing the 'tempo.cfg' configuration file. The -d option
 overrides the environment variable.
 
 OPTIONS
+
+-c 
+   do all requested iterations (NITER), even if apparently converged
+   (possibly useful when exploring unusually-shaped chi^2 space)
 
 -d <path> 
    override environment variable 'TEMPO' with <path>. Path may be '.'. 
@@ -40,8 +49,19 @@ OPTIONS
    is P (for Princeton). If PEPOCH is not at the centre of the data span,
    adjusted parameters are written to gro.99.
 
+-h
+   Print help message
+
 -j
    Write offset values ("JUMP_1", etc.) to parameter file.
+
+-l <xxx>
+-m <yyy>
+   Expected maximum number of parameters (xxx) and TOAs (yyy) in the fit.  
+   (Default values are hard-wired in source file dim.h.)  
+   These values are used to allocate memory.  If either is too small,
+   memory will be re-allocated, requiring an extra read through the
+   TOA file.   
 
 -ni <file>
    Read pulse numbers from file.  These values override the pulse numbers
