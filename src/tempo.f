@@ -143,7 +143,7 @@ C  99	gro.99			newval
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
      +       'MSS','ELL1','BT1P','BT2P'/
 
-	version = 11.002
+	version = 11.003
 
 c  Get command-line arguments
 
@@ -355,6 +355,27 @@ c  Open TDB-TDT clock offset file
  
 	  do ipsr=1,num
 	    call tpohdr(oldpar,pardir,parfile,ncoord,t0,pb,p0,dm,nbin,ipsr)
+	    if(start.ne.0. .and. (fmjd1.lt.start.or.tzrmjd.lt.start))then
+	       if(usestart)then
+		  write(*,1014)
+		  STOP
+	       else
+		  write(*,1016)
+	       endif
+	    endif
+	    if(finish.ne.0. .and. (fmjd2.gt.finish.or.tzrmjd.gt.finish))then
+	       if(usefinish)then
+		  write(*,1014)
+		  STOP
+	       else
+		  write(*,1016)
+	       endif
+	    endif
+ 1014	    format(' ERROR: Requested MJD or TZRMJD outside parameter ',
+     +         'validity range')
+ 1016	    format(' WARNING: Requested MJD or TZRMJD outside parameter ',
+     +         'validity range')
+
 	    if (name(ipsr).eq.'done') then
 	      tsid=1.d0/1.002737909d0
 	     
@@ -462,3 +483,4 @@ c  Open parameter and residual files
 
  9999	continue
 	end
+
