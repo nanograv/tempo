@@ -1,5 +1,5 @@
 
-INSTALLDIR = /usr/local/src/apache_1.2b3/htdocs/tempo
+INSTALLDIR = /usr/local/apache/share/htdocs/tempo
 
 
 REFINSTALLDIR = $(INSTALLDIR)/ref_man_sections
