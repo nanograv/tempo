@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = no-dependencies
 #      $Id$
 
 #  Makefile for tempo and related programs

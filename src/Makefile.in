@@ -10,20 +10,6 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-#      $Id$
-
-#  Makefile for tempo and related programs
-
-#  To make programs:
-#     make tempo
-#     make matrix
-#     make tdbtrans
-
-#  To make an archive file:
-#     make archive
-
-# compilers and compiler flags
-
 
 SHELL = /bin/sh
 
@@ -75,6 +61,21 @@ LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
+
+AUTOMAKE_OPTIONS = no-dependencies
+#      $Id$
+
+#  Makefile for tempo and related programs
+
+#  To make programs:
+#     make tempo
+#     make matrix
+#     make tdbtrans
+
+#  To make an archive file:
+#     make archive
+
+# compilers and compiler flags
 
 FC = f77
 FFLAGS= -O3 
@@ -150,23 +151,6 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/a1ut1f.P .deps/a1utcf.P .deps/ang.P .deps/arrtim.P \
-.deps/atimfake.P .deps/bigendian.P .deps/blkdbat.P .deps/bnrybt.P \
-.deps/bnrydd.P .deps/bnryddgr.P .deps/bnryddt.P .deps/bnryeh.P \
-.deps/bnryell1.P .deps/bnrymss.P .deps/bootmc.P .deps/bt2ell1.P \
-.deps/chebpc.P .deps/citem.P .deps/clockcor.P .deps/covar.P \
-.deps/cutil.P .deps/damoyr.P .deps/dot.P .deps/dskrd.P .deps/earth.P \
-.deps/ephinit.P .deps/ephread.P .deps/equ2ecl.P .deps/fit.P \
-.deps/fk4tofk5.P .deps/galco.P .deps/gasdev.P .deps/inpar.P \
-.deps/interp.P .deps/lmst.P .deps/matinv.P .deps/matrix.P .deps/mxprt.P \
-.deps/newbin.P .deps/newsrc.P .deps/newval.P .deps/nutation.P \
-.deps/obsite.P .deps/outpar.P .deps/pcard.P .deps/pcshft.P \
-.deps/pospm_conv.P .deps/prcnut.P .deps/precession.P .deps/propmo.P \
-.deps/radian.P .deps/ran1.P .deps/resid.P .deps/setup.P .deps/sort.P \
-.deps/space_motion.P .deps/tasc2t0.P .deps/tdb1ns.P .deps/tdbgen.P \
-.deps/tdbinit.P .deps/tdbread.P .deps/tempo.P .deps/timcalc.P \
-.deps/tpohdr.P .deps/tzfit.P .deps/tzinit.P .deps/ut1red.P \
-.deps/vmemw.P .deps/ztim.P
 SOURCES = $(tempo_SOURCES) $(matrix_SOURCES) $(tdbtrans_SOURCES)
 OBJECTS = $(tempo_OBJECTS) $(matrix_OBJECTS) $(tdbtrans_OBJECTS)
 
@@ -177,7 +161,7 @@ all: Makefile $(PROGRAMS)
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -206,6 +190,9 @@ uninstall-binPROGRAMS:
 	list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
+
+.c.o:
+	$(COMPILE) -c $<
 
 .s.o:
 	$(COMPILE) -c $<
@@ -265,41 +252,12 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = src
 
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
 	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
-
-DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
-
--include $(DEP_FILES)
-
-mostlyclean-depend:
-
-clean-depend:
-
-distclean-depend:
-
-maintainer-clean-depend:
-	-rm -rf .deps
-
-%.o: %.c
-	@echo '$(COMPILE) -c $<'; \
-	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
-
-%.lo: %.c
-	@echo '$(LTCOMPILE) -c $<'; \
-	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
-	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
-	  < .deps/$(*F).p > .deps/$(*F).P
-	@-rm -f .deps/$(*F).p
 info:
 dvi:
 check: all
@@ -337,18 +295,18 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-binPROGRAMS mostlyclean-compile \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-tags mostlyclean-generic
 
-clean:  clean-binPROGRAMS clean-compile clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-binPROGRAMS clean-compile clean-tags clean-generic \
+		mostlyclean
 
 distclean:  distclean-binPROGRAMS distclean-compile distclean-tags \
-		distclean-depend distclean-generic clean
+		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -356,10 +314,9 @@ maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend info dvi \
-installcheck install-exec install-data install uninstall all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
+clean-tags maintainer-clean-tags distdir info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
