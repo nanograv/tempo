@@ -37,7 +37,7 @@ c      $Id$
       enddo
       px=0.
       dm=0.
-      do i=1,9
+      do i=1,NDMCOFMAX
          dmcof(i)=0.
       enddo
       start=0.
@@ -415,7 +415,8 @@ C  Position parameters
          ndmx = max(ndmx,ikey)
          read(value,*)dmxr2(ikey)
          
-      else if(key(1:3).eq.'DM0'.or.key(1:2).eq.'DM'.and.lk.eq.2)then
+      else if((key(1:3).eq.'DM0'.and.lk.eq.3).or.
+     +         key(1:2).eq.'DM'.and.lk.eq.2)then
          read(value,*)dm
          if(cfit.le.'9')then
             itmp=ichar(cfit)-48
@@ -424,10 +425,15 @@ C  Position parameters
             itmp=ichar(cfit)-55
          endif
          nfit(16)=max(nfit(16),itmp)
+         ndmcalc = max(ndmcalc,itmp)
 
       else if(key(1:2).eq.'DM'.and.
-     +        key(3:3).ge.'1'.and.key(3:3).le.'9') then 
-        read(key(3:3),*)jj
+     +        key(3:3).ge.'0'.and.key(3:3).le.'9') then 
+        read(key(3:lk),*)jj
+        if (jj.lt.1.or.jj.gt.NDMCOFMAX) then
+          write (*,'(''DM derivative '',i,'' too high.)'')') jj
+          stop
+        endif
         read(value,*)dmcof(jj)
         if (cfit.gt.'0') nfit(16)=max(nfit(16),jj+1)
         ndmcalc=max(ndmcalc,jj+1)
@@ -705,8 +711,8 @@ C  Warnings
       if(nfit(3).lt.0.or.nfit(3).gt.12.or.nfcalc.lt.0.or.nfcalc.gt.12)
      +   write(*,'('' WARNING: Fit parameter for F1 out of range'')')
 
-      if(nfit(16).lt.0.or.nfit(16).gt.10.or.ndmcalc.lt.0
-     +   .or.ndmcalc.gt.10)
+      if(nfit(16).lt.0.or.nfit(16).gt.NDMCOFMAX.or.ndmcalc.lt.0
+     +   .or.ndmcalc.gt.NDMCOFMAX)
      +   write(*,'('' WARNING: Fit parameter for DM out of range'')')
 
       if(setecl)then

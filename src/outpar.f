@@ -188,16 +188,16 @@ c      $Id$
       endif
  1050 format('DM',f24.6,a,f20.6)
 
-      do i=1,9
+      do i=1,ndmcalc-1
          if(dmcof(i).ne.0)then
-            if(nfit(40+i).gt.0)then
-               write(71,1051)i,dmcof(i),fit1,ferr(40+i)
+            if(nfit(NPAR7+i).gt.0)then
+               write(71,1051)i,dmcof(i),fit1,ferr(NPAR7+i)
             else
                write(71,1051)i,dmcof(i)
             endif
          endif
       enddo
- 1051 format('DM',z1,1p,d23.12,a,d20.12)
+ 1051 format('DM',i3.3,1p,d21.12,a,d20.12)
 
       if(ngl.gt.0)then
          do i=1,ngl

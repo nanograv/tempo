@@ -514,7 +514,7 @@ C  DM-related partial derivatives
           fac = 1.
 	  do 89 i=1,nfit(16)-1
             fac = fac * yrs / real(i)
-	    x(40+i)= fac * x(16) 
+	    x(NPAR7+i)= fac * x(16) 
 89        continue
 	endif
 	x(17)=f0*dtdpx

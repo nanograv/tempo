@@ -1,5 +1,5 @@
 c      $Id$
-	subroutine mxprt(a,gcor,nn,mfit,nbin,eclcoord)
+        subroutine mxprt(a,gcor,nn,mfit,nbin,eclcoord)
 
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
@@ -81,9 +81,18 @@ c                                                  --DJN 19 Dec 2001
 
 	if(jj.le.40) then
 	  paramj=param(jj)			!One of the listed params
-	else if(jj.le.50) then
-	  write(paramj,1017) jj-40		!DM polynomial coeffs
-1017	  format('  DM',z1)
+!#### 
+!PARAMETERS 50 THROUGH 59 HAVE BEEN SUPERCEDED ... NO LONGER DM derivatitves
+!NOT CURRENTLY IN USE
+	else if(jj.le.50) then     
+          write(*,jj) 1017
+ 1017	  format ('Internal tempo error.  Parameter number ',ii/
+     +         'encountered in mxprt.f, but it is not currently'/
+     +         'assigned to any parameter.')
+
+!	  write(paramj,1017) jj-40		!DM polynomial coeffs
+!1017	  format('  DM',z1)
+!#### END OF SUPERCEDED SECTION
 	else if(jj.le.NPAR1) then
 	  write(paramj,1018) jj-50+2		!Freq derivatives
  1018     format('  f',i2.2)
@@ -111,9 +120,12 @@ c                                                  --DJN 19 Dec 2001
 	    write(paramj,1080) (jj-NPAR4)/2
  1080	    format('TJ',i3.3)
 	  endif
-	else
+	else if(jj.lt.NPAR7) then
 	  write (paramj,1090) jj-NPAR6
  1090	  format('DX',i3.3)
+	else 
+	  write(paramj,1100) jj-NPAR7		!DM polynomial coeffs
+ 1100	  format('DM',i3.3)
 	endif
 
 	write(72) nn,j,paramj,gcor(j),sig(j),

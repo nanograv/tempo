@@ -422,7 +422,7 @@ c  Beginning of iteration loop
 	do i = 1, ndmcalc-1
 	   write (31,1120) i, dmcof(i)
 	enddo
- 1120	format ('DMCOF',i1,':',1p,d25.9)
+ 1120	format ('DMCOF',i3.3,':',1p,d25.9)
 
 	if(a1(1).ne.0.d0)then
 	   if(nbin.ne.9)then
@@ -507,8 +507,8 @@ c  Beginning of iteration loop
 	if(nfit(16).ge.2) then			!Pointers to DM coeffs
 	  do i=1,nfit(16)-1
 	     k=k+1
-	     mfit(k)=40+i
-	     nfit(40+i)=1
+	     mfit(k)=NPAR7+i
+	     nfit(NPAR7+i)=1
 	  enddo
 	endif
 
@@ -521,7 +521,8 @@ c  Beginning of iteration loop
 	  enddo
 	endif
 
-	do i=NPAR3+1,NPA	!FB, XDOT, FBJ, DMX
+	do i=NPAR3+1,NPAR7	!FB, XDOT, FBJ, DMX 
+				!Note: NPAR7-NPA handled abouve by nfit(16)
   	  if(nfit(i).ne.0) then
   	    k=k+1
 	    mfit(k)=i

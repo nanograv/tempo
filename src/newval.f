@@ -3,7 +3,7 @@ c      $Id$
 
 	implicit real*8 (a-h,o-z)
 	parameter (TWOPI=6.28318530717958648d0)
-	character*1 decsgn,binflag,label*6
+	character*1 decsgn,binflag,label*6,dmlabel*2
 	include 'dim.h'
 	include 'acom.h'
 	include 'bcom.h'
@@ -15,6 +15,7 @@ c      $Id$
 	include 'glitch.h'
 
 	data label/'Offset'/
+	data dmlabel/'DM'/
 
 	if(gain.ne.1.d0) then
 	  do i = 1, NPAP1
@@ -159,14 +160,14 @@ c      $Id$
 
 	p0=1.d0/f0
 	p1=-1.d15*f1/f0**2
-	write(31,1055)p0-p0z,p1-p1z,freq(16),freq(41),freq(19)
+	write(31,1055)p0-p0z,p1-p1z,freq(16),freq(NPAR7+1),freq(19)
 
 	p0e=1.d-9*ferr(2)/f0**2
 	p1e=1.d-3*dsqrt((2.d9*ferr(2)*f1/f0**3)**2+(ferr(3)/f0**2)**2)
-	write(31,1055)p0e,p1e,ferr(16),ferr(41),ferr(19)
+	write(31,1055)p0e,p1e,ferr(16),ferr(NPAR7+1),ferr(19)
 
 	dm=dm+freq(16)
-	dmcof(1)=dmcof(1)+freq(41)
+	dmcof(1)=dmcof(1)+freq(NPAR7+1)
 	ppng=ppng+freq(19)
 	write(31,1055)p0,p1,dm,dmcof(1),ppng
 
@@ -200,16 +201,19 @@ C  Compute braking index
 	endif
 
 	if(ndmcalc.ge.3) then
-	   write(31,1083) (i,i=2,9)
- 1083	   format(/8(5x,'DM',z1,2x))
-	   write(31,1084) (dmcof(i),i=2,ndmcalc-1)
-	   write(31,1084) (freq(40+i),i=2,ndmcalc-1)
-	   write(31,1084) (ferr(40+i),i=2,ndmcalc-1)
-	   write(31,1084) (dmcof(i)+freq(40+i),i=2,ndmcalc-1)
- 1084	   format(8f10.6)
-	   do j=2,ndmcalc-1
-	      dmcof(j)=dmcof(j)+freq(40+j)
-	   enddo
+	  do k = 2, ndmcalc-1, 8
+	    kk = min(k+7,ndmcalc-1)
+	    write(31,1083) (dmlabel,i,i=k,kk)
+ 1083	    format(/8(3x,a2,i3.3,2x))
+	    write(31,1084) (dmcof(i),i=k,kk)
+	    write(31,1084) (freq(NPAR7+i),i=k,kk)
+	    write(31,1084) (ferr(NPAR7+i),i=k,kk)
+	    do j=k,kk
+	      dmcof(j)=dmcof(j)+freq(NPAR7+j)
+	    enddo
+	    write(31,1084) (dmcof(i),i=k,kk)
+ 1084	    format(8f10.6)
+	  enddo
 	endif
 
 	if(ngl.gt.0)then
