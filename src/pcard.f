@@ -12,6 +12,8 @@ C  appropriate action.
 	include 'acom.h'
 	include 'dp.h'
 
+        integer ii
+
 	if (card(1:2).ne.'C ' .and. card(1:2).ne.'# ') goto 14
 C Don't bother printing it unless this is the first iteration
 	if (JITS .EQ. 0 .and. LW) WRITE(31,1012) CARD
@@ -50,7 +52,10 @@ C Parse numerical parameter
 	parm = 0.
 	do 18 i = index(card,' ')+1, 70
 	    if (card(i:i).ne.' ') then
-		read(card(i:i+12),fmt='(f13.0)') parm
+                ii = index(card(i:i+12),' ')
+                if (ii.eq.0) ii=14
+                ii = i + ii - 2
+		read(card(i:ii),fmt='(f13.0)') parm
 		goto 19
 	    endif
  18         continue
