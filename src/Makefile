@@ -20,7 +20,7 @@ FC = f77
 FFLAGS= -O3 
 
 CC = cc
-CCFLAGS = 
+CFLAGS = 
 
 
 # source code for tempo itself.  
