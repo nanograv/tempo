@@ -1,0 +1,95 @@
+Tempo parameter indexes
+
+  1  R0          Pulsar phase
+  2  f0          Frequency
+  3  f1          Frequency derivative
+  4  f2          Frequency second derivative
+  5  delta       Declination           [or beta for ecliptic coordinates]
+  6  alpha       Right ascension       [or lambda]
+  7  mu_delta    Proper motion in DEC  [or PM beta]
+  8  mu_alpha    Proper motion in RA   [or PM lambda]
+  9  x           Orbital projected semi-major axis
+ 10  e           Orbital eccentricity        [or EPS1 for nbin=9]
+ 11  T0          Time of periastron passage
+ 12  Pb          Orbital period
+ 13  OM          Longitude of periastron     [or EPS2 for nbin=9]
+ 14  OMdot       Advance of periastron                   
+ 15  Gamma       Time dilation, grav redshift            4: N/A
+ 16  DM          Dispersion Measure 
+ 17  px          Parallax
+ 18  pbdot       Orbital period derivative               
+ 19  PPNgamma    PPN parameter gamma
+ 20  s=sin(i)    Orbit inclination, DD parameter s     1,4: N/A
+ 21  M           Total mass, m1+m2                 1,2,3,5: N/A
+ 22  m2          Companion mass                       1,2,: N/A
+ 23  dtheta      DD parameter    (nbin=3)
+ 24  xdot        Derivative of x
+ 25  edot        Derivative of eccentricity
+ 26  x2          Projected semi-major axis #2
+ 27  e2          Eccentricity #2
+ 28  T02         Time of periastron #2
+ 29  Pb2         Orbital period #2
+ 30  OM2         Longitude of periastron #2
+ 31  x3          Projected semi-major axis #3
+ 32  e3          Eccentricity #3
+ 33  T03         Time of periastron #3
+ 34  Pb3         Orbital period #3
+ 35  OM3         Longitude of periastron #3
+ 36  PMRV        Proper Motion radial velocity
+ 37  XOMDOT      Advance of periastron minus GR value (nbin=4)
+ 38  XPBDOT      Orbital period derivative minus GR value (nbin=4)
+ 39  X2DOT       2nd derivative of x     [nbin=8]  [EPS1DOT, nbin=9]
+ 40  OM2DOT      2nd derivative of omega [nbin=8]  [EPS2DOT, nbin=9]
+ 41  DM1         Dispersion measure derivative
+ 42  DMCOF(1)    Dispersion measure second derivative
+ 43  DMCOF(2)    Dispersion measure thrid derivative
+ 44  DMCOF(3)    Dispersion measure fourth derivative
+ 45  DMCOF(4)    Dispersion measure fifth derivative
+ 46  DMCOF(5)    Dispersion measure sixth derivative
+ 47  DMCOF(6)    Dispersion measure seventh derivative
+ 48  DMCOF(7)    Dispersion measure eighth derivative
+ 49  DMCOF(8)    Dispersion measure ninth derivative
+ 50  DMCOF(9)    Dispersion measure tenth derivative
+ 51  DMCOF(10)   Dispersion measure eleventh derivative  (oops, same as f3)
+ 51  f3          Frequency third derivative
+ 52  f4(1)       Frequency fourth derivative
+ 53  f4(2)       Frequency fifth derivative
+ 54  f4(3)       Frequency sixth derivative
+ 55  f4(4)       Frequency seventh derivative
+ 56  f4(5)       Frequency eighth derivative
+ 57  f4(6)       Frequency ninth derivative
+ 58  f4(7)       Frequency tenth derivative
+ 59  f4(8)       Frequency eleventh derivative
+ 60  f4(9)       Frequency twelfth derivative
+ 
+ Following run from 60 to 60*NGLP*NGLT  (60*5*4)
+ 
+ 61  glph(1)     Glitch 1 change in phase (surrogate for glitch epoch)
+ 62  glf0p(1)    Glitch 1 permanent change in frequency
+ 63  glf1p(1)    Glitch 1 permanent change in frequency derivative
+ 64  glf0d1(1)   Glitch 1 exponential term frequency step
+ 65  gltd1(1)    Glitch 1 exponential term time constant
+ 66  glph(2)     Glitch 2 change in phase (surrogate for glitch epoch)
+ 67  glf0p(2)    Glitch 2 permanent change in frequency
+ 68  glf1p(2)    Glitch 2 permanent change in frequency derivative
+ 69  glf0d1(2)   Glitch 2 exponential term frequency step
+ 70  gltd1(2)    Glitch 2 exponential term time constant
+ 71  glph(3)     Glitch 3 change in phase (surrogate for glitch epoch)
+ 72  glf0p(3)    Glitch 3 permanent change in frequency
+ 73  glf1p(3)    Glitch 3 permanent change in frequency derivative
+ 74  glf0d1(3)   Glitch 3 exponential term frequency step
+ 75  gltd1(3)    Glitch 3 exponential term time constant
+ 76  glph(4)     Glitch 4 change in phase (surrogate for glitch epoch)
+ 77  glf0p(4)    Glitch 4 permanent change in frequency
+ 78  glf1p(4)    Glitch 4 permanent change in frequency derivative
+ 79  glf0d1(4)   Glitch 4 exponential term frequency step
+ 80  gltd1(4)    Glitch 4 exponential term time constant
+ 
+ Following run from 60+GLP*NGLT+1 to 60+GLP*NGLT+NJUMP
+ 
+ 81  dct(1)      Jump 1 offset
+ 82  dct(2)      Jump 2 offset
+       .              .
+       .              .
+140  dct(60)     Jump 60 offset
+ 
