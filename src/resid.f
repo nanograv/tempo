@@ -1,0 +1,123 @@
+c      $Id$
+	subroutine resid(nct,fct,dnprd,dphase,dnpls,nits,jits)
+
+	implicit real*8 (a-h,o-z)
+	include 'dim.h'
+	real*4 gasdev
+	real*8 tgl(NGLT)
+	integer idum
+
+	include 'acom.h'
+	include 'bcom.h'
+	include 'dp.h'
+	include 'orbit.h'
+	include 'glitch.h'
+
+	data idum/-1/
+
+	save
+
+	if(n.eq.1) then
+	  ct1=ct
+	  p0firs=p0
+	  nf0=f0
+	  ff0=f0-nf0
+	  nepoch=pepoch
+	  fepoch=pepoch-nepoch
+	  if(ngl.gt.0)then
+	    do i=1,ngl
+	      nglep=glepoch(i)
+	      fglep=glepoch(i)-nglep
+	      ngld=nglep-nepoch
+	      fgld=fglep-fepoch
+	      tgl(i)=(ngld+fgld)*86400.d0
+	    enddo
+	  endif
+	endif
+
+	torb=0.
+	if(nbin.eq.1.or.nbin.eq.6.or.nbin.ge.9) call bnrybt(torb,x)
+	if(nbin.eq.2.or.nbin.eq.5) call bnryeh(torb,n,x)
+	if(nbin.eq.3) call bnrydd(torb,x)
+	if(nbin.eq.4) call bnryddgr(ct,f0,n,torb,x)
+	if(nbin.eq.7) call bnryddt(ct,f0,torb,x)
+	if(nbin.eq.8) call bnryddp(torb,x)
+
+	ntpd=nct-nepoch
+	ftpd=fct-fepoch+torb/86400.d0
+	tp=(ntpd+ftpd)*86400.d0
+	x(1)=1.d0
+	t9=tp/1.d9
+	x(2)=t9
+	x(3)=t9*x(2)/2.d0
+	x(4)=t9*x(3)/3.d0
+	x(7)=t9*x(5)
+	x(8)=t9*x(6)/cos(pdec)
+	x(51)=t9*x(4)/4.d0
+	x(52)=t9*x(51)/5.d0
+	x(53)=t9*x(52)/6.d0
+	x(54)=t9*x(53)/7.d0
+	x(55)=t9*x(54)/8.d0
+	x(56)=t9*x(55)/9.d0
+	x(57)=t9*x(56)/10.d0
+	x(58)=t9*x(57)/11.d0
+	x(59)=t9*x(58)/12.d0
+	x(60)=t9*x(59)/13.d0
+
+	phase4=0.d0
+	if(ngl.gt.0)then
+	  do i=1,ngl
+	    if(tp.ge.tgl(i))then
+	      dt1=tp-tgl(i)
+	      dt9=dt1/1.d9
+	      td19=gltd1(i)*86400.d-9
+	      x(60+(i-1)*NGLP+1)=1.d0
+	      x(60+(i-1)*NGLP+2)=dt9
+	      x(60+(i-1)*NGLP+3)=0.5d0*dt9**2
+	      if(td19.ne.0.d0)then
+	        expf=exp(-dt9/td19)
+	        x(60+(i-1)*NGLP+4)=td19*(1.d0-expf)
+	        x(60+(i-1)*NGLP+5)=glf0d1(i)*(1.d0-(1.d0+dt9/td19)*expf)
+	      else
+	        expf=1.d0
+	      endif
+	      phase4=phase4+glph(i)+glf0p(i)*dt1+0.5d0*glf1p(i)*dt1**2
+     :          +glf0d1(i)*gltd1(i)*86400.d0*(1.d0-expf)
+	    else
+	      do j=1,NGLP
+	        x(60+(i-1)*NGLP+j)=0.d0
+	      enddo
+	    endif
+	  enddo
+	endif
+
+	phaseint=nf0*ntpd*86400.d0
+	phase2=(nf0*ftpd+ntpd*ff0+ftpd*ff0)*86400.d0
+	phase3=0.5d0*f1*tp**2 + (f2/6.d0)*tp**3 + (f3/24.d0)*tp**4
+	if(nfit(3).ge.4) then
+	  dfac=24.d0
+	  do 10 i=1,nfit(3)-3
+	  dfac=dfac*(i+4)
+10	  phase3=phase3 + (f4(i)/dfac)*tp**(i+4)
+	endif
+
+	phase5=phase2+phase3+phase4
+	if(n.eq.1) phas1=mod(phase5,1.d0)
+	phase5=phase5-phas1
+	nphase=nint(phase5)
+	dnprd=phaseint+nphase
+	phasefrac=phase5-nphase
+	dt=phasefrac+dphase
+	if(nits.gt.0) then
+	  iphase=dphase+dsign(0.5d0,dphase)
+	  if(jits.eq.0) then
+	    dnpls=dnprd-iphase
+	  else
+	    kpls=dnprd-iphase-dnpls
+	    dt=dt+kpls
+	  endif
+	endif
+
+	if(sim) dt=1.d-6*dither*gasdev(idum)*f0
+	return
+	end
