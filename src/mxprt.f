@@ -4,25 +4,31 @@ c      $Id$
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
 	real*8 a(NPA,NPA),sig(NPA),gcor(NPA)
-	character*5 param(39),paramj
+	character*5 param(40),paramj
 	character*1 agcor,line(NPA)
 	character*11 mark
 	integer*4 mfit(NPAP1)
 	logical eclcoord
 
-        data param/'   f0','   f1','   f2','  Dec','   RA',' pmdc',
-     +       ' pmra','    x','    e','   T0','   Pb','   Om',' Omdt',
-     +       'gamma','   DM','   px',' Pbdt',' PPNg','    s','    M',
-     +       '   m2','  dth',' xdot',' edot','   x2','   e2','  T02',
-     +       '  Pb2','  Om2','   x3','   e3','  T03','  Pb3','  Om3',
-     +       ' PMRV',' XOmd',' Xpbd',' om2d','  x2d'/
+        data param/'     ','   f0','   f1','   f2','  Dec','   RA',
+     +       ' pmdc',' pmra','    x','    e','   T0','   Pb','   Om',
+     +       ' Omdt','gamma','   DM','   px',' Pbdt',' PPNg','    s',
+     +       '    M','   m2','  dth',' xdot',' edot','   x2','   e2',
+     +       '  T02','  Pb2','  Om2','   x3','   e3','  T03','  Pb3',
+     +       '  Om3',' PMRV',' XOmd',' Xpbd',' om2d','  x2d'/
 	data mark/' 123456789*'/
 
+c       Note: indexes in param() now have same numbering as
+c             other tempo arrays, such as x(), freq(), and ferr()
+c                                                  --DJN 19 Dec 2001 
+
+
+
 	if(nbin.eq.9)then
-	   param( 9)='eps1'
-	   param(12)='eps2'
-	   param(38)='e1dt'
-	   param(39)='e2dt'
+	   param(10)='eps1'
+	   param(13)='eps2'
+	   param(39)='e1dt'
+	   param(40)='e2dt'
 	endif
 	if (eclcoord) then
 	  param(5)='beta'
@@ -74,7 +80,7 @@ c      $Id$
 	jj=mfit(j+1)
 
 	if(jj.le.40) then
-	  paramj=param(jj-1)			!One of the listed params
+	  paramj=param(jj)			!One of the listed params
 	else if(jj.le.50) then
 	  write(paramj,1017) jj-40		!DM polynomial coeffs
 1017	  format('  DM',z1)
