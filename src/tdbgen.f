@@ -5,10 +5,15 @@ c     This program uses the "tdb1ns" routine by Fairhead et al. to generate
 c     sets of Chebyshev polynomial coefficients to be used for calculating
 c     TDB-TDT in Tempo.
 
-c     DJN  19 August 1997
-
 c     Based on convert.f and dconvert.f, older programs which generated
 c     tempo support files.
+
+c     DJN  19 August 1997
+
+c     Modifications:
+c     DJN  12 August 1998   added byte-swapping for little endian systems
+
+      logical bigendian
 
       integer NN, NRECL
       parameter (NN=20)         ! #coeffs calculated (not all are retained)
@@ -34,6 +39,9 @@ c     tempo support files.
       real*8 d1, d2
       character*160 s
       character*160 outfile
+
+      real*8 tmp1, tmp2
+      integer tmp3, tmp4
 
       integer iargc              ! built-in function
 
@@ -69,7 +77,20 @@ c       neaten them up a bit
       open (8,file=outfile,access='DIRECT',
      +     status='NEW',recl=2*NCF*NRECL)
 
-      write (8,rec=1) d1, d2, dt, ncf, (0,i=7,2*NCF) ! pad out to full recl
+      if (bigendian()) then
+        write (8,rec=1) d1, d2, dt, ncf, (0,i=7,2*NCF) ! pad out to full recl
+      else
+        tmp1 = d1
+        tmp2 = d2
+        tmp3 = dt
+        tmp4 = ncf
+        call dbyterev(tmp1,1)
+        call dbyterev(tmp2,1)
+        call byterev(tmp3,1)
+        call byterev(tmp4,1)
+        write (8,rec=1) tmp1,tmp2,tmp3,tmp4, (0,i=7,2*NCF) ! pad out 
+      endif
+        
 
 c     calculate coefficients from Fairhead et al routine.
 c     for information on numerical routines & Chebyshev polynomials, see 
@@ -95,7 +116,9 @@ c     in the file.
           c(j) = fac * sum
  320    continue
         c(1) = 0.5d0 * c(1) 
+        if (.not. bigendian()) call dbyterev(c,ncf)
         write (8,rec=i+2) (c(j),j=1,ncf) ! i+2 because(a)i=0..(b)rec1 is hdr
+          
  300  continue
 
       close (8)
