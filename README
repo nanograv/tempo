@@ -1,0 +1,9 @@
+To make Tempo:
+
+  cd src
+  make tempo
+
+For further documentation and details on installation and testing, see:
+
+  http://pulsar.princeton.edu/tempo
+  http://www.atnf.csiro.au/research/pulsar/psr/timing/tempo

@@ -1,10 +1,10 @@
 *******************************************************
 *                                                     *
-*                 TEMPO version 11.002                *
+*                 TEMPO version 11.004                *
 *                                                     *
 *           Analysis of pulsar timing data            *
 *                                                     *
-*               20-MAY-98  14:39:32 UTC               *
+*               29-OCT-98  21:07:43 UTC               *
 *                                                     *
 *******************************************************
 
@@ -34,7 +34,7 @@ H   JODRELL BANK      531412.00        21824.00        78.0
 I   Fallbrook         332235.00      1171501.00         0.0
 
 Input data from 0437.tim,  Parameters from 0437.par
-Observatory data from /d101a/tempo11/obsys.dat                               
+Observatory data from /home/david/tmp/a/tempo11/obsys.dat                    
 
 
 Binary model: BT       nbin:  1   nddm: 0
@@ -182,7 +182,7 @@ PSR 0437-4715     Ephem.: DE200  Clock: UTC(NIST)     Ref. MJD:   50019.0000
  0.0000000000000000267    0.000000000807    0.000106    0.000000    0.000000
  0.0057574518252567182    0.000057299000    2.644682    0.000000    1.000000
 
-Composite proper motion = 140.7533 +/-   0.0196 mas/yr
+Composite proper motion = 140.7533 +/-   0.0170 mas/yr
 Position angle:  Celestial:  120.55 +/-   0.01 deg  Galactic:   27.32 deg
 
 
