@@ -1,5 +1,5 @@
 #  Makefile for tempo
-#  $Id$
+#      $Id$
 FFLAGS= -O3 
 # FFLAGS= -C
 CCFLAGS = 
@@ -8,17 +8,15 @@ CCFLAGS =
 .SCCS_GET:
 
 
-OBJS =	a1ut1f.o a1utcf.o ang.o arrtim.o atimfake.o bigendian.o \
-	blkdbat.o bnrybt.o bnrydd.o bnryddgr.o bnryddp.o bnryddt.o bnryeh.o \
-	bootmc.o chebpc.o citem.o clockcor.o cutil.o damoyr.o dot.o dskrd.o \
-	earth.o  ephinit.o ephread.o equ2ecl.o fit.o fk4tofk5.o galco.o  \
-	gasdev.o inpar.o interp.o lmst.o matinv.o mxprt.o \
-	newbin.o newsrc.o newval.o nutation.o obsite.o pcard.o pcshft.o \
-	pospm_conv.o prcnut.o precession.o propmo.o radian.o \
-	ran1.o resid.o setup.o sort.o space_motion.o tdbinit.o \
-	tdbread.o \
-	tempo.o  timcalc.o tpohdr.o tzfit.o tzinit.o ut1red.o \
-	vmemw.o  ztim.o 
+OBJS =	a1ut1f.o a1utcf.o ang.o arrtim.o atimfake.o bigendian.o blkdbat.o \
+        bnrybt.o bnrydd.o bnryddgr.o bnryddt.o bnryeh.o bnryell1.o bnrymss.o \
+        bootmc.o bt2ell1.o chebpc.o citem.o clockcor.o cutil.o damoyr.o dot.o \
+        dskrd.o earth.o  ephinit.o ephread.o equ2ecl.o fit.o fk4tofk5.o \
+        galco.o gasdev.o inpar.o interp.o lmst.o matinv.o mxprt.o newbin.o \
+        newsrc.o newval.o nutation.o obsite.o outpar.o pcard.o pcshft.o \
+        pospm_conv.o prcnut.o precession.o propmo.o radian.o ran1.o resid.o \
+        setup.o sort.o space_motion.o tdbinit.o tdbread.o tempo.o  timcalc.o \
+        tpohdr.o tzfit.o tzinit.o ut1red.o vmemw.o  ztim.o \
 
 all:	tpo matrix
 
@@ -35,14 +33,18 @@ bnrydd.o: bnrydd.f dp.h orbit.h dim.h
 	f77 -c $(FFLAGS) bnrydd.f
 bnryddgr.o: bnryddgr.f orbit.h dim.h
 	f77 -c $(FFLAGS) bnryddgr.f
-bnryddp.o: bnryddp.f dp.h orbit.h dim.h
-	f77 -c $(FFLAGS) bnryddp.f
 bnryddt.o: bnryddt.f orbit.h dim.h
 	f77 -c $(FFLAGS) bnryddt.f
 bnryeh.o: bnryeh.f dp.h orbit.h dim.h
 	f77 -c $(FFLAGS) bnryeh.f
+bnryell1.o: bnryell1.f dp.h orbit.h dim.h
+	f77 -c $(FFLAGS) bnryell1.f
+bnrymss.o: bnrymss.f dp.h orbit.h dim.h
+	f77 -c $(FFLAGS) bnrymss.f
 bootmc.o: bootmc.f dim.h
 	f77 -c $(FFLAGS) bootmc.f
+bt2ell1.o: bt2ell1.f orbit.h
+	f77 -c $(FFLAGS) bt2ell1.f
 clockcor.o: clockcor.f dim.h clocks.h
 	f77 -c $(FFLAGS) clockcor.f
 cutil.o: cutil.c
@@ -63,6 +65,8 @@ newsrc.o: newsrc.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h
 	f77 -c $(FFLAGS) newsrc.f
 newval.o: newval.f acom.h bcom.h dp.h trnsfr.h orbit.h dim.h glitch.h
 	f77 -c $(FFLAGS) newval.f
+outpar.o: outpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h eph.h
+	f77 -c $(FFLAGS) outpar.f
 pcard.o: pcard.f acom.h dim.h
 	f77 -c $(FFLAGS) pcard.f
 resid.o: resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
