@@ -28,8 +28,7 @@ REF_MAN_SECTIONS = description.txt \
 			notes.txt 
 
 TPO_PAGES = tempo11.html tempo11_003_install.html tempo11_install.html \
-		tempo_idx.html tempo_update.html
-REF_IDX_PAGE = reference_manual.html
+		tempo_idx.html tempo_update.html reference_manual.html
 
 REFDIR = ref_man_sections
 
@@ -42,7 +41,6 @@ install:
 	echo "" > $(REFINSTALLDIR)/usage.txt
 	cd $(REFDIR); cat $(REF_MAN_SECTIONS) >> $(REFINSTALLDIR)/usage.txt
 	cd $(REFDIR); cp $(REF_MAN_SECTIONS) $(REFINSTALLDIR)
-	cp $(REF_IDX_PAGE) $(REFINSTALLDIR)
 	cp $(TPO_PAGES) $(INSTALLDIR)
 	chmod ug+w,o+rx $(INSTALLDIR)
 	chmod ug+w,o+rx $(REFINSTALLDIR)
@@ -53,5 +51,5 @@ install:
           fi
 
 archive:
-	tar -cvf tpowww.tar Makefile $(TPO_PAGES) $(REF_IDX_PAGE) $(REFDIR)/*.txt
+	tar -cvf tpowww.tar Makefile $(TPO_PAGES) $(REFDIR)/*.txt
 	gzip tpowww.tar
