@@ -538,6 +538,7 @@ C  Glitches
       else if(key(1:4).eq.'GLEP') then
          igl = keyidx(key)
          if (igl.ge.1 .and. igl.le.NGLT) then
+           if (igl.gt.ngl) ngl=igl
            read(value,*) glepoch(igl)
          else
            write(*,'('' Invalid glitch number in key: '',a)')key
@@ -546,6 +547,7 @@ C  Glitches
        else if(key(1:4).eq.'GLPH') then
          igl = keyidx(key)
          if (igl.ge.1 .and. igl.le.NGLT) then
+           if (igl.gt.ngl) ngl=igl
            read(value,*) glph(igl)
            read(cfit,*) nfit(NGL0+NGLP*(igl-1)+1)
          else
@@ -555,6 +557,7 @@ C  Glitches
        else if(key(1:4).eq.'GLF1') then
          igl = keyidx(key)
          if (igl.ge.1 .and. igl.le.NGLT) then
+           if (igl.gt.ngl) ngl=igl
            read(value,*) glf1(igl)
            read(cfit,*) nfit(NGL0+NGLP*(igl-1)+3)
          else
@@ -564,6 +567,7 @@ C  Glitches
        else if(key(1:5).eq.'GLF0D') then
          igl = keyidx(key)
          if (igl.ge.1 .and. igl.le.NGLT) then
+           if (igl.gt.ngl) ngl=igl
            read(value,*) glf0d(igl)
            read(cfit,*) nfit(NGL0+NGLP*(igl-1)+4)
          else
@@ -573,6 +577,7 @@ C  Glitches
        else if(key(1:4).eq.'GLF0') then ! note: must come after GLF0D section
          igl = keyidx(key)
          if (igl.ge.1 .and. igl.le.NGLT) then
+           if (igl.gt.ngl) ngl=igl
            read(value,*) glf0(igl)
            read(cfit,*) nfit(NGL0+NGLP*(igl-1)+2)
          else
@@ -583,6 +588,7 @@ C  Glitches
        else if(key(1:4).eq.'GLTD') then
          igl = keyidx(key)
          if (igl.ge.1 .and. igl.le.NGLT) then
+           if (igl.gt.ngl) ngl=igl
            read(value,*) gltd(igl)
            read(cfit,*) nfit(NGL0+NGLP*(igl-1)+5)
          else
@@ -604,11 +610,6 @@ c        (Do nothing) (DJN)
       goto 10
 
  900  continue
-
-      if(nfit(61)+nfit(62)+nfit(63)+nfit(64)+nfit(65).ne.0)ngl=1
-      if(nfit(66)+nfit(67)+nfit(68)+nfit(69)+nfit(70).ne.0)ngl=2
-      if(nfit(71)+nfit(72)+nfit(73)+nfit(74)+nfit(75).ne.0)ngl=3
-      if(nfit(76)+nfit(77)+nfit(78)+nfit(79)+nfit(80).ne.0)ngl=4
 
 C  Warnings
 
