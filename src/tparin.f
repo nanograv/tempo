@@ -154,7 +154,6 @@ c     default values of parameters
               open(45,file='itoa.out',status='unknown')
             else if (s(i:i).eq.'z') then
               tz = .true.
-              quiet = .true.
             else if (s(i:i).eq.'Z') then
               if (.not.autotz) then
                 tz = .true.
