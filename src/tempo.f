@@ -88,9 +88,10 @@ C  10.019  6-Nov-96  Up to 9999 tztot.dat sources ("ipsr" loop in tempo) (DJN)
 C  10.020 21-NOV-96  In multi-orbit fit use pbdot, omdot in 1st orb only (DJN)
 C  10.020  3-FEB-97  -z: allow nbin=1 or 3 for any pulsar (DJN)
 C  10.021 12-FEB-97  -z: user-specified freq.; put doppler in polyco.dat (DJN)
-C  11.000 18-JUL-97  Optional free-format input, pulse frequencies as input to model,  
+C  11.000 18-JUL-97  Optional free-format input, pulse frequencies as input,  
 C                    Alan Irwin's improvements to lmst, geodetic to geocentric
 C                    coords, tdb argument to JPL ephemeris. (RNM)
+C  11.001 20-JAN-98  Ecliptic coordinates, Year 2000 fixes (DJN)
 
 C Logical units			Opened by
 C----------------------------------------------------------------
@@ -131,7 +132,7 @@ C  99	gro.99			newval
 	logical tz,lw
         character*80 infile,ut1file,resfile1,obsyfile,
      +    resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
-	character date*9,date2*9,damoyr*9,v*6,label*12,parfile*40
+	character date*9,date2*9,damoyr*9,label*12,parfile*40
 	integer time, n
         real*8 xmean(NPA),dnpls(NPTSMAX),alng(36)
 	common/leapsec/mjdleap(50),nleaps
@@ -140,18 +141,8 @@ C  99	gro.99			newval
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT','DD+',
      +    'BT1P','BT2P'/
 
-	v = '      '
-C  Version number updated automatically by SCCS.  
-C  Do not change from '#I#', where # represents %.
-	v = '11.0'
-	if (v(1:1).eq.'%') then
-	   version = 0.
-	else
-	   if (v(2:2).eq.'.') v = ' '//v(1:5)
-	   if (v(6:6).eq.' ') v = v(1:3)//'0'//v(4:5)
-	   if (v(6:6).eq.' ') v = v(1:3)//'0'//v(4:5)
-	   read(v,*) version
-	endif
+
+	version = 11.001
 
 c  Get command-line arguments
 
