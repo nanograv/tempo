@@ -307,8 +307,10 @@ c  Open TDB-TDT clock offset file
 	  do ipsr=1,num
 	    start = 0.		! for ipsr>1, these will have been set by
 	    finish = 0.		!   arrtime to values for the previous pulsar
-	    call tpohdr(oldpar,pardir,parfile,ncoord,t0,pb,p0,dm,nbin,ipsr)
-	    if(start.ne.0. .and. (fmjd1.lt.start.or.tzrmjd.lt.start))then
+            call tpohdr(oldpar,pardir,parfile,ncoord,t0,pb,p0,dm,nbin,
+     +           ipsr)
+	    if(start.ne.0. .and. 
+     +           (fmjd1.lt.start.or.(ntzrmjd+ftzrmjd).lt.start))then
 	       if(usestart)then
 		  write(*,1014)
 		  STOP
@@ -316,7 +318,8 @@ c  Open TDB-TDT clock offset file
 		  write(*,1016)
 	       endif
 	    endif
-	    if(finish.ne.0. .and. (fmjd2.gt.finish.or.tzrmjd.gt.finish))then
+	    if(finish.ne.0. .and. 
+     +           (fmjd2.gt.finish.or.(ntzrmjd+ftzrmjd).gt.finish))then
 	       if(usefinish)then
 		  write(*,1014)
 		  STOP

@@ -240,7 +240,9 @@ c      $Id$
       write(71,'(''CLK'',15x,a)')clklbl(nclk)
       write(71,'(''NTOA'',i22)')ntoa
       write(71,'(''TRES'',f22.2)')tres
-      write(71,'(''TZRMJD '',f21.13)')tzrmjd
+      nx = ntzrmjd/10
+      fx = (ntzrmjd-10*nx)+ftzrmjd
+      write(71,'(''TZRMJD '',i5,f16.14)')nx,fx
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
       write(71,'(''TZRSITE '',17x,a)')tzrsite
       if(nprnt.gt.0)write(71,'(''NPRNT'',i21)')nprnt

@@ -236,7 +236,14 @@ C  Control parameters
  14      continue
 
       else if(key(1:6).eq.'TZRMJD')then
-         read(value,*)tzrmjd
+         itmp = index(value,'.')
+         if (itmp.eq.0) then
+           read(value,*)ntzrmjd
+           ftzrmjd = 0
+         else
+           read(value(1:itmp-1),*)ntzrmjd
+           read(value(itmp:32),*)ftzrmjd
+         endif
 
       else if(key(1:6).eq.'TZRFRQ')then
          read(value,*)tzrfrq

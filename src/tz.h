@@ -4,7 +4,9 @@ c      $Id$
        integer nsp(NTZMAX),nco(NTZMAX),mxha(NTZMAX)
        integer ntmjd(800)
        real*8 ftmjd(800),tmin(800),tzof(NTZMAX)
+       real*8 ftzrmjd
+       integer ntzrmjd
 
-       common/tz/tzrfrq,tzrmjd,ftmjd,ntmjd,tmin,tzof,ntzref,nsp,
-     +    nco,mxha,nsets,params,nsite
+       common/tz/tzrfrq,ftzrmjd,ftmjd,tmin,tzof,
+     +    ntzref,nsp,nco,mxha,nsets,params,nsite,ntzrmjd,ntmjd
        common/tzch/tzdir,tzfile,tztfile,tzrsite,tzsite,name,pname

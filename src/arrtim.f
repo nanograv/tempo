@@ -240,7 +240,8 @@ C Arrival time
 C Store toa for tz reference phase
 	if(ntzref.eq.0.and.fmjd.gt.pepoch)then
 	   ntzref=n
-	   tzrmjd=fmjd
+	   ntzrmjd=nfmjd
+	   ftzrmjd=ffmjd
 	   tzrsite=asite
 	   tzrfrq=rfrq
 	endif

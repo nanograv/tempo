@@ -24,7 +24,9 @@ C	@(#)atimfake.f	9.19 2/3/94
  1013	   format(15x,f9.0)
 	else
 	   i=0                                         ! Write ref toa line
-	   write(50,1041)tzrsite,i,pname(1:8),tzrfrq,tzrmjd
+           nx = ntzrmjd/10
+           fx = (ntzrmjd-10*nx)+ftzrmjd
+	   write(50,1040)tzrsite,i,pname(1:8),tzrfrq,nx,fx
 	endif
 
 	nspan=nsp(ipsr)
@@ -81,7 +83,6 @@ C	@(#)atimfake.f	9.19 2/3/94
  40       continue
  50	continue
  1040   format(a1,i5,1x,a,f9.3,i4,f16.14)
- 1041   format(a1,i5,1x,a,f9.3,f20.13)
 
 
 	nt=i

@@ -138,7 +138,16 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
           endif
 
 C Correct tz ref TOA
-          if(i.eq.ntzref) tzrmjd=tzrmjd-dt2sec/8.64d4
+          if(i.eq.ntzref) then
+            ftzrmjd=ftzrmjd-dt2sec/8.64d4
+            if (ftzrmjd.lt.0.) then
+              ftzrmjd = ftzrmjd + 1
+              ntzrmjd = ntzrmjd - 1
+            elseif (ftzrmjd.ge.1.) then
+              ftzrmjd = ftzrmjd - 1
+              ntzrmjd = ntzrmjd + 1
+            endif
+          endif
 
           if((i.lt.npts.or.(.not.gro)).and.lw) write(32) ct,dt2,
      +         dt2sec,phase,frq,weight,terr,y,ddmch(i)
