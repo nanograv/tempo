@@ -13,6 +13,7 @@ c     parses tempo command-line parameters and sets variables appropriately
 c     following variables are set in this routine:
 
       logical nostop
+      logical lw
       logical tz
       integer lpth
       integer nparmax, nptsmax
@@ -58,7 +59,7 @@ c     default values of parameters
       npulseout = .false.
       oldpar = .false.
       psrframe = .false.
-      lw = .false.
+      lw = .true.
       ssdmflag = 1
       tz = .false.
       xitoa = .false.
