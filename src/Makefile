@@ -17,10 +17,10 @@
 # compilers and compiler flags
 
 FC = f77
-FFLAGS= -O3 
+FFLAGS= -O
 
 CC = cc
-CFLAGS = -xO3
+CFLAGS = -O
 
 
 # source code for tempo itself.  
