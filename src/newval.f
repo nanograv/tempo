@@ -232,8 +232,8 @@ C  Compute braking index
 	  enddo
 	endif
 1065	format(/' Glitch',i2,'  MJD:',f14.6)
-1066	format('    glph',6x,'glf0p (Hz)',4x,'glf1p (Hz/s)',3x,
-     :       'glf0d1 (Hz)',6x,'gltd1 (d)')
+1066    format('    glph',7x,'glf0 (Hz)',5x,'glf1 (Hz/s)',4x,
+     :       'glf0d (Hz)',7x,'gltd (d)')
 1067	format(f10.6,1p,3d15.6,0p,f15.6)
 1068	format(' MJD for zero phase:',f14.6,' or',f14.6,'  Error:',f10.6)
 
