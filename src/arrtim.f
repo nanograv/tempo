@@ -52,6 +52,10 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	deltat=0.d0
         pha1 = 0.d0
         pha2 = 0.d0
+	equad  = 0.d0
+	emin = 0.d0
+	efac = 1.d0
+	sigm = 0.d0
 	amjd1=1000000.0
 	amjd2=0.
 	last=.false.
@@ -285,7 +289,6 @@ C  Get clock corrections
 	if(ct.gt.ctmax) ctmax=ct
 	wgt=1.0
 	if(mode.eq.1.and.sigm.eq.0.d0) then
-	  if(efac.eq.0.d0) efac=1.d0
 	  terr = sqrt(terr*terr+equad*equad)
 	  terr=max(emin,efac*terr)
 	  wgt=(1.d-6*terr/cp)**(-2)
@@ -321,7 +324,7 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
               endif
             endif
         endif
- 
+
 	if(last) wgt=1.d-10*wgt
 	wt=wgt
 	ntmp=min(n,NPTSMAX)
