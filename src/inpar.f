@@ -669,14 +669,48 @@ C  Warnings
 	 endif
       endif
 
-      if(setfb)then
-	if(setpb)then
-	    write (*,'(''ERROR: cannot mix orbital period/pbdot and'',
-     +	         '' orbital frequency/fbdot'')')
-	    stop
-        else
-          pbdot = -fb(2)/fb(1)*fb(1)*1.d15
-          pb(1) = (1.d0/fb(1))/86400.d0
+      if(setfb .and. setpb)then
+        write (*,'(''ERROR: cannot mix orbital period/pbdot and'',
+     +       '' orbital frequency/fbdot'')')
+        stop
+      endif
+
+c     if binary frequencies are input but binary model requires 
+c     binary periods, make the conversion if possible
+      if (setfb .and. nbin.ne.10) then
+        pb(1) = (1.d0/fb(1))/86400.d0
+        pbdot = -fb(2)/(fb(1)*fb(1))*1.d12
+        if (nfit(NPAR3+1).ne.0) then
+          nfit(12) = nfit(NPAR3+1)
+          nfit(NPAR3+1) = 0
+        endif
+        if (nfit(NPAR3+2).ne.0) then
+          nfit(18) = nfit(NPAR3+2)
+          nfit(NPAR3+2) = 0
+        endif
+        do i = 3, NFBMAX
+          if (nfit(NPAR3+i).ne.0 .or. fb(i).ne.0) then
+            write (*,'(''ERROR: cannot use orbital frequency '',
+     +           '' derivative fb'',i2,'' with binary model '',a8)'),
+     +           i, bmodel(nbin)
+            stop
+          endif
+        enddo
+      endif
+
+
+c     if binary periods are input but binary model requires 
+c     binary frequencies, make the conversion 
+      if(setpb .and. nbin.eq.10 .and. pb(1).ne.0) then
+        fb(1) = (1.d0/pb(1))/86400.d0
+        fb(2) = -(pbdot*1.d-12)/(pb(1)*86400.)**2
+        if (nfit(12).ne.0) then
+          nfit(NPAR3+1) = nfit(12)
+          nfit(12) = 0
+        endif
+        if (nfit(18).ne.0) then
+          nfit(NPAR3+2) = nfit(18)
+          nfit(18) = 0
         endif
       endif
 
