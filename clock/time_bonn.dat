@@ -1,85 +1,540 @@
-   MJD       EECO-REF    NIST-REF NS      DATE    COMMENTS
-=========    ========    ======== ==    ========  ========
- 49320.00       0.0        -5.000 g f  28-NOV-93  MK *NEEDS CORRECTIONS
- 49358.71       0.0        -2.000 g f  06-JAN-94  MK *NEEDS CORRECTIONS
- 49427.33       0.0        -0.700 g f  16-MAR-94  MK Effelsberg: maser-GPS
- 49455.26       0.0        -8.300 g f  13-APR-94  MK Effelsberg: maser-GPS
- 49460.78       0.0       -11.500 g f  18-APR-94  MK Effelsberg: maser-GPS
- 49537.70       0.0        -2.009 g f  04-JUL-94  MK Effelsberg: maser-GPS
- 49541.29       0.0        -3.000 g f  08-JUL-94  MK  *NEEDS CORRECTIONS
- 49575.25       0.0       -10.500 g f  11-AUG-94  MK Effelsberg: maser-GPS
- 49575.68       0.0        +0.174 g f  11-AUG-94  MK Effelsberg: maser-GPS
- 49589.53       0.0        -0.400 g f  25-AUG-94  MK Effelsberg: maser-GPS
- 49650.54       0.0        -0.746 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.63       0.0        -0.713 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.65       0.0        -0.800 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.67       0.0        -0.666 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.69       0.0        -0.609 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.77       0.0        -0.729 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.79       0.0        -0.733 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.86       0.0        -0.767 g f  25-OCT-94  MK Effelsberg: maser-GPS
- 49650.88       0.0        -0.851 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49651.00       0.0        -0.720 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49651.02       0.0        -0.903 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49651.04       0.0        -0.857 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49651.21       0.0        -0.912 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49651.23       0.0        -0.891 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49651.25       0.0        -0.876 g f  26-OCT-94  MK Effelsberg: maser-GPS
- 49675.75       0.0        +1.730 g f  19-NOV-94  MK Effelsberg: maser-GPS
- 49676.59       0.0        +2.000 g f  20-NOV-94  MK Effelsberg: maser-GPS
- 49677.31       0.0        +2.073 g f  21-NOV-94  MK Effelsberg: maser-GPS
- 49684.29       0.0        +1.884 g f  27-NOV-94  MK Effelsberg: maser-GPS
- 49695.08       0.0        +1.870 g f  09-DEC-94  MK Effelsberg: maser-GPS
- 49695.21       0.0        +1.880 g f  09-DEC-94  MK Effelsberg: maser-GPS
- 49726.63       0.0        -4.600 g f  09-JAN-95  MK Effelsberg: maser-GPS
- 49727.28       0.0        -4.984 g f  10-JAN-95  MK Effelsberg: maser-GPS
- 49768.38       0.0        -0.800 g f  20-FEB-95  MK Effelsberg: maser-GPS
- 49769.04       0.0        -0.805 g f  21-FEB-95  FC back extrap. f. 49769.54
- 49769.54       0.0        -0.810 g f  21-FEB-95  MK Effelsberg: maser-GPS
- 49781.41       0.0        -0.208 g f  05-MAR-95  MK Effelsberg: maser-GPS
- 49781.71       0.0        -0.196 g f  05-MAR-95  MK Effelsberg: maser-GPS
- 49782.50       0.0        -0.221 g f  06-MAR-95  MK Effelsberg: maser-GPS
- 49792.60       0.0        -0.744 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.62       0.0        -0.675 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.64       0.0        -0.874 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.67       0.0        -0.568 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.77       0.0        -0.611 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.94       0.0        -0.806 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.96       0.0        -0.786 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49792.98       0.0        -0.760 g f  16-MAR-95  MK Effelsberg: maser-GPS
- 49793.06       0.0        -0.813 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.08       0.0        -0.799 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.10       0.0        -0.622 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.12       0.0        -0.904 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.14       0.0        -0.672 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.17       0.0        -0.766 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.19       0.0        -0.822 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.21       0.0        -0.639 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.27       0.0        -0.657 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.37       0.0        -0.701 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.45       0.0        -0.880 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49793.48       0.0        -0.678 g f  17-MAR-95  MK Effelsberg: maser-GPS
- 49818.56       0.0        -1.662 g f  11-APR-95  MK Effelsberg: maser-GPS
- 49818.61       0.0        -1.648 g f  11-APR-95  MK Effelsberg: maser-GPS
- 49818.69       0.0        -1.772 g f  11-APR-95  MK Effelsberg: maser-GPS
- 49818.77       0.0        -1.625 g f  11-APR-95  MK Effelsberg: maser-GPS
- 49818.90       0.0        -1.636 g f  11-APR-95  MK Effelsberg: maser-GPS
- 49819.00       0.0        -1.595 g f  12-APR-95  MK Effelsberg: maser-GPS
- 49819.08       0.0        -1.823 g f  12-APR-95  MK Effelsberg: maser-GPS
- 49819.17       0.0        -1.630 g f  12-APR-95  MK Effelsberg: maser-GPS
- 49819.19       0.0        -1.732 g f  12-APR-95  MK Effelsberg: maser-GPS
- 49819.34       0.0        -1.550 g f  12-APR-95  MK Effelsberg: maser-GPS
- 49834.50       0.0        -0.048 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.54       0.0        +0.049 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.65       0.0        +0.005 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.69       0.0        -0.068 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.73       0.0        -0.033 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.77       0.0        +0.005 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.86       0.0        -0.053 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49834.98       0.0        +0.125 g f  27-APR-95  MK Effelsberg: maser-GPS
- 49835.06       0.0        -0.059 g f  28-APR-95  MK Effelsberg: maser-GPS
- 49835.11       0.0        -0.082 g f  28-APR-95  MK Effelsberg: maser-GPS
- 49835.15       0.0        -0.067 g f  28-APR-95  MK Effelsberg: maser-GPS
- 49835.27       0.0        -0.002 g f  28-APR-95  MK Effelsberg: maser-GPS
- 49835.31       0.0        -0.128 g f  28-APR-95  MK Effelsberg: maser-GPS
- 49835.35       0.0        -0.123 g f  28-APR-95  MK Effelsberg: maser-GPS
+   MJD       EECO-REF    NIST-REF NS     DATE    COMMENTS	
+=========    ========    ======== ==   ========  ========
+ 49320.00       0.0        -5.000 g f 28-NOV-93  MK *NEEDS CORRECTIONS
+ 49358.71       0.0        -2.000 g f 06-JAN-94  MK *NEEDS CORRECTIONS
+ 49427.33       0.0        -0.700 g f 16-MAR-94  MK Effelsberg: maser-GPS
+ 49455.26       0.0        -8.300 g f 13-APR-94  MK Effelsberg: maser-GPS
+ 49460.78       0.0       -11.500 g f 18-APR-94  MK Effelsberg: maser-GPS
+ 49537.70       0.0        -2.009 g f 04-JUL-94  MK Effelsberg: maser-GPS
+ 49541.29       0.0        -3.000 g f 08-JUL-94  MK  *NEEDS CORRECTIONS
+ 49575.25       0.0       -10.500 g f 11-AUG-94  MK Effelsberg: maser-GPS
+ 49575.68       0.0       -10.500 g f 11-AUG-94  MK Effelsberg: maser-GPS
+ 49589.53       0.0        -0.400 g f 25-AUG-94  MK Effelsberg: maser-GPS
+ 49650.54       0.0        -0.746 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.63       0.0        -0.713 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.65       0.0        -0.800 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.67       0.0        -0.666 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.69       0.0        -0.609 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.77       0.0        -0.729 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.79       0.0        -0.733 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.86       0.0        -0.767 g f 25-OCT-94  MK Effelsberg: maser-GPS
+ 49650.88       0.0        -0.851 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49651.00       0.0        -0.720 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49651.02       0.0        -0.903 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49651.04       0.0        -0.857 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49651.21       0.0        -0.912 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49651.23       0.0        -0.891 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49651.25       0.0        -0.876 g f 26-OCT-94  MK Effelsberg: maser-GPS
+ 49675.75       0.0        +1.730 g f 19-NOV-94  MK Effelsberg: maser-GPS
+ 49676.59       0.0        +2.000 g f 20-NOV-94  MK Effelsberg: maser-GPS
+ 49677.31       0.0        +2.073 g f 21-NOV-94  MK Effelsberg: maser-GPS
+ 49684.29       0.0        +1.884 g f 27-NOV-94  MK Effelsberg: maser-GPS
+ 49695.08       0.0        +1.870 g f 09-DEC-94  MK Effelsberg: maser-GPS
+ 49695.21       0.0        +1.880 g f 09-DEC-94  MK Effelsberg: maser-GPS
+ 49698.52       0.0        +2.707 g f 12-DEC-94  MK Effelsberg: maser-GPS
+ 49699.04       0.0        +2.578 g f 13-DEC-94  MK Effelsberg: maser-GPS
+ 49726.63       0.0        +4.600 g f 09-JAN-95  MK Effelsberg: maser-GPS
+ 49727.28       0.0        +4.984 g f 10-JAN-95  MK Effelsberg: maser-GPS
+ 49752.63       0.0        +0.420 g f 04-FEB-95  MK Effelsberg: maser-GPS
+ 49753.30       0.0        +0.738 g f 05-FEB-95  MK Effelsberg: maser-GPS
+ 49768.38       0.0        -0.800 g f 20-FEB-95  MK Effelsberg: maser-GPS
+ 49769.54       0.0        -0.810 g f 21-FEB-95  MK Effelsberg: maser-GPS
+ 49772.16       0.0        -0.890 g f 24-FEB-95  MK Effelsberg: maser-GPS
+ 49773.96       0.0        -0.820 g f 25-FEB-95  MK Effelsberg: maser-GPS
+ 49781.41       0.0        -0.208 g f 05-MAR-95  MK Effelsberg: maser-GPS
+ 49781.71       0.0        -0.196 g f 05-MAR-95  MK Effelsberg: maser-GPS
+ 49782.50       0.0        -0.221 g f 06-MAR-95  MK Effelsberg: maser-GPS
+ 49792.00       0.0         -.734 g f 16-MAR-95  CL Eff: pol. - Grypstra
+ 49792.50       0.0         -.766 g f 16-MAR-95  CL Eff: pol. - Grypstra
+ 49793.00       0.0         -.799 g f 17-MAR-95  CL Eff: pol. - Grypstra
+ 49793.50       0.0         -.831 g f 17-MAR-95  CL Eff: pol. - Grypstra
+ 49794.00       0.0         -.862 g f 18-MAR-95  CL Eff: pol. - Grypstra
+ 49818.50       0.0         1.634 g f 11-APR-95  CL Eff: pol. - Grypstra
+ 49819.00       0.0         1.640 g f 12-APR-95  CL Eff: pol. - Grypstra
+ 49819.50       0.0         1.646 g f 12-APR-95  CL Eff: pol. - Grypstra
+ 49834.50       0.0          .161 g f 27-APR-95  CL Eff: pol. - Grypstra
+ 49835.00       0.0          .188 g f 28-APR-95  CL Eff: pol. - Grypstra
+ 49835.50       0.0          .215 g f 28-APR-95  CL Eff: pol. - Grypstra
+ 49876.50       0.0         3.093 g f 08-JUN-95  CL Eff: pol. - Grypstra
+ 49877.00       0.0         3.136 g f 09-JUN-95  CL Eff: pol. - Grypstra
+ 49877.50       0.0         3.180 g f 09-JUN-95  CL Eff: pol. - Grypstra
+ 49909.00       0.0          .318 g f 11-JUL-95  CL Eff: pol. - Grypstra
+ 49909.50       0.0          .331 g f 11-JUL-95  CL Eff: pol. - Grypstra
+ 49910.00       0.0          .344 g f 12-JUL-95  CL Eff: pol. - Grypstra
+ 49910.50       0.0          .357 g f 12-JUL-95  CL Eff: pol. - Grypstra
+ 49911.00       0.0          .371 g f 13-JUL-95  CL Eff: pol. - Grypstra
+ 49911.50       0.0          .385 g f 13-JUL-95  CL Eff: pol. - Grypstra
+ 49912.00       0.0          .399 g f 14-JUL-95  CL Eff: pol. - Grypstra
+ 49912.50       0.0          .414 g f 14-JUL-95  CL Eff: pol. - Grypstra
+ 49913.00       0.0          .429 g f 15-JUL-95  CL Eff: pol. - Grypstra
+ 49913.50       0.0          .444 g f 15-JUL-95  CL Eff: pol. - Grypstra
+ 49914.00       0.0          .460 g f 16-JUL-95  CL Eff: pol. - Grypstra
+ 49914.50       0.0          .476 g f 16-JUL-95  CL Eff: pol. - Grypstra
+ 49915.00       0.0          .492 g f 17-JUL-95  CL Eff: pol. - Grypstra
+ 49915.50       0.0          .508 g f 17-JUL-95  CL Eff: pol. - Grypstra
+ 49928.00       0.0         1.024 g f 30-JUL-95  CL Eff: pol. - Grypstra
+ 49928.50       0.0         1.049 g f 30-JUL-95  CL Eff: pol. - Grypstra
+ 49929.00       0.0         1.074 g f 31-JUL-95  CL Eff: pol. - Grypstra
+ 49929.50       0.0         1.099 g f 31-JUL-95  CL Eff: pol. - Grypstra
+ 49930.00       0.0         1.125 g f 01-AUG-95  CL Eff: pol. - Grypstra
+ 49930.50       0.0         1.151 g f 01-AUG-95  CL Eff: pol. - Grypstra
+ 49931.00       0.0         1.177 g f 02-AUG-95  CL Eff: pol. - Grypstra
+ 49931.50       0.0         1.204 g f 02-AUG-95  CL Eff: pol. - Grypstra
+ 49932.00       0.0         1.231 g f 03-AUG-95  CL Eff: pol. - Grypstra
+ 49932.50       0.0         1.258 g f 03-AUG-95  CL Eff: pol. - Grypstra
+ 49933.00       0.0         1.285 g f 04-AUG-95  CL Eff: pol. - Grypstra
+ 49960.00       0.0         3.241 g f 31-AUG-95  CL Eff: pol. - Grypstra
+ 49960.50       0.0         3.286 g f 31-AUG-95  CL Eff: pol. - Grypstra
+ 49961.00       0.0          .265 g f 01-SEP-95  CL Eff: pol. - Grypstra
+ 49961.50       0.0          .299 g f 01-SEP-95  CL Eff: pol. - Grypstra
+ 49990.00       0.0         -.404 g f 30-SEP-95  CL Eff: pol. - Grypstra
+ 49990.50       0.0         -.412 g f 30-SEP-95  CL Eff: pol. - Grypstra
+ 49991.00       0.0         -.420 g f 01-OCT-95  CL Eff: pol. - Grypstra
+ 49991.50       0.0         -.428 g f 01-OCT-95  CL Eff: pol. - Grypstra
+ 49992.00       0.0         -.436 g f 02-OCT-95  CL Eff: pol. - Grypstra
+ 49992.50       0.0         -.443 g f 02-OCT-95  CL Eff: pol. - Grypstra
+ 49993.00       0.0         -.450 g f 03-OCT-95  CL Eff: pol. - Grypstra
+ 49993.50       0.0         -.456 g f 03-OCT-95  CL Eff: pol. - Grypstra
+ 49994.00       0.0         -.462 g f 04-OCT-95  CL Eff: pol. - Grypstra
+ 49994.50       0.0         -.468 g f 04-OCT-95  CL Eff: pol. - Grypstra
+ 49995.00       0.0         -.474 g f 05-OCT-95  CL Eff: pol. - Grypstra
+ 49995.50       0.0         -.479 g f 05-OCT-95  CL Eff: pol. - Grypstra
+ 49996.00       0.0         -.484 g f 06-OCT-95  CL Eff: pol. - Grypstra
+ 50043.00       0.0          .456 g f 22-NOV-95  CL Eff: pol. - Grypstra
+ 50043.50       0.0          .481 g f 22-NOV-95  CL Eff: pol. - Grypstra
+ 50044.00       0.0          .507 g f 23-NOV-95  CL Eff: pol. - Grypstra
+ 50044.50       0.0          .532 g f 23-NOV-95  CL Eff: pol. - Grypstra
+ 50073.00       0.0          .401 g f 22-DEC-95  CL Eff: pol. - Grypstra
+ 50074.50       0.0          .280 g f 23-DEC-95  CL Eff: pol. - Grypstra
+ 50280.00       0.0          .256 g f 16-JUL-96  CL Eff: pol. - Grypstra
+ 50284.00       0.0          .214 g f 20-JUL-96  CL Eff: pol. - Grypstra
+ 50290.00       0.0          .179 g f 26-JUL-96  CL Eff: pol. - Grypstra
+ 50300.00       0.0          .198 g f 05-AUG-96  CL Eff: pol. - Grypstra
+ 50310.00       0.0          .312 g f 15-AUG-96  CL Eff: pol. - Grypstra
+ 50315.00       0.0          .405 g f 20-AUG-96  CL Eff: pol. - Grypstra
+ 50320.00       0.0          .521 g f 25-AUG-96  CL Eff: pol. - Grypstra
+ 50330.00       0.0          .826 g f 04-SEP-96  CL Eff: pol. - Grypstra
+ 50335.50       0.0          .611 g f 09-SEP-96  CL Eff: pol. - Grypstra
+ 50336.00       0.0          .583 g f 10-SEP-96  CL Eff: pol. - Grypstra
+ 50336.50       0.0          .555 g f 10-SEP-96  CL Eff: pol. - Grypstra
+ 50337.00       0.0          .527 g f 11-SEP-96  CL Eff: pol. - Grypstra
+ 50337.50       0.0          .500 g f 11-SEP-96  CL Eff: pol. - Grypstra
+ 50338.00       0.0          .473 g f 12-SEP-96  CL Eff: pol. - Grypstra
+ 50338.50       0.0          .446 g f 12-SEP-96  CL Eff: pol. - Grypstra
+ 50339.00       0.0          .420 g f 13-SEP-96  CL Eff: pol. - Grypstra
+ 50339.50       0.0          .394 g f 13-SEP-96  CL Eff: pol. - Grypstra
+ 50353.00       0.0         -.181 g f 27-SEP-96  CL Eff: pol. - Grypstra
+ 50353.50       0.0         -.198 g f 27-SEP-96  CL Eff: pol. - Grypstra
+ 50354.00       0.0         -.214 g f 28-SEP-96  CL Eff: pol. - Grypstra
+ 50354.50       0.0         -.230 g f 28-SEP-96  CL Eff: pol. - Grypstra
+ 50355.00       0.0         -.246 g f 29-SEP-96  CL Eff: pol. - Grypstra
+ 50355.50       0.0         -.261 g f 29-SEP-96  CL Eff: pol. - Grypstra
+ 50356.00       0.0         -.276 g f 30-SEP-96  CL Eff: pol. - Grypstra
+ 50356.50       0.0         -.291 g f 30-SEP-96  CL Eff: pol. - Grypstra
+ 50357.00       0.0         -.305 g f 01-OCT-96  CL Eff: pol. - Grypstra
+ 50357.50       0.0         -.319 g f 01-OCT-96  CL Eff: pol. - Grypstra
+ 50358.00       0.0         -.333 g f 02-OCT-96  CL Eff: pol. - Grypstra
+ 50358.50       0.0         -.346 g f 02-OCT-96  CL Eff: pol. - Grypstra
+ 50359.00       0.0         -.360 g f 03-OCT-96  CL Eff: pol. - Grypstra
+ 50359.50       0.0         -.372 g f 03-OCT-96  CL Eff: pol. - Grypstra
+ 50360.00       0.0         -.385 g f 04-OCT-96  CL Eff: pol. - Grypstra
+ 50360.50       0.0         -.397 g f 04-OCT-96  CL Eff: pol. - Grypstra
+ 50361.00       0.0         -.408 g f 05-OCT-96  CL Eff: pol. - Grypstra
+ 50361.50       0.0         -.420 g f 05-OCT-96  CL Eff: pol. - Grypstra
+ 50362.00       0.0         -.431 g f 06-OCT-96  CL Eff: pol. - Grypstra
+ 50362.50       0.0         -.442 g f 06-OCT-96  CL Eff: pol. - Grypstra
+ 50363.00       0.0         -.452 g f 07-OCT-96  CL Eff: pol. - Grypstra
+ 50363.50       0.0         -.462 g f 07-OCT-96  CL Eff: pol. - Grypstra
+ 50364.00       0.0         -.472 g f 08-OCT-96  CL Eff: pol. - Grypstra
+ 50364.50       0.0         -.481 g f 08-OCT-96  CL Eff: pol. - Grypstra
+ 50365.00       0.0         -.490 g f 09-OCT-96  CL Eff: pol. - Grypstra
+ 50365.50       0.0         -.499 g f 09-OCT-96  CL Eff: pol. - Grypstra
+ 50366.00       0.0         -.507 g f 10-OCT-96  CL Eff: pol. - Grypstra
+ 50366.50       0.0         -.516 g f 10-OCT-96  CL Eff: pol. - Grypstra
+ 50367.00       0.0         -.523 g f 11-OCT-96  CL Eff: pol. - Grypstra
+ 50367.50       0.0         -.531 g f 11-OCT-96  CL Eff: pol. - Grypstra
+ 50368.00       0.0         -.538 g f 12-OCT-96  CL Eff: pol. - Grypstra
+ 50368.50       0.0         -.545 g f 12-OCT-96  CL Eff: pol. - Grypstra
+ 50369.00       0.0         -.551 g f 13-OCT-96  CL Eff: pol. - Grypstra
+ 50369.50       0.0         -.557 g f 13-OCT-96  CL Eff: pol. - Grypstra
+ 50370.00       0.0         -.563 g f 14-OCT-96  CL Eff: pol. - Grypstra
+ 50370.50       0.0         -.568 g f 14-OCT-96  CL Eff: pol. - Grypstra
+ 50371.00       0.0         -.573 g f 15-OCT-96  CL Eff: pol. - Grypstra
+ 50371.50       0.0         -.578 g f 15-OCT-96  CL Eff: pol. - Grypstra
+ 50421.50       0.0          .612 g f 04-DEC-96  CL Eff: pol. - Grypstra
+ 50435.25       0.0         1.625 g f 18-DEC-96  CL Eff: pol. - Grypstra
+ 50458.50       0.0          .241 g f 10-JAN-97  CL Eff: pol. - Grypstra
+ 50459.00       0.0          .219 g f 11-JAN-97  CL Eff: pol. - Grypstra
+ 50459.50       0.0          .197 g f 11-JAN-97  CL Eff: pol. - Grypstra
+ 50460.00       0.0          .175 g f 12-JAN-97  CL Eff: pol. - Grypstra
+ 50460.50       0.0          .154 g f 12-JAN-97  CL Eff: pol. - Grypstra
+ 50461.00       0.0          .132 g f 13-JAN-97  CL Eff: pol. - Grypstra
+ 50461.50       0.0          .112 g f 13-JAN-97  CL Eff: pol. - Grypstra
+ 50467.00       0.0         -.097 g f 19-JAN-97  CL Eff: pol. - Grypstra
+ 50467.50       0.0         -.114 g f 19-JAN-97  CL Eff: pol. - Grypstra
+ 50468.00       0.0         -.131 g f 20-JAN-97  CL Eff: pol. - Grypstra
+ 50468.50       0.0         -.147 g f 20-JAN-97  CL Eff: pol. - Grypstra
+ 50469.00       0.0         -.163 g f 21-JAN-97  CL Eff: pol. - Grypstra
+ 50469.50       0.0         -.179 g f 21-JAN-97  CL Eff: pol. - Grypstra
+ 50470.00       0.0         -.195 g f 22-JAN-97  CL Eff: pol. - Grypstra
+ 50526.00       0.0          .034 g f 19-MAR-97  CL Eff: pol. - Grypstra
+ 50526.50       0.0          .054 g f 19-MAR-97  CL Eff: pol. - Grypstra
+ 50527.00       0.0          .074 g f 20-MAR-97  CL Eff: pol. - Grypstra
+ 50527.50       0.0          .094 g f 20-MAR-97  CL Eff: pol. - Grypstra
+ 50547.50       0.0          .419 g f 09-APR-97  CL Eff: pol. - Grypstra
+ 50548.00       0.0          .392 g f 10-APR-97  CL Eff: pol. - Grypstra
+ 50548.50       0.0          .366 g f 10-APR-97  CL Eff: pol. - Grypstra
+ 50642.00       0.0          .659 g f 13-JUL-97  CL Eff: pol. - Grypstra
+ 50642.50       0.0          .688 g f 13-JUL-97  CL Eff: pol. - Grypstra
+ 50643.00       0.0          .718 g f 14-JUL-97  CL Eff: pol. - Grypstra
+ 50643.50       0.0          .748 g f 14-JUL-97  CL Eff: pol. - Grypstra
+ 50644.00       0.0          .778 g f 15-JUL-97  CL Eff: pol. - Grypstra
+ 50644.50       0.0          .808 g f 15-JUL-97  CL Eff: pol. - Grypstra
+ 50645.00       0.0          .774 g f 16-JUL-97  CL Eff: pol. - Grypstra
+ 50645.50       0.0          .744 g f 16-JUL-97  CL Eff: pol. - Grypstra
+ 50646.00       0.0          .713 g f 17-JUL-97  CL Eff: pol. - Grypstra
+ 50646.50       0.0          .683 g f 17-JUL-97  CL Eff: pol. - Grypstra
+ 50647.00       0.0          .653 g f 18-JUL-97  CL Eff: pol. - Grypstra
+ 50647.50       0.0          .624 g f 18-JUL-97  CL Eff: pol. - Grypstra
+ 50648.00       0.0          .594 g f 19-JUL-97  CL Eff: pol. - Grypstra
+ 50648.50       0.0          .566 g f 19-JUL-97  CL Eff: pol. - Grypstra
+ 50649.00       0.0          .537 g f 20-JUL-97  CL Eff: pol. - Grypstra
+ 50649.50       0.0          .509 g f 20-JUL-97  CL Eff: pol. - Grypstra
+ 50650.00       0.0          .481 g f 21-JUL-97  CL Eff: pol. - Grypstra
+ 50650.50       0.0          .453 g f 21-JUL-97  CL Eff: pol. - Grypstra
+ 50651.00       0.0          .426 g f 22-JUL-97  CL Eff: pol. - Grypstra
+ 50651.50       0.0          .399 g f 22-JUL-97  CL Eff: pol. - Grypstra
+ 50652.00       0.0          .372 g f 23-JUL-97  CL Eff: pol. - Grypstra
+ 50652.50       0.0          .346 g f 23-JUL-97  CL Eff: pol. - Grypstra
+ 50653.00       0.0          .320 g f 24-JUL-97  CL Eff: pol. - Grypstra
+ 50653.50       0.0          .294 g f 24-JUL-97  CL Eff: pol. - Grypstra
+ 50654.00       0.0          .269 g f 25-JUL-97  CL Eff: pol. - Grypstra
+ 50654.50       0.0          .244 g f 25-JUL-97  CL Eff: pol. - Grypstra
+ 50655.00       0.0          .219 g f 26-JUL-97  CL Eff: pol. - Grypstra
+ 50655.50       0.0          .195 g f 26-JUL-97  CL Eff: pol. - Grypstra
+ 50656.00       0.0          .171 g f 27-JUL-97  CL Eff: pol. - Grypstra
+ 50692.00       0.0         -.721 g f 01-SEP-97  CL Eff: pol. - Grypstra
+ 50692.50       0.0         -.722 g f 01-SEP-97  CL Eff: pol. - Grypstra
+ 50693.00       0.0         -.722 g f 02-SEP-97  CL Eff: pol. - Grypstra
+ 50693.50       0.0         -.722 g f 02-SEP-97  CL Eff: pol. - Grypstra
+ 50694.00       0.0         -.722 g f 03-SEP-97  CL Eff: pol. - Grypstra
+ 50694.50       0.0         -.721 g f 03-SEP-97  CL Eff: pol. - Grypstra
+ 50734.50       0.0          .365 g f 13-OCT-97  CL Eff: pol. - Grypstra
+ 50735.00       0.0          .391 g f 14-OCT-97  CL Eff: pol. - Grypstra
+ 50735.50       0.0          .418 g f 14-OCT-97  CL Eff: pol. - Grypstra
+ 50757.50       0.0         1.918 g f 05-NOV-97  CL Eff: pol. - Grypstra
+ 50758.00       0.0         1.960 g f 06-NOV-97  CL Eff: pol. - Grypstra
+ 50758.50       0.0         2.001 g f 06-NOV-97  CL Eff: pol. - Grypstra
+ 50795.50       0.0         2.326 g f 13-DEC-97  CL Eff: pol. - Grypstra
+ 50796.00       0.0         2.221 g f 14-DEC-97  CL Eff: pol. - Grypstra
+ 50796.50       0.0         2.117 g f 14-DEC-97  CL Eff: pol. - Grypstra
+ 50797.00       0.0         2.014 g f 15-DEC-97  CL Eff: pol. - Grypstra
+ 50797.50       0.0         1.910 g f 15-DEC-97  CL Eff: pol. - Grypstra
+ 50798.00       0.0         1.807 g f 16-DEC-97  CL Eff: pol. - Grypstra
+ 50798.50       0.0         1.704 g f 16-DEC-97  CL Eff: pol. - Grypstra
+ 50799.00       0.0         1.602 g f 17-DEC-97  CL Eff: pol. - Grypstra
+ 50799.50       0.0         1.499 g f 17-DEC-97  CL Eff: pol. - Grypstra
+ 50800.00       0.0         1.398 g f 18-DEC-97  CL Eff: pol. - Grypstra
+ 50800.50       0.0         1.296 g f 18-DEC-97  CL Eff: pol. - Grypstra
+ 50801.00       0.0         1.195 g f 19-DEC-97  CL Eff: pol. - Grypstra
+ 50801.50       0.0         1.093 g f 19-DEC-97  CL Eff: pol. - Grypstra
+ 50802.00       0.0          .993 g f 20-DEC-97  CL Eff: pol. - Grypstra
+ 50802.50       0.0          .892 g f 20-DEC-97  CL Eff: pol. - Grypstra
+ 50803.00       0.0          .792 g f 21-DEC-97  CL Eff: pol. - Grypstra
+ 50803.50       0.0          .692 g f 21-DEC-97  CL Eff: pol. - Grypstra
+ 50804.00       0.0          .593 g f 22-DEC-97  CL Eff: pol. - Grypstra
+ 50804.50       0.0          .493 g f 22-DEC-97  CL Eff: pol. - Grypstra
+ 50805.00       0.0          .394 g f 23-DEC-97  CL Eff: pol. - Grypstra
+ 50805.50       0.0          .296 g f 23-DEC-97  CL Eff: pol. - Grypstra
+ 50842.00       0.0        -6.118 g f 29-JAN-98  CL Eff: pol. - Grypstra
+ 50842.50       0.0        -6.195 g f 29-JAN-98  CL Eff: pol. - Grypstra
+ 50843.00       0.0        -6.272 g f 30-JAN-98  CL Eff: pol. - Grypstra
+ 50843.50       0.0        -6.348 g f 30-JAN-98  CL Eff: pol. - Grypstra
+ 50844.00       0.0        -6.424 g f 31-JAN-98  CL Eff: pol. - Grypstra
+ 50844.50       0.0        -6.500 g f 31-JAN-98  CL Eff: pol. - Grypstra
+ 50845.00       0.0        -6.575 g f 01-FEB-98  CL Eff: pol. - Grypstra
+ 50845.50       0.0        -6.651 g f 01-FEB-98  CL Eff: pol. - Grypstra
+ 50846.00       0.0        -6.726 g f 02-FEB-98  CL Eff: pol. - Grypstra
+ 50846.50       0.0        -6.800 g f 02-FEB-98  CL Eff: pol. - Grypstra
+ 50847.00       0.0        -6.875 g f 03-FEB-98  CL Eff: pol. - Grypstra
+ 50847.50       0.0        -6.949 g f 03-FEB-98  CL Eff: pol. - Grypstra
+ 50863.50       0.0        -9.163 g f 19-FEB-98  CL Eff: pol. - Grypstra
+ 50864.00       0.0        -9.228 g f 20-FEB-98  CL Eff: pol. - Grypstra
+ 50864.50       0.0        -9.292 g f 20-FEB-98  CL Eff: pol. - Grypstra
+ 50887.50       0.0       -11.922 g f 15-MAR-98  CL Eff: pol. - Grypstra
+ 50894.50       0.0       -12.599 g f 22-MAR-98  CL Eff: pol. - Grypstra
+ 50895.00       0.0       -12.646 g f 23-MAR-98  CL Eff: pol. - Grypstra
+ 50895.50       0.0       -12.691 g f 23-MAR-98  CL Eff: pol. - Grypstra
+ 50931.50       0.0       -15.223 g f 28-APR-98  CL Eff: pol. - Grypstra
+ 50932.00       0.0       -15.247 g f 29-APR-98  CL Eff: pol. - Grypstra
+ 50932.50       0.0       -15.272 g f 29-APR-98  CL Eff: pol. - Grypstra
+ 50981.50       0.0       -16.215 g f 17-JUN-98  CL Eff: pol. - Grypstra
+ 50982.00       0.0       -16.210 g f 18-JUN-98  CL Eff: pol. - Grypstra
+ 50982.50       0.0       -16.205 g f 18-JUN-98  CL Eff: pol. - Grypstra
+ 50983.00       0.0       -16.199 g f 19-JUN-98  CL Eff: pol. - Grypstra
+ 50983.50       0.0       -16.193 g f 19-JUN-98  CL Eff: pol. - Grypstra
+ 50984.00       0.0       -16.187 g f 20-JUN-98  CL Eff: pol. - Grypstra
+ 50984.50       0.0       -16.181 g f 20-JUN-98  CL Eff: pol. - Grypstra
+ 50985.00       0.0       -16.174 g f 21-JUN-98  CL Eff: pol. - Grypstra
+ 50985.50       0.0       -16.167 g f 21-JUN-98  CL Eff: pol. - Grypstra
+ 50986.00       0.0       -16.160 g f 22-JUN-98  CL Eff: pol. - Grypstra
+ 50986.50       0.0       -16.152 g f 22-JUN-98  CL Eff: pol. - Grypstra
+ 51011.50       0.0       -15.401 g f 17-JUL-98  CL Eff: pol. - Grypstra
+ 51012.00       0.0       -15.378 g f 18-JUL-98  CL Eff: pol. - Grypstra
+ 51012.50       0.0       -15.355 g f 18-JUL-98  CL Eff: pol. - Grypstra
+ 51013.00       0.0       -15.332 g f 19-JUL-98  CL Eff: pol. - Grypstra
+ 51013.50       0.0       -15.309 g f 19-JUL-98  CL Eff: pol. - Grypstra
+ 51014.00       0.0       -15.285 g f 20-JUL-98  CL Eff: pol. - Grypstra
+ 51014.50       0.0       -15.261 g f 20-JUL-98  CL Eff: pol. - Grypstra
+ 51023.50       0.0       -14.779 g f 29-JUL-98  CL Eff: pol. - Grypstra
+ 51024.00       0.0       -14.750 g f 30-JUL-98  CL Eff: pol. - Grypstra
+ 51024.50       0.0       -14.720 g f 30-JUL-98  CL Eff: pol. - Grypstra
+ 51025.00       0.0       -14.690 g f 31-JUL-98  CL Eff: pol. - Grypstra
+ 51025.50       0.0       -14.659 g f 31-JUL-98  CL Eff: pol. - Grypstra
+ 51026.00       0.0       -14.628 g f 01-AUG-98  CL Eff: pol. - Grypstra
+ 51026.50       0.0       -14.597 g f 01-AUG-98  CL Eff: pol. - Grypstra
+ 51027.00       0.0       -14.566 g f 02-AUG-98  CL Eff: pol. - Grypstra
+ 51027.50       0.0       -14.534 g f 02-AUG-98  CL Eff: pol. - Grypstra
+ 51028.00       0.0       -14.503 g f 03-AUG-98  CL Eff: pol. - Grypstra
+ 51028.50       0.0       -14.470 g f 03-AUG-98  CL Eff: pol. - Grypstra
+ 51029.00       0.0       -14.438 g f 04-AUG-98  CL Eff: pol. - Grypstra
+ 51029.50       0.0       -14.405 g f 04-AUG-98  CL Eff: pol. - Grypstra
+ 51041.00       0.0       -13.570 g f 16-AUG-98  CL Eff: pol. - Grypstra
+ 51041.50       0.0       -13.530 g f 16-AUG-98  CL Eff: pol. - Grypstra
+ 51042.00       0.0       -13.490 g f 17-AUG-98  CL Eff: pol. - Grypstra
+ 51091.75       0.0        -8.029 g f 05-OCT-98  CL Eff: pol. - Grypstra
+ 51123.50       0.0        -3.024 g f 06-NOV-98  CL Eff: pol. - Grypstra
+ 51124.00       0.0        -2.936 g f 07-NOV-98  CL Eff: pol. - Grypstra
+ 51124.50       0.0        -2.848 g f 07-NOV-98  CL Eff: pol. - Grypstra
+ 51125.00       0.0        -2.759 g f 08-NOV-98  CL Eff: pol. - Grypstra
+ 51150.50       0.0         2.163 g f 03-DEC-98  CL Eff: pol. - Grypstra
+ 51151.00       0.0         2.267 g f 04-DEC-98  CL Eff: pol. - Grypstra
+ 51151.50       0.0         2.371 g f 04-DEC-98  CL Eff: pol. - Grypstra
+ 51165.50       0.0         4.989 g f 18-DEC-98  CL Eff: pol. - Grypstra
+ 51166.00       0.0         4.880 g f 19-DEC-98  CL Eff: pol. - Grypstra
+ 51166.50       0.0         4.771 g f 19-DEC-98  CL Eff: pol. - Grypstra
+ 51167.00       0.0         4.663 g f 20-DEC-98  CL Eff: pol. - Grypstra
+ 51167.50       0.0         4.555 g f 20-DEC-98  CL Eff: pol. - Grypstra
+ 51168.00       0.0         4.447 g f 21-DEC-98  CL Eff: pol. - Grypstra
+ 51168.50       0.0         4.339 g f 21-DEC-98  CL Eff: pol. - Grypstra
+ 51182.50       0.0         1.438 g f 04-JAN-99  CL Eff: pol. - Grypstra
+ 51183.00       0.0         1.338 g f 05-JAN-99  CL Eff: pol. - Grypstra
+ 51183.50       0.0         1.239 g f 05-JAN-99  CL Eff: pol. - Grypstra
+ 51204.50       0.0        -2.692 g f 26-JAN-99  CL Eff: pol. - Grypstra
+ 51205.00       0.0        -2.780 g f 27-JAN-99  CL Eff: pol. - Grypstra
+ 51205.50       0.0        -2.867 g f 27-JAN-99  CL Eff: pol. - Grypstra
+ 51233.00       0.0         1.808 g f 24-FEB-99  CL Eff: pol. - Grypstra
+ 51233.50       0.0         1.849 g f 24-FEB-99  CL Eff: pol. - Grypstra
+ 51234.00       0.0         1.889 g f 25-FEB-99  CL Eff: pol. - Grypstra
+ 51237.50       0.0         2.179 g f 28-FEB-99  CL Eff: pol. - Grypstra
+ 51238.00       0.0         2.222 g f 01-MAR-99  CL Eff: pol. - Grypstra
+ 51238.50       0.0         2.264 g f 01-MAR-99  CL Eff: pol. - Grypstra
+ 51239.00       0.0         2.307 g f 02-MAR-99  CL Eff: pol. - Grypstra
+ 51239.50       0.0         2.351 g f 02-MAR-99  CL Eff: pol. - Grypstra
+ 51246.50       0.0         2.983 g f 09-MAR-99  CL Eff: pol. - Grypstra
+ 51247.00       0.0         3.031 g f 10-MAR-99  CL Eff: pol. - Grypstra
+ 51247.50       0.0         3.078 g f 10-MAR-99  CL Eff: pol. - Grypstra
+ 51248.00       0.0         3.126 g f 11-MAR-99  CL Eff: pol. - Grypstra
+ 51248.50       0.0         3.174 g f 11-MAR-99  CL Eff: pol. - Grypstra
+ 51256.50       0.0         3.975 g f 19-MAR-99  CL Eff: pol. - Grypstra
+ 51257.00       0.0         4.028 g f 20-MAR-99  CL Eff: pol. - Grypstra
+ 51257.50       0.0         4.080 g f 20-MAR-99  CL Eff: pol. - Grypstra
+ 51258.00       0.0         4.133 g f 21-MAR-99  CL Eff: pol. - Grypstra
+ 51258.50       0.0         4.186 g f 21-MAR-99  CL Eff: pol. - Grypstra
+ 51259.00       0.0         4.240 g f 22-MAR-99  CL Eff: pol. - Grypstra
+ 51259.50       0.0         4.293 g f 22-MAR-99  CL Eff: pol. - Grypstra
+ 51260.00       0.0         4.347 g f 23-MAR-99  CL Eff: pol. - Grypstra
+ 51260.50       0.0         4.401 g f 23-MAR-99  CL Eff: pol. - Grypstra
+ 51261.00       0.0         4.456 g f 24-MAR-99  CL Eff: pol. - Grypstra
+ 51261.50       0.0         4.510 g f 24-MAR-99  CL Eff: pol. - Grypstra
+ 51262.00       0.0         4.565 g f 25-MAR-99  CL Eff: pol. - Grypstra
+ 51262.50       0.0         4.620 g f 25-MAR-99  CL Eff: pol. - Grypstra
+ 51263.00       0.0         4.676 g f 26-MAR-99  CL Eff: pol. - Grypstra
+ 51263.50       0.0         4.731 g f 26-MAR-99  CL Eff: pol. - Grypstra
+ 51264.00       0.0         4.787 g f 27-MAR-99  CL Eff: pol. - Grypstra
+ 51264.50       0.0         4.844 g f 27-MAR-99  CL Eff: pol. - Grypstra
+ 51275.50       0.0         6.145 g f 07-APR-99  CL Eff: pol. - Grypstra
+ 51276.00       0.0         6.208 g f 08-APR-99  CL Eff: pol. - Grypstra
+ 51276.50       0.0         6.270 g f 08-APR-99  CL Eff: pol. - Grypstra
+ 51277.00       0.0         6.333 g f 09-APR-99  CL Eff: pol. - Grypstra
+ 51277.50       0.0         6.396 g f 09-APR-99  CL Eff: pol. - Grypstra
+ 51309.00       0.0         5.558 g f 11-MAY-99  CL Eff: pol. - Grypstra
+ 51309.50       0.0         5.477 g f 11-MAY-99  CL Eff: pol. - Grypstra
+ 51310.00       0.0         5.396 g f 12-MAY-99  CL Eff: pol. - Grypstra
+ 51310.50       0.0         5.315 g f 12-MAY-99  CL Eff: pol. - Grypstra
+ 51311.00       0.0         5.235 g f 13-MAY-99  CL Eff: pol. - Grypstra
+ 51359.50       0.0        -1.237 g f 30-JUN-99  CL Eff: pol. - Grypstra
+ 51360.00       0.0        -1.290 g f 01-JUL-99  CL Eff: pol. - Grypstra
+ 51360.50       0.0        -1.343 g f 01-JUL-99  CL Eff: pol. - Grypstra
+ 51361.00       0.0        -1.396 g f 02-JUL-99  CL Eff: pol. - Grypstra
+ 51382.50       0.0        -3.390 g f 23-JUL-99  CL Eff: pol. - Grypstra
+ 51383.00       0.0        -3.430 g f 24-JUL-99  CL Eff: pol. - Grypstra
+ 51383.50       0.0        -3.470 g f 24-JUL-99  CL Eff: pol. - Grypstra
+ 51384.00       0.0        -3.510 g f 25-JUL-99  CL Eff: pol. - Grypstra
+ 51384.50       0.0        -3.549 g f 25-JUL-99  CL Eff: pol. - Grypstra
+ 51385.00       0.0        -3.588 g f 26-JUL-99  CL Eff: pol. - Grypstra
+ 51396.50       0.0        -4.411 g f 06-AUG-99  CL Eff: pol. - Grypstra
+ 51397.00       0.0        -4.443 g f 07-AUG-99  CL Eff: pol. - Grypstra
+ 51397.50       0.0        -4.476 g f 07-AUG-99  CL Eff: pol. - Grypstra
+ 51398.00       0.0        -4.508 g f 08-AUG-99  CL Eff: pol. - Grypstra
+ 51398.50       0.0        -4.539 g f 08-AUG-99  CL Eff: pol. - Grypstra
+ 51399.00       0.0        -4.570 g f 09-AUG-99  CL Eff: pol. - Grypstra
+ 51399.50       0.0        -4.601 g f 09-AUG-99  CL Eff: pol. - Grypstra
+ 51425.00       0.0        -5.815 g f 04-SEP-99  CL Eff: pol. - Grypstra
+ 51425.50       0.0        -5.831 g f 04-SEP-99  CL Eff: pol. - Grypstra
+ 51426.00       0.0        -5.848 g f 05-SEP-99  CL Eff: pol. - Grypstra
+ 51426.50       0.0        -5.864 g f 05-SEP-99  CL Eff: pol. - Grypstra
+ 51456.50       0.0        -6.312 g f 05-OCT-99  CL Eff: pol. - Grypstra
+ 51457.00       0.0        -6.311 g f 06-OCT-99  CL Eff: pol. - Grypstra
+ 51457.50       0.0        -6.310 g f 06-OCT-99  CL Eff: pol. - Grypstra
+ 51507.50       0.0        -4.799 g f 25-NOV-99  CL Eff: pol. - Grypstra
+ 51508.00       0.0        -4.771 g f 26-NOV-99  CL Eff: pol. - Grypstra
+ 51508.50       0.0        -4.742 g f 26-NOV-99  CL Eff: pol. - Grypstra
+ 51531.00       0.0        -3.114 g f 19-DEC-99  CL Eff: pol. - Grypstra
+ 51531.50       0.0        -3.070 g f 19-DEC-99  CL Eff: pol. - Grypstra
+ 51532.00       0.0        -3.026 g f 20-DEC-99  CL Eff: pol. - Grypstra
+ 51535.00       0.0        -2.753 g f 23-DEC-99  CL Eff: pol. - Grypstra
+ 51535.50       0.0        -2.706 g f 23-DEC-99  CL Eff: pol. - Grypstra
+ 51536.00       0.0        -2.659 g f 24-DEC-99  CL Eff: pol. - Grypstra
+ 51536.50       0.0        -2.612 g f 24-DEC-99  CL Eff: pol. - Grypstra
+ 51537.00       0.0        -2.564 g f 25-DEC-99  CL Eff: pol. - Grypstra
+ 51537.50       0.0        -2.516 g f 25-DEC-99  CL Eff: pol. - Grypstra
+ 51538.00       0.0        -2.467 g f 26-DEC-99  CL Eff: pol. - Grypstra
+ 51538.50       0.0        -2.418 g f 26-DEC-99  CL Eff: pol. - Grypstra
+ 51539.00       0.0        -2.369 g f 27-DEC-99  CL Eff: pol. - Grypstra
+ 51539.50       0.0        -2.320 g f 27-DEC-99  CL Eff: pol. - Grypstra
+ 51545.00       0.0        -1.753 g f 02-JAN-00  CL Eff: pol. - Grypstra
+ 51545.50       0.0        -1.700 g f 02-JAN-00  CL Eff: pol. - Grypstra
+ 51546.00       0.0        -1.646 g f 03-JAN-00  CL Eff: pol. - Grypstra
+ 51557.00       0.0         -.374 g f 14-JAN-00  CL Eff: pol. - Grypstra
+ 51559.50       0.0         -.062 g f 16-JAN-00  CL Eff: pol. - Grypstra
+ 51560.00       0.0          .002 g f 17-JAN-00  CL Eff: pol. - Grypstra
+ 51578.50       0.0         2.589 g f 04-FEB-00  CL Eff: pol. - Grypstra
+ 51579.00       0.0         2.665 g f 05-FEB-00  CL Eff: pol. - Grypstra
+ 51579.50       0.0         2.742 g f 05-FEB-00  CL Eff: pol. - Grypstra
+ 51580.00       0.0         2.819 g f 06-FEB-00  CL Eff: pol. - Grypstra
+ 51580.50       0.0         2.896 g f 06-FEB-00  CL Eff: pol. - Grypstra
+ 51581.00       0.0         2.974 g f 07-FEB-00  CL Eff: pol. - Grypstra
+ 51581.50       0.0         3.052 g f 07-FEB-00  CL Eff: pol. - Grypstra
+ 51582.00       0.0         3.131 g f 08-FEB-00  CL Eff: pol. - Grypstra
+ 51582.50       0.0         3.210 g f 08-FEB-00  CL Eff: pol. - Grypstra
+ 51583.00       0.0         3.289 g f 09-FEB-00  OL Eff: pol. - Grypstra
+ 51583.50       0.0         3.368 g f 09-FEB-00  CL Eff: pol. - Grypstra
+ 51584.00       0.0         3.448 g f 10-FEB-00  CL Eff: pol. - Grypstra
+ 51584.50       0.0         3.528 g f 10-FEB-00  CL Eff: pol. - Grypstra
+ 51594.50       0.0         5.203 g f 20-FEB-00  CL Eff: pol. - Grypstra
+ 51595.00       0.0         5.290 g f 21-FEB-00  CL Eff: pol. - Grypstra
+ 51595.50       0.0         5.378 g f 21-FEB-00  CL Eff: pol. - Grypstra
+ 51638.00       0.0         3.540 g f 04-APR-00  OL Eff: pol. - Grypstra
+ 51638.50       0.0         3.441 g f 04-APR-00  OL Eff: pol. - Grypstra
+ 51639.00       0.0         3.342 g f 05-APR-00  OL Eff: pol. - Grypstra
+ 51639.50       0.0         3.244 g f 05-APR-00  OL Eff: pol. - Grypstra
+ 51656.00       0.0          .097 g f 22-APR-00  OL Eff: pol. - Grypstra
+ 51656.50       0.0          .005 g f 22-APR-00  OL Eff: pol. - Grypstra
+ 51657.00       0.0         -.087 g f 23-APR-00  OL Eff: pol. - Grypstra
+ 51657.50       0.0         -.179 g f 23-APR-00  OL Eff: pol. - Grypstra
+ 51658.00       0.0         -.271 g f 24-APR-00  OL Eff: pol. - Grypstra
+ 51658.50       0.0         -.362 g f 24-APR-00  OL Eff: pol. - Grypstra
+ 51659.00       0.0         -.454 g f 25-APR-00  OL Eff: pol. - Grypstra
+ 51659.50       0.0         -.545 g f 25-APR-00  OL Eff: pol. - Grypstra
+ 51682.00       0.0        -4.211 g f 18-MAY-00  OL Eff: pol. - Grypstra
+ 51682.50       0.0        -4.285 g f 18-MAY-00  OL Eff: pol. - Grypstra
+ 51683.00       0.0        -4.359 g f 19-MAY-00  OL Eff: pol. - Grypstra
+ 51683.50       0.0        -4.433 g f 19-MAY-00  OL Eff: pol. - Grypstra
+ 51684.00       0.0        -4.506 g f 20-MAY-00  OL Eff: pol. - Grypstra
+ 51684.50       0.0        -4.579 g f 20-MAY-00  OL Eff: pol. - Grypstra
+ 51685.00       0.0        -4.652 g f 21-MAY-00  OL Eff: pol. - Grypstra
+ 51685.50       0.0        -4.724 g f 21-MAY-00  OL Eff: pol. - Grypstra
+ 51686.00       0.0        -4.796 g f 22-MAY-00  OL Eff: pol. - Grypstra
+ 51686.50       0.0        -4.868 g f 22-MAY-00  OL Eff: pol. - Grypstra
+ 51687.00       0.0        -4.940 g f 23-MAY-00  OL Eff: pol. - Grypstra
+ 51687.50       0.0        -5.012 g f 23-MAY-00  OL Eff: pol. - Grypstra
+ 51688.00       0.0        -5.083 g f 24-MAY-00  OL Eff: pol. - Grypstra
+ 51688.50       0.0        -5.154 g f 24-MAY-00  OL Eff: pol. - Grypstra
+ 51689.00       0.0        -5.225 g f 25-MAY-00  OL Eff: pol. - Grypstra
+ 51689.50       0.0        -5.295 g f 25-MAY-00  OL Eff: pol. - Grypstra
+ 51690.00       0.0        -5.365 g f 26-MAY-00  OL Eff: pol. - Grypstra
+ 51690.50       0.0        -5.435 g f 26-MAY-00  OL Eff: pol. - Grypstra
+ 51692.50       0.0        -5.713 g f 28-MAY-00  OL Eff: pol. - Grypstra
+ 51693.00       0.0        -5.782 g f 29-MAY-00  OL Eff: pol. - Grypstra
+ 51693.50       0.0        -5.850 g f 29-MAY-00  OL Eff: pol. - Grypstra
+ 51734.50       0.0       -10.623 g f 09-JUL-00  OL Eff: pol. - Grypstra
+ 51735.00       0.0       -10.671 g f 10-JUL-00  OL Eff: pol. - Grypstra
+ 51735.50       0.0       -10.719 g f 10-JUL-00  OL Eff: pol. - Grypstra
+ 51770.50       0.0       -13.438 g f 14-AUG-00  OL Eff: pol. - Grypstra
+ 51771.00       0.0       -13.468 g f 15-AUG-00  OL Eff: pol. - Grypstra
+ 51771.50       0.0       -13.497 g f 15-AUG-00  OL Eff: pol. - Grypstra
+ 51772.00       0.0       -13.527 g f 16-AUG-00  OL Eff: pol. - Grypstra
+ 51772.50       0.0       -13.556 g f 16-AUG-00  OL Eff: pol. - Grypstra
+ 51773.00       0.0       -13.585 g f 17-AUG-00  OL Eff: pol. - Grypstra
+ 51773.50       0.0       -13.614 g f 17-AUG-00  OL Eff: pol. - Grypstra
+ 51774.00       0.0       -13.643 g f 18-AUG-00  OL Eff: pol. - Grypstra
+ 51774.50       0.0       -13.671 g f 18-AUG-00  OL Eff: pol. - Grypstra
+ 51775.00       0.0       -13.699 g f 19-AUG-00  OL Eff: pol. - Grypstra
+ 51775.50       0.0       -13.727 g f 19-AUG-00  OL Eff: pol. - Grypstra
+ 51776.00       0.0       -13.754 g f 20-AUG-00  OL Eff: pol. - Grypstra
+ 51776.50       0.0       -13.782 g f 20-AUG-00  OL Eff: pol. - Grypstra
+ 51777.00       0.0       -13.809 g f 21-AUG-00  OL Eff: pol. - Grypstra
+ 51812.50       0.0       -15.094 g f 25-SEP-00  OL Eff: pol. - Grypstra
+ 51813.00       0.0       -15.104 g f 26-SEP-00  OL Eff: pol. - Grypstra
+ 51813.50       0.0       -15.113 g f 26-SEP-00  OL Eff: pol. - Grypstra
+ 51817.00       0.0       -15.168 g f 30-SEP-00  OL Eff: pol. - Grypstra
+ 51817.50       0.0       -15.175 g f 30-SEP-00  OL Eff: pol. - Grypstra
+ 51818.00       0.0       -15.182 g f 01-OCT-00  OL Eff: pol. - Grypstra
+ 51849.00       0.0       -15.111 g f 01-NOV-00  OL Eff: pol. - Grypstra
+ 51849.50       0.0       -15.102 g f 01-NOV-00  OL Eff: pol. - Grypstra
+ 51850.00       0.0       -15.093 g f 02-NOV-00  OL Eff: pol. - Grypstra
+ 51862.00       0.0       -14.798 g f 14-NOV-00  OL Eff: pol. - Grypstra
+ 51862.50       0.0       -14.782 g f 14-NOV-00  OL Eff: pol. - Grypstra
+ 51863.00       0.0       -14.767 g f 15-NOV-00  OL Eff: pol. - Grypstra
+ 51893.50       0.0       -13.342 g f 15-DEC-00  OL Eff: pol. - Grypstra
+ 51894.00       0.0       -13.311 g f 16-DEC-00  OL Eff: pol. - Grypstra
+ 51894.50       0.0       -13.280 g f 16-DEC-00  OL Eff: pol. - Grypstra
+ 51895.00       0.0       -13.248 g f 17-DEC-00  OL Eff: pol. - Grypstra
+ 51907.50       0.0       -12.379 g f 29-DEC-00  OL Eff: pol. - Grypstra
+ 51908.00       0.0       -12.341 g f 30-DEC-00  OL Eff: pol. - Grypstra
+ 51908.50       0.0       -12.302 g f 30-DEC-00  OL Eff: pol. - Grypstra
+ 51909.00       0.0       -12.264 g f 31-DEC-00  OL Eff: pol. - Grypstra
+ 51966.50       0.0        -5.805 g f 26-FEB-01  OL Eff: prelim.
+ 51967.00       0.0        -5.805 g f 27-FEB-01  OL Eff: prelim.
+ 51967.50       0.0        -5.805 g f 27-FEB-01  OL Eff: prelim.
+ 51987.50       0.0        -3.889 g f 19-MAR-01  OD Eff: prelim.
+ 51988.00       0.0        -3.889 g f 19-MAR-01  OD Eff: prelim.
+ 51988.50       0.0        -3.889 g f 19-MAR-01  OD Eff: prelim.
+ 52011.50       0.0         1.405 g f 12-APR-01  OL Eff: prelim.
+ 52012.00       0.0         1.405 g f 13-APR-01  OL Eff: prelim.
+ 52012.50       0.0         1.405 g f 13-APR-01  OL Eff: prelim.
+ 52013.00       0.0         1.405 g f 14-APR-01  OL Eff: prelim.
+ 52013.50       0.0         1.405 g f 14-APR-01  OL Eff: prelim.
+ 52014.00       0.0         2.046 g f 15-APR-01  OL Eff: prelim.
+ 52014.50       0.0         2.046 g f 15-APR-01  OL Eff: prelim.
+ 52015.00       0.0         2.046 g f 16-APR-01  OL Eff: prelim.
+ 52024.50       0.0         3.848 g f 25-APR-01  OL Eff: prelim.
+ 52025.50       0.0         3.848 g f 26-APR-01  OL Eff: prelim.
+ 52025.50       0.0         3.848 g f 26-APR-01  OL Eff: prelim.
+ 52042.00       0.0         7.820 g f 13-MAY-01  OL Eff: prelim.
+ 52042.50       0.0         7.820 g f 13-MAY-01  OL Eff: prelim.
+ 52043.00       0.0         7.820 g f 14-MAY-01  OL Eff: prelim.
+ 52043.50       0.0         7.820 g f 14-MAY-01  OL Eff: prelim.
+ 52046.50       0.0         8.829 g f 17-MAY-01  OL Eff: prelim.
+ 52047.00       0.0         8.829 g f 18-MAY-01  OL Eff: prelim.
+ 52047.50       0.0         8.829 g f 18-MAY-01  OL Eff: prelim.
+ 52091.50       0.0         8.064 g f 01-JUL-01  OL Eff: prelim.
+ 52092.00       0.0         8.064 g f 02-JUL-01  OL Eff: prelim.
+ 52092.50       0.0         8.064 g f 02-JUL-01  OL Eff: prelim.
+ 52101.50       0.0         4.918 g f 11-JUL-01  OL Eff: prelim.
+ 52102.00       0.0         4.918 g f 12-JUL-01  OL Eff: prelim.
+ 52102.50       0.0         4.918 g f 12-JUL-01  OL Eff: prelim.
+ 52113.50       0.0         1.435 g f 23-JUL-01  DM Eff: prelim.
+ 52114.00       0.0         1.435 g f 24-JUL-01  DM Eff: prelim.
+ 52114.50       0.0         1.435 g f 24-JUL-01  DM Eff: prelim.
+ 52134.50       0.0        -4.277 g f 13-AUG-01  DM Eff: prelim.
+ 52135.00       0.0        -4.277 g f 14-AUG-01  DM Eff: prelim.
+ 52135.50       0.0        -4.277 g f 14-AUG-01  DM Eff: prelim.
+ 52162.50       0.0       -11.700 g f 10-SEP-01  OL Eff: prelim.
+ 52163.00       0.0       -11.700 g f 11-SEP-01  OL Eff: prelim.
+ 52163.50       0.0       -11.700 g f 11-SEP-01  OL Eff: prelim.
+ 52213.00       0.0       -22.819 g f 31-OCT-01  OL Eff: prelim.
+ 52213.50       0.0       -22.819 g f 31-OCT-01  OL Eff: prelim.
+ 52214.00       0.0       -22.819 g f 01-NOV-01  OL Eff: prelim.
+ 52214.50       0.0       -22.819 g f 01-NOV-01  OL Eff: prelim.
