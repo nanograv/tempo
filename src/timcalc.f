@@ -44,6 +44,7 @@ c     rotate vectors into ecliptic coordinates if necessary
         call equ2ecl(rca)
         call equ2ecl(rce)
         call equ2ecl(rse)
+        call equ2ecl(rea)
         call equ2ecl(rce(4))
         call equ2ecl(sitvel)
       endif
