@@ -259,6 +259,25 @@ C  Compute braking index
      :       0p,'  Q:',f9.6,'  Err:',f9.6)
  1069	format(' MJD for zero phase:',f14.6,' or',f14.6,'  Err:',f10.6)
 
+	if(usedmx) then
+	  koff = NPAR6
+	  do n = 1, (ndmx+3)/4
+	    ib = n*4
+	    ia = ib-3
+	    ib = min(ib,ndmx)
+	    write (31,1059) ("DM Off",i,i=ia,ib)
+	    write (31,1060) (dmxr1(i),dmxr2(i),i=ia,ib)
+	    write (31,1061) (dmx(i),i=ia,ib)
+	    write (31,1061) (freq(k),k=koff+ia,koff+ib)
+	    write (31,1061) (ferr(k),k=koff+ia,koff+ib)
+	    do i = ia, ib
+	      dmx(i) = dmx(i)+freq(koff+i)
+	    end do
+	    write (31,1061) (dmx(i),i=ia,ib)
+	  end do
+	end if
+	      
+
 C Get rms residuals and ntoa for output
         asig=asig*p0*1000.
         rms0=1000.d0*sigma1
@@ -300,6 +319,7 @@ C Output binary parameters
 70	  continue
 	  if (jumpout) call outjumppar
 	endif
+	    
 
 C Close output .par file
 	close(71)

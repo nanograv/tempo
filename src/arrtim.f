@@ -128,7 +128,7 @@ c       N. Wex transformations at pepoch
 
 C       The main loop starts here!
 
-   10	continue
+   10  	continue
    	read(lu,1010,end=40) card
 1010	format(a80)
 	if(card(1:1).lt.'A'.and.card(1:1).ne.'#') go to 50
@@ -264,14 +264,16 @@ C  Get clock corrections
 	endif
 	ffmjd=ffmjd+clk2
 	fmjd=fmjd+clk2
-	go to 60
+	go to 60  ! skip over end-of-file bits
 
+c   Get here on end-of-file
 40	if(lu.gt.50)then
 	   close(lu)
 	   lu=lu-1
 	   go to 10
 	endif
 
+c   Get here on end-of-all-files
 45	if(.not.gro) go to 100
 	last=.true.
 	nsite=0
@@ -279,8 +281,9 @@ C  Get clock corrections
 	t0geo=nint((amjd1+amjd2)/2.)
 	fmjd=t0geo
 	nfmjd=fmjd
-	ffmjd=0.d0
+        ffmjd=0.d0
 
+c   Back to processing of all TOAs
  60	yrs=(fmjd-pepoch)/365.25d0
 
 	if(nsite.gt.nsmax) write(*,1063) n,nsite,nsmax,nfmt,card
@@ -304,6 +307,30 @@ C  Get clock corrections
 	  do 61 i=1,ndmcalc-1
 61	  dmtot=dmtot + dmcof(i) * yrs**i
 	endif
+        if (usedmx) then
+          do i = 1, ndmx
+            if (nfmjd+ffmjd.ge.min(dmxr1(i),dmxr2(i)-dmxt)
+     +           .and.nfmjd+ffmjd.le.max(dmxr2(i),dmxr1(i)+dmxt)) then
+              dmxr1(i)=min(dmxr1(i),nfmjd+ffmjd)
+              dmxr2(i)=max(dmxr2(i),nfmjd+ffmjd)
+              idmx = i
+              goto 80
+            endif
+          end do
+          ndmx = ndmx + 1
+          dmxr1(ndmx) = nfmjd+ffmjd
+          dmxr2(ndmx) = nfmjd+ffmjd
+          idmx = ndmx
+          nfit(NPAR6+ndmx)=1
+          nparam=nparam+1
+          mfit(nparam)=NPAR6+ndmx
+ 80       continue
+        endif
+
+        if (usedmx) then
+          dmtot = dmtot + dmx(idmx)
+        endif
+
 	bval=dmtot/2.41d-16
 	  
         if (nsite.ge.0) then
@@ -451,8 +478,20 @@ C  Take a shortcut when called by TZ:
 	  go to 10
 	endif
 
+C  DM-related partial derivatives
+
 	x(16)=0.d0
-	if(frq.gt.1.d0) x(16)=f0*1.0d4/(2.41d0*frq**2)
+        if (usedmx) then
+          do i = 1, NDMXMAX
+            x(NPAR6+i) = 0
+          end do
+        endif
+
+	if(frq.gt.1.d0) then
+          x(16)=f0*1.0d4/(2.41d0*frq**2)
+          if (usedmx) x(NPAR6+idmx) = x(16)
+        endif
+
 	if(nfit(16).ge.2) then
 	  do 89 i=1,nfit(16)-1
 89	  x(40+i)=x(16) * yrs**i

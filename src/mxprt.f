@@ -97,7 +97,7 @@ c      $Id$
 	elseif (jj.lt.NPAR5) then
 	  write(paramj,1060) jj-NPAR4+2
  1060	  format(' XD',i2.2)
-	else
+	elseif (jj.lt.NPAR6) then
 	  if (2*int(jj/2).ne.jj) then
 	    write(paramj,1070) (jj-NPAR4+1)/2
  1070	    format('FJ',i3.3)
@@ -105,6 +105,9 @@ c      $Id$
 	    write(paramj,1080) (jj-NPAR4)/2
  1080	    format('TJ',i3.3)
 	  endif
+	else
+	  write (paramj,1090) jj-NPAR6
+ 1090	  format('DX',i3.3)
 	endif
 
 	write(72) nn,j,paramj,gcor(j),sig(j),

@@ -236,6 +236,20 @@ c      $Id$
          enddo
       endif
 
+
+      if (usedmx) then
+        write (71,1079),dmxt
+ 1079   format ('DMX',d22.8)
+        do i = 1, ndmx
+          write (71,1080) i,dmx(i),fit1,ferr(NPAR6+i)
+ 1080     format('DMX_',i4.4,1p,d18.8,a,d20.8)
+          write (71,1081) i,dmxr1(i)
+ 1081     format('DMXR1_',i4.4,5p,d16.8)
+          write (71,1082) i,dmxr2(i)
+ 1082     format('DMXR2_',i4.4,5p,d16.8)
+        enddo
+      endif
+
       write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',15x,a)')clklbl(nclk)
       write(71,'(''NTOA'',i22)')ntoa

@@ -98,6 +98,11 @@ c      $Id$
         fbj(i) = 0.
       enddo
 
+      ndmx = 0
+      do i = 1, NDMXMAX
+        dmx(i) = 0.
+      enddo
+
       ndmcalc=0
       nfcalc=0
 
@@ -111,6 +116,10 @@ c      $Id$
 
       usestart = .false.
       usefinish = .false.
+
+      usedmx = .false.
+      ndmx = 0
+      dmxt = 0
 
       eclcoord = .false.
 
@@ -138,7 +147,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*8, value*32, cfit*1, temp*80
+      character line*80, key*16, value*32, cfit*1, temp*80
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -175,8 +184,8 @@ C  The error/comment is ignored by TEMPO
 C  Get key, value and cfit
       jn=1
       call citem(line,ll,jn,key,lk)      
-      if(lk.gt.8)then
-        write(*,'('' Key overflow (8 max): '',a)')key(1:lk)
+      if(lk.gt.16)then
+        write(*,'('' Key overflow (16 max): '',a)')key(1:lk)
         stop
       endif
       if(key(1:1).eq.'#' .or. (key(1:1).eq.'C' .and. lk.eq.1))go to 10
@@ -207,6 +216,10 @@ C  Control parameters
 
       else if(key(1:4).eq.'NDDM')then
          read(value,*)nddm
+
+      else if(key(1:4).eq.'DMX'.and.lk.eq.3)then
+         usedmx = .true.
+         read(value,*)dmxt
 
       else if(key(1:4).eq.'COOR')then
          if(value(1:5).eq.'B1950')ncoord=0
@@ -372,6 +385,33 @@ C  Position parameters
       else if(key(1:5).eq.'POSEP')then
          read(value,*)posepoch
 
+      else if(key(1:4).eq.'DMX_') then
+         if (ikey.gt.NDMXMAX) then
+           write(*,'(''DMX key too high: '',a)')key
+           stop
+         endif
+         ndmx = max(ndmx,ikey)
+         read(value,*)dmx(ikey)
+         nfit(NPAR6+ikey)=1
+
+      else if(key(1:6).eq.'DMXR1_') then
+         if (ikey.gt.NDMXMAX) then
+           write(*,'(''DMX key too high: '',a)')key
+           stop
+         endif
+         ndmx = max(ndmx,ikey)
+         read(value,*)dmxr1(ikey)
+         nfit(NPAR6+ikey)=1
+         
+      else if(key(1:6).eq.'DMXR2_') then
+         if (ikey.gt.NDMXMAX) then
+           write(*,'(''DMX key too high: '',a)')key
+           stop
+         endif
+         ndmx = max(ndmx,ikey)
+         read(value,*)dmxr2(ikey)
+         nfit(NPAR6+ikey)=1
+         
       else if(key(1:3).eq.'DM0'.or.key(1:2).eq.'DM'.and.lk.eq.2)then
          read(value,*)dm
          if(cfit.le.'9')then

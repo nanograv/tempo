@@ -521,7 +521,7 @@ c  Beginning of iteration loop
 	  enddo
 	endif
 
-	do i=NPAR3+1,NPAR5+2*NFBJMAX		!FB, XDOT, FBJ
+	do i=NPAR3+1,NPA	!FB, XDOT, FBJ, DMX
   	  if(nfit(i).ne.0) then
   	    k=k+1
 	    mfit(k)=i
