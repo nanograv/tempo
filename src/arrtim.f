@@ -182,8 +182,9 @@ c       N. Wex transformations at pepoch
 	if (asite.eq.'@') nsite = -1
 
 	fmjd=nfmjd+ffmjd
-	if(rfrq.lt.fmin .or. rfrq.gt.fmax .or. fmjd.lt.start .or. 
-     :      fmjd.gt.finish) go to 10
+	if(rfrq.lt.fmin .or. rfrq.gt.fmax .or. 
+     +      (usestart .and. fmjd.lt.start) .or. 
+     +      (usefinish .and. fmjd.gt.finish)) go to 10
 
 C Arrival time
 	n=n+1
@@ -394,10 +395,15 @@ C  Take a shortcut when called by TZ:
      +    jits+1
 1100	format(i5,f15.8,f11.6,f15.3,11x,i2)
 
+        fmjdlast = fmjd
+
 	if(.not.last) go to 10
 
 c End of input file detected
-100	if(mod(n,modscrn).ne.1) write(*,1100)n,fmjd,dt,1d6*dt*p0,jits+1
+100	continue
+
+        if(mod(n,modscrn).ne.1) 
+     +    write(*,1100)n,fmjdlast,dt,1d6*dt*p0,jits+1
 
 	start=amjd1-1.d-3
 	finish=amjd2+1.d-3
