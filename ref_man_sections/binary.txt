@@ -40,7 +40,7 @@ MSS   Model for main-sequence/pulsar binaries.
       Reference:  Wex, N., astro-ph/9706086 (1997).
 
 ELL1  Model for low eccentricity orbits using Laplace parameters
-      (e times sin(omega), e times cos(omega)) instead of e, omega.
+      (EPS1=e times sin(omega), EPS2=e times cos(omega)) instead of e, omega.
       Reference:  Wex, N., unpublished.
 
 BT1P  BT model with two orbits:  the first may be relativistic, the 
@@ -49,34 +49,46 @@ BT1P  BT model with two orbits:  the first may be relativistic, the
 BT2P  BT model with three orbits:  the first may be relativistic, the
       second and third must be Keplerian 
 
+BTX   BT model with orbital motion expressed in frequency rather than
+      period.  Orbital frequency may vary, either through instantaneous
+      jumps in binary frequency (jump size FBJ_x at time TFBJ_x) or through a
+      Taylor expansion around T0 (FB_x is x'th derivative of binary 
+      frequency).  Orbit size may also be written as a taylor expansion
+      (XDOT_x is x+1'th derivative of X=A SIN I)
+      Reference:  Nice, D., unpublished
+
 The following table summarizes the parameters used by each model.  An 'x'
 indicates a parameter fully implemented.  An 'o' indicates the parameter is
 used at a fixed value, but cannot be fitted.  A '*' indicates the parameter
 is used only to calculate other binary parameters, and is then ignored.
 
 
-           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1 
-A1          x    x     x      x      x      x      x      x      x 
-E           x    x     x      x      x      x      x      x      *
-T0          x    x     x      x      x      x      x      x      *
-PB          x    x     x      x      x      x      x      x      x
-OM          x    x     x      x      x      x      x      x      *
+           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1    BTX
+A1          x    x     x      x      x      x      x      x      x      x
+E           x    x     x      x      x      x      x      x      *      x
+T0          x    x     x      x      x      x      x      x      *      x
+PB          x    x     x      x      x      x      x      x      x      *
+OM          x    x     x      x      x      x      x      x      *      x
 TASC        *                                                    x
-EPS1                                                             x
-EPS2                                                             x
-OMDOT       x    x     x             x      x             x      x
-OM2DOT                                                    x
+EPS1        *                                                    x
+EPS2        *                                                    x
+FB          *    *     *      *      *      *      *      *      *      x
+FB_1        *    *     *      *      *      *      *      *      *      x
+FB_x                                                                    x
+OMDOT       x    x     x             x      x             x      x      x
+OM2DOT                                                    x             x
 XOMDOT                        x
-PBDOT       x    x     x             x      x      x      x      x
+PBDOT       x    x     x             x      x      x      x      x      *
 XPBDOT                        x
-GAMMA       x    x     x             x      x             x
+GAMMA       x    x     x             x      x             x             x
 MTOT                          x                    x
 M2                     x      x                    x      x      x
 SINI             x     x             x             x      x      x
 DTHETA                 x                                  x
-XDOT        x    x     x      x             x      x      x      x
-X2DOT                                                     x
-EDOT        x    x     x      x             x      x      x      x
+XDOT        x    x     x      x             x      x      x      x      x
+X2DOT                                                     x             
+XDOT_x                                                                  x
+EDOT        x    x     x      x             x      x      x      x      x
 EPS1DOT                                                          x
 EPS2DOT                                                          x
 DR                     o                           o      o    

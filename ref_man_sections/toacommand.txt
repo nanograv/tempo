@@ -7,11 +7,14 @@ any).  Note that TOA commands may not be used in the header.
 
 DITHER  x   Add Gaussian noise with rms=x us.
 EFAC    x   Multiply uncertainties by x
+EMAX    x   Ignore TOAs with residual higher than x us
+EMAP    x   Ignore TOAs with residual higher than x pulse periods
 EMIN    x   Set minimum uncertainty to x
 EQUAD   x   Additional uncertainty in us, added in quadrature
 FMAX    x   Ignore TOAs at frequencies higher than x
 FMIN    x   Ignore TOAs at frequencies lower than x
 INCLUDE x   Insert contents of file x here; may be used recursively
+INFO    x   Write x to info.tmp for subsequent TOAs (until next INFO card)
 JUMP        Beginning or end of a jump segment
 MODE    x   x=0, no weighting;  x=1, use estimated uncertainties
 NOSKIP	    End of a SKIP segment

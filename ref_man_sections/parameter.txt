@@ -31,6 +31,10 @@ T0_n     Epoch of periastron passage of n'th orbit (MJD)   (n=1,2,3; default 1)
 TASC     Epoch of ascending node passage (MJD)
 PB_n     Period of n'th orbit (days)                       (n=1,2,3; default 1)
 OM_n     Longitude of periastron passage, n'th orbit (deg) (n=1,2,3; default 1)
+FB       Frequency of orbit                                (n=10)
+FB_n     n'th time derivative of frequency of orbit        (n=10)
+FBJ_n    Jump in orbital frequency                         (n=10)
+TFBJ_n   Time of n'th jump in orbital frequency            (n=10)
 EPS1     First Laplace parameter [eccentricity times sin(omega)]
 EPS2     Second Laplace parameter [eccentricity times cos(omega)]
 EPS1DOT  Time derivative of EPS1
@@ -48,6 +52,7 @@ M2       Companion mass (solar masses)
 DR       Relativistic deformation of the orbit (not fit)
 DTHETA   Relativistic deformation of the orbit (-6) 
 XDOT     Rate of change of projected semi-major axis (-12)
+XDOT_n   n+1'th derivative of projected semi-major axis    (n=10)
 X2DOT    Second time derivative of projected semi-major axis (1/s)
 EDOT     Rate of change of eccentricity (-12)
 AFAC     aberration geometric factor (sin(eta)/sin(lambda))
