@@ -1,5 +1,5 @@
 c      $Id$
-	program tempo
+        program tempo
 
 C  Analyzes pulsar time-of-arrival data to solve for period, first
 C  and second derivatives, RA and DEC, proper motion, dispersion
@@ -127,6 +127,7 @@ C  99	gro.99			newval
 
 	include 'dim.h'
 	include 'acom.h'
+        include 'array.h'
 	include 'bcom.h'
 	include 'clocks.h'
 	include 'dp.h'
@@ -137,12 +138,14 @@ C  99	gro.99			newval
 	include 'tz.h'
 
 	logical tz,lw, nostop
+        logical memerr
         character*80 infile,ut1file,resfile1,obsyfile,
      +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
 	character*160 npulsefile
 	character date*9,date2*9,damoyr*9,label*12,parfile*40
 	integer time, n
-        real*8 xmean(NPA),dnpls(NPTSMAX),alng(36)
+        real*8 xmean(NPA),alng(36)
+
 	common/leapsec/mjdleap(50),nleaps
 	data resfile1/'resid1.tmp'/,resfile2/'resid2.tmp'/
 	data listfile/'tempo.lis'/,lw/.true./
@@ -151,102 +154,12 @@ C  99	gro.99			newval
 
 	version = 11.005
 
+	memerr = .false.
+
 c  Get command-line arguments
 
-	sim      =.false.
-	oldpar   =.false.
-	gro      =.false.
-	lresid1  =.false.
-	psrframe =.false.
-	xitoa    =.false.
-	tz       =.false.
-        npulsein =.false.
-        npulseout=.false.
-	jumpout  =.false.
-	nostop   =.false.  ! if true, don't stop even if apparently converged
-	parfile='def'
-
-	call getenv('TEMPO',path)
-	lpth=index(path,' ')-1
-	hlpfile=path(1:lpth)//'/tempo.hlp'
-
-	narg=iargc()
-	iarg=0
-	if(narg.lt.1)go to 9998
-
-	do while(iarg.lt.narg)
-	   iarg=iarg+1
-	   call getarg(iarg,infile)
-
-	   if(infile(1:1).eq.'-')then
-
-	      if(infile(2:2).eq.'c')then
-                 nostop = .true.
-
-	      else if(infile(2:2).eq.'d')then
-		 iarg=iarg+1
-		 call getarg(iarg,path)
-		 lpth=index(path,' ')-1
-		 hlpfile=path(1:lpth)//'/tempo.hlp'
-		 
-	      else if(infile(2:2).eq.'f')then
-		 iarg=iarg+1
-		 call getarg(iarg,parfile)
-		 
-	      else if(infile(2:2).eq.'g')then
-		 gro=.true.
-		 obsflag='P'
-		 if(infile(3:3).ne.' ') obsflag=infile(3:3)
-
-	       else if (infile(2:2).eq.'h') then
-		 goto 9998
-
-	      else if (infile(2:2).eq.'n') then
-		 if (infile(3:3).eq.'i') then
-		   iarg=iarg+1
-                   call getarg(iarg,npulsefile)
-                   npulsein = .true.
-                 elseif (infile(3:3).eq.'o') then
-                   iarg=iarg+1
-                   call getarg(iarg,npulsefile)
-                   npulseout = .true.
-                 else
-                   write(*,'(''Unrecongnised option: '',a)')infile
-                   goto 9998
-                 endif
-
-	       else if(infile(2:2) .eq. 'j')then
-		 jumpout=.true.
-
-	      else if(infile(2:2).eq.'o')then
-		 oldpar=.true.
-		 
-	      else if(infile(2:2).eq.'p')then
-		 psrframe=.true.
-		 
-	      else if(infile(2:2).eq.'r')then
-		 lresid1=.true.
-		 open(30,file=resfile1,form='unformatted',
-     +                 status='unknown')
-		 
-	      else if(infile(2:2).eq.'v') then
-		 write(*,1001) version
- 1001		 format(' TEMPO v ',f6.3)
-		 go to 9999
-		 
-	      else if(infile(2:2).eq.'x')then
-		 xitoa=.true.
-		 open(45,file='itoa.out',status='unknown')
-		 
-	      else if(infile(2:2).eq.'z')then
-		 tz=.true.
-
-	      else
-		 write(*,'(''Unrecognised option: '',a)')infile
-		 go to 9998
-	      endif
-	   endif
-	enddo
+        call tparin(nostop,tz,lpth,nparmax,nptsmax,version,
+     +     npulsefile,infile,path,resfile1,hlpfile,parfile)
 
  	path=path(1:lpth)//'/tempo.cfg'
 	open(2,file=path,status='old',err=4)
@@ -256,6 +169,8 @@ c  Get command-line arguments
 5	kephem=0
 	nfl=index(infile,' ')-1
 
+        nbuf = nptsmax * (nparmax+8) 
+        call tmalloc(nptsmax,nbuf) ! allocate large arrays
 
 	clklbl(0)='UNCORR'
 	do 510 i=1,20
@@ -423,9 +338,12 @@ c  Open TDB-TDT clock offset file
 		close(2)
 		call setup(version,infile,obsyfile,alng,nsmax,parfile)
 		call newsrc(nits,jits,nboot)
-		call arrtim(mode,xmean,sumdt1,sumwt,dnpls,ct2,alng,nsmax,
-     +   	     nz,tz,nits,jits)
-		call tzfit(ipsr,dnpls(2),f0,dm,ct2,t0,pb)
+		call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
+     +               ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,
+     +               nits,jits,buf(1+bufoff),npmsav(1+npmsavoff),
+     +               ksav(1+ksavoff),nbuf,memerr)
+
+		call tzfit(ipsr,dnpls(2+dnplsoff),f0,dm,ct2,t0,pb)
 		rewind 31
 		close(44)
 		rewind 50
@@ -496,15 +414,51 @@ c  Open parameter and residual files
 
 	  call setup(version,infile,obsyfile,alng,nsmax,parfile)
 
- 60    	  call newsrc(nits,jits,nboot)
+c         Allocate large arrays:  
+ 58       continue
+	  nbuf = nptsmax * (nparmax+8) 
+	  call tmalloc(nptsmax,nbuf) ! allocate large arrays
+
+C         The main loop:
+ 60       continue
+          call newsrc(nits,jits,nboot)
+
+ 62       continue  ! re-entry point after re-allocating arrays
           rewind 32
-          call arrtim(mode,xmean,sumdt1,sumwt,dnpls,ct2,alng,nsmax,
-     +       nz,tz,nits,jits)
+          call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
+     +         ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,nits,jits,
+     +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),nbuf,
+     +         memerr)
+
+	  if (memerr) then
+            call tfree()
+	    write (*,1060)
+ 1060	    format ("Warning: arrays too small on first pass.")
+	    write (*,1061) nptsmax, nparmax
+ 1061	    format ("  Current settings:        -m ",i7," -l ",i7)
+	    write (*,1062) n, nparam
+ 1062	    format ("  Better to run:     tempo -m ",i7," -l ",i7)
+	    write (*,1063)
+ 1063	    format ("  Re-allocating arrays and running again.")
+            nptsmax = n
+            nparmax = nparam+8
+            memerr = .false.
+            nbuf = nptsmax * (nparmax+8) 
+            call tmalloc(nptsmax,nbuf) ! allocate large arrays
+            nparam = nparam0    ! un-do any change to nparam from arrtim call
+            goto 62
+          endif
+
 	  wmax=0.0
-          call fit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,lw)
+          call fit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,
+     +         lw,ddmch(1+ddmchoff),
+     +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff))
+
           asig=sqrt(varfit)
 	  if(nboot.gt.0)
-     + 	     call bootmc(n,mode,nz,nboot,nparam,mfit,freq,ferr)
+     +         call bootmc(n,mode,nz,nboot,nparam,mfit,freq,ferr,
+     +         ddmch(1+ddmchoff),
+     +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff))
           call newval(chisqr,n-nparam,rms0,rms1,nits,jits,wmax,nboot)
 	  if(abs(rms1 - rms0).le.max(1.d-4*abs(rms0),0.1d0).and.
      +		.not.nostop) go to 9999
@@ -521,4 +475,3 @@ c  Open parameter and residual files
 
  9999	continue
 	end
-

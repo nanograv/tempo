@@ -1,6 +1,6 @@
 c      $Id$
 
-c       NPTSMAX  maximum number of TOAs
+c       NPTSDEF  default maximum number of TOAs
 c       NPT      maximum number of clock corrections
 
 c       NGLT     maximum number of glitches
@@ -19,13 +19,13 @@ c       NPAR4+1 to NPAR5  Orbital size (ASINI) derivatives (3 to NXDOTMAX)
 c       NPAR5+1 to NPA    Orbital period jump parameters
 c       NPA      total number of parameters (basic+glitch+jump)
 c       NPAP1    total number of parameters plus one
-c       NBUF     size of virtual memory buffer (why 35*NPTSMAX???)
+c       NBUFDEF  default size of virtual memory buffer (why 35*NPTSMAX???)
 c       NBOOTMAX max size of bootstrap Monte Carlo integraions
 c       NCLKMAX  max number of clock correction files (obs to UTC, UTC to xx)
 c       NEPHMAX  max number of ephemerides
 c       NUTMAX   max number of ut1 corrections
 
-	parameter (NPTSMAX=60000)
+	parameter (NPTSDEF=60000)
 	parameter (NPT=10000)
 	parameter (NGLT=9,NGLP=5)
 	parameter (NJUMP=120)
@@ -39,5 +39,6 @@ c       NUTMAX   max number of ut1 corrections
         parameter (NPAR5=NPAR4+(NXDOTMAX-1))
 	parameter (NPA=NPAR5+2*NFBJMAX)
         parameter (NPAP1=NPA+1)
-	parameter (NBUF=35*NPTSMAX,NBOOTMAX=1024)
+	parameter (NPARDEF=28)
+        parameter (NBOOTMAX=1024)
         parameter (NTZMAX=1000,NCLKMAX=5,NEPHMAX=5,NUTMAX=3000)

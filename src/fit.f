@@ -1,5 +1,7 @@
 c      $Id$
-	subroutine fit(npts,mode,chisqr,varfit,xmean,ymean,sum,nz,wmax,lw)
+      subroutine fit(npts,mode,chisqr,varfit,xmean,ymean,sum,nz,
+     +     wmax,lw,ddmch,
+     +     buf,npmsav,ksav)
 
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
@@ -22,7 +24,9 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	real*8 xmean(NPA),sigmax(NPA),fctn(NPAP1)
 	real*8 r(NPA),a(NPA),sigmaa(NPA),gcor(NPA)
 	logical lw
-	common/dmch/ddmch(NPTSMAX)
+	real*8 ddmch(*)
+        real*8 buf(*)
+        integer npmsav(*), ksav(*)
 	character mark*1,adn*14,date*9,damoyr*9
 
 	rewind 32
@@ -49,7 +53,8 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	wmean=sum/fnpts
 
 	do 67 i=1,npts
-          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms)
+          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
+     +     buf,npmsav,ksav)
           weight=weight/wmean
           sigma=sigma+weight*(y-ymean)**2
           do 66 j=1,nterms
@@ -107,7 +112,8 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
  106    continue
 
 	do 108 i=1,npts
-          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms)
+          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
+     +     buf,npmsav,ksav)
           dt2=y-aa0
           weight=weight/wmean
           do 107 j=1,nterms

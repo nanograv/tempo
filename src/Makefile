@@ -17,7 +17,7 @@
 # compilers and compiler flags
 
 FC = f77
-FFLAGS= -O3 -C
+FFLAGS= -O3 
 
 CC = cc
 CCFLAGS = 
@@ -26,17 +26,17 @@ CCFLAGS =
 # source code for tempo itself.  
 # (note: variables SRC3 and SRC4 are used for making archives)
 
-SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.f \
-        bnrybt.f bnrybtx.f bnrydd.f bnryddgr.f bnryddt.f bnryeh.f bnryell1.f \
-        bnrymss.f \
-        bootmc.f bt2ell1.f chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
-        dskrd.f earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f \
-        galco.f gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f \
-        newbin.f \
+SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
+        blkdbat.f bnrybt.f bnrybtx.f bnrydd.f bnryddgr.f bnryddt.f  \
+        bnryeh.f bnryell1.f bnrymss.f bootmc.f bt2ell1.f \
+        chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
+        earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f galco.f \
+        gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f newbin.f \
         newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
         setup.f sort.f space_motion.f tasc2t0.f tdbinit.f tdbread.f tempo.f \
-        timcalc.f tpohdr.f tzfit.f tzinit.f ut1red.f vmemw.f  ztim.f 
+        timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
+        vmemw.f  ztim.f 
 SRC2 = cutil.c
 SRC3 = acom.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
 	orbit.h tdbcom.h trnsfr.h tz.h vcom.h 

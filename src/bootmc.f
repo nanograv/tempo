@@ -1,12 +1,15 @@
 c      $Id$
-	subroutine bootmc(npts,mode,nz,nboot,nparam,mfit,freq,ferr)
-
+      subroutine bootmc(npts,mode,nz,nboot,nparam,mfit,freq,ferr,ddmch,
+     +     buf,npmsav,ksav)
 C  Implements the "bootstrap method" of Monte Carlo error estimation.
 C  See Numerical Recipes, Second Edition, pp 686 ff.
 
 	implicit real*8 (a-h,o-z)
 	save
 	include 'dim.h'
+	real*8 ddmch(*)
+        real*8 buf(*)
+        integer npmsav(*), ksav(*)
 	real*8 xmean(NPA),freq(NPAP1),ferr(NPAP1),a(NBOOTMAX,NPAP1)
 	real*8 p0(NPAP1),e0(NPAP1),psq(NPAP1),fctn(NPAP1)
 	real*8 fl1(NPAP1),fl2(NPAP1),fh1(NPAP1),fh2(NPAP1)
@@ -43,14 +46,16 @@ C  See Numerical Recipes, Second Edition, pp 686 ff.
 
 	do 30 i=1,npts
 	  ii=npts*ran1(idum) + 1.0		!Randomize the data index
-	  call vmemr(ii,fctn,ct,dt,wgt,dn,terr,frq,fut,rfrq,nterms)
+	  call vmemr(ii,fctn,ct,dt,wgt,dn,terr,frq,fut,rfrq,nterms,
+     +     buf,npmsav,ksav)
 	  do 20 j=1,nterms
 20	  xmean(j)=xmean(j)+wgt*fctn(j)
 	  sum=sum+wgt*dt
 	  sumwt=sumwt+wgt
 30	continue
 
-        call fit(npts,mode,chisqr,varfit,xmean,sum,sumwt,nz,wmax,lw)
+        call fit(npts,mode,chisqr,varfit,xmean,sum,sumwt,nz,wmax,
+     +       lw,ddmch,buf,npmsav,ksav)
 	do 40 j=1,nterms
 	k=mfit(j+1)
 	x=fac*(freq(k)-p0(j))/e0(j)

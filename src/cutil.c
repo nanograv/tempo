@@ -139,3 +139,53 @@ void usleep_(long int *n)
 {
   usleep(*n);
 }
+
+/* mallocx and freex are variants on code suggested
+   by Richard Dodgson (U.Tasmania)  
+
+   sample use:  if a real*8 array of size N is needed:
+      integer ipointer, aoff
+      real*8 a(1)
+      ipointer = mallocx(a(1),n,8,aoff)
+
+   ... we will compare its use to array b(1:n), which is allocated
+       in the normal way:
+      real*8 b(n)
+
+   ... now use a(1+aoff) to a(n+aoff) as array references, i.e.,
+       add aoff to the index of all references to a(); for example,
+       to set the array to 1..n, use:
+
+      do i = 1, n
+         a(i+aoff) = i
+         b(i) = i
+      end do
+
+   ...   when sending the array to a subroutine, use a(1+aoff) in
+         the subroutine call [normally, one would write a(1) or a]
+      call somesub(a(1+aoff))
+      call somesub(b(1))   ...or...
+      call somesub(b)
+
+      call freex(ipointer)
+*/
+
+int mallocx_(char *ref, int *nelem, int *size, int *indeks) {
+        int nbytes;
+        char *where;
+        nbytes = (*nelem)  * (*size) ;
+        where = (char *) malloc(nbytes);
+        if (where == (char *) NULL)
+          { fprintf(stderr,"Out of memory");exit(1); }
+        nbytes = (int) (where - ref);
+        *indeks = nbytes / (*size);
+        return (int) where;
+}
+
+
+void freex_(char *(*where)) {
+        free(*where);
+}
+
+
+

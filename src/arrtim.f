@@ -1,6 +1,7 @@
 c      $Id$
-	subroutine arrtim(mode,xmean,sum,sumwt,dnpls,ct2,alng,nsmax,
-     +    nz,tz,nits,jits)
+      subroutine arrtim(mode,xmean,sum,sumwt,dnpls,ddmch,ct2,
+     +     alng,nsmax,nz,tz,nptsmax,nits,jits,
+     +     buf,npmsav,ksav,nbuf,memerr)
 
 C  Reads pulse arrival times (at observatory, in UTC) from unit 4. Then
 C  computes equivalent coordinate times at solar system barycenter,
@@ -12,13 +13,16 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	implicit real*8 (a-h,o-z)
         save
 	include 'dim.h'
-	real*8 xmean(NPA),fctn(NPAP1),dnpls(NPTSMAX),alng(36)
+	real*8 xmean(NPA),fctn(NPAP1),dnpls(*),ddmch(*),alng(36)
+        real*8 buf(*)
+        integer npmsav(*), ksav(*)
 	real*4 gasdev
         integer ZEROWT(2000),idum
 	integer ilen
 	character*80 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
 	logical first,offset,jdcatc,last,dithmsg,tz,track,search
+	logical memerr
 	include 'acom.h'
 	include 'bcom.h'
 	include 'dp.h'
@@ -32,8 +36,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	common/crds/ rcb(6),rbe(6),rce(6),rse(3),rca(3),rsa(3),rba(3),
      +    rea(3),psid,epsd,pc,ps,tsid,prn(3,3),atut,ut1ut,etat,dtgr,
      +    tdis,bclt
-	common/obsp/ site(3),pos(3),freqhz,bval,sitvel(3)			
-	common/dmch/ddmch(NPTSMAX)
+	common/obsp/ site(3),pos(3),freqhz,bval,sitvel(3)
 	data first/.true./,card2/'JUMP'/,idum/-1/
 
 	offset=.true.
@@ -121,7 +124,11 @@ c       N. Wex transformations at pepoch
 	endif
 
 	comment='        '
- 10	read(lu,1010,end=40) card
+
+C       The main loop starts here!
+
+   10	continue
+   	read(lu,1010,end=40) card
 1010	format(a80)
 	if(card(1:1).lt.'A'.and.card(1:1).ne.'#') go to 50
 	if((card(1:1).ge.'a').and.(card(1:1).le.'z')) go to 50
@@ -365,8 +372,13 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
 
 	if(last) wgt=1.d-10*wgt
 	wt=wgt
-	ntmp=min(n,NPTSMAX)
-	if(tz.and.n.gt.NPTSMAX) stop ' Too many points for tempo -z'
+	ntmp=min(n,nptsmax)
+	if(tz.and.n.gt.nptsmax) stop ' Too many points for tempo -z'
+        if (n.gt.nptsmax) then
+	  if (tz) stop ' Too many points for tempo -z'
+          memerr = .true.  !too many points.  continue through the file
+	  goto 10          !to figure out how many points total we will have
+        endif
 
 	if(xitoa) then				!Write the ITOA file
 C  Write itoa file correctly, including observatory code.  (VMK, June94)
@@ -426,7 +438,6 @@ C  Take a shortcut when called by TZ:
 	x(19)=f0*dtdppng
 	do 90 j=1,nparam-1
 90	fctn(j)=x(mfit(j+1))
-c	print *,"arrtim: Z1",fctn(19)
 	do 92 j=nparam,NPAP1
 92	fctn(j)=0.
 	do 93 j=1,nparam-1
@@ -434,17 +445,19 @@ c	print *,"arrtim: Z1",fctn(19)
         sum=sum+wgt*dt
 	sumsq=sumsq+wgt*dt*dt
 	sumwt=sumwt+wgt
-	call vmemw(n,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,nparam-1)
+	call vmemw(n,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,nparam-1,
+     +     buf,npmsav,ksav,nbuf,memerr)
+
 	nitsz=max0(nits,1)
 	if(mod(n,20*modscrn).eq.1) write(*,1099) max0(nitsz,1)
-1099	format(/'    N       MJD      Residual (p)   Residual (us)',
+1099	format(/'    N       MJD       Residual (p)  Residual (us)',
      +    '  Iteration (of',i2,')'/)
 	if(n.gt.200) modscrn=100
 	amjd1=min(amjd1,fmjd)
 	amjd2=max(amjd2,fmjd)
 	if(mod(n,modscrn).eq.1) write(*,1100)n,fmjd,dt,1d6*dt*p0,
      +    jits+1
-1100	format(i5,f15.8,f11.6,f15.3,11x,i2)
+1100	format(i6,f15.8,f11.6,f15.3,11x,i2)
 
         fmjdlast = fmjd
 
@@ -462,8 +475,11 @@ c End of input file detected
 	if(.not.tz) then
 	  sigma1=sqrt((sumsq-sum*sum/sumwt)/sumwt)*p0*1000.d0
 	  m=-1
-	  call vmemw(m,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,nparam-1)
+	  call vmemw(m,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,nparam-1,
+     +     buf,npmsav,ksav,nbuf,memerr)
+
 	endif
+9990	continue
 	return
 	end
 

@@ -1,5 +1,6 @@
 c      $Id$
-	subroutine vmemw(n,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,npm)
+      subroutine vmemw(n,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,npm,
+     +     buf,npmsav,ksav,nbuf,memerr)
 
 C  Virtual memory handler.  Uses resid1.tmp only if "-r" was specified.
 
@@ -7,12 +8,21 @@ C  Virtual memory handler.  Uses resid1.tmp only if "-r" was specified.
 	include 'dim.h'
 	include 'vcom.h'
 	real*8 fctn(NPAP1)
-	integer*2 npmsav
-	common/vmem/ buf(NBUF),npmsav(NPTSMAX),ksav(NPTSMAX)
-	save k
+        real*8 buf(*)
+        integer npmsav(*), ksav(*)
+	logical memerr
 
 	if(n.eq.-1) return
 	if(n.eq.1) k=0			!First TOA, set buf pointer
+	if(n.eq.1) then
+	  k = 0
+	else
+          k = ksav(n-1) + npmsav(n-1) + 8
+        endif
+	if(k+npm+8.gt.nbuf) then
+          memerr = .true.
+	  goto 990
+        endif
 	ksav(n)=k
 	npmsav(n)=npm			!Save value of npm
 	do 10 i=1,npm			!Put data into buf
@@ -27,24 +37,23 @@ C  Virtual memory handler.  Uses resid1.tmp only if "-r" was specified.
 	buf(k+7)=fmjd
 	buf(k+8)=rfrq
 	k=k+8				!Update pointer
-	if(k.ge.NBUF-128) stop 'VMEM buffer overflow'	!Abort
 	if(lresid1) then
 	  if(n.eq.1) rewind 30
 	  write(30) npm,(fctn(i),i=1,npm),ct,dt,wgt,dn,terr,frq,fmjd,rfrq
-	  return
 	endif
+  990	continue
+	return
 	end
 
-	subroutine vmemr(n,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,npmx)
+	subroutine vmemr(n,fctn,ct,dt,wgt,dn,terr,frq,fmjd,rfrq,npmx,
+     +     buf,npmsav,ksav)
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
 	real*8 fctn(NPAP1)
-	integer*2 npmsav
-	common/vmem/ buf(NBUF),npmsav(NPTSMAX),ksav(NPTSMAX)
+        real*8 buf(*)
+        integer npmsav(*), ksav(*)
 
-C###	if(n.eq.1) k=0			!Set pointer
 	k=ksav(n)
-	npm=npmx			!Silence Lahey warning
 	npm=npmsav(n)
 	do 20 i=1,npm
 20	fctn(i)=buf(i+k)
@@ -59,7 +68,6 @@ C###	if(n.eq.1) k=0			!Set pointer
 	frq=buf(k+6)
 	fmjd=buf(k+7)
 	rfrq=buf(k+8)
-C###	k=k+8				!Update pointer
 
 	return
 	end

@@ -16,6 +16,9 @@ c      $Id$
 	include 'eph.h'
 	include 'glitch.h'
 
+             ! jits = iteration number
+             ! jits==0: first time through, initialize
+             ! jits==-1: special case, don't initialize, then set jits=0
 	if(jits.ne.0) goto 30
 
 C  Zero out all input parameters and fit coefficients.
@@ -338,7 +341,9 @@ C Read clock corrections
 
 c  Beginning of iteration loop
 
- 30	write(31,'(/)')
+ 30     continue
+        if (jits.eq.-1) jits=0
+	write(31,'(/)')
 	if(nits.gt.1)write(31,1038)jits+1,nits
  1038	format('Iteration',i3,' of',i3/)
 
@@ -526,7 +531,9 @@ c  Beginning of iteration loop
 
 	nparam=k
 	write(31,1060) nparam
-1060	format(/'Fit for',i3,' parameters, including phase.')
+1060	format(/'Fit for',i3,
+     +      ' parameters, including phase but excluding jumps')
+	nparam0 = nparam  
 
 	return
 
