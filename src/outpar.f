@@ -463,44 +463,47 @@ c=======================================================================
  2040    format('EPS2DOT',f19.6,a,f20.6)
       endif
 
-      if(afac.ne.0.)then
-        write (71,10251)afac
-      endif
-10251 format('AFAC',f22.7)
+      if(afac.ne.0.)write (71,2200) 'AFAC  ',afac
+      if(dr.ne.0.)  write (71,2200) 'DR    ',dr*1.d6
+      if(a0.ne.0.)  write (71,2200) 'A0    ',a0*1.d6
+      if(b0.ne.0.)  write (71,2200) 'B0    ',b0*1.d6
+      if(bp.ne.0.)  write (71,2200) 'BP    ',bp
+      if(bpp.ne.0.) write (71,2200) 'BPP   ',bpp
+ 2200 format(a6,f20.7)
 
       if(nplanets.gt.0)then
          do j=2,nplanets+1
             jj=16+j*5
             if(nfit(jj).gt.0)then
-               write(71,1026)j,a1(j),fit1,ferr(jj)
+               write(71,3026)j,a1(j),fit1,ferr(jj)
             else
-               write(71,1026)j,a1(j)
+               write(71,3026)j,a1(j)
             endif
- 1026       format('A1_',i1,f22.9,a,f20.9)
+ 3026       format('A1_',i1,f22.9,a,f20.9)
             if(nfit(jj+1).gt.0)then
-               write(71,1027)j,e(j),fit1,ferr(jj+1)
+               write(71,3027)j,e(j),fit1,ferr(jj+1)
             else
-               write(71,1027)j,e(j)
+               write(71,3027)j,e(j)
             endif
- 1027       format('E_',i1,f23.9,a,f20.9)
+ 3027       format('E_',i1,f23.9,a,f20.9)
             if(nfit(jj+2).gt.0)then
-               write(71,1028)j,t0(j),fit1,ferr(jj+2)
+               write(71,3028)j,t0(j),fit1,ferr(jj+2)
             else
-               write(71,1028)j,t0(j)
+               write(71,3028)j,t0(j)
             endif
- 1028       format('T0_',i1,f22.9,a,f20.9)
+ 3028       format('T0_',i1,f22.9,a,f20.9)
             if(nfit(jj+3).gt.0)then
-               write(71,1029)j,pb(j),fit1,ferr(jj+3)
+               write(71,3029)j,pb(j),fit1,ferr(jj+3)
             else
-               write(71,1029)j,pb(j)
+               write(71,3029)j,pb(j)
             endif
- 1029       format('PB_',i1,f22.12,a,f20.12)
+ 3029       format('PB_',i1,f22.12,a,f20.12)
             if(nfit(jj+4).gt.0)then
-               write(71,1030)j,omz(j),fit1,ferr(jj+4)*57.295
+               write(71,3030)j,omz(j),fit1,ferr(jj+4)*57.295
             else
-               write(71,1030)j,omz(j)
+               write(71,3030)j,omz(j)
             endif
- 1030       format('OM_',i1,f22.6,a,f20.6)
+ 3030       format('OM_',i1,f22.6,a,f20.6)
          enddo
       endif
 
