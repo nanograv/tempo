@@ -97,20 +97,22 @@ ell12bt.o: ell12bt.f dim.h orbit.h
 ephinit.o: ephinit.f ephcom.h
 ephread.o: ephread.f ephcom.h
 fit.o: fit.f acom.h bcom.h orbit.h dim.h tz.h
-inpar.o: inpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h
+inpar.o: inpar.f acom.h bcom.h dp.h eph.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h
 matinv.o: dim.h
 mxprt.o: mxprt.f dim.h
 newbin.o: newbin.f acom.h orbit.h dim.h
-newsrc.o: newsrc.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h
-newval.o: newval.f acom.h bcom.h dp.h trnsfr.h orbit.h dim.h glitch.h
+newsrc.o: newsrc.f acom.h bcom.h dp.h eph.h trnsfr.h orbit.h clocks.h dim.h glitch.h
+newval.o: newval.f acom.h bcom.h dp.h eph.h trnsfr.h orbit.h clocks.h dim.h glitch.h
 outpar.o: outpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h eph.h
-pcard.o: pcard.f acom.h dim.h
+pcard.o: pcard.f acom.h dim.h dp.h
 resid.o: resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.o: setup.f acom.h dim.h
 tdbinit.o: tdbinit.f tdbcom.h
 tdbread.o: tdbread.f tdbcom.h
-tempo.o: tempo.f acom.h bcom.h dp.h orbit.h dim.h trnsfr.h tz.h
-timcalc.o: timcalc.f acom.h dim.h trnsfr.h
+tempo.o: tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h
+timcalc.o: timcalc.f acom.h dim.h dp.h trnsfr.h
+tmalloc.o: array.h
+tparin.o: tparin.f acom.h dim.h vcom.h
 tpohdr.o: tpohdr.f dim.h tz.h
 tzfit.o: tzfit.f dim.h acom.h trnsfr.h tz.h
 tzinit.o: tzinit.f dim.h tz.h
