@@ -261,7 +261,9 @@ c  Open ut1 file (if present)
 c  Open primary output file (tempo.lis)
  11	open(31,file=listfile,status='unknown')
 
-	if (npulsein .or. npulseout) then
+	if (npulsein) then
+	  open(35,file=npulsefile,status='old')
+	else if (npulseout) then
 	  open(35,file=npulsefile,status='unknown')
         endif
 
