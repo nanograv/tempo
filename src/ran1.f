@@ -9,6 +9,9 @@ C  any negative value to initialize or reinitialize the sequence.
 	parameter (m2=134456,ia2=8121,ic2=28411)
 	parameter (m3=243000,ia3=4561,ic3=51349)
 	data iff/0/
+	data ix1/0/
+	data ix2/0/
+	data ix3/0/
 
 	rm1=1./m1
 	rm2=1./m2
