@@ -22,8 +22,10 @@ C  DJN 18-Aug-92  Allow up to 36 sites
         integer wflag
 	character*80 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
+        character*20 amjd
 	logical first,offset,jdcatc,last,dithmsg,tz,track,search
 	logical memerr
+	integer i1, i2
         character*160 infofile
 	include 'acom.h'
 	include 'bcom.h'
@@ -183,12 +185,26 @@ c    two cases by searching for the "+" or "-" indicative of a pulsar name.
  51	continue
 
 	if(nfmt.eq.0) then				! Princeton format
-	  if(card(30:30).eq.'.') read(card,10500) asite,rfrq,
-     +      nfmjd,ffmjd,aterr,ddm
-10500	  format(a1,14x,f9.0,i5,f15.14,a9,15x,f10.0)
-	  if(card(31:31).eq.'.') read(card,10501) asite,rfrq,
-     +      nfmjd,ffmjd,aterr,ddm
-10501	  format(a1,14x,f9.0,i6,f14.13,a9,15x,f10.0)
+
+	  read(card,10500) asite,rfrq,amjd,aterr,ddm
+10500	  format(a1,14x,f9.0,a20,a9,15x,f10.0)
+
+          ! Clean up MJD and separate out integer and
+          ! fractional parts.  It can have either of these forms:
+          ! " xxxxx.xxxxxxxxxxxxx" or "xxxxx.xxxxxxxxxxxxxx"
+          ! Sometimes it has a space and then junk, such as:
+          ! "xxxxx.xxxxxxxxxx xxx". anything after the space
+          ! should be ignored.
+          i1 = index(amjd,'.')
+          i2 = index(amjd(i1+1:20),' ') 
+          if (i2.eq.0) then
+            i2 = 20
+          else
+            i2 = i1+i2
+          endif
+          read (amjd(1:i1-1),*) nfmjd
+          read (amjd(i1:i2),*) ffmjd
+
 	  if(nfmjd.lt.30000)nfmjd=nfmjd+39126           ! Convert 1966 days to MJD
 
 	  iz = 1
