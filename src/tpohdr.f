@@ -1,8 +1,10 @@
 c      $Id$
-	subroutine tpohdr(oldpar,pardir,ncoord,t0,pb,p0,dm,nbin,ipsr)
+	subroutine tpohdr(oldpar,pardir,parfile,ncoord,t0,pb,p0,dm,
+     :      nbin,ipsr)
+
 
 	implicit real*8 (a-h,o-z)
-	character pardir*(*),line*80,path*160
+	character pardir*(*),parfile*(*),path*160
 	character*12 zname
 	logical oldpar
 
@@ -71,22 +73,14 @@ c      $Id$
  1013	   format(40x,2f20.0)
 
 	else                                       ! New-style parameters
-
-	   kd=index(pardir,' ')-1
-	   kn=index(pname,' ')-1
-	   path=pardir(1:kd)//pname(1:kn)//'.par'
-	   open(12,file=path,status='old',err=999)
-
-	   rewind 49
- 20	   read(12,1000,end=22)line
-	   do j=80,1,-1
-	      if(line(j:j).ne.' ')go to 24
-	   enddo
- 24	   write(49,1000)line(1:j)
-	   go to 20
-
- 22	   close(12)
-	   rewind 49
+	   if(parfile.eq.'def')then
+	      kd=index(pardir,' ')-1
+	      kn=index(pname,' ')-1
+	      path=pardir(1:kd)//pname(1:kn)//'.par'
+	   else
+	      path=parfile
+	   endif
+	   open(49,file=path,status='old',err=999)
 	   call rdpar(nits)	! To get TZ ref params
 	   rewind 49
 	endif

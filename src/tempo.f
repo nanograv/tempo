@@ -207,13 +207,7 @@ c  Get command-line arguments
 		 
 	      else if(infile(2:2).eq.'z')then
 		 tz=.true.
-		 infile='tz.tmp'
-		 tzfile='tz.in'
-		 if(iarg.lt.narg)then
-		    iarg=iarg+1
-		    call getarg(iarg,tzfile)
-		 endif
-		 
+
 	      else
 		 write(*,'(''Unrecognised option: '',a)')infile
 		 go to 9998
@@ -221,18 +215,19 @@ c  Get command-line arguments
 	   endif
 	enddo
 
- 3	path=path(1:lpth)//'/tempo.cfg'
+ 	path=path(1:lpth)//'/tempo.cfg'
 	open(2,file=path,status='old',err=4)
-	goto 5
- 4	print*,'Cannot open '//path(1:lpth)//'/tempo.cfg'
-	goto 9999
- 5	kephem=0
+	go to 5
+4	print*,'Cannot open '//path(1:lpth)//'/tempo.cfg'
+	go to 9999
+5	kephem=0
 	nfl=index(infile,' ')-1
 
 
 	clklbl(0)='UNCORR'
 	do 510 i=1,20
-	  read(2,'(a)',end=515)line
+	  read(2,1000,end=515)line
+1000	  format(a)
 	  j=1
 	  call citem(line,80,j,label,k)
 	  call upcase(label)
@@ -274,16 +269,16 @@ c  Get command-line arguments
 	     if(kephem.le.NEPHMAX)then
 		ephfile(kephem)=fname(1:k)
 	     else
-		goto 513
+		go to 513
 	     endif
 	  else 
 	     write(*,'(''Unrecognised label: '',a)')label
 	  endif
  510	continue
-	goto 515
+	go to 515
 
  513	write(*,'(''Too many EPH files!'')')
-	goto 9999
+	go to 9999
 
  515	close(2)
 
@@ -323,16 +318,14 @@ c  Open TDB-TDT clock offset file
 
 	if (tz) then  ! generate predictive ephemeris (polyco.dat),like old TZ
 
-c  Open parameter and residual files
-	  if (.not.oldpar) then
-	     if(parfile.eq.'def')then
-		n=index(infile,'.')-1
-		if(n.lt.0)n=index(infile,' ')-1
-		parfile=infile(1:n)//'.par'
-	     endif
-	     open(49,file=parfile,status='unknown')
-	     parunit = 49
-	  endif
+	   if(infile(1:1).eq.'-')then
+	      tzfile='tz.in'
+	   else
+	      tzfile=infile
+	   endif
+	   infile='tz.tmp'
+
+	  if(.not.oldpar)parunit=49
 	  open(50,file=infile,status='unknown')
 	
 	  call tzinit(obsyfile,sitelng,num)
@@ -358,7 +351,7 @@ c  Open parameter and residual files
  1012	  format(1x,a9,' through ',a9/)
  
 	  do ipsr=1,num
-	    call tpohdr(oldpar,pardir,ncoord,t0,pb,p0,dm,nbin,ipsr)
+	    call tpohdr(oldpar,pardir,parfile,ncoord,t0,pb,p0,dm,nbin,ipsr)
 	    if (name(ipsr).eq.'done') then
 	      tsid=1.d0/1.002737909d0
 	     
@@ -376,19 +369,21 @@ c  Open parameter and residual files
 		rewind 50
 	      enddo
 	    endif
+	    if(.not.oldpar)close(49)
 	  enddo
 
           do 890 ipsr=1,num
-            if (name(ipsr).ne.'done') 
-     +         print *,'PSR ',name(ipsr),' not in data base'
+            if (name(ipsr).ne.'done')then
+	       if(parfile.eq.'def')then
+		  print *,'PSR ',name(ipsr),' not in data base'
+	       else
+		  print *,'Parameter file not found: ',parfile
+	       endif
+	    endif
  890      continue
           close(21)
           close(31)
           close(50)
-	  if(.not.oldpar)then
-	     if (parunit.eq.49) close(49)
-	     call system('rm tz.par')
-	  endif
 	  call system('rm tempo.lis tz.tmp')
 
 	else  ! Standard TEMPO execution
@@ -419,7 +414,7 @@ c  Open parameter and residual files
 	  endif
 
 	  goto 911
- 910	  print *,'Input file is empty (except possibly for comments)'
+910	  print *,"Input file is empty (except possibly for comments)"
 	  goto 9999
  911	  continue
 
@@ -458,6 +453,7 @@ c  Open parameter and residual files
 	go to 9999
 
  9997	write(*,'(/''File '',a,'' not found'')')infile(1:nfl)
+        goto 9999
 
  9998	call system('more '//hlpfile)
 
