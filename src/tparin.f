@@ -58,6 +58,7 @@ c     default values of parameters
       npulseout = .false.
       oldpar = .false.
       psrframe = .false.
+      ssdmflag = 1
       tz = .false.
       xitoa = .false.
       nparmax = NPARDEF
@@ -129,6 +130,9 @@ c     default values of parameters
             else if (s(i:i).eq.'r') then
               lresid1 = .true.
               open(30,file=resfile1,form='unformatted',status='unknown')
+            else if (s(i:i).eq.'s') then
+              s2 = getparm(s,i,ii,iarg,narg)
+              read (s2,*) ssdmflag
             else if (s(i:i).eq.'v') then
               write(*,1001) version
  1001         format (' Tempo v ',f6.3)

@@ -155,8 +155,12 @@ C     R IS DISTANCE FROM SUN TO SITE
 C     compute interplanetary effect assuming 10 e-/cc at 1 AU
          CTH = DOT(POS,RSA)/DSQRT(DOT(RSA,RSA))
          THETH = DACOS(CTH)
-         PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
-         PLDIS = PLDIS/2.		
+         if (SSDMFLAG.eq.0) then
+           pldis = 0
+         else
+           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
+           PLDIS = PLDIS/2.		
+         endif
          TDIS = (BVAL+PLDIS)/FREQF**2
 c     
  115     nmjdc=nmjdu
@@ -238,8 +242,12 @@ c first add observatory velocity to EMB's (JMW)
 
 c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          THETH = DACOS(CTH)
-         PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
-         PLDIS = PLDIS/2.
+         if (SSDMFLAG.eq.0) then
+           PLDIS = 0
+         else
+           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
+           PLDIS = PLDIS/2.
+         endif
 		
          TDIS = (BVAL+PLDIS)/FREQF**2
 
