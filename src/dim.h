@@ -33,7 +33,7 @@ c       NUTMAX   max number of ut1 corrections
 	parameter (NFBMAX=20)
 	parameter (NXDOTMAX=10)
         parameter (NFBJMAX=120)
-        parameter (NDMXMAX=120)
+        parameter (NDMXMAX=240)
         parameter (NPAR1=60)
         parameter (NPAR2=NPAR1+NGLT*NGLP)
 	parameter (NPAR3=NPAR2+NJUMP)
