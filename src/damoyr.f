@@ -26,6 +26,7 @@ C  Converts integer*4 MJD to dd-mmm-yy
 	j=12
 40	mo=month(j)
 	iyr=iyr-1900
+	if (iyr.gt.99) iyr=iyr - 100
 	write(date,1040) iday,mo,iyr
 1040	format(i2,'-',a3,'-',i2)
 	damoyr=date
