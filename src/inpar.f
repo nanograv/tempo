@@ -698,6 +698,11 @@ c     binary periods, make the conversion if possible
         enddo
       endif
 
+c     in any case, make sure pb(1) is set, so orbital phase calculations
+c     for tempo.lis, resid2.tmp can be done (albeit with limited accuracy, 
+c     since this will be done with pre-fit orbital period).
+      if (setfb .and. pb(1).eq.0) pb(1) = (1.d0/fb(1))/86400.d0
+
 
 c     if binary periods are input but binary model requires 
 c     binary frequencies, make the conversion 
