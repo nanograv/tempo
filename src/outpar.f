@@ -308,7 +308,7 @@ c=======================================================================
          else
             write(71,2011)t0asc
          endif
- 2011    format('T0ASC',f21.9,a,f20.9)
+ 2011    format('TASC',f21.9,a,f20.9)
 
          if(nfit(10).gt.0)then
             write(71,2010)eps1,fit1,ferr(10)

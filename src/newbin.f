@@ -19,7 +19,7 @@ c --- output of Keplerian parameters ---
      +          ''PB'',9x,''OMEGA''/)')
 	else
 	   write(31,'(//4x,''A1 sin(i)'',4x,''EPS1'',10x,''EPS2'',12x,
-     +         ''PB(days)'',11x,''T0ASC(MJD)''/)')
+     +         ''PB(days)'',11x,''TASC(MJD)''/)')
 	endif 
 
 	do i=1,1+nplanets
