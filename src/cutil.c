@@ -170,16 +170,16 @@ void usleep_(long int *n)
       call freex(ipointer)
 */
 
-int mallocx_(char *ref, int *nelem, int *size, int *indeks) {
-        int nbytes;
-        char *where;
+void *mallocx_(void *ref, int *nelem, int *size, int *indeks) {
+        long nbytes;    /*  long integer necessary on 64-bit systems */
+        void *where;
         nbytes = (*nelem)  * (*size) ;
         where = (char *) malloc(nbytes);
         if (where == (char *) NULL)
           { fprintf(stderr,"Out of memory");exit(1); }
-        nbytes = (int) (where - ref);
+        nbytes = (long) ((char *)where - (char *)ref);
         *indeks = nbytes / (*size);
-        return (int) where;
+        return where;
 }
 
 
