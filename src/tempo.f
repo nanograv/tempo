@@ -465,7 +465,8 @@ C         The main loop:
      +         call bootmc(n,mode,nz,nboot,nparam,mfit,freq,ferr,
      +         ddmch(1+ddmchoff),
      +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff))
-          call newval(chisqr,n-nparam,rms0,rms1,nits,jits,wmax,nboot)
+          call newval(chisqr,n-nz-nparam,rms0,rms1,nits,jits,wmax,
+     +                nboot)
 	  if(abs(rms1 - rms0).le.max(1.d-4*abs(rms0),0.1d0).and.
      +		.not.nostop) go to 9999
 
