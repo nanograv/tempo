@@ -247,6 +247,13 @@ c  Print updated parameters
 	   write(31,10521) omdot,gamma,pbdot*e12,si,am,am2
 	endif
 
+	if(nbin.eq.3 .and. si.ne.0. .and. am2.ne.0.) then
+	  amtot = (am2*si/(a1(1)*cvel))**1.5 * gm**0.5 * 
+     +		pb(1)*86400.d0/twopi
+	  write (31,10510) amtot
+10510	  format (/'MTOT derived from sin i, M2: ',f10.7)
+	endif
+
 	if(nbin.eq.4) then  !  write out calculated values for DDGR
 	   omd=360.d0*365.25d0*xk/pb(1)
 	   write(31,10511)

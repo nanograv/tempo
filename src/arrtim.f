@@ -42,6 +42,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 1	xmean(j)=0.
 
 	rewind 50
+        if (npulsein.or.npulseout) rewind 35
 	do i=1,nskip
 	  read(50,1002)
  1002	  format(a1)

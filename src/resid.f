@@ -107,8 +107,18 @@ c      $Id$
 	phase5=phase5-phas1
 	nphase=nint(phase5)
 	dnprd=phaseint+nphase
+	if (npulsein) then
+	  read(35,*) dnprdin
+          ddnprd = dnprd-dnprdin
+          dnprd = dnprdin
+        else
+          ddnprd = 0
+        endif
+	if (npulseout.and.jits.eq.0) then
+	  write(35,fmt='(f14.0)') dnprd
+         endif
 	phasefrac=phase5-nphase
-	dt=phasefrac+dphase
+	dt=phasefrac+dphase+ddnprd
 	if(nits.gt.0) then
 	  iphase=dphase+dsign(0.5d0,dphase)
 	  if(jits.eq.0) then
@@ -118,6 +128,7 @@ c      $Id$
 	    dt=dt+kpls
 	  endif
 	endif
+
 
 	if(sim) dt=1.d-6*dither*gasdev(idum)*f0
 	return

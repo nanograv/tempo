@@ -108,6 +108,7 @@ C  31	tempo.lis		tempo
 C  32	resid2.tmp		tempo
 C  33	gro.1			tempo
 C  34	gro.2			newbin
+C  35   pulse number file       tempo
 C  42	ut1.dat			tempo
 C  43   TDB-TDT ephemeris       tempo/tdbinit
 C  44   BC ephemeris            newsrc/ephinit
@@ -135,6 +136,7 @@ C  99	gro.99			newval
 	logical tz,lw
         character*80 infile,ut1file,resfile1,obsyfile,
      +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
+	character*160 npulsefile
 	character date*9,date2*9,damoyr*9,label*12,parfile*40
 	integer time, n
         real*8 xmean(NPA),dnpls(NPTSMAX),alng(36)
@@ -148,13 +150,15 @@ C  99	gro.99			newval
 
 c  Get command-line arguments
 
-	sim     =.false.
-	oldpar  =.false.
-	gro     =.false.
-	lresid1 =.false.
-	psrframe=.false.
-	xitoa   =.false.
-	tz      =.false.
+	sim      =.false.
+	oldpar   =.false.
+	gro      =.false.
+	lresid1  =.false.
+	psrframe =.false.
+	xitoa    =.false.
+	tz       =.false.
+        npulsein =.false.
+        npulseout=.false.
 	parfile='def'
 
 	call getenv('TEMPO',path)
@@ -188,7 +192,21 @@ c  Get command-line arguments
 
 	       else if (infile(2:2).eq.'h') then
 		 goto 9998
-		 
+
+	      else if (infile(2:2).eq.'n') then
+		 if (infile(3:3).eq.'i') then
+		   iarg=iarg+1
+                   call getarg(iarg,npulsefile)
+                   npulsein = .true.
+                 elseif (infile(3:3).eq.'o') then
+                   iarg=iarg+1
+                   call getarg(iarg,npulsefile)
+                   npulseout = .true.
+                 else
+                   write(*,'(''Unrecongnised option: '',a)')infile
+                   goto 9998
+                 endif
+
 	      else if(infile(2:2).eq.'o')then
 		 oldpar=.true.
 		 
@@ -313,6 +331,10 @@ c  Open ut1 file (if present)
 
 c  Open primary output file (tempo.lis)
  11	open(31,file=listfile,status='unknown')
+
+	if (npulsein .or. npulseout) then
+	  open(35,file=npulsefile,status='unknown')
+        endif
 
 c  Open TDB-TDT clock offset file
 	k = index(ephdir,' ')-1
