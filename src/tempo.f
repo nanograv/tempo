@@ -161,7 +161,7 @@ C  99	gro.99			newval
 
 c  Get command-line arguments
 
-        call tparin(nostop,tz,lpth,nparmax,nptsmax,version,
+        call tparin(nostop,tz,lw,lpth,nparmax,nptsmax,version,
      +     npulsefile,infile,path,resfile1,hlpfile,parfile)
 
  	path=path(1:lpth)//'/tempo.cfg'
@@ -352,7 +352,7 @@ c  Open TDB-TDT clock offset file
 		call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
      +               ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,
      +               nits,jits,buf(1+bufoff),npmsav(1+npmsavoff),
-     +               ksav(1+ksavoff),nbuf,memerr,infofile)
+     +               ksav(1+ksavoff),nbuf,memerr,infofile,lw)
 
 		call tzfit(ipsr,dnpls(2+dnplsoff),f0,dm,ct2,t0,pb)
 		rewind 31
@@ -434,7 +434,7 @@ C         The main loop:
           call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
      +         ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,nits,jits,
      +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),nbuf,
-     +         memerr,infofile)
+     +         memerr,infofile,lw)
 
 	  if (memerr) then
             call tfree()

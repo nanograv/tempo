@@ -1,7 +1,7 @@
 c      $Id$
       subroutine arrtim(mode,xmean,sum,sumwt,dnpls,ddmch,ct2,
      +     alng,nsmax,nz,tz,nptsmax,nits,jits,
-     +     buf,npmsav,ksav,nbuf,memerr,infofile)
+     +     buf,npmsav,ksav,nbuf,memerr,infofile,lw)
 
 C  Reads pulse arrival times (at observatory, in UTC) from unit 4. Then
 C  computes equivalent coordinate times at solar system barycenter,
@@ -145,7 +145,8 @@ C       The main loop starts here!
 	  rewind lu
 	else
 	  call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
-     +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search)
+     +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
+     +         lw)
 	endif
 	go to 10
 

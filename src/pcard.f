@@ -1,6 +1,6 @@
 c       $Id$
 	subroutine pcard(card,mode,zawgt,deltat,fut,dphase,sigm,offset,
-     +  jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search)
+     +  jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw)
 
 C  Decodes special cards embedded in the arrival-time file, and takes
 C  appropriate action.
@@ -14,7 +14,7 @@ C  appropriate action.
 
 	if (card(1:2).ne.'C ' .and. card(1:2).ne.'# ') goto 14
 C Don't bother printing it unless this is the first iteration
-	if (JITS .EQ. 0) WRITE(31,1012) CARD
+	if (JITS .EQ. 0 .and. LW) WRITE(31,1012) CARD
 1012	format(A80)
 	go to 200
 

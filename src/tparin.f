@@ -1,5 +1,5 @@
-      subroutine tparin(nostop,tz,lpth,nparmax,nptsmax,version,
-     +     npulsefile,infile,path,resfile1,hlpfile,parfile)
+      subroutine tparin(nostop,tz,lw,lpth,nparmax,nptsmax,
+     +     version,npulsefile,infile,path,resfile1,hlpfile,parfile)
 
 c     tparin -- Tempo PARamater INput
 c     parses tempo command-line parameters and sets variables appropriately
@@ -58,6 +58,7 @@ c     default values of parameters
       npulseout = .false.
       oldpar = .false.
       psrframe = .false.
+      lw = .false.
       ssdmflag = 1
       tz = .false.
       xitoa = .false.
@@ -137,6 +138,8 @@ c     default values of parameters
               write(*,1001) version
  1001         format (' Tempo v ',f6.3)
               stop
+            else if (s(i:i).eq.'w') then
+              lw = .false.
             else if (s(i:i).eq.'x') then
               xitoa = .true.
               open(45,file='itoa.out',status='unknown')
