@@ -166,11 +166,9 @@ C  Convert units
  1036	   format(' Input B1950 coords converted to J2000')
 	endif
 
-	if(f0.eq.0.)f0=1.d0/p0
-	if(f1.eq.0.)f1=-p1/p0**2
-	if(f2.eq.0..and.p2.ne.0)then
-	   f2=(2.d0*p1*p1 - p2*p0)/(p0**3)
-	endif
+        if(f0.eq.0.)f0=1.d0/p0
+        if(f1.eq.0. .and. p1.ne.0.)f1=-p1*f0**2
+        if(f2.eq.0. .and. p2.ne.0.)f2=2.d0*f1*f1/f0 - p2*f0*f0
 
 	nboot=0
 	if(iboot.gt.0) nboot=2**iboot
