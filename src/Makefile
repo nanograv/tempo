@@ -77,16 +77,22 @@ ARCHIVE_S = $(ARCHIVE_S_0:%=src/%)
 ARCHIVE_T_0 = 0437.par 0437.tim tempo.lis.original
 ARCHIVE_T = $(ARCHIVE_T_0:%=test/%)
 
+# files in the 'clock' directory
+ARCHIVE_C_0 = bipmnist.92 leap.sec ut1.dat utccorr.tot time.dat
+ARCHIVE_C = $(ARCHIVE_C_0:%=clock/%)
+
+# include the entire 'tzpar' directory (primarily so it gets created)
+ARCHIVE_Z = tzpar
+
 # files in the root directory (except for ephemerdies)
-ARCHIVE_1 = bipmnist.92 leap.sec obsys.dat tempo.cfg \
-	tempo.hlp time.dat ut1.dat utccorr.tot
+ARCHIVE_1 = obsys.dat tempo.cfg tempo.hlp 
 
 tempo:	$(OBJS)
 	$(FC) $(FFLAGS) -o ../tempo $(OBJS)
 
 archive:
-	cd ..; tar -cvf tempo.tar $(ARCHIVE_S) $(ARCHIVE_T) $(ARCHIVE_1); \
-		gzip tempo.tar
+	cd ..;  tar -chvf tempo.tar $(ARCHIVE_S) $(ARCHIVE_T) $(ARCHIVE_1) \
+	    $(ARCHIVE_C) $(ARCHIVE_Z);  gzip tempo.tar
 
 all:	tempo matrix
 
