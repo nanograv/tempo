@@ -94,9 +94,9 @@ c      $Id$
 	phaseint=nf0*ntpd*86400.d0
 	phase2=(nf0*ftpd+ntpd*ff0+ftpd*ff0)*86400.d0
 	phase3=0.5d0*f1*tp**2 + (f2/6.d0)*tp**3 + (f3/24.d0)*tp**4
-	if(nfit(3).ge.4) then
+	if(nfcalc.ge.4) then
 	  dfac=24.d0
-	  do 10 i=1,nfit(3)-3
+	  do 10 i=1,nfcalc-3
 	  dfac=dfac*(i+4)
 10	  phase3=phase3 + (f4(i)/dfac)*tp**(i+4)
 	endif

@@ -9,7 +9,7 @@ c      $Id$
      +    dither,xjdoff(2,NJUMP),dct(NJUMP),pmra,pmdec,pmrv,dt2sec,
      +    t0geo,nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,mjd1,mjd2,ncoord,gro,sim,xitoa,oldpar,psrframe,
-     +	  eclcoord,parunit,nskip,ndmcalc
+     +	  eclcoord,parunit,nskip,ndmcalc,nfcalc
         common/acomch/psrname,pardir,obsflag,obskey(36) 
 
 

@@ -167,10 +167,10 @@ C  Compute braking index
 	  write(31,1080) brkind,brkerr
 1080      format(/'Braking index:',f13.4,' +/-',f13.4)
 
-	  if(nfit(3).ge.4) then
-	     do j=4,nfit(3),3
+	  if(nfcalc.ge.4) then
+	     do j=4,nfcalc,3
 		ia=j-3
-		ib=min(ia+2,nfit(3)-3)
+		ib=min(ia+2,nfcalc-3)
 		write(31,1081) j,j+1,j+2
  1081		format(/25x,'f',z1,15x,'f',z1,16x,'f',z1)
 		write(31,1082) (f4(i),i=ia,ib)
@@ -180,7 +180,7 @@ C  Compute braking index
  1082		format(15x,1p,3d18.8,0p)
 	     enddo
 
-	     do i=1,nfit(3)-3
+	     do i=1,nfcalc-3
 		f4(i)=f4(i)-freq(51+i)*(1.d-9)**(i+4)
 	     enddo
 	  endif

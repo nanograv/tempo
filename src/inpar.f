@@ -80,6 +80,7 @@ c      $Id$
       enddo
 
       ndmcalc = 0
+      nfcalc = 0
 
       nbin=0
       nclk=0
@@ -202,6 +203,7 @@ C Period/Frequency parameters
       else if(key(1:2).eq.'P1'.or.key(1:4).eq.'PDOT')then
          read(value,*)p1
          read(cfit,*)nfit(3)
+         nfcalc = max(nfit(3),nfcalc)
 
       else if(key(1:2).eq.'F0' .or. (key(1:1).eq.'F' .and. lk.eq.1))then
          read(value,*)f0
@@ -215,6 +217,7 @@ C Period/Frequency parameters
          else
             nfit(3)=ichar(cfit)-48
          endif
+         nfcalc = max(nfit(3),nfcalc)
 
       else if(key(1:2).eq.'F2')then
          read(value,*)f2
@@ -223,6 +226,8 @@ C Period/Frequency parameters
       else if(key(1:2).eq.'F3')then
          read(value,*)f3
          read(cfit,*)ifit
+         if (ifit.gt.0) nfit(3)=max(nfit(3),3)
+         nfcalc = max(nfcalc,3)
 
       else if(key(1:1).eq.'F' .and.
      +           key(2:2).ge.'4' .and. key(2:2).le.'9') then
@@ -230,6 +235,7 @@ C Period/Frequency parameters
         read (value,*)f4(jj-3)
         read(cfit,*) ifit
         if (ifit.gt.0) nfit(3)=max(nfit(3),jj)
+        nfcalc = max(nfcalc,jj)
 
       else if(key(1:1).eq.'F' .and.
      +           key(2:2).ge.'A' .and. key(2:2).le.'C') then
@@ -237,6 +243,7 @@ C Period/Frequency parameters
         read (value,*)f4(jj-3)
         read(cfit,*) ifit
         if (ifit.gt.0) nfit(3)=max(nfit(3),jj)
+        nfcalc = max(nfcalc,jj)
 
       else if(key(1:4).eq.'PEPO')then
          read(value,*)pepoch
@@ -563,11 +570,13 @@ c       (Do nothing) (DJN)
 
  900  continue
 
-      if(nfit(3).lt.0.or.nfit(3).gt.12)then
+      if(nfit(3).lt.0.or.nfit(3).gt.12 .or.
+     +     nfcalc.lt.0.or.nfcalc.gt.12)then
          write(*,'(''WARNING - Fit parameter for F1 out of range'')')
       endif
 
-      if(nfit(16).lt.0.or.nfit(16).gt.10)then
+      if(nfit(16).lt.0.or.nfit(16).gt.10.or.
+     +     ndmcalc.lt.0.or.ndmcalc.gt.1)then
          write(*,'(''WARNING - Fit parameter for DM out of range'')')
       endif
 

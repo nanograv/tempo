@@ -113,6 +113,7 @@ C Convert units
 
 	if(pepoch.gt.2400000.5d0) pepoch=pepoch-2400000.5d0
 	ndmcalc=max(nfit(16),ndmcalc)
+	nfcalc=max(nfit(3),nfcalc)
 
 	if (eclcoord) then
 	  pra=pra*TWOPI/360.d0
