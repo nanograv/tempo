@@ -1,6 +1,6 @@
 c      $Id$
       subroutine bootmc(npts,mode,nz,nboot,nparam,mfit,freq,ferr,ddmch,
-     +     buf,npmsav,ksav)
+     +     buf,npmsav,ksav,resfile2)
 C  Implements the "bootstrap method" of Monte Carlo error estimation.
 C  See Numerical Recipes, Second Edition, pp 686 ff.
 
@@ -15,6 +15,7 @@ C  See Numerical Recipes, Second Edition, pp 686 ff.
 	real*8 fl1(NPAP1),fl2(NPAP1),fh1(NPAP1),fh2(NPAP1)
 	integer mfit(NPAP1)
 	real*4 ran1
+        character*80 resfile2
 	logical lw,first
 	data lw/.false./,first/.true./,idum/-999/
 
@@ -55,7 +56,7 @@ C  See Numerical Recipes, Second Edition, pp 686 ff.
 30	continue
 
         call fit(npts,mode,chisqr,varfit,xmean,sum,sumwt,nz,wmax,
-     +       lw,ddmch,buf,npmsav,ksav)
+     +       lw,ddmch,buf,npmsav,ksav,resfile2)
 	do 40 j=1,nterms
 	k=mfit(j+1)
 	x=fac*(freq(k)-p0(j))/e0(j)
