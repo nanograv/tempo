@@ -35,7 +35,7 @@ SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
         newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
         setup.f sitea2n.f siten2a.f \
-	sort.f space_motion.f ell12bt.f tdbinit.f tdbread.f tempo.f \
+	sort.f space_motion.f ell12bt.f tdbinit.f tdbinit2.f tdbread.f tempo.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
         vmemw.f  ztim.f 
 SRC2 = cutil.c
@@ -109,6 +109,7 @@ pcard.o: pcard.f acom.h dim.h dp.h
 resid.o: resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.o: setup.f acom.h dim.h
 tdbinit.o: tdbinit.f tdbcom.h
+tdbinit2.o: tdbinit2.f tdbcom.h
 tdbread.o: tdbread.f tdbcom.h
 tempo.o: tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h
 timcalc.o: timcalc.f acom.h dim.h dp.h trnsfr.h

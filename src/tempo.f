@@ -165,6 +165,7 @@ C  99	gro.99			newval
         infoout = .false.
         stflag = .false.
         tzsitedef = ' '
+        tdbif99fmt = .false.
 
 c  Get command-line arguments
 
@@ -231,6 +232,9 @@ c  Get command-line arguments
             endif
           else if (label(1:6).eq.'TZSITE') then
             tzsitedef = fname(1:1)
+          else if (label(1:9).eq.'TDBFMT') then
+            call upcase(fname)
+            if (fname(1:4).eq.'IF99') tdbif99fmt = .true.
 	  else 
             write(*,'(''Unrecognised label: '',a)')label
 	  endif
@@ -287,7 +291,11 @@ c  Open TDB-TDT clock offset file
 	k = index(ephdir,' ')-1
 	n = index(tdbfile,' ')-1
 	path = ephdir(1:k)//tdbfile(1:n)
-	call tdbinit(43,path)
+        if (tdbif99fmt) then
+    	  call tdbinit2(43,path)
+        else
+    	  call tdbinit(43,path)
+        endif
 
 	if (tz) then  ! generate predictive ephemeris (polyco.dat),like old TZ
 

@@ -7,6 +7,9 @@ c     file should have been written by tdbgen, which uses the Fairhead
 c     et al. approximate analytical formula to generate Chebyshev polynomial
 c     coefficients, which are read and interpolated here.
 
+      implicit real*8 (a-h,o-z)
+      include 'dim.h'
+      include 'acom.h'
       include 'tdbcom.h'
 
 c     input variables: 
@@ -16,7 +19,7 @@ c     input variables:
 
       real*8 ctatv              ! output TDB-TDT
 
-      real*8 buf(16)            ! max size of data buffer
+      real*8 buf(226)            ! max size of data buffer
 
       real*8 jda, jdb, t(2)
 
@@ -43,8 +46,16 @@ c     of a day.  Note:  assumes jd1 an integer and 0<=jd2<1.
         jdb = jd2 + 0.5d0
       endif
 
-      nr = int((jda-tdbd1)/tdbdt)+2 ! record number in file;  "+2" skips
+c     Not sure what's going oni with the +2 for old format but +3 for new
+c     format.  The +3 is taken from Allan Irwin's time_state.f code; 
+c     Not sure where the +2 is from.
+
+      if (tdbif99fmt) then  ! copied from time_state.f in irwin code
+        nr = int((jda-tdbd1)/tdbdt)+3 
+      else
+        nr = int((jda-tdbd1)/tdbdt)+2 ! record number in file;  "+2" skips
                                 ! skips over the hdr rec 
+      endif
 
       if (nr.lt.1 .or. jd1+jd2.gt.tdbd2) then
         write (*,*) "Date ",jda+jdb," out of range of TDB-TDT table (",
@@ -54,14 +65,25 @@ c     of a day.  Note:  assumes jd1 an integer and 0<=jd2<1.
 
       if (nr.ne.tdbnrl) then
         tdbnrl = nr
-        read (tdbunit, rec=nr) (buf(i),i=1,tdbncf)
-	if (.not.bigendian()) call dbyterev(buf,tdbncf)
+c        read (tdbunit, rec=nr) (buf(i),i=1,tdbncf)
+        read (tdbunit, rec=nr) (buf(i),i=1,tdbrecsize)
+	if (tdbif99fmt.eqv.bigendian()) call dbyterev(buf,tdbncf)
       endif
 
-      t(1) = ((jda-((nr-2)*tdbdt+tdbd1))+jdb)/tdbdt ! fraction within record
-      t(2) = 1.                 ! unused 
+      if (tdbif99fmt) then  ! copied from time_state.f in irwin code
+        t(1) = ((jda-((nr-3)*tdbdt+tdbd1))+jdb)/tdbdt ! fraction within record
+        t(2) = tdbdt          
+      else
+        t(1) = ((jda-((nr-2)*tdbdt+tdbd1))+jdb)/tdbdt ! fraction within record
+        t(2) = 1.                 ! unused 
+      endif
 
-      call interp(buf,t,tdbncf,1,1,1,ctatv)
+      call interp(buf(ipt(1,1)),t,ipt(2,1),1,ipt(3,1),1,ctatv)
+      if (tdbif99fmt)  then
+        ctatv=ctatv*86400         ! Convert days to seconds
+        ctatv=ctatv-65.564518e-6  ! Constant offset; see eqn 17 of
+                                  ! Irwin & Fukushima 1999, A&A 348: 642.
+      endif
 
       return
       end

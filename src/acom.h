@@ -11,6 +11,8 @@ c      $Id$
                                ! obs frame.  Jumps used to be done in
                                ! bary frame, but now (10-jul-04) default
                                ! is obs frame
+        logical tdbif99fmt  ! true if tdb file is in format used
+                            ! by alan irwin (reference if99)
 
 	integer parunit, nskip, iboot
         integer infolen
@@ -18,6 +20,7 @@ c      $Id$
         real*8 phimin
         real*8 PAAscNode    ! position angle of ascending node
         real*8 solarn0      ! solar wind electron density at 1 AU (e-/cc)
+        real*8 solarn01     ! solar wind electron density time derivative
         real*8 fixeddist    ! fixed input distance (instead of fit px) 
                             !    for ann-orb px
 
@@ -28,14 +31,15 @@ c      $Id$
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
-     +    PAAscNode,solarn0,fixeddist,
+     +    PAAscNode,solarn0,solarn01,fixeddist,
      +    nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,ssdmflag,
      +    quiet,polystdout,autotz,
-     +    useannorb,usefixeddist,jumpbarycenter
+     +    useannorb,usefixeddist,jumpbarycenter,
+     +    tdbif99fmt 
 
 
 
