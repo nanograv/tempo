@@ -14,7 +14,8 @@
       <li> Version 11.005 (May 2000)
         <ul>
           <li> (Includes contributions and fixes from Z. Arzoumanian,
-            R. Dodson, A. Lommen, C. Cutler, E. Splaver, RNM, DJN).
+            R. Dodson, A. Lommen, C. Cutler, E. Splaver, R. Manchester, 
+            D. Nice).
           <li> Added new binary model BTX, an extension of the BT
             model:  uses binary frequency (FB) and its derivatives (FB_x) 
             instead of binary period;  allows many derivatives of orbit
@@ -53,9 +54,10 @@
           <li> Allow Princeton-style TOAs with non-blank column 2.  
           <li> Reworked internal indexing of parameters to ease future
             addition of new parameters.
-          <li> Use higher precision on tz reference and interally calculated
-            TOAs throughout the code, eliminating several-hundred nanosecond
-            jitter between polyco.dat blocks.
+          <li> Use higher-precision MJDs internally when calculating of 
+            polyco.dat ephemerides.  Also treat the precision of polyco.dat
+            reference times with more care, eliminating several-hundred
+	    nanosecond jitter between sets of polynomial coefficients.
           <li> Numerous minor bug fixes.
         </ul>
         <br>
