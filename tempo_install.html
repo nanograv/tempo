@@ -125,9 +125,8 @@ diff 0437-4715.par 0437-4715.par.original</pre>
                 ephinit.f and tdbinit.f. 
               <li> If you get ``not enough room for program headers'' errors
                 from the linker, try the following compile sequence.
-                I don't understand the exact origin of the problem.
-                Insightful comments and suggestions for a more elegant solution
-                are especially welcome (DJN).
+                (I don't understand the exact origin of this problem.
+                Comments and suggestions on are especially welcome--DJN.)
                 <dl>
                   <dt> tempo: $(OBJS)
                   <dd>  $(FC) $(FFLAGS) -r -o tmp $(OBJS)
@@ -135,13 +134,13 @@ diff 0437-4715.par 0437-4715.par.original</pre>
                 </dl>
             </ul>
           <li> Problems have been noticed with Linux systems writing
-            to cross-mounted NFS disks from Solaris systems.  File
-            output can be very slow.  This can cause Tempo to appear
+            to disks cross-mounted from Solaris systems via NFS.  File
+            output can be very slow, which can cause Tempo to appear
             to hang near the end of a run, when it is writing the
             resid2.tmp file.  The solution is
             to run tempo from a working directory (i.e., the directory
             where tempo.lis and resid2.tmp are written) which is not
-            cross-mounted.  (More elegant solutions would be welcome!)
+            cross-mounted.  (Suggestions for better solutions would be welcome!)
         </ul>
     </ul>
 
