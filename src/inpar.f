@@ -41,7 +41,7 @@ c      $Id$
          dmcof(i)=0.
       enddo
       start=0.
-      finish=100000.
+      finish=0.
 
       do i=1,4
          a1(i)=0.
@@ -602,8 +602,9 @@ C  Warnings
       endif
 
       if(nbin.eq.0.and.(nfit(9).ne.0.or.nfit(10).ne.0.or.nfit(11).ne.0
-     +     .or.nfit(12).ne.0.or.nfit(13).ne.0))then
-         write(*,'('' WARNING: Binary model not defined'')')
+     +     .or.nfit(12).ne.0.or.nfit(13).ne.0.or.a1(1).ne.0.))then
+         write(*,'('' ERROR: Binary model not defined'')')
+         stop
       endif
 
       if(nbin.ne.8 .and. set2dot)then
@@ -716,3 +717,4 @@ C  Returns 0 if underscore but no number is found
 
       return
       end
+
