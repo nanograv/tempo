@@ -86,7 +86,7 @@ c                                                  --DJN 19 Dec 2001
 !NOT CURRENTLY IN USE
 	else if(jj.le.50) then     
           write(*,1017) jj
- 1017	  format ('Internal tempo error.  Parameter number ',ii/
+ 1017	  format ('Internal tempo error.  Parameter number ',i/
      +         'encountered in mxprt.f, but it is not currently'/
      +         'assigned to any parameter.')
 
