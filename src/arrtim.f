@@ -50,8 +50,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	deltat=0.d0
         pha1 = 0.d0
         pha2 = 0.d0
-	mjd1=1000000
-	mjd2=0
+	amjd1=1000000.0
+	amjd2=0.
 	last=.false.
 	dithmsg=.true.
 	track=.false.
@@ -94,7 +94,7 @@ c       parallax in radians from parallax in mas
 	if(psrframe)then
 C       A. Irwin stuff requires positions at epoch J2000. Compute space motion vectors 
 C       and J2000 epoch position (Note all of this is in J2000 coordinates).
-	   delt = (51545.d0 - pepoch)/36525.d0
+	   delt = (51545.d0 - posep)/36525.d0
 	   pra2000 = pra + dpa*delt
 	   pdec2000 = pdec + dpd*delt
 c       radial velocity in au/Julian century
@@ -181,11 +181,12 @@ c       N. Wex transformations at pepoch
 	if (asite.ge.'a' .and. asite.le.'z') nsite = ichar(asite)-87
 	if (asite.eq.'@') nsite = -1
 
-	if(rfrq.lt.fmin .or. rfrq.gt.fmax) go to 10
+	fmjd=nfmjd+ffmjd
+	if(rfrq.lt.fmin .or. rfrq.gt.fmax .or. fmjd.lt.start .or. 
+     :      fmjd.gt.finish) go to 10
 
 C Arrival time
 	n=n+1
-	fmjd=nfmjd+ffmjd
 
 C Store toa for tz reference phase
 	if(ntzref.eq.0.and.fmjd.gt.pepoch)then
@@ -224,7 +225,7 @@ C  Get clock corrections
 	last=.true.
 	nsite=0
 	rfrq=0.
-	t0geo=(mjd1+mjd2)/2
+	t0geo=nint((amjd1+amjd2)/2.)
 	fmjd=t0geo
 	nfmjd=fmjd
 	ffmjd=0.d0
@@ -387,8 +388,8 @@ C  Take a shortcut when called by TZ:
 1099	format(/'    N       MJD      Residual (p)   Residual (us)',
      +    '  Iteration (of',i2,')'/)
 	if(n.gt.200) modscrn=100
-	mjd1=min(mjd1,int(fmjd))
-	mjd2=max(mjd2,int(fmjd))
+	amjd1=min(amjd1,fmjd)
+	amjd2=max(amjd2,fmjd)
 	if(mod(n,modscrn).eq.1) write(*,1100)n,fmjd,dt,1d6*dt*p0,
      +    jits+1
 1100	format(i5,f15.8,f11.6,f15.3,11x,i2)
@@ -397,6 +398,9 @@ C  Take a shortcut when called by TZ:
 
 c End of input file detected
 100	if(mod(n,modscrn).ne.1) write(*,1100)n,fmjd,dt,1d6*dt*p0,jits+1
+
+	start=amjd1-1.d-3
+	finish=amjd2+1.d-3
 
 	if(.not.tz) then
 	  sigma1=sqrt((sumsq-sum*sum/sumwt)/sumwt)*p0*1000.d0

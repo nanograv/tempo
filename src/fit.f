@@ -67,7 +67,7 @@ c      $Id$
 	  write(31,1170)
 1170	  format(//'Normalized covariance matrix in "number of 9''s"',
      +      ' format:'/)
-	  call mxprt(array,gcor,nterms,mfit)
+	  call mxprt(array,gcor,nterms,mfit,nbin)
 	  unit=1.d-6
 	  if(p0firs.gt.0.1) unit=1.d-3
 	  nunit=dlog10(unit)-0.0001

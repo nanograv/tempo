@@ -16,6 +16,8 @@ C  OUTPUT:  UT1      - VALUE OF UT1 - UTC AT NMJD+FMJD  (IN SEC)
       DIMENSION TAB(4),Y1(2),Y2(2),IUT(NUTMAX)
       CHARACTER VARFMT*32,flag*3
 
+      SAVE
+      
       DATA JUT1/42/,nmsg/2/
 
 C         THE EXTERNAL DATA SET (JUT1) MUST HAVE THE FOLLOWING FORM
@@ -35,7 +37,6 @@ C                     MUST BE OF THE FORM INTEGER MJD FOLOWED BY UP
 C                     TO 12 INTEGER VALUES OF UT1.  IF A RECORD IS
 C                     SHORT, THE NUMBER OF VALUES IN THAT RECORD IS
 C                     GIVEN IN COLUMNS 79-80 (I2).
-      save
 
       IF(nmjd.eq.0)then
 

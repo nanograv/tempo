@@ -92,6 +92,8 @@ C  11.000 18-JUL-97  Optional free-format input, pulse frequencies as input,
 C                    Alan Irwin's improvements to lmst, geodetic to geocentric
 C                    coords, tdb argument to JPL ephemeris. (RNM)
 C  11.001 20-JAN-98  Ecliptic coordinates, Year 2000 fixes (DJN)
+C  11.002 11-MAR-98  Separate pos'n epoch; add START/FINISH (RNM)
+C                    Added "ell1" binary model (NW)
 
 C Logical units			Opened by
 C----------------------------------------------------------------
@@ -131,29 +133,28 @@ C  99	gro.99			newval
 
 	logical tz,lw
         character*80 infile,ut1file,resfile1,obsyfile,
-     +    resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
+     +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
 	character date*9,date2*9,damoyr*9,label*12,parfile*40
 	integer time, n
         real*8 xmean(NPA),dnpls(NPTSMAX),alng(36)
 	common/leapsec/mjdleap(50),nleaps
 	data resfile1/'resid1.tmp'/,resfile2/'resid2.tmp'/
 	data listfile/'tempo.lis'/,lw/.true./
-	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT','DD+',
-     +    'BT1P','BT2P'/
+	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
+     +       'MSS','ELL1','BT1P','BT2P'/
 
-
-	version = 11.001
+	version = 11.002
 
 c  Get command-line arguments
 
-	sim=.false.
-	parfile='def'
-	oldpar=.false.
-	gro=.false.
-	lresid1=.false.
+	sim     =.false.
+	oldpar  =.false.
+	gro     =.false.
+	lresid1 =.false.
 	psrframe=.false.
-	xitoa=.false.
-	tz=.false.
+	xitoa   =.false.
+	tz      =.false.
+	parfile='def'
 
 	call getenv('TEMPO',path)
 	lpth=index(path,' ')-1
@@ -192,7 +193,8 @@ c  Get command-line arguments
 		 
 	      else if(infile(2:2).eq.'r')then
 		 lresid1=.true.
-		 open(30,file=resfile1,form='unformatted',status='unknown')
+		 open(30,file=resfile1,form='unformatted',
+     +                 status='unknown')
 		 
 	      else if(infile(2:2).eq.'v') then
 		 write(*,1001) version
@@ -221,17 +223,16 @@ c  Get command-line arguments
 
  3	path=path(1:lpth)//'/tempo.cfg'
 	open(2,file=path,status='old',err=4)
-	go to 5
-4	print*,'Cannot open '//path(1:lpth)//'/tempo.cfg'
-	go to 9999
-5	kephem=0
+	goto 5
+ 4	print*,'Cannot open '//path(1:lpth)//'/tempo.cfg'
+	goto 9999
+ 5	kephem=0
 	nfl=index(infile,' ')-1
 
 
 	clklbl(0)='UNCORR'
 	do 510 i=1,20
-	  read(2,1000,end=515)line
-1000	  format(a)
+	  read(2,'(a)',end=515)line
 	  j=1
 	  call citem(line,80,j,label,k)
 	  call upcase(label)
@@ -273,34 +274,34 @@ c  Get command-line arguments
 	     if(kephem.le.NEPHMAX)then
 		ephfile(kephem)=fname(1:k)
 	     else
-		go to 513
+		goto 513
 	     endif
 	  else 
 	     write(*,'(''Unrecognised label: '',a)')label
 	  endif
  510	continue
-	go to 515
+	goto 515
 
  513	write(*,'(''Too many EPH files!'')')
-	go to 9999
+	goto 9999
 
  515	close(2)
 
-c Open leap second file, read leap second dates, close leap second file
+c  Open leap second file, read leap second dates, close leap second file
 	k=index(clkdir,' ')-1
 	path=clkdir(1:k)//'leap.sec'
 	lpth=index(path,' ')-1
 	open(2,file=path(1:lpth),status='old',err=7)
 	do 6 i=1,50
-6	read(2,*,end=8) mjdleap(i)
+ 6	read(2,*,end=8) mjdleap(i)
 	print*,'Too many leap seconds'
 	go to 9999
-7	print*,'Cannot open ',path(1:lpth)
+ 7	print*,'Cannot open ',path(1:lpth)
 	go to 9999
-8	nleaps=i-1
+ 8	nleaps=i-1
 	close(2)
 
-c Open ut1 file (if present)
+c  Open ut1 file (if present)
 	path=clkdir(1:k)//ut1file
         open(42,file=path,status='old',err=10)
 	ut1flag=.true.
@@ -311,18 +312,18 @@ c Open ut1 file (if present)
      +    ' No UT1 correction'/)
 	ut1flag=.false.
 
-c Open primary output file (tempo.lis)
+c  Open primary output file (tempo.lis)
  11	open(31,file=listfile,status='unknown')
 
-c Open TDB-TDT clock offset file
+c  Open TDB-TDT clock offset file
 	k = index(ephdir,' ')-1
 	n = index(tdbfile,' ')-1
 	path = ephdir(1:k)//tdbfile(1:n)
 	call tdbinit(43,path)
 
-	if (tz) then   ! generate predictive ephemeris (polyco.dat),like old TZ
+	if (tz) then  ! generate predictive ephemeris (polyco.dat),like old TZ
 
-C	  open parameter and residual files
+c  Open parameter and residual files
 	  if (.not.oldpar) then
 	     if(parfile.eq.'def')then
 		n=index(infile,'.')-1
@@ -339,7 +340,7 @@ C	  open parameter and residual files
 	  date=damoyr(int(fmjdnow))
 
 	  write(*,1010) date,fmjdnow
-1010	  format(/' Current date is ',a9,', or MJD',
+ 1010	  format(/' Current date is ',a9,', or MJD',
      +      f10.3//' Enter first and last MJD,',
      +      ' or hit return to run for today: ')
 	  read(*,fmt='(a80)') line
@@ -354,7 +355,7 @@ C	  open parameter and residual files
 	  date=damoyr(int(fmjd1))
 	  date2=damoyr(int(fmjd2))
 	  write(*,1012) date,date2
-1012	  format(1x,a9,' through ',a9/)
+ 1012	  format(1x,a9,' through ',a9/)
  
 	  do ipsr=1,num
 	    call tpohdr(oldpar,pardir,ncoord,t0,pb,p0,dm,nbin,ipsr)
@@ -392,20 +393,20 @@ C	  open parameter and residual files
 
 	else  ! Standard TEMPO execution
 
-c open parameter and residual files
+c  Open parameter and residual files
 	   open(50,file=infile,status='old',err=9997)
 	   if (.not.oldpar) then                 ! free-form parms....
-900	     continue
-	     read(50,fmt='(a)',end=910) line     !   parms in same file as toas?
+ 900	     continue
+	     read(50,fmt='(a)',end=910) line     ! parms in same file as toas?
 	     j=1                       
 	     call citem(line,80,j,s,k)
 	     call upcase(s) 
-	     if (s(1:4).eq.'HEAD') then          !   yes
+	     if (s(1:4).eq.'HEAD') then          ! yes
 	       parunit = 50
 	     elseif ((s(1:1).eq.'C'.and.k.eq.1).or.s(1:1).eq.'#'.or.
      +		s(1:35).eq.'                                   ') then ! maybe
 	       goto 900
-	     else                                !   no:
+	     else                                ! no:
 		if(parfile.eq.'def')then
 		   n=index(infile,'.')-1 !     open par file
 		   if(n.lt.0)n=index(infile,' ')-1
@@ -418,36 +419,37 @@ c open parameter and residual files
 	  endif
 
 	  goto 911
-910	  print *,"Input file is empty (except possibly for comments)"
+ 910	  print *,'Input file is empty (except possibly for comments)'
 	  goto 9999
-911	  continue
+ 911	  continue
 
 	  jits=0
           open(32,file=resfile2,form='unformatted',status='unknown')
           do 50 i=1,NJUMP
-50	    dct(i)=0.d0
+ 50	    dct(i)=0.d0
 
 	  if(oldpar.or.parunit.eq.50)then
 	     write(*,1050) version,infile(1:nfl)
- 1050	     format(' TEMPO v ',f6.3,' Princeton Pulsar Group'/
-	1	  ' Data from ',a)
+ 1050	     format(' TEMPO v ',f6.3,
+     +          ' Princeton/ATNF Pulsar Collaboration'/' Data from ',a)
 	  else
 	     write(*,1051) version,infile(1:nfl),parfile
- 1051	     format(' TEMPO v ',f6.3,' Princeton Pulsar Group'/
-	1	  ' Data from ',a, ',   Input parameters from ',a)
+ 1051	     format(' TEMPO v ',f6.3,
+     +       ' Princeton/ATNF Pulsar Collaboration'/
+     +	     ' Data from ',a, ',   Input parameters from ',a)
 	  endif
 
 	  call setup(version,infile,obsyfile,alng,nsmax,parfile)
 
-60    	  call newsrc(nits,jits,nboot)
+ 60    	  call newsrc(nits,jits,nboot)
           rewind 32
           call arrtim(mode,xmean,sumdt1,sumwt,dnpls,ct2,alng,nsmax,
-     +      nz,tz,nits,jits)
+     +       nz,tz,nits,jits)
 	  wmax=0.0
           call fit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,lw)
           asig=sqrt(varfit)
 	  if(nboot.gt.0)
-     +	    call bootmc(n,mode,nz,nboot,nparam,mfit,freq,ferr)
+     + 	     call bootmc(n,mode,nz,nboot,nparam,mfit,freq,ferr)
           call newval(chisqr,n-nparam,rms0,rms1,nits,jits,wmax,nboot)
 	  if(abs(rms1 - rms0).le.max(1.d-4*abs(rms0),0.1d0)) go to 9999
           if(jits.lt.nits .or. nits.eq.9) go to 60

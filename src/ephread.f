@@ -51,8 +51,8 @@ c     of a day.  Note:  assumes jd(1) an integer and 0<=jd(2)<1.
       nr = int((jda-ss(1))/ss(3))+3 ! record number in file
 
       if (nr.lt.3 .or. jda+jdb.gt.ss(2)) then
-        write (*,*) "Ephemeris date ",jda+jdb," out of range (",
-     +       ss(1),"-",ss(2),")"
+        write (*,*) 'Ephemeris date ',jda+jdb,' out of range (',
+     +       ss(1),'-',ss(2),')'
         stop
       endif
 

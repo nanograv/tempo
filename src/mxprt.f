@@ -1,5 +1,5 @@
 c      $Id$
-	subroutine mxprt(a,gcor,nn,mfit)
+	subroutine mxprt(a,gcor,nn,mfit,nbin)
 
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
@@ -13,8 +13,15 @@ c      $Id$
      +    '   x','   e','  T0','  Pb','  Om','Omdt','gama','  DM',
      +    '  px','Pbdt','PPNg','   s','   M','  m2',' dth','xdot',
      +    'edot','  x2','  e2',' T02',' Pb2',' Om2','  x3','  e3',
-     +    ' T03',' Pb3',' Om3','PMRV','XOmd','Xpbd','xxx4','xxx5'/
+     +    ' T03',' Pb3',' Om3','PMRV','XOmd','Xpbd','om2d',' x2d'/
 	data mark/' 123456789*'/
+
+	if(nbin.eq.9)then
+	   param( 9)='eps1'
+	   param(12)='eps2'
+	   param(38)='e1dt'
+	   param(39)='e2dt'
+	endif
 
 	close(72)
 	open(72,file='matrix.tmp',status='unknown',form='unformatted')

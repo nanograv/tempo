@@ -18,10 +18,17 @@ c      $Id$
 
 	if(jits.lt.nits)jits=jits+1
 
-	write(31,1039) psrname,ephfile(nephem)(1:5),clklbl(nclk),
-     :     pepoch
-1039	format(/'PSR ',a12,'  Ephem.: ',a,'  Clock: ',a12,
+	if(posepoch.eq.0.)then
+	   write(31,1038) psrname,ephfile(nephem)(1:5),clklbl(nclk),
+     +  	pepoch
+ 1038	   format(/'PSR ',a12,'  Ephem.: ',a,'  Clock: ',a12,
      +       '  Ref. MJD: ',f12.4)
+	else
+	   write(31,1039) psrname(1:10),ephfile(nephem)(1:5),
+     +          clklbl(nclk)(1:10),pepoch, posepoch
+ 1039	   format(/'PSR ',a,' Ephem: ',a,' Clk: ',a,
+     +       ' P Ref:',f11.4,' Pos Ref:',f11.2)
+	endif
 
 
 	if (eclcoord) then
@@ -202,48 +209,60 @@ C  Compute braking index
 	if(ngl.gt.0)then
 	  do i=1,ngl
 	    glphz=glph(i)
-	    glf0pz=glf0p(i)
-	    glf1pz=glf1p(i)
-	    glf0d1z=glf0d1(i)
-	    gltd1z=gltd1(i)
+	    glf0z=glf0(i)
+	    glf1z=glf1(i)
+	    glf0dz=glf0d(i)
+	    gltdz=gltd(i)
 	    glph(i)=glphz-freq(60+(i-1)*NGLP+1)
-	    glf0p(i)=glf0pz-freq(60+(i-1)*NGLP+2)*1.d-9
-	    glf1p(i)=glf1pz-freq(60+(i-1)*NGLP+3)*1.d-18
-	    glf0d1(i)=glf0d1z-freq(60+(i-1)*NGLP+4)*1.d-9
-	    gltd1(i)=gltd1z-freq(60+(i-1)*NGLP+5)/86400.d0
+	    glf0(i)=glf0z-freq(60+(i-1)*NGLP+2)*1.d-9
+	    glf1(i)=glf1z-freq(60+(i-1)*NGLP+3)*1.d-18
+	    glf0d(i)=glf0dz-freq(60+(i-1)*NGLP+4)*1.d-9
+	    gltd(i)=gltdz-freq(60+(i-1)*NGLP+5)/86400.d0
+	    glf0t=glf0(i)+glf0d(i)
+	    glf0e=ferr(60+(i-1)*NGLP+2)*1.d-9
+	    glf0de=ferr(60+(i-1)*NGLP+4)*1.d-9
 	    write(31,1065)i,glepoch(i)
 	    write(31,1066)
-	    write(31,1067)glphz,glf0pz,glf1pz,glf0d1z,gltd1z
-	    write(31,1067)glph(i)-glphz,glf0p(i)-glf0pz,glf1p(i)-glf1pz,
-     :        glf0d1(i)-glf0d1z,gltd1(i)-gltd1z
-	    write(31,1067)ferr(60+(i-1)*NGLP+1),
-     :        ferr(60+(i-1)*NGLP+2)*1.d-9,ferr(60+(i-1)*NGLP+3)*1.d-18,
-     :        ferr(60+(i-1)*NGLP+4)*1.d-9,ferr(60+(i-1)*NGLP+5)/86400.d0
-	    write(31,1067)glph(i),glf0p(i),glf1p(i),glf0d1(i),gltd1(i)
-	    if(glf0p(i)+glf0d1(i).ne.0.d0)then
-	      fac=1.d0/(glf0p(i)+glf0d1(i))/86400.d0
-	      iph=nint(glph(i))
-	      fph=glph(i)-iph
-	      glep1z=glepoch(i)-fph*fac
-	      glep2z=glepoch(i)-(fph-sign(1.d0,fph))*fac
-	      glepe=ferr(60+(i-1)*NGLP+1)*abs(fac)
-	      write(31,1068)glep1z,glep2z,glepe
+	    write(31,1067)glphz,glf0z,glf1z,glf0dz,gltdz
+	    write(31,1067)glph(i)-glphz,glf0(i)-glf0z,glf1(i)-glf1z,
+     +           glf0d(i)-glf0dz,gltd(i)-gltdz
+	    write(31,1067)ferr(60+(i-1)*NGLP+1),glf0e,
+     +           ferr(60+(i-1)*NGLP+3)*1.d-18,glf0de,
+     +           ferr(60+(i-1)*NGLP+5)/86400.d0
+	    write(31,1067)glph(i),glf0(i),glf1(i),glf0d(i),gltd(i)
+	    if(glf0t.ne.0.d0)then
+	       glf0te=sqrt(glf0e**2 + glf0de**2)
+	       qq=glf0d(i)/glf0t
+	       qqe=sqrt((glf0de/glf0t)**2+(glf0d(i)*glf0te/glf0t**2)**2)
+	       write(31,1068)glf0t/f0,glf0te/f0,qq,qqe
+	       iph=nint(glph(i))
+	       fph=glph(i)-iph
+	       glep1z=glepoch(i)+dglep(i,fph)
+	       glep2z=glepoch(i)+dglep(i,fph-sign(1.d0,fph))
+	       glepe=ferr(60+(i-1)*NGLP+1)/
+     +   	    (abs(glf0(i)+glf0d(i))*86400.d0)
+	       write(31,1069)glep1z,glep2z,glepe
 	    endif
 	  enddo
 	endif
-1065	format(/' Glitch',i2,'  MJD:',f14.6)
-1066    format('    glph',7x,'glf0 (Hz)',5x,'glf1 (Hz/s)',4x,
-     :       'glf0d (Hz)',7x,'gltd (d)')
-1067	format(f10.6,1p,3d15.6,0p,f15.6)
-1068	format(' MJD for zero phase:',f14.6,' or',f14.6,'  Error:',f10.6)
+ 1065	format(/' Glitch',i2,'  MJD:',f14.6)
+ 1066	format('    GLPH',7x,'GLF0 (Hz)',5x,'GLF1 (Hz/s)',4x,
+     :       'GLF0D (Hz)',7x,'GLTD (d)')
+ 1067	format(f10.6,1p,3d15.6,0p,f15.6)
+ 1068	format(/' DeltaF/F:',1p,d13.6,'  Err:',d13.6,
+     :       0p,'  Q:',f9.6,'  Err:',f9.6)
+ 1069	format(' MJD for zero phase:',f14.6,' or',f14.6,'  Err:',f10.6)
 
 C Output new parameters
-	rewind 71
+	k=index(psrname,' ')-1
+	open(71,file=psrname(1:k)//'.par',status='unknown')
 	call outpar(nits,irh,irm,rsec,ferr(6),decsgn,idd,idm,
      +       dsec,ferr(5))
 
 C Output binary parameters
 	if(a1(1).ne.0.0) call newbin(nits,jits)
+C Close output .par file
+	close(71)
 
 	if(nxoff.gt.0) then
 	  koff=60+NGLT*NGLP
@@ -270,8 +289,6 @@ C Output binary parameters
 70	  continue
 	endif
 
-
-
 	asig=asig*p0*1000.
 	if(nboot.gt.0) write(31,1085) nboot
 1085	format('Uncertainties by bootstrap Monte Carlo:',
@@ -297,7 +314,7 @@ C Output binary parameters
 	  t0geo=t0geo-dt2sec/86400.d0
 	  if(abs(t0geo-pepoch).gt.1.d-3) write(*,1112) t0geo,pepoch
 1112	  format(/5x,'### Warning: t0geo=',f10.3,' and pepoch=',f10.3,
-     +      ' do not match! ###')
+     +      ' do not match! ###')
 	  dt=(t0geo-pepoch)*86400.d0
 	  ff0=f0 + f1*dt + 0.5d0*f2*dt**2
 	  ff1=f1 + f2*dt
@@ -318,15 +335,47 @@ C Output binary parameters
 	  f0=ff0
 	  f1=ff1
 	  rmsmp=asig/p0
+	  mjd1=amjd1
+	  mjd2=amjd2+1.d0
 	  binflag=' '
 	  if(a1(1).ne.0.0) binflag='*'
 	  write(33,1120) psrname(1:8),irh,irm,rsec,decsgn,idd,idm,dsec,
-     +      mjd1,mjd2,t0geo,f0,f1,f2,rmsmp,obsflag,binflag,
-     +      ephfile(nephem)(1:5),psrname
+     +       mjd1,mjd2,t0geo,f0,f1,f2,rmsmp,obsflag,binflag,
+     +       ephfile(nephem)(1:5),psrname
 1120	  format(a8,2i3.2,f7.3,1x,a1,i2.2,i3.2,f6.2,2i6,f16.9,
      +      f18.13,1p,d13.5,d11.2,0p,f5.1,2(1x,a1),1x,a,1x,a)
 	  close(33)
 	endif
 
+	return
+	end
+
+C=======================================================================
+
+        real*8 function dglep(igl,fph)
+
+	include 'dim.h'
+	include 'glitch.h'
+
+	real*8 fph, plim, t1, dph
+
+	tds=gltd(igl)*86400.d0
+	niter=0
+	plim=1.d-6
+	dph=1000.
+	t1=-fph/(glf0(igl) + glf0d(igl))
+	do while(abs(dph) .gt. plim)
+	   dph=fph + glf0(igl)*t1 + 0.5d0*glf1(igl)*t1*t1
+	   if(tds.gt.0.d0)dph=dph+glf0d(igl)*tds*(1.d0-exp(-t1/tds))
+	   t1=t1-dph/(glf0(igl) + glf0d(igl))
+	   niter=niter+1
+	   if(niter.gt.100)then
+	      write(*,*)'*** Glitch epoch convergence failed ***'
+	      dglep=0.d0
+	      return
+	   endif
+	enddo
+	dglep=t1/86400.d0
+	
 	return
 	end

@@ -13,11 +13,11 @@ c      $Id$
 	include 'orbit.h'
 	include 'glitch.h'
 
-	data idum/-1/
+        save
 
-	save
+        data idum/-1/
 
-	if(n.eq.1) then
+	if(n.eq.1)then
 	  ct1=ct
 	  p0firs=p0
 	  nf0=f0
@@ -36,12 +36,13 @@ c      $Id$
 	endif
 
 	torb=0.
-	if(nbin.eq.1.or.nbin.eq.6.or.nbin.ge.9) call bnrybt(torb,x)
+	if(nbin.eq.1.or.nbin.eq.6.or.nplanets.gt.0) call bnrybt(torb,x)
 	if(nbin.eq.2.or.nbin.eq.5) call bnryeh(torb,n,x)
 	if(nbin.eq.3) call bnrydd(torb,x)
 	if(nbin.eq.4) call bnryddgr(ct,f0,n,torb,x)
 	if(nbin.eq.7) call bnryddt(ct,f0,torb,x)
-	if(nbin.eq.8) call bnryddp(torb,x)
+	if(nbin.eq.8) call bnrymss(torb,x)
+	if(nbin.eq.9) call bnryell1(torb,x)
 
 	ntpd=nct-nepoch
 	ftpd=fct-fepoch+torb/86400.d0
@@ -70,19 +71,19 @@ c      $Id$
 	    if(tp.ge.tgl(i))then
 	      dt1=tp-tgl(i)
 	      dt9=dt1/1.d9
-	      td19=gltd1(i)*86400.d-9
+	      td9=gltd(i)*86400.d-9
 	      x(60+(i-1)*NGLP+1)=1.d0
 	      x(60+(i-1)*NGLP+2)=dt9
 	      x(60+(i-1)*NGLP+3)=0.5d0*dt9**2
-	      if(td19.ne.0.d0)then
-	        expf=exp(-dt9/td19)
-	        x(60+(i-1)*NGLP+4)=td19*(1.d0-expf)
-	        x(60+(i-1)*NGLP+5)=glf0d1(i)*(1.d0-(1.d0+dt9/td19)*expf)
+	      if(td9.ne.0.d0)then
+	        expf=exp(-dt9/td9)
+	        x(60+(i-1)*NGLP+4)=td9*(1.d0-expf)
+	        x(60+(i-1)*NGLP+5)=glf0d(i)*(1.d0-(1.d0+dt9/td9)*expf)
 	      else
 	        expf=1.d0
 	      endif
-	      phase4=phase4+glph(i)+glf0p(i)*dt1+0.5d0*glf1p(i)*dt1**2
-     :          +glf0d1(i)*gltd1(i)*86400.d0*(1.d0-expf)
+	      phase4=phase4+glph(i)+glf0(i)*dt1+0.5d0*glf1(i)*dt1**2
+     +          +glf0d(i)*gltd(i)*86400.d0*(1.d0-expf)
 	    else
 	      do j=1,NGLP
 	        x(60+(i-1)*NGLP+j)=0.d0

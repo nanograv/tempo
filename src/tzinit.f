@@ -109,10 +109,11 @@ C Read pulsar list and nspan, ncoeff, maxha and freq overrides
 	  endif
 
  312	  if(tzof(i).gt.0.)then
-            write(*,'(x,a,3i8,x,f12.5)') name(i),nsp(i),nco(i),
-     +          mxha(i),tzof(i)
+            write(*,'(1x,a,3i8,1x,f12.5)') name(i),nsp(i),nco(i),
+     +         mxha(i),tzof(i)
           else
-            write(*,'(x,a,3i8,2x,"from tzref")') name(i),nsp(i),nco(i)
+            write(*,'(1x,a,3i8,2x,''from tzref'')') 
+     +         name(i),nsp(i),nco(i)
           endif
  310	continue
 	print*,' Sorry, ',ntzmax,' pulsar limit'

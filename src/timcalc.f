@@ -186,7 +186,7 @@ c     start iteration
          dt_SSB = 0.d0
  201     dt_SSB_old = dt_SSB
 
-         delt=(dfloat(nmjdu)-pepoch+fmjdu+
+         delt=(dfloat(nmjdu)-posep+fmjdu+
      :       (etat+atut+dt_SSB)/secday)/36525d0
          rr      = DOT(RCA,RCA)
          pmtrans = DSQRT(DOT(aa_m,aa_m))
@@ -246,7 +246,8 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          if(DABS(dt_SSB-dt_SSB_old).gt.1.0d-10) goto 201
 
          fmjdc = fmjdu+(ETAT+ATUT+bclt-TDIS-dt_shapiro)/SECDAY
-c         if(mod(n,100).eq.1)type *,delt,bclt,tdis,dt_shapiro,fmjdc
+c         if(mod(n,20).eq.1)write(31,*)dt_roemer,dt_px,dt_pm,dt_pmtt,dt_pmtr,
+c     :      delt,bclt,tdis,dt_shapiro,fmjdc,posep
       endif
 
       if(fmjdc.ge.1.d0)then

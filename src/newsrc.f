@@ -21,13 +21,20 @@ c      $Id$
 C  Zero out all input parameters and fit coefficients.
 	call zeropar(nits)      
 
-	if(oldpar)then
+	if(OLDPAR)then
+        
+C --- old input format ---        
 
 C  Columns:                 1 ... 25       27   29    33   34   40   42
 	   read(50,1010) (nfit(i),i=1,25),nbin,nprnt,nits,iboot,ngl,nddm,
 C                44    46     47      51 ... 60
      +   	nclk,nephem,ncoord,(nfit(i),i=26,35)
  1010	   format(25z1,1x,z1,1x,i1,3x,i1,z1,4x,3i2,1x,2i1,3x,10i1)
+
+           if(nbin.ge.9)then
+	      nplanets=nbin-8
+	      nbin=1
+	   endif
 
 C  Set nfit(k) = 1 if the k'th parameter is to be fit for
 C  If nfit(1) > 1 then no fit is done, but tz2.tmp is created
@@ -43,84 +50,108 @@ C   4	DDGR				  3	TT(BIPM)
 C   5	H88				  4	(PTB)
 C   6	BT+				  5	AT1
 C   7	DDT
-C   8   DDP
 C   9	BT, 2 orbits
 C   a	BT, 3 orbits
 
 C  Get initial parameter values from lines 2-4 of data file
-	   read(50,1020) psrname,pra,pdec,pmra,pmdec,rv,p0,p1,pepoch,p2,px,dm
+	   read(50,1020) psrname,pra,pdec,pmra,pmdec,rv,p0,p1,pepoch,
+     +          p2,px,dm
  1020	   format(a12,8x,f20.1,f20.1,3f10.0/1x,d19.9,2d20.6,2d10.0/
-     +  	8x,f12.0)
+     +          8x,f12.0)
 
 	   if(nbin.ne.0) read(50,1030) a1(1),e(1),t0(1),pb(1)
  1030	   format(4f20.0)
 	   if(nbin.ne.0.and.nbin.ne.7) read(50,1031) omz(1),omdot,gamma,
-     +         pbdot,si,am,am2,dr,dth,a0,b0
+     +          pbdot,si,am,am2,dr,dth,a0,b0
  1031	   format(6f10.0,f6.0,3f4.3,f2.1)
 	   if(nbin.eq.7) read(50,1032) omz(1),omdot,gamma,pbdot,
      +         si,am,am2,bp,bpp
  1032	   format(7f10.0,2f5.0)
 
-	   if(nbin.ge.9) then	!Read params for 2nd and 3rd orbits
-	      do i=2,nbin-7
+	   if(nplanets.gt.0)then   ! Read params for 2nd and 3rd orbits
+	      do i=2,nplanets+1
 		 read(50,1030) a1(i),e(i),t0(i),pb(i)
 		 read(50,1031) omz(i)
 	      enddo
 	   endif
-c Convert PB to days if greater than 3600 (ie min Pb for old style = 1h)
+           
+C  Convert PB to days if greater than 3600 (ie min Pb for old style = 1h)
 	   do i=1,3
 	      if(pb(i).gt.3600.d0)pb(i)=pb(i)/86400.d0
 	   enddo
 
 	   if(ngl.ne.0)then
-	      do i=1,ngl
-		 read(50,1035)(nfit(60+(i-1)*NGLP+j),j=1,NGLP),glepoch(i),
-     +	            glph(i),glf0p(i),glf1p(i),glf0d1(i),gltd1(i)
-		 if((nfit(60+(i-1)*NGLP+4).ne.0.or.nfit(60+(i-1)*NGLP+5).ne.0)
-     +                 .and.gltd1(i).eq.0.d0)then
-		    write(0,*)' WARNING: Exp term requested but gltd1 = 0; set = 1.0d'
-		    gltd1(i)=1.d0
+	     do i=1,ngl
+	       read(50,1035)(nfit(60+(i-1)*NGLP+j),j=1,NGLP),glepoch(i),
+     +	         glph(i),glf0(i),glf1(i),glf0d(i),gltd(i)
+	       if((nfit(60+(i-1)*NGLP+4).ne.0.or.
+     +           nfit(60+(i-1)*NGLP+5).ne.0).and.gltd(i).eq.0.d0)then
+                 write(0,*)' WARNING: Exp term requested but gltd = 0;', 
+     +             ' set = 1.0d'
+		   gltd(i)=1.d0
 		 endif
 	      enddo
 	   endif
  1035	   format(5i1,5x,6f12.0)
 
-c         calculate header lines to be skipped when reading TOAs
+C  Calculate header lines to be skipped when reading TOAs
           nskip=4
-          if(nbin.gt.0) nskip=6
-          if(nbin.ge.9) nskip=6 + 2*(nbin-8)
-          if(ngl.gt.0)  nskip=nskip+ngl
+          if(nbin.gt.0)     nskip=6
+          if(nplanets.gt.0) nskip=6+2*nplanets
+          if(ngl.gt.0)      nskip=nskip+ngl
 
 	else
+        
+c --- free format header ---
+
 	   call rdpar(nits)
-	   if (parunit.eq.49) nskip = 0  ! separate par file
-	endif
+	   if (parunit.eq.49) nskip=0   ! separate par file
+
+        endif
 
 	if(gro)nits=1
-	if(xitoa)nclk=2                  ! Force correction to UTC for ITOA output
+	if(xitoa)nclk=2 ! Force correction to UTC for ITOA output
 
-C Convert units
-	p1=p1*1.d-15
-	p2=p2*1.d-30
-	dr=dr*1.d-6
-	dth=dth*1.d-6
-	a0=a0*1.d-6
-	b0=b0*1.d-6
-	pbdot=pbdot*1.d-12
-	xpbdot=xpbdot*1.d-12
-	xdot=xdot*1.d-12
-	edot=edot*1.d-12
+C  ELL1: convert e,omega -> eps1,eps2 (if necessary) and set nell1
+C  nell1=0 -> fit for eps1dot,eps2dot 
+C  nell1=1 -> fit for omdot,edot 
+ 
+	if(nbin.eq.9)then
+	   if(e(1).ne.0. .or. omz(1).ne.0.) call bt2ell1()
+	   if(nfit(14).ne.0 .or. nfit(25).ne.0
+     +        .or. omdot.ne.0. .or. edot .ne.0.) nell1=1
+	endif
+
+C  Convert units
+
+	p1      = p1      *1.d-15
+	p2      = p2      *1.d-30
+	dr      = dr      *1.d-6
+	dth     = dth     *1.d-6
+	a0      = a0      *1.d-6
+	b0      = b0      *1.d-6
+	pbdot   = pbdot   *1.d-12
+	xpbdot  = xpbdot  *1.d-12
+	xdot    = xdot    *1.d-12
+	edot    = edot    *1.d-12
+	eps1dot = eps1dot *1.d-12
+	eps2dot = eps2dot *1.d-12
 
 	if(pepoch.gt.2400000.5d0) pepoch=pepoch-2400000.5d0
+	if(posepoch.gt.0.)then
+	   posep=posepoch
+	else
+	   posep=pepoch
+	endif
 	ndmcalc=max(nfit(16),ndmcalc)
 	nfcalc=max(nfit(3),nfcalc)
 
-	if (eclcoord) then
-	  pra=pra*TWOPI/360.d0
-          pdec=pdec*TWOPI/360.d0
+	if(eclcoord)then
+	   pra=pra*TWOPI/360.d0
+           pdec=pdec*TWOPI/360.d0
 	else
-	  pra=ang(3,pra)	! hhmmss.ss to radians
-          pdec=ang(1,pdec)	! ddmmss.ss to radians
+	   pra=ang(3,pra)	! hhmmss.ss to radians
+           pdec=ang(1,pdec)	! ddmmss.ss to radians
 	endif
 
 	if(ncoord.eq.0)then
@@ -151,62 +182,58 @@ c  Open ephemeris file
 	path=ephdir(1:kd)//ephfile(nephem)(1:kf)
 	call ephinit(44,path)
 
-C Open .par file
-	k=index(psrname,' ')-1
-	path=psrname(1:k)//'.par'
-	open(71,file=path,status='unknown')
-
 C  Check to make sure selected parameters are consistent with model
 	if(nbin.eq.0) then
-	  do 1 I = 9, 15
-1	  nfit(I) = 0
-	  nfit(18) = 0
-	  do 11 i=20,35
-11	  nfit(i)=0
+ 	   do 1 I = 9, 15
+1	   nfit(I) =0
+	   nfit(18)=0
+	   do 11 i=20,35
+11	   nfit(i) =0
 	endif
 
-	if (nbin .eq. 1) then
-	  do 2 I = 20, 23
-2	  nfit(I) = 0
+	if(nbin.eq.1)then
+	   do 2 I = 20, 23
+2	   nfit(I)=0
 	endif
 
 	if(nbin.eq.2) then
-	  do 21 i=21,23
-21	  nfit(i)=0
+	   do 21 i=21,23
+21	   nfit(i)=0
 	endif
 
-	if(nbin.eq.4) then
-	  nfit(15)=0
-	  nfit(20)=0
-	  nfit(23)=0
+	if(nbin.eq.4)then
+	   nfit(15)=0
+	   nfit(20)=0
+	   nfit(23)=0
 	endif
-
+        
 	if(t0(1).lt.39999.5d0) t0(1)=t0(1)+39999.5d0  !Convert old style to MJD
 	if(t0(2).lt.39999.5d0) t0(2)=t0(2)+39999.5d0
 	if(t0(3).lt.39999.5d0) t0(3)=t0(3)+39999.5d0
 
-	if (oldpar) then	! in old style files, xomdot and xpbdot
-	  xomdot=0.		!    replaced omdot and pbdot in value and
-	  xpbdot=0.		!    flag fields in the header.
-	  if(nbin.eq.4) then
-	    xpbdot=pbdot
-	    xomdot = omdot
-	    omdot = 0.
-	    pbdot = 0.
-	    if (nfit(14).eq.1) then
-	      nfit(14)=0
-	      nfit(37)=1
-	    endif
-	    if (nfit(18).eq.1) then
-	      nfit(18)=0
-	      nfit(38)=1
-	    endif
-	  endif
+	if(OLDPAR)then	       ! in old style files, xomdot and xpbdot
+ 	   xomdot=0.	       ! replaced omdot and pbdot in value and
+	   xpbdot=0.	       ! flag fields in the header.
+	   if(nbin.eq.4)then
+	      xpbdot=pbdot
+	      xomdot = omdot
+	      omdot=0.
+	      pbdot=0.
+	      if(nfit(14).eq.1)then
+	         nfit(14)=0
+	         nfit(37)=1
+	      endif
+	      if(nfit(18).eq.1)then
+	         nfit(18)=0
+	         nfit(38)=1
+	      endif
+	   endif
 	endif
 
-	if (nfit(3).gt.12) then
-	  write (*,*) "Error: maximum of 12 frequency derivatives allowed"
-	  stop
+	if(nfit(3).gt.12) then
+	   write(*,*) 
+     +        ' ERROR: maximum of 12 frequency derivatives allowed'
+	   stop
 	endif
 
 C Read clock corrections
@@ -229,12 +256,12 @@ C Read clock corrections
 	      if(xlor.gt.800.d0) xlor=xlor-818.8d0
 	      ckcorr(i)=xjup-xlor
 	      ckflag(i) = 0
-	      if (dtmp.eq.'F') ckflag(i) = 1        ! "fixed" -- no interpolation
+	      if (dtmp.eq.'F') ckflag(i) = 1  ! "fixed" -- no interpolation
  451	   continue
 	   i=NPT
 	   k=index(clkfile(1),' ')-1
 	   write(*,'(''WARNING: '',a,'' too long, not all read'')')
-     :  	clkfile(1)(1:k)
+     +  	clkfile(1)(1:k)
  452	   ndate=i-1
 	   close(2)
 	endif
@@ -250,7 +277,7 @@ C Read clock corrections
  23	   continue
 	   k=index(clkfile(2),' ')-1
 	   write(*,'(''WARNING: '',a,'' too long, not all read'')')
-     :  	clkfile(2)(1:k)
+     +  	clkfile(2)(1:k)
  24	   tutc(i)=0.
 	   close(2)
 	endif
@@ -269,7 +296,7 @@ C Read clock corrections
 	   i=NPT
 	   k=index(clkfile(nclk),' ')-1
 	   write(*,'(''WARNING: '',a,'' too long, not all read'')')
-     :         clkfile(nclk)(1:k)
+     +         clkfile(nclk)(1:k)
  92	   tbipm(i)=0.
 	   close(2)
 	endif
@@ -285,7 +312,7 @@ c  Beginning of iteration loop
 	if(si.gt.1.d0) si=1.d0
 
 	write(31,1039) bmodel(nbin),nbin,nddm
-1039	format('Binary model: ',a,' nbin: ',i2,'   nddm:',i2)
+ 1039	format('Binary model: ',a,' nbin: ',i2,'   nddm:',i2)
 	if(psrframe)write(31,'(''Parameters in pulsar frame'')')
         write (31,1040) psrname
  1040   format (/'Assumed parameters -- PSR ',a12/)
@@ -308,6 +335,21 @@ c  Beginning of iteration loop
  1043	  format ('RA: ',11x,i2.2,':',i2.2,':',i2.2,f9.8/
      +         'DEC:',10x,a1,i2.2,':',i2.2,':',i2.2,f9.8)
         endif
+
+        if (eclcoord) then
+	   if(pmra.ne.0.0)write(31,'(''PMLAMBDA (mas/yr):'',f18.4)')pmra
+	   if(pmdec.ne.0.0)write(31,'(''PMBETA (mas/yr):'',f17.4)')pmdec
+        else
+	   if(pmra.ne.0.0)write(31,'(''PMRA (mas/yr):'',f18.4)')pmra
+	   if(pmdec.ne.0.0)write(31,'(''PMDEC (mas/yr):'',f17.4)')pmdec
+        endif
+	if(px.ne.0.0)write(31,'(''Parallax (mas):'',f17.4)')px
+
+	if(posepoch.gt.0.)then
+	   write (31,1100) posepoch
+ 1100	   format('Pos Epoch (MJD):',f16.8)
+	endif
+
         write (31,1044) f0,p0,f1,p1*1.d15,f2,f3
  1044   format ('F0 (s-1): ',f22.17,6x,'(P0 (s):',f24.19,')'/
      +         'F1 (s-2): ',1p,d22.12,0p,6x,'(P1 (-15):',f22.12,')'/
@@ -321,61 +363,81 @@ c  Beginning of iteration loop
           if (f4(i).ne.0)write(31,1046)i+3,-i-4,f4(i)
  1046     format ('F',i2,' (s',i3,'): ',1p,d22.9)
         enddo
-        write (31,1047) pepoch, dm
- 1047   format ('Epoch (MJD):',f20.8/'DM (cm-3 pc):',f19.6)
+        write (31,1047) pepoch
+ 1047   format ('P Epoch (MJD):',f18.8)
+
+	if(start.gt.0.)then
+	   write (31,1102) start
+ 1102	   format ('Start MJD:',f22.8)
+	endif
+	if(finish.lt.100000.)then
+	   write (31,1104) finish
+ 1104	   format ('Finish MJD:',f21.8)
+	endif
+
+        write (31,1106) dm
+ 1106	format ('DM (cm-3 pc):',f19.6)
 	do i = 1, ndmcalc-1
 	   write (31,1048) i, dmcof(i)
 	enddo
  1048	format ('DMCOF',i1,':',1p,d25.9)
 
-        if (eclcoord) then
-          if(pmra.ne.0.0)write(31,'(''PMLAMBDA (mas/yr):'',f18.4)')pmra
-          if(pmdec.ne.0.0)write(31,'(''PMBETA (mas/yr):'',f17.4)')pmdec
-        else
-          if(pmra.ne.0.0)write(31,'(''PMRA (mas/yr):'',f18.4)')pmra
-          if(pmdec.ne.0.0)write(31,'(''PMDEC (mas/yr):'',f17.4)')pmdec
+	if(a1(1).ne.0.d0)then
+	   if(nbin.ne.9)then
+	      write(31,1050) a1(1),e(1),t0(1),pb(1),omz(1)
+	   else
+	      write(31,2050) a1(1),pb(1),t0(1),eps1,eps2
+	   endif
+	endif
+ 1050	format('A1 sin(i) (s):',f18.9/'E:',f30.9/'T0 (MJD):',f23.9/
+     +       'PB (d):',f25.12/'Omega0 (deg):',f19.6)
+ 2050	format('A1 sin(i) (s):',f18.9/'Pd (d):',f25.12/'T0 (MJD):',f23.9/
+     +       'eps1:',f27.9/'eps2:',f27.9)
+
+	if(omdot.ne.0.)write(31,'(''Omegadot (deg/yr):'',f14.6)')omdot
+	if(xomdot.ne.0.)write(31,'(''XOMDOT (deg/yr):'',f16.3)')xomdot
+	if(pbdot.ne.0.)write(31,'(''PBdot (-12):'',f20.3)')1.d12*pbdot
+	if(xpbdot.ne.0.)write(31,'(''XPBDOT (-12):'',f19.3)')
+     +       1.d12*xpbdot
+	if(gamma.ne.0.)write(31,'(''Gamma (s):'',f22.6)')gamma
+	if(si.ne.0.)write(31,'(''sin(i):'',f25.6)')si
+	if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am
+	if(am2.ne.0.)write(31,'(''m2 (solar):'',f21.6)')am2
+	if(dr.ne.0.)write(31,'(''dr (-6):'',f24.3)')1.d6*dr
+	if(dth.ne.0.)write(31,'(''dth (-6):'',f23.3)')1.d6*dth
+	if(a0.ne.0.)write(31,'(''A0 (-6):'',f24.3)')1.d6*a0
+	if(b0.ne.0.)write(31,'(''B0 (-6):'',f24.3)')1.d6*b0
+	if(bp.ne.0.)write(31,'(''bp:'',f29.6)')bp
+	if(bpp.ne.0.)write(31,'(''bpp:'',f28.6)')bpp
+	if(xdot.ne.0.)write(31,'(''Xdot (-12):'',f21.6)')1.d12*xdot
+	if(edot.ne.0.)write(31,'(''Edot (-12 s-1):'',f17.6)')1.d12*edot
+	if(om2dot.ne.0.)write(31,'(''om2dot (rad s-2):'',5x,e10.4)')
+     +       om2dot	                                     
+	if(x2dot.ne.0.)write(31,'(''x2dot (s-1):'',10x,e10.4)')x2dot
+	if(eps1dot.ne.0.)write(31,'(''eps1dot (-12 s-1):'',f14.6)')
+     +       eps1dot*1.d12
+	if(eps2dot.ne.0.)write(31,'(''eps2dot (-12 s-1):'',f14.6)')
+     +       eps2dot*1.d12
+
+	if(nplanets.gt.0)then
+           do i=2,nplanets+1
+              write(31,1051) i,a1(i),i,e(i),i,t0(i),i,pb(i),i,omz(i)
+1051	      format('X(',i1,') (s):',f23.7/'E(',i1,'):',f27.9/
+     +               'T0(',i1,') (MJD):',f20.9/'Pb(',i1,') (d):',f22.6/
+     +               'Om(',i1,') (deg):',f20.6)
+           enddo
         endif
-	if(px.ne.0.0)write(31,'(''Parallax (mas):'',f17.4)')px
-
-	if(a1(1).ne.0.d0) write(31,1050) a1(1),e(1),t0(1),pb(1),omz(1)
-1050	format('A1 sin(i) (s):',f18.9/'E:',f30.9/'T0 (MJD):',f23.9/
-     +    'PB (d):',f25.12/'Omega0 (deg):',f19.6)
-	if(omdot.ne.0.0)write(31,'(''Omegadot (deg/yr):'',f14.6)')
-     +      omdot
-	if(xomdot.ne.0.0)write(31,'(''XOMDOT (deg/yr):'',f16.3)')
-     +      xomdot
-	if(pbdot.ne.0.0)write(31,'(''PBdot (-12):'',f20.3)')1.d12*pbdot
-	if(xpbdot.ne.0.0)write(31,'(''XPBDOT (-12):'',f19.3)')1.d12*xpbdot
-	if(gamma.ne.0.0)write(31,'(''Gamma (s):'',f22.6)')gamma
-	if(si.ne.0.0)write(31,'(''sin(i):'',f25.6)')si
-	if(am.ne.0.0)write(31,'(''M (solar):'',f22.6)')am
-	if(am2.ne.0.0)write(31,'(''m2 (solar):'',f21.6)')am2
-	if(dr.ne.0.0)write(31,'(''dr (-6):'',f24.3)')1.d6*dr
-	if(dth.ne.0.0)write(31,'(''dth (-6):'',f23.3)')1.d6*dth
-	if(a0.ne.0.0)write(31,'(''A0 (-6):'',f24.3)')1.d6*a0
-	if(b0.ne.0.0)write(31,'(''B0 (-6):'',f24.3)')1.d6*b0
-	if(bp.ne.0.0)write(31,'(''bp:'',f29.6)')bp
-	if(bpp.ne.0.0)write(31,'(''bpp:'',f28.6)')bpp
-	if(xdot.ne.0.0)write(31,'(''Xdot (-12):'',f21.6)')1.d12*xdot
-	if(edot.ne.0.0)write(31,'(''Edot (-12 s-1):'',f17.6)')1.d12*edot
-
-	if(nbin.ge.9) write(31,1051) a1(2),e(2),t0(2),pb(2),omz(2)
-1051	format('X(2) (s):',f23.7/'E(2):',f27.9/'T0(2) (MJD):',f20.9/
-     +    'Pb(2) (d):',f22.6/'Om(2) (deg):',f20.6)
-	if(nbin.eq.10) write(31,1052) a1(3),e(3),t0(3),pb(3),omz(3)
-1052	format('X(3) (s):',f23.7/'E(3):',f27.9/'T0(3) (MJD):',f20.9/
-     +    'Pb(3) (d):',f22.6/'Om(3) (deg):',f20.6)
-
+        
 	if(ngl.gt.0)then
 	  do i=1,ngl
-	    write(31,1053)i,glepoch(i),glph(i),glf0p(i),
-     :        glf1p(i),glf0d1(i),gltd1(i)
+ 	     write(31,1053)i,glepoch(i),glph(i),glf0(i),
+     +          glf1(i),glf0d(i),gltd(i)
 	  enddo
 	endif
 1053	format('Glitch',i2/'  Epoch (MJD):',f18.6/
-     :    '  dphs:',f25.6/'  df0p (s-1):',1p,d19.7/
-     :    '  df1p (s-2):',d19.7/
-     :    '  df0d1 (s-1):',d18.7,0p/'  td1 (d):',f22.5)
+     +         '  dPHS:',f25.6/'  dF0 (s-1):',1p,d20.7/
+     +         '  dF1 (s-2):',d20.7/
+     +         '  dF0D (s-1):',d19.7,0p/'  TD (d):',f23.5)
 
 	if (nbin.gt.0)then
 	   do i=1,3
@@ -386,7 +448,7 @@ c  Beginning of iteration loop
 	nfit(1)=1
 	if(nfit(3).ge.2) nfit(4)=1
 
-	do 70 i=1,38				!Set up parameter pointers
+	do 70 i=1,40				!Set up parameter pointers
 	if(nfit(i).eq.0) go to 70
 	k=k+1
 	mfit(k)=i

@@ -1,4 +1,4 @@
-c      @(#)bnryddp.f	1.1  01/19/98
+c      $Id$
 	subroutine bnrymss(torb,fctn)
 
 c  Model for main-sequence star binary pulsars (Wex 1998, astro-ph/9706086).
