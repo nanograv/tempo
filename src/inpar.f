@@ -617,6 +617,10 @@ C  Warnings
      +        bmodel(nbin)
       endif
 
+      if(nbin.eq.4 .and. a0.ne.0) then
+	write (*,'('' WARNING: Use AFAC, not A0, with model DDGR.'')')
+      endif
+
       if(nbin.eq.9)then
          if(seteps .and. t0asc.eq.0.)then
             write(*,'('' WARNING: TASC not set, use TASC=T0 !!!'')')
