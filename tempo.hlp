@@ -1,21 +1,23 @@
 
-Usage: tempo [options] <filename>
+Usage: tempo [options] [filename]
 
 options:
-  -d <path>   Path to 'tempo.cfg', default: environment variable 'TEMPO'
-  -f <par>    Over-rides the default parameter file name with <par>
+  -c          Do all requested iterations, even if apparently converged
+  -d<path>    Path to 'tempo.cfg', default: environment variable 'TEMPO'
+  -f<par>     Over-rides the default parameter file name with <par>
   -g[O]       GRO mode; 'O' is single-letter observatory code
-  -no <file>  Write out absolute pulse numbers to file
-  -ni <file>  Get absolute pulse numbers from file
+  -h          Help (prints this message)
+  -j          Output JUMP values in xxx.par file
+  -l<xx>      Max number of parameters to be fit (guides memory allocation)
+  -m<xx>      Max number of TOAs to be fit (guides memory allocation)
+  -no<file>   Write out absolute pulse numbers to file
+  -ni<file>   Get absolute pulse numbers from file
   -o          'Old-style' parameters at head of <fname>
   -p          Parameters corrected for pulsar space motion
   -r          Save the partial-derivatives file, resid1.tmp 
   -v          Print out version number
   -x          Make an export file in ITOA format
   -z[m]	      Compute polonomial coefficients [m for MJD dates] 
-
-Options may be in any order, but <fname> must be last.  Options may
-not be grouped (e.g., '-oz' is not allowed; it must be written '-o -z')
 
 For more details, see:
   http://pulsar.princeton.edu/tempo
