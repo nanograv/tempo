@@ -144,7 +144,7 @@ c     +		recl = 80*npts)
 c	ipointer = mallocxi(resb(1),20*npts,4,resboff)
 	flags = 1*512 + 1*64 + 2        ! octal 1102 = O_TRUNC || O_CREAT || O_RDWR
 	mode  = 6*64 + 6*8 + 2  ! octal 662 = rw-rw-r--
-	fd = open(resfile2,flags,mode);
+	fd = open(resfile2,flags,mode)
 	resn(1) = 72
 	resn(20) = 72
 
