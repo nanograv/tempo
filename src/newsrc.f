@@ -116,6 +116,8 @@ C  ELL1: convert e,omega -> eps1,eps2 (if necessary) and set nell1
 C  nell1=0 -> fit for eps1dot,eps2dot 
 C  nell1=1 -> fit for omdot,edot 
  
+	if(nbin.eq.1.and.t0asc.ne.0) call tasc2t0()
+
 	if(nbin.eq.9)then
 	   if(t0(1).ne.0.) call bt2ell1()
 	   if(nfit(14).ne.0 .or. nfit(25).ne.0
@@ -392,7 +394,7 @@ c  Beginning of iteration loop
  1050	format('A1 sin(i) (s):',f18.9/'E:',f30.9/'T0 (MJD):',f23.9/
      +       'PB (d):',f25.12/'Omega0 (deg):',f19.6)
  2050	format('A1 sin(i) (s):',f18.9/'Pd (d):',f25.12/
-     +       'T0ASC (MJD):',f20.9/'eps1:',f27.9/'eps2:',f27.9)
+     +       'TASC (MJD):',f21.9/'eps1:',f27.9/'eps2:',f27.9)
 
 	if(omdot.ne.0.)write(31,'(''Omegadot (deg/yr):'',f14.6)')omdot
 	if(xomdot.ne.0.)write(31,'(''XOMDOT (deg/yr):'',f16.3)')xomdot
