@@ -23,49 +23,78 @@ c      $Id$
 1039	format(/'PSR ',a12,'  Ephem.: ',a,'  Clock: ',a12,
      +       '  Ref. MJD: ',f12.4)
 
-	write(31,1040)
- 1040	format (/6x,'RA',16x,'DEC',12x,'PM RA',4x,'PM DEC',5x,'PM RV',
-     +       3x,'PARALLAX'/)
 
-	c=360.*60./TWOPI*60.
-	cc=c*365.25*86400000.
-
-	call radian(pra,irh,irm,rsec,123,1)
-	call radian(pdec,idd,idm,dsec,1,1)
-	decsgn=' '
-	if(pdec.lt.0.) decsgn='-'
-	idd=iabs(idd)
-
-	write(31,1050) irh,irm,rsec,decsgn,idd,idm,dsec,pmra,pmdec,
-     +      pmrv,px
- 1050	format (i2.2,i3.2,f12.8,1x,a1,i2.2,i3.2,f11.7,4f10.4)
-
-	freq5=freq(5)*c
-	freq6=freq(6)*c/15.
-	write(31,1051)freq6,freq5,1.d-9*freq(8)*cc,1.d-9*freq(7)*cc,
-     +       1.d1*freq(36)*c,freq(17)
- 1051	format (f17.8,f18.7,4f10.4)
-
-	ferr(5)=ferr(5)*c
-	ferr(6)=ferr(6)*c/15.
-	pmrerr=1.d-9*ferr(8)*cc
-	pmderr=1.d-9*ferr(7)*cc
-	write(31,1051) ferr(6),ferr(5),pmrerr,pmderr,
+	if (eclcoord) then
+	  write (31,1040)
+ 1040     format (/5x,'LAMBDA',15x,'BETA',7x,'PM LAMBDA',2x,'PM BETA',
+     +         4x,'PM RV',3x,'PARALLAX'/)
+          c1 = 360.d0/TWOPI     ! radians to degrees
+          c = 360.*60.*60./TWOPI !radians to arcsec
+          cc =c*365.25*86400000. !radians/sec to mas/yr
+          write (31,1041) c1*pra, c1*pdec, pmra, pmdec, pmrv, px
+ 1041     format (2f18.13,4f10.5)
+          freq5 = freq(5)*c1
+          freq6 = freq(6)*c1
+          write (31,1041) freq6, freq5, 1.d-9*freq(8)*cc, 
+     +         1.d-9*freq(7)*cc, 1.d1*freq(36)*c, freq(17)
+          ferr(5) = ferr(5)*c1
+          ferr(6) = ferr(6)*c1
+          pmrerr=1.d-9*ferr(8)*cc
+          pmderr=1.d-9*ferr(7)*cc
+          write(31,1041) ferr(6),ferr(5),pmrerr,pmderr,
      +       1.d1*ferr(36)*c,ferr(17)
+          pra=pra+freq(6)
+          pdec=pdec+freq(5)
+          pmra=pmra+1.d-9*freq(8)*cc
+          pmdec=pmdec+1.d-9*freq(7)*cc
+          pmrv=pmrv+1.d1*freq(36)*c
+          px=px+freq(17)
+          write (31,1041) c1*pra, c1*pdec, pmra, pmdec, pmrv, px
+	else
+	  write (31,1048)
+ 1048     format (/6x,'RA',16x,'DEC',12x,'PM RA',4x,'PM DEC',5x,'PM RV',
+     +         3x,'PARALLAX'/)
 
-	pra=pra+freq(6)
-	pdec=pdec+freq(5)
-	call radian(pra,irh,irm,rsec,123,1)
-	call radian(pdec,idd,idm,dsec,1,1)
-	decsgn=' '
-	if(pdec.lt.0.) decsgn='-'
-	idd=iabs(idd)
-	pmra=pmra+1.d-9*freq(8)*cc
-	pmdec=pmdec+1.d-9*freq(7)*cc
-	pmrv=pmrv+1.d1*freq(36)*c        ! Convert from rad/century to mas/yr
-	px=px+freq(17)
-	write(31,1050) irh,irm,rsec,decsgn,idd,idm,dsec,pmra,pmdec,
-     +     pmrv,px
+          c=360.*60./TWOPI*60.
+          cc=c*365.25*86400000.
+
+          call radian(pra,irh,irm,rsec,123,1)
+          call radian(pdec,idd,idm,dsec,1,1)
+          decsgn=' '
+          if(pdec.lt.0.) decsgn='-'
+          idd=iabs(idd)
+          
+          write(31,1050) irh,irm,rsec,decsgn,idd,idm,dsec,pmra,pmdec,
+     +         pmrv,px
+ 1050     format (i2.2,i3.2,f12.8,1x,a1,i2.2,i3.2,f11.7,4f10.4)
+
+          freq5=freq(5)*c
+          freq6=freq(6)*c/15.
+          write(31,1051)freq6,freq5,1.d-9*freq(8)*cc,1.d-9*freq(7)*cc,
+     +         1.d1*freq(36)*c,freq(17)
+ 1051     format (f17.8,f18.7,4f10.4)
+          
+          ferr(5)=ferr(5)*c
+          ferr(6)=ferr(6)*c/15.
+          pmrerr=1.d-9*ferr(8)*cc
+          pmderr=1.d-9*ferr(7)*cc
+          write(31,1051) ferr(6),ferr(5),pmrerr,pmderr,
+     +         1.d1*ferr(36)*c,ferr(17)
+
+          pra=pra+freq(6)
+          pdec=pdec+freq(5)
+          call radian(pra,irh,irm,rsec,123,1)
+          call radian(pdec,idd,idm,dsec,1,1)
+          decsgn=' '
+          if(pdec.lt.0.) decsgn='-'
+          idd=iabs(idd)
+          pmra=pmra+1.d-9*freq(8)*cc
+          pmdec=pmdec+1.d-9*freq(7)*cc
+          pmrv=pmrv+1.d1*freq(36)*c ! Convert from rad/century to mas/yr
+          px=px+freq(17)
+          write(31,1050) irh,irm,rsec,decsgn,idd,idm,dsec,pmra,pmdec,
+     +         pmrv,px
+        endif
 
 	p0z=1.d0/f0
 	p1z=-1.d15*f1/f0**2
@@ -128,8 +157,8 @@ c      $Id$
 	ppng=ppng+freq(19)
 	write(31,1055)p0,p1,dm,dmcof(1),ppng
 
-	if(nfit(7).ne.0.or.nfit(8).ne.0) call propmo(pmra,pmdec,pmrerr,
-     +     pmderr,pra,pdec)
+	if((nfit(7).ne.0.or.nfit(8).ne.0) .and. (.not.eclcoord)) 
+     +       call propmo(pmra,pmdec,pmrerr,pmderr,pra,pdec)
 
 C  Compute braking index
 	if(nfit(4).ne.0) then

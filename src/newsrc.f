@@ -4,6 +4,8 @@ c      $Id$
 	implicit real*8 (A-H,O-Z)
 	character DECSGN*1,path*160
 	character*1 ctmp, dtmp
+        parameter (TWOPI=6.28318530717958648d0)
+
 	include 'dim.h'
 	include 'acom.h'
 	include 'bcom.h'
@@ -112,8 +114,13 @@ C Convert units
 	if(pepoch.gt.2400000.5d0) pepoch=pepoch-2400000.5d0
 	ndmcalc=max(nfit(16),ndmcalc)
 
-	pra=ang(3,pra)			!Convert to radians
-	pdec=ang(1,pdec)
+	if (eclcoord) then
+	  pra=pra*TWOPI/360.d0
+          pdec=pdec*TWOPI/360.d0
+	else
+	  pra=ang(3,pra)	! hhmmss.ss to radians
+          pdec=ang(1,pdec)	! ddmmss.ss to radians
+	endif
 
 	if(ncoord.eq.0)then
 	   pmra=pmra*1d-1
@@ -276,44 +283,57 @@ c  Beginning of iteration loop
 	p1=-f1/f0**2
 	if(si.gt.1.d0) si=1.d0
 
-	call radian (pra,irh,irm,rsec,123,1)
-	call radian (pdec,idd,idm,dsec,1,1)
-	decsgn=' '
-	if(pdec.lt.0.) decsgn='-'
-	idd=iabs(idd)
-
 	write(31,1039) bmodel(nbin),nbin,nddm
 1039	format('Binary model: ',a,' nbin: ',i2,'   nddm:',i2)
 	if(psrframe)write(31,'(''Parameters in pulsar frame'')')
-	irs=rsec
-	rsec=rsec-irs
-	ids=dsec
-	dsec=dsec-ids
-	write(31,1040) psrname,irh,irm,irs,rsec,decsgn,idd,idm,ids,dsec,
-     +    f0,p0,f1,p1*1.d15,f2,f3
-1040	format (/'Assumed parameters -- PSR ',a12//
-     +  'RA: ',11x,i2.2,':',i2.2,':',i2.2,f9.8/
-     +  'DEC:',10x,a1,i2.2,':',i2.2,':',i2.2,f9.8/
-     +  'F0 (s-1): ',f22.17,6x,'(P0 (s):',f24.19,')'/
-     +  'F1 (s-2): ',1p,d22.12,0p,6x,'(P1 (-15):',f22.12,')'/
-     +  'F2 (s-3): ',1p,d22.9/'F3 (s-4): ',d22.6,0p)
-         do i = 1, 6
-	   if (f4(i).ne.0)write(31,1045)i+3,-i-4,f4(i)
- 1045	   format ('F',i1,' (s',i2,'): ',1p,d22.9)
-         enddo
-         do i = 7, 9
-	   if (f4(i).ne.0)write(31,1046)i+3,-i-4,f4(i)
- 1046	   format ('F',i2,' (s',i3,'): ',1p,d22.9)
-         enddo
-	 write (31,1047) pepoch, dm
- 1047	 format ('Epoch (MJD):',f20.8/'DM (cm-3 pc):',f19.6)
+        write (31,1040) psrname
+ 1040   format (/'Assumed parameters -- PSR ',a12/)
+
+
+	if (eclcoord) then
+          write (31,1042) pra*360.d0/TWOPI,pdec*360.d0/TWOPI
+ 1042     format ('LAMBDA:',f25.13/'BETA:',f27.13)
+	else
+          call radian (pra,irh,irm,rsec,123,1)
+          call radian (pdec,idd,idm,dsec,1,1)
+          decsgn=' '
+          if(pdec.lt.0.) decsgn='-'
+          idd=iabs(idd)
+	  irs=rsec
+	  rsec=rsec-irs
+	  ids=dsec
+	  dsec=dsec-ids
+	  write(31,1043) irh,irm,irs,rsec,decsgn,idd,idm,ids,dsec
+ 1043	  format ('RA: ',11x,i2.2,':',i2.2,':',i2.2,f9.8/
+     +         'DEC:',10x,a1,i2.2,':',i2.2,':',i2.2,f9.8)
+        endif
+        write (31,1044) f0,p0,f1,p1*1.d15,f2,f3
+ 1044   format ('F0 (s-1): ',f22.17,6x,'(P0 (s):',f24.19,')'/
+     +         'F1 (s-2): ',1p,d22.12,0p,6x,'(P1 (-15):',f22.12,')'/
+     +         'F2 (s-3): ',1p,d22.9/'F3 (s-4): ',d22.6,0p)
+
+        do i = 1, 6
+          if (f4(i).ne.0)write(31,1045)i+3,-i-4,f4(i)
+ 1045     format ('F',i1,' (s',i2,'): ',1p,d22.9)
+        enddo
+        do i = 7, 9
+          if (f4(i).ne.0)write(31,1046)i+3,-i-4,f4(i)
+ 1046     format ('F',i2,' (s',i3,'): ',1p,d22.9)
+        enddo
+        write (31,1047) pepoch, dm
+ 1047   format ('Epoch (MJD):',f20.8/'DM (cm-3 pc):',f19.6)
 	do i = 1, ndmcalc-1
 	   write (31,1048) i, dmcof(i)
 	enddo
  1048	format ('DMCOF',i1,':',1p,d25.9)
 
-	if(pmra.ne.0.0)write(31,'(''PMRA (mas/yr):'',f18.4)')pmra
-	if(pmdec.ne.0.0)write(31,'(''PMDEC (mas/yr):'',f17.4)')pmdec
+        if (eclcoord) then
+          if(pmra.ne.0.0)write(31,'(''PMLAMBDA (mas/yr):'',f18.4)')pmra
+          if(pmdec.ne.0.0)write(31,'(''PMBETA (mas/yr):'',f17.4)')pmdec
+        else
+          if(pmra.ne.0.0)write(31,'(''PMRA (mas/yr):'',f18.4)')pmra
+          if(pmdec.ne.0.0)write(31,'(''PMDEC (mas/yr):'',f17.4)')pmdec
+        endif
 	if(px.ne.0.0)write(31,'(''Parallax (mas):'',f17.4)')px
 
 	if(a1(1).ne.0.d0) write(31,1050) a1(1),e(1),t0(1),pb(1),omz(1)

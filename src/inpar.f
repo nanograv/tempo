@@ -111,6 +111,12 @@ C  The error/comment is ignored by TEMPO
 
       character line*80, key*8, value*24, cfit*1, temp*80
 
+	logical setecl, setequ  ! indicate when some ecliptic or
+	                        ! equatorial coordinate has been set
+
+	setecl = .false.
+	setequ = .false.
+
       ll=80
 
       nskip = 0  ! counts parameter lines, which are skipped if TOAs are
@@ -244,19 +250,43 @@ C Position parameters
          call decolon(value)
          read(value,*)pdec
          read(cfit,*)nfit(5)
+	 setequ = .true.
 
       else if(key(1:2).eq.'RA')then
          call decolon(value)
          read(value,*)pra
          read(cfit,*)nfit(6)
+	 setequ = .true.
 
       else if(key(1:4).eq.'PMDE')then
          read(value,*)pmdec
          read(cfit,*)nfit(7)
+	 setequ = .true.
 
       else if(key(1:4).eq.'PMRA')then
          read(value,*)pmra
          read(cfit,*)nfit(8)
+         setequ = .true.
+
+      else if(key(1:4).eq.'BETA')then
+         read(value,*)pdec
+         read(cfit,*)nfit(5)
+	 setecl = .true.
+
+      else if(key(1:6).eq.'LAMBDA')then
+         read(value,*)pra
+         read(cfit,*)nfit(6)
+	 setecl = .true.
+
+      else if(key(1:6).eq.'PMBETA')then
+         read(value,*)pmdec
+         read(cfit,*)nfit(7)
+	 setecl = .true.
+
+      else if(key(1:8).eq.'PMLAMBDA')then
+         read(value,*)pmra
+         read(cfit,*)nfit(8)
+         setecl = .true.
 
       else if(key(1:4).eq.'PMRV')then
          read(value,*)pmrv
@@ -551,6 +581,17 @@ c       (Do nothing) (DJN)
          write(*,'('' WARNING - Binary model not defined'')')
       endif
 
+	if (setecl) then
+	  if (setequ) then
+	    write (*,9001)
+9001	    format ("Error: cannot mix ecliptic and equatorial ",
+     +				"coordinates")
+	    stop
+	  else
+	    eclcoord = .true.
+	  endif
+	endif
+
       return
       end
 
@@ -560,6 +601,8 @@ C***************************************************************************
 
       implicit real*8 (A-H,O-Z)
       character decsgn*1, fit1*3
+
+      parameter (TWOPI=6.28318530717958648d0)
 
       include 'dim.h'     
       include 'acom.h'
@@ -571,128 +614,169 @@ C***************************************************************************
       include 'eph.h'
       include 'tz.h'
 
-      c=360.*3600./6.2831853
+      c1=360.d0/TWOPI
+      c=360.*3600./TWOPI
       cc=1.d-9*c*365.25*8.64d7
       fit1='  1'
 
       write(71,'(''PSR              '',a)')psrname
 
-      irs=rsec
-      rs=rsec-irs
-      ids=dsec
-      ds=dsec-ids
-      if(nfit(6).gt.0)then
-         write(71,1006)irh,irm,irs,rs,fit1,ers
-      else
-         write(71,1006)irh,irm,irs,rs
-      endif
- 1006 format('RA',i9.2,':',i2.2,':',i2.2,f9.8,a,f20.8)
+      if (eclcoord) then
+        if(nfit(6).gt.0)then
+          write(71,1011)c1*pra,fit1,ferr(6)
+        else
+          write(71,1011)c1*pra
+        endif
+ 1011   format('LAMBDA',f20.13,a,f20.8)
+        
+        if(nfit(5).gt.0)then
+          write(71,1012)c1*pdec,fit1,ferr(5)
+        else
+          write(71,1012)c1*pdec
+        endif
+ 1012   format('BETA',f22.13,a,f20.8)
 
-      if(nfit(5).gt.0)then
-         write(71,1005)decsgn,idd,idm,ids,ds,fit1,eds
-      else
-         write(71,1005)decsgn,idd,idm,ids,ds
-      endif
- 1005 format('DEC',6x,a,i2.2,':',i2.2,':',i2.2,f8.7,,a,f20.7)
+        if(pmra.ne.0.)then
+          if(nfit(8).gt.0)then
+            write(71,1013)pmra,fit1,ferr(8)*cc
+          else
+            write(71,1013)pmra
+          endif
+        endif
+ 1013   format('PMLAMBDA',f18.4,a,f20.4)
+        
+        if(pmdec.ne.0.)then
+          if(nfit(7).gt.0)then
+            write(71,1014)pmdec,fit1,ferr(7)*cc
+          else
+            write(71,1014)pmdec
+          endif
+        endif
+ 1014   format('PMBETA',f20.4,a,f20.4)
 
-      if(nfit(2).gt.0)then
-         write(71,1002)f0,fit1,ferr(2)*1.d-9
+
       else
-         write(71,1002)f0
+        irs=rsec
+        rs=rsec-irs
+        ids=dsec
+        ds=dsec-ids
+        if(nfit(6).gt.0)then
+          write(71,1021)irh,irm,irs,rs,fit1,ers
+        else
+          write(71,1021)irh,irm,irs,rs
+        endif
+ 1021   format('RA',i9.2,':',i2.2,':',i2.2,f9.8,a,f20.8)
+        
+        if(nfit(5).gt.0)then
+          write(71,1022)decsgn,idd,idm,ids,ds,fit1,eds
+        else
+          write(71,1022)decsgn,idd,idm,ids,ds
+        endif
+ 1022   format('DEC',6x,a,i2.2,':',i2.2,':',i2.2,f8.7,,a,f20.7)
+
+        if(pmra.ne.0.)then
+          if(nfit(8).gt.0)then
+            write(71,1023)pmra,fit1,ferr(8)*cc
+          else
+            write(71,1023)pmra
+          endif
+        endif
+ 1023   format('PMRA',f22.4,a,f20.4)
+        
+        if(pmdec.ne.0.)then
+          if(nfit(7).gt.0)then
+            write(71,1024)pmdec,fit1,ferr(7)*cc
+          else
+            write(71,1024)pmdec
+          endif
+        endif
+ 1024   format('PMDEC',f21.4,a,f20.4)
+
+
+
       endif
- 1002 format('F0',f24.16,a,f20.16)
+
+        
+        if(nfit(2).gt.0)then
+          write(71,1031)f0,fit1,ferr(2)*1.d-9
+        else
+          write(71,1031)f0
+        endif
+ 1031   format('F0',f24.16,a,f20.16)
 
       if(nfit(3).gt.0)then
-         write(71,1003)f1,fit1,ferr(3)*1.d-18
+         write(71,1032)f1,fit1,ferr(3)*1.d-18
       else
-         write(71,1003)f1
+         write(71,1032)f1
       endif
- 1003 format('F1',1p,d24.12,a,d20.12)
+ 1032 format('F1',1p,d24.12,a,d20.12)
 
       if(f2.ne.0.)then
          if(nfit(4).gt.0)then
-            write(71,1004)f2,fit1,ferr(4)*1.d-27
+            write(71,1033)f2,fit1,ferr(4)*1.d-27
          else
-            write(71,1004)f2
+            write(71,1033)f2
          endif
       endif
- 1004 format('F2',1p,d24.12,a,d20.12)
+ 1033 format('F2',1p,d24.12,a,d20.12)
 
       if(f3.ne.0.)then
          if(nfit(51).gt.0)then
-            write(71,1051)f3,fit1,ferr(51)*1.d-36
+            write(71,1034)f3,fit1,ferr(51)*1.d-36
          else
-            write(71,1051)f3
+            write(71,1034)f3
          endif
       endif
- 1051 format('F3',1p,d24.12,a,d20.12)
+ 1034 format('F3',1p,d24.12,a,d20.12)
 
       do i = 1, 9
          if (f4(i).ne.0)then
             if(nfit(51+i).gt.0)then
-               write(71,1052)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
+               write(71,1035)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
             else
-               write(71,1052)i+3,f4(i)
+               write(71,1035)i+3,f4(i)
             endif
          endif
       enddo
- 1052 format('F',z1,1p,d24.12,a,d20.12)
+ 1035 format('F',z1,1p,d24.12,a,d20.12)
 
       write(71,'(''PEPOCH'',f20.6)')pepoch
 
       if(nfit(16).gt.0)then
-         write(71,1016)dm,fit1,ferr(16)
+         write(71,1050)dm,fit1,ferr(16)
       else
-         write(71,1016)dm
+         write(71,1050)dm
       endif
- 1016 format('DM',f24.6,a,f20.6)
+ 1050 format('DM',f24.6,a,f20.6)
 
       do i = 1, 9
          if(dmcof(i).ne.0)then
             if(nfit(40+i).gt.0)then
-               write(71,1041)i,dmcof(i),fit1,ferr(40+i)
+               write(71,1051)i,dmcof(i),fit1,ferr(40+i)
             else
-               write(71,1041)i,dmcof(i)
+               write(71,1051)i,dmcof(i)
             endif
          endif
       enddo
- 1041 format('DM',z1,1p,d23.12,a,d20.12)
-
-      if(pmra.ne.0.)then
-         if(nfit(8).gt.0)then
-            write(71,1008)pmra,fit1,ferr(8)*cc
-         else
-            write(71,1008)pmra
-         endif
-      endif
- 1008 format('PMRA',f22.4,a,f20.4)
-
-      if(pmdec.ne.0.)then
-         if(nfit(7).gt.0)then
-            write(71,1007)pmdec,fit1,ferr(7)*cc
-         else
-            write(71,1007)pmdec
-         endif
-      endif
- 1007 format('PMDEC',f21.4,a,f20.4)
+ 1051 format('DM',z1,1p,d23.12,a,d20.12)
 
       if(pmrv.ne.0.)then
          if(nfit(36).gt.0)then
-            write(71,1036)pmrv,fit1,10.*c*ferr(36)
+            write(71,1052)pmrv,fit1,10.*c*ferr(36)
          else
-            write(71,1036)pmrv
+            write(71,1052)pmrv
          endif
       endif
- 1036 format('PMRV',f22.4,a,f20.4)
+ 1052 format('PMRV',f22.4,a,f20.4)
 
       if(px.ne.0.)then
          if(nfit(17).gt.0)then
-            write(71,1017)px,fit1,ferr(17)
+            write(71,1053)px,fit1,ferr(17)
          else
-            write(71,1017)px
+            write(71,1053)px
          endif
       endif
- 1017 format('PX',f24.4,a,f20.4)
+ 1053 format('PX',f24.4,a,f20.4)
 
       if(ngl.gt.0)then
          do i=1,ngl

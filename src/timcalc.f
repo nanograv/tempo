@@ -32,9 +32,23 @@ c     get coordinates of site of observation in lt-sec
       tsid=tsid*TWOPI
       CALL OBSITE(pc,prn,rea,tsid,site,sitvel)
       DO 100 I = 1, 3
-         RBA(I) = RBE(I) + REA(I)
-         RSA(I) = RSE(I) + REA(I)
- 100     RCA(I) = RCE(I) + REA(I)
+        RBA(I) = RBE(I) + REA(I)
+        RSA(I) = RSE(I) + REA(I)
+        RCA(I) = RCE(I) + REA(I)
+ 100  continue
+
+c     rotate vectors into ecliptic coordinates if necessary
+      if (eclcoord) then
+        call equ2ecl(rba)
+        call equ2ecl(rsa)
+        call equ2ecl(rca)
+        call equ2ecl(rce)
+        call equ2ecl(rse)
+        call equ2ecl(rce(4))
+        call equ2ecl(sitvel)
+      endif
+
+         
 
 c     compute accurate ET-AT, including diurnal & monthly terms
       ETATDM = DOT(RCE(4),REA)
