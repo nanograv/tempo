@@ -126,8 +126,9 @@ c      $Id$
       iboot = 0
 
       useannorb = .false.
-      usefixeddist = .flase.
-      
+      usefixeddist = .false.
+
+      solarn0 = 10      
 
       return
       end
@@ -635,16 +636,16 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
          read(cfit,*)nfit(40)
          setepsdot=.true.
 
+C  Fixed binary parameters
+
       else if(key(1:9).eq.'PAASCNODE'.and.lk.eq.9) then !pos'n ang of ascending node
          read(value,*)PAAscNode
          useannorb = .true.
 
-      else if(key(1:9).eq.'DIST'.and.lk.eq.4) then !fixed dist(kpc) for ann-orb px
+      else if(key(1:4).eq.'DIST'.and.lk.eq.4) then !fixed dist(kpc) for ann-orb px
          read(value,*)fixeddist
          usefixeddist = .true.
 
-
-C  Fixed binary parameters
 
       else if(key(1:2).eq.'DR')then
          read(value,*)dr
@@ -702,6 +703,9 @@ C  Glitches
 
        else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
          read(value,*) dct(ikey)
+
+       else if(key(1:7).eq.'SOLARN0'.and.lk.eq.7) then
+         read (value,*) solarn0
 
 c Do nothing parameters
       else if(key(1:4).eq.'HEAD') then

@@ -160,7 +160,7 @@ C     compute interplanetary effect assuming 10 e-/cc at 1 AU
          if (SSDMFLAG.eq.0) then
            pldis = 0
          else
-           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
+           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn0/10)
            PLDIS = PLDIS/2.		
          endif
          TDIS = (BVAL+PLDIS)/FREQF**2
@@ -252,7 +252,7 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          if (SSDMFLAG.eq.0) then
            PLDIS = 0
          else
-           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
+           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn0/10)
            PLDIS = PLDIS/2.
          endif
 		
