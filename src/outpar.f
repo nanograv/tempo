@@ -241,8 +241,8 @@ c      $Id$
         write (71,1079),dmxt
  1079   format ('DMX',d22.8)
         do i = 1, ndmx
-          write (71,1080) i,dmx(i),fit1,ferr(NPAR6+i)
- 1080     format('DMX_',i4.4,1p,d18.8,a,d20.8)
+          write (71,1080) i,dmx(i),nfit(NPAR6+i),ferr(NPAR6+i)
+ 1080     format('DMX_',i4.4,1p,d18.8,i3,d20.8)
           write (71,1081) i,dmxr1(i)
  1081     format('DMXR1_',i4.4,5p,d16.8)
           write (71,1082) i,dmxr2(i)
@@ -337,7 +337,7 @@ c=======================================================================
          else
             write(71,2011)t0asc
          endif
- 2011    format('TASC',f21.9,a,f20.9)
+ 2011    format('TASC',f22.9,a,f20.9)
 
          if(nfit(10).gt.0)then
             write(71,2010)eps1,fit1,ferr(10)
@@ -393,13 +393,22 @@ c=======================================================================
       do i = 1, NFBMAX
         if (fb(i).ne.0.or.ferr(NPAR3+i).ne.0) then
          if(nfit(NPAR3+i).gt.0)then
-            write(71,1019)i-1,fb(i),fit1,ferr(NPAR3+i)
+           if (i-1.lt.10) then
+             write(71,1070)i-1,fb(i),fit1,ferr(NPAR3+i)
+           else
+             write(71,1071)i-1,fb(i),fit1,ferr(NPAR3+i)
+           endif
          else
-            write(71,1019)i-1,fb(i)
+           if (i-1.lt.10) then
+             write(71,1070)i-1,fb(i)
+           else
+             write(71,1071)i-1,fb(i)
+           endif
          endif
         endif
       enddo
- 1019 format('FB',z1,1p,d23.12,a,d20.12)
+ 1070 format('FB',i1,1p,d23.12,a,d20.12)
+ 1071 format('FB',i2,1p,d22.12,a,d20.12)
 
       do i = 1, nfbj
         if (tfbj(i).ne.0.or.ferr(NPAR5+2*i-1).ne.0) then
