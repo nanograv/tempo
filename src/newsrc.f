@@ -50,9 +50,11 @@ C   4	DDGR				  3	TT(BIPM)
 C   5	H88				  4	(PTB)
 C   6	BT+				  5	AT1
 C   7	DDT
-C   8   BTX (BT plus freq derivatives, jumps)
-C   9	BT, 2 orbits
-C   a	BT, 3 orbits
+C   8   MSS (wex main-sequence companion model)
+C   9   ELL1 (wex small eccentricity model)
+C  10   BTX (BT plus freq derivatives and jumps)
+C  11	BT, 2 orbits
+C  12	BT, 3 orbits
 
 C  Get initial parameter values from lines 2-4 of data file
 	   read(50,1020) psrname,pra,pdec,pmra,pmdec,rv,p0,p1,pepoch,
