@@ -10,7 +10,7 @@
       Use the following procedure for installing the most recent version 
       of Tempo.
       (It is slightly different than the procedure for installing
-      <a href=":tempo11_install.html">tempo version 11.000</a>.)
+      <a href=":tempo11.000_install.html">tempo version 11.000</a>.)
       Installation has been tested on systems running Solaris, Linux,
       and OSF/1.  The procedure below should work without modification
       under Solaris 2.5.1.  Notes for other systems are listed at the
@@ -23,7 +23,7 @@
 	  Download the following files from ATNF (Australia) or 
 Princeton (USA):<br><br>
 	  <ul>
-	    <li><pre>tempo.tar.gz: <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/tempo.tar.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/tempo.tar.gz">Princeton</a></pre>
+	    <li><pre>tempo.tar.gz:       <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/tempo.tar.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/tempo.tar.gz">Princeton</a></pre>
 	    <li><pre>DE200.1950.2000.gz: <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/DE200.1950.2050.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/DE200.1950.2050.gz">Princeton</a></pre>
 	    <li><pre>DE405.1950.2000.gz: <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/DE405.1950.2050.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/DE405.1950.2050.gz">Princeton</a></pre>
 	    <li><pre>TDB.1950.2050.gz:   <a href="ftp://ftp.atnf.csiro.au/pub/people/rmanches/TDB.1950.2050.gz">ATNF</a> <a href="http://pulsar.princeton.edu/ftp/pub/tempo11/TDB.1950.2050.gz">Princeton</a></pre>
@@ -100,7 +100,7 @@ diff 0437-4715.par 0437-4715.par.original</pre>
 	  Ideally the 'par' files will be idential and the 'tempo.lis' files
 	  will differ in only two lines (date and input file name).  In 
 	  practice, parameter values often differ slighly in their least
-	  significant digits.  
+	  significant digits.<br><br>  
 	<li>
 	  Optionally get rid of the 'tar' file:
 	  <pre>rm tempo11_003.tar</pre>
@@ -111,7 +111,9 @@ diff 0437-4715.par 0437-4715.par.original</pre>
       <ul>
 	<li> DEC Fortran (tested under OSF/1)
 	  <ul>
-	    <li> In ephinit.f and tdbinit.f, change ``nrecl=4'' to ``nrecl=1''.
+          <li> Use the ``-assume byterecl'' flag of the Digital Fortran 
+            compiler, or change ``nrecl=4'' to ``nrecl=1'' in ephinit.f and 
+            tdbinit.f.
 	  </ul>
 	<li> Linux (tested on x86 and alpha using RedHat v 5.0 and egcs g77 compiler)
 	  <ul>

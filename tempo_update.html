@@ -5,13 +5,32 @@
   </head>
 
   <body>
-      <h1>Tempo modifications</h1>
-
-	This document lists, in reverse chronological order, changes
-	made to Tempo since <a href="tempo11.html">version 11.0</a>.
-
-      <ul>
-        <li> Version 11.003 (May 1998)
+    <h1>Tempo modifications</h1>
+    
+    This document lists, in reverse chronological order, changes
+    made to Tempo since <a href="tempo11.html">version 11.0</a>.
+    
+    <ul>
+      <li> Version 11.004 (October 1998)
+        <ul>
+          <li> Added option '-no xxx' to write pulse numbers to file xxx.
+          <li> Added option '-ni xxx' to read pulse numbers from file xxx,
+            used instead of internally calculated pulse numbers
+          <li> Added option '-j' to write offset values to the output parameter
+            file (with form "JUMP_nn").
+          <li> Read in and interpret "JUMP_nn" header parameter.
+          <li> Fixed bug in DDGR fit for MTOT in systems dominated by
+            Shapiro delay.
+          <li> Allow 'INCLUDE' cards in time.dat file.
+          <li> Fixed bug in composite proper motion uncertainty calculation.
+          <li> Incorporate covariances where appropriate in uncertainties
+            of calculated parameters (proper motion, mass function, ....)
+          <li> Added output of calculated binary parameters to parameter file.
+          <li> Minor bug fixes and improvements.
+          <li> tdbgen.f -- added byte reversal for bigendian machines.
+        </ul>
+        <br>
+      <li> Version 11.003 (May 1998)
           <ul>
             <li> Minor bug fixes and improvements.
             <li> More glitches allowed.
@@ -50,10 +69,9 @@ flag is
 	  </ul>
       </ul>
 	  
-      <a href="tempo11_003_install.html"> To the Tempo installation 
+      <a href="tempo_install.html"> To the Tempo installation 
          instructions.</a><br>
-      <a href="reference_manual/reference_manual.html"> To the Tempo 11 
-reference
+      <a href="reference_manual.html"> To the Tempo 11 reference
          manual.</a><br>
       <a href="tempo_idx.html"> Back to main Tempo page.</a><br>
 

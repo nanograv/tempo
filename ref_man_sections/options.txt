@@ -1,18 +1,21 @@
 SYNOPSIS
 
-tempo [-d <path>] [-f <par>] [-g[O]] [-o] [-p] [-r] [-v] [-x] [-z] <fname>
+tempo [options] <fname>
+
+Options may be in any order, but may not be combied.  <fname> must be last.
 
 where	-d <path>   Path to 'tempo.cfg'; overrides env. variable 'TEMPO'
 	-f <par>    overrides the default parameter file name
     	-g[X]	    GRO mode; 'X' is single-letter observatory code
+        -j          Include offsets in paramter file
+        -ni <file>  Read pulse numbers from file
+        -no <file>  Write pulse numbers to file
 	-o          'Old-style' parameters at head of <fname>
 	-p          Parameters corrected for pulsar space motion
 	-r	    Save the partial-derivatives file, resid1.tmp 
 	-v	    Print out version number
 	-x	    Make an export file in ITOA format
 	-z	    Compute polonomial coefficients
-
-Options may be in any order, but <fname> must be last.
 
 
 ENVIRONMENT
@@ -36,6 +39,17 @@ OPTIONS
    investigators.  Single-letter observatory code, O, is optional;  default 
    is P (for Princeton). If PEPOCH is not at the centre of the data span,
    adjusted parameters are written to gro.99.
+
+-j
+   Write offset values ("JUMP_1", etc.) to parameter file.
+
+-ni <file>
+   Read pulse numbers from file.  These values override the pulse numbers
+   normally calculated internally to tempo.
+
+-no <file>
+   Write pulse numbers to file.  Main purpose is to produce input for '-ni'
+   option.        
 
 -o selects 'fixed-format header' input file.  See INPUT FILE below.
 
