@@ -535,97 +535,59 @@ C  Fixed binary parameters
 
 C  Glitches
 
-      else if(key(1:6).eq.'GLEP_1')then
-         read(value,*)glepoch(1)
+      else if(key(1:4).eq.'GLEP') then
+         igl = keyidx(key)
+         if (igl.ge.1 .and. igl.le.NGLT) then
+           read(value,*) glepoch(igl)
+         else
+           write(*,'('' Invalid glitch number in key: '',a)')key
+         endif
 
-      else if(key(1:6).eq.'GLPH_1')then
-         read(value,*)glph(1)
-         read(cfit,*)nfit(61)
+       else if(key(1:4).eq.'GLPH') then
+         igl = keyidx(key)
+         if (igl.ge.1 .and. igl.le.NGLT) then
+           read(value,*) glph(igl)
+           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+1)
+         else
+           write(*,'('' Invalid glitch number in key: '',a)')key
+         endif
 
-      else if(key(1:6).eq.'GLF0_1')then
-         read(value,*)glf0(1)
-         read(cfit,*)nfit(62)
+       else if(key(1:4).eq.'GLF1') then
+         igl = keyidx(key)
+         if (igl.ge.1 .and. igl.le.NGLT) then
+           read(value,*) glf1(igl)
+           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+3)
+         else
+           write(*,'('' Invalid glitch number in key: '',a)')key
+         endif
 
-      else if(key(1:6).eq.'GLF1_1')then
-         read(value,*)glf1(1)
-         read(cfit,*)nfit(63)
+       else if(key(1:5).eq.'GLF0D') then
+         igl = keyidx(key)
+         if (igl.ge.1 .and. igl.le.NGLT) then
+           read(value,*) glf0d(igl)
+           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+4)
+         else
+           write(*,'('' Invalid glitch number in key: '',a)')key
+         endif
 
-      else if(key(1:7).eq.'GLF0D_1')then
-         read(value,*)glf0d(1)
-         read(cfit,*)nfit(64)
+       else if(key(1:4).eq.'GLF0') then ! note: must come after GLF0D section
+         igl = keyidx(key)
+         if (igl.ge.1 .and. igl.le.NGLT) then
+           read(value,*) glf0(igl)
+           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+2)
+         else
+           write(*,'('' Invalid glitch number in key: '',a)')key
+         endif
 
-      else if(key(1:6).eq.'GLTD_1')then
-         read(value,*)gltd(1)
-         read(cfit,*)nfit(65)
 
-      else if(key(1:6).eq.'GLEP_2')then
-         read(value,*)glepoch(2)
-
-      else if(key(1:6).eq.'GLPH_2')then
-         read(value,*)glph(2)
-         read(cfit,*)nfit(66)
-
-      else if(key(1:6).eq.'GLF0_2')then
-         read(value,*)glf0(2)
-         read(cfit,*)nfit(67)
-
-      else if(key(1:6).eq.'GLF1_2')then
-         read(value,*)glf1(2)
-         read(cfit,*)nfit(68)
-
-      else if(key(1:7).eq.'GLF0D_2')then
-         read(value,*)glf0d(2)
-         read(cfit,*)nfit(69)
-
-      else if(key(1:6).eq.'GLTD_2')then
-         read(value,*)gltd(2)
-         read(cfit,*)nfit(70)
-
-      else if(key(1:6).eq.'GLEP_3')then
-         read(value,*)glepoch(3)
-
-      else if(key(1:6).eq.'GLPH_3')then
-         read(value,*)glph(3)
-         read(cfit,*)nfit(71)
-
-      else if(key(1:6).eq.'GLF0_3')then
-         read(value,*)glf0(3)
-         read(cfit,*)nfit(72)
-
-      else if(key(1:6).eq.'GLF1_3')then
-         read(value,*)glf1(3)
-         read(cfit,*)nfit(73)
-
-      else if(key(1:7).eq.'GLF0D_3')then
-         read(value,*)glf0d(3)
-         read(cfit,*)nfit(74)
-
-      else if(key(1:6).eq.'GLTD_3')then
-         read(value,*)gltd(3)
-         read(cfit,*)nfit(75)
-
-      else if(key(1:6).eq.'GLEP_4')then
-         read(value,*)glepoch(4)
-
-      else if(key(1:6).eq.'GLPH_4')then
-         read(value,*)glph(4)
-         read(cfit,*)nfit(76)
-
-      else if(key(1:6).eq.'GLF0_4')then
-         read(value,*)glf0(4)
-         read(cfit,*)nfit(77)
-
-      else if(key(1:6).eq.'GLF1_4')then
-         read(value,*)glf1(4)
-         read(cfit,*)nfit(78)
-
-      else if(key(1:7).eq.'GLF0D_4')then
-         read(value,*)glf0d(4)
-         read(cfit,*)nfit(79)
-
-      else if(key(1:6).eq.'GLTD_4')then
-         read(value,*)gltd(4)
-         read(cfit,*)nfit(80)
+       else if(key(1:4).eq.'GLTD') then
+         igl = keyidx(key)
+         if (igl.ge.1 .and. igl.le.NGLT) then
+           read(value,*) gltd(igl)
+           read(cfit,*) nfit(NGL0+NGLP*(igl-1)+5)
+         else
+           write(*,'('' Invalid glitch number in key: '',a)')key
+         endif
 
       else if(key(1:4).eq.'HEAD') then
 c        (Do nothing) (DJN)
@@ -745,3 +707,33 @@ C  Converts string (up to first blank) to upper case.
  20   return
       end
 
+
+c=======================================================================
+
+      integer function keyidx(s)
+
+C  Finds underscore in string, returns integer number after underscore
+C  Example:  s="GLEP_10"  would return 10.
+C  Returns -1 if no underscore is found  
+C  Returns 0 if underscore but no number is found
+
+      character*(*) s
+      integer k
+
+      k = index(s,'_')
+      if (k.eq.0) then
+        keyidx = -1
+      else
+        keyidx = 0
+        do 10 i = k+1, len(s)
+          if (s(i:i).ge.'0' .and. s(i:i).le.'9') then
+            keyidx = 10*keyidx + ichar(s(i:i)) - 48
+          else
+            goto 20
+          endif
+ 10     continue
+ 20     continue
+      endif
+
+      return
+      end
