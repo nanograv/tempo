@@ -156,6 +156,8 @@ c     default values of parameters
         
       enddo
 
+      if (ipar.lt.1) goto 9999   ! error -- not enough parameters
+
       return
 
  9999 call system ('more '//hlpfile)
