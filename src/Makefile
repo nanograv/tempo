@@ -1,32 +1,105 @@
 #      $Id$
 
-#  Makefile for tempo
+#  Makefile for tempo and related programs
 
+#  Always run make in the "src" subdirectory.  Binaries will be
+#  created in the tempo root directory.
+
+#  To make programs:
+#     make tempo
+#     make matrix
+#     make tdbtrans
+
+#  To make an archive file:
+#     make archive
+
+
+
+# compilers and compiler flags
 
 FC = f77
 FFLAGS= -O3 
 
 CC = cc
-CCFLAGS = 
+CCFLAGS = -O3
+
+
 
 # suppress sccs retrieval
 .SCCS_GET:
 
 
-OBJS =	a1ut1f.o a1utcf.o ang.o arrtim.o atimfake.o bigendian.o blkdbat.o \
-        bnrybt.o bnrydd.o bnryddgr.o bnryddt.o bnryeh.o bnryell1.o bnrymss.o \
-        bootmc.o bt2ell1.o chebpc.o citem.o clockcor.o cutil.o damoyr.o dot.o \
-        dskrd.o earth.o  ephinit.o ephread.o equ2ecl.o fit.o fk4tofk5.o \
-        galco.o gasdev.o inpar.o interp.o lmst.o matinv.o mxprt.o newbin.o \
-        newsrc.o newval.o nutation.o obsite.o outpar.o pcard.o pcshft.o \
-        pospm_conv.o prcnut.o precession.o propmo.o radian.o ran1.o resid.o \
-        setup.o sort.o space_motion.o tdbinit.o tdbread.o tempo.o  timcalc.o \
-        tpohdr.o tzfit.o tzinit.o ut1red.o vmemw.o  ztim.o 
+
+
+
+# source code for tempo itself.  
+# (note: variables SRC3 and SRC4 are used for making archives)
+
+SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.f \
+        bnrybt.f bnrydd.f bnryddgr.f bnryddt.f bnryeh.f bnryell1.f bnrymss.f \
+        bootmc.f bt2ell1.f chebpc.f citem.f clockcor.f damoyr.f dot.f \
+        dskrd.f earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f \
+        galco.f gasdev.f inpar.f interp.f lmst.f matinv.f mxprt.f newbin.f \
+        newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
+        pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
+        setup.f sort.f space_motion.f tdbinit.f tdbread.f tempo.f  timcalc.f \
+        tpohdr.f tzfit.f tzinit.f ut1red.f vmemw.f  ztim.f 
+SRC2 = cutil.c
+SRC3 = acom.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
+	orbit.h tdbcom.h trnsfr.h tz.h vcom.h 
+SRC4 = Makefile
+
+OBJS = $(SRC1:.f=.o) $(SRC2:.c=.o)
+
+
+
+# source code for "matrix"
+
+MATRIX_SRC = matrix.f
+MATRIX_OBJS = $(MATRIX_SRC:.f=.o)
+
+
+
+# source code  for "tdbgen"
+
+TDBGEN_SRC = tdbgen.f tdb1ns.f
+TDBGEN_OBJS = $(TDBGEN_SRC:.f=.o)
+
+
+
+# file lists for creating an archive of tempo
+
+# files in the 'src' directory
+ARCHIVE_S_0 = $(SRC1) $(SRC2) $(SRC3) $(SRC4) $(MATRIX_SRC) $(TDBGEN_SRC) 
+ARCHIVE_S = $(ARCHIVE_S_0:%=src/%)
+
+# files in the 'test' directory
+ARCHIVE_T_0 = 0437.par 0437.tim tempo.lis.original
+ARCHIVE_T = $(ARCHIVE_T_0:%=test/%)
+
+# files in the root directory (except for ephemerdies)
+ARCHIVE_1 = bipmnist.92 leap.sec obsys.dat tempo.cfg \
+	tempo.hlp time.dat ut1.dat utccorr.tot
+
+tempo:	$(OBJS)
+	$(FC) $(FFLAGS) -o ../tempo $(OBJS)
+
+archive:
+	cd ..; tar -cvf tempo.tar $(ARCHIVE_S) $(ARCHIVE_T) $(ARCHIVE_1); \
+		gzip tempo.tar
 
 all:	tempo matrix
 
-tempo:	$(OBJS)
-	$(FC) $(FFLAGS) -o tempo $(OBJS)
+matrix:	(MATRIX_OBJS) dim.h
+	$(FC) $(FFLAGS) -o ../matrix $(MATRIX_OBJS)
+
+tdbgen: $(TDBGEN_OBJS)
+	$(FC) $(FFLAGS) -o ../tdbgen $(TDBGEN_OBJS)
+
+clean:
+	rm -f *.o *~
+
+
 
 arrtim.o: arrtim.f acom.h orbit.h dp.h bcom.h trnsfr.h clocks.h dim.h glitch.h tz.h
 	$(FC) -c $(FFLAGS) arrtim.f
@@ -96,14 +169,4 @@ vmemw.o: vmemw.f dim.h vcom.h
 	$(FC) -c $(FFLAGS) vmemw.f
 ztim.o: ztim.f trnsfr.h
 	$(FC) -c $(FFLAGS) ztim.f
-
-matrix:	matrix.f dim.h
-	$(FC) -o matrix matrix.f
-clean:
-	rm -f *.o *~
-
-TDBGEN_OBJS = tdbgen.o tdb1ns.o
-
-tdbgen: $(TDBGEN_OBJS)
-	$(FC) $(FFLAGS) -o tdbgen $(TDBGEN_OBJS)
 
