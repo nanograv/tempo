@@ -7,7 +7,7 @@ C  appropriate action.
 
 	implicit REAL*8 (A-H,O-Z)
 	character*80 CARD
-	logical OFFSET,JDCATC,track,search
+	logical OFFSET,JDCATC,track,search,lw
 	include 'dim.h'
 	include 'acom.h'
 	include 'dp.h'
