@@ -102,6 +102,7 @@ C				newsrc, setup, tempo
 C  11	tz parameters (tz.in)   tzinit
 C  12	tz psr params           tpohdr
 C  13   polyco.dat		tzinit
+C  20.29 time.dat & INCLUDE'd   newsrc
 C  30	resid1.tmp		tempo
 C  31	tempo.lis		tempo
 C  32	resid2.tmp		tempo
