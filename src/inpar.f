@@ -42,6 +42,8 @@ c      $Id$
       enddo
       start=0.
       finish=0.
+      ntoa=0.
+      tres=0.
 
       do i=1,4
          a1(i)=0.
@@ -136,7 +138,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*8, value*80, cfit*1, temp*80
+      character line*80, key*8, value*32, cfit*1, temp*80
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -172,10 +174,18 @@ C  The error/comment is ignored by TEMPO
 
 C  Get key, value and cfit
       jn=1
-      call citem(line,ll,jn,key,lk)
+      call citem(line,ll,jn,key,lk)      
+      if(lk.gt.8)then
+        write(*,'('' Key overflow (8 max): '',a)')key(1:lk)
+        stop
+      endif
       if(key(1:1).eq.'#' .or. (key(1:1).eq.'C' .and. lk.eq.1))go to 10
       call upcase(key)
       call citem(line,ll,jn,value,lv)
+      if(lv.gt.32)then
+         write(*,'('' Value overflow (32 max): '',a)')value(1:lv)
+         stop
+      endif
       call citem(line,ll,jn,temp,lf)
       if(temp(1:1).eq.'#' .or. lf.ne.1)then
          cfit='0'
@@ -622,10 +632,12 @@ C  Glitches
        else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
          read(value,*) dct(ikey)
 
+c Do nothing parameters
       else if(key(1:4).eq.'HEAD') then
-c        (Do nothing) (DJN)
+      else if(key(1:4).eq.'TRES') then
+      else if(key(1:4).eq.'NTOA') then
 
-      else if(key(1:3).eq.'TOA') then   ! end of parameter list (DJN)
+      else if(key(1:3).eq.'TOA') then   ! end of parameter list 
 	goto 900
 
       else 

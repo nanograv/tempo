@@ -13,7 +13,7 @@ c      $Id$
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,parunit,
      +    nskip,iboot,ndmcalc,
-     +    nfcalc,gain
+     +    nfcalc,gain,tres,ntoa
 
 
 	character psrname*12,obsflag*1,pardir*80,obskey*5

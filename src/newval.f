@@ -259,6 +259,13 @@ C  Compute braking index
      :       0p,'  Q:',f9.6,'  Err:',f9.6)
  1069	format(' MJD for zero phase:',f14.6,' or',f14.6,'  Err:',f10.6)
 
+C Get rms residuals and ntoa for output
+        asig=asig*p0*1000.
+        rms0=1000.d0*sigma1
+        rms1=1000.d0*asig
+        tres=rms1
+        ntoa=n
+
 C Output new parameters
 	k=index(psrname,' ')-1
 	open(71,file=psrname(1:k)//'.par',status='unknown')
@@ -297,12 +304,9 @@ C Output binary parameters
 C Close output .par file
 	close(71)
 
-	asig=asig*p0*1000.
 	if(nboot.gt.0) write(31,1085) nboot
 1085	format('Uncertainties by bootstrap Monte Carlo:',
      +    i6,' iterations.')
-	rms0=1000.d0*sigma1
-	rms1=1000.d0*asig
 	write(31,1100) rms0,rms1
 1100	format(/'Weighted RMS residual: pre-fit',f10.3,
      +  ' us. Predicted post-fit',f10.3,' us.')
