@@ -249,7 +249,7 @@ C Store toa for tz reference phase
 
 C  Get clock corrections
 	if(nfmt.eq.2 .or. nsite.le.0)then ! no correction for...
-	   clk2=0.                        !     ...ITOA, sites 0 and @
+	   clk2=deltat/86400.d0             !     ...ITOA, sites 0 and @
 	else
 	   call clockcor(fmjd,nsite,n,deltat,clk2)
 	endif
