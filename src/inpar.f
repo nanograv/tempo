@@ -104,6 +104,8 @@ c      $Id$
       usestart = .false.
       usefinish = .false.
 
+      eclcoord = .false.
+
       return
       end
 
