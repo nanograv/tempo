@@ -42,8 +42,8 @@ SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.f \
         galco.f gasdev.f inpar.f interp.f lmst.f matinv.f mxprt.f newbin.f \
         newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
-        setup.f sort.f space_motion.f tdbinit.f tdbread.f tempo.f  timcalc.f \
-        tpohdr.f tzfit.f tzinit.f ut1red.f vmemw.f  ztim.f 
+        setup.f sort.f space_motion.f tasc2t0.f tdbinit.f tdbread.f tempo.f \
+        timcalc.f tpohdr.f tzfit.f tzinit.f ut1red.f vmemw.f  ztim.f 
 SRC2 = cutil.c
 SRC3 = acom.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
 	orbit.h tdbcom.h trnsfr.h tz.h vcom.h 
@@ -157,6 +157,8 @@ resid.o: resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 	$(FC) -c $(FFLAGS) resid.f
 setup.o: setup.f acom.h dim.h
 	$(FC) -c $(FFLAGS) setup.f
+tasc2t0.o: tasc2t0.f orbit.h
+	$(FC) -c $(FFLAGS) tasc2t0.f
 tdbinit.o: tdbinit.f tdbcom.h
 	$(FC) -c $(FFLAGS) tdbinit.f	
 tdbread.o: tdbread.f tdbcom.h
