@@ -144,6 +144,7 @@ archive:
 	ln -s ../tzpar_dist tmp/tzpar;   \
 	ln -s $(ARCHIVE_C_L) tmp/clock;    \
 	cd tmp; \
+	chmod -R u+w *; \
 	tar -chvf tempo.tar $(ARCHIVE_S) $(ARCHIVE_T) $(ARCHIVE_1) \
 	    $(ARCHIVE_C) $(ARCHIVE_Z);  \
 	gzip tempo.tar; \
