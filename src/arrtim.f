@@ -15,6 +15,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	real*8 xmean(NPA),fctn(NPAP1),dnpls(NPTSMAX),alng(36)
 	real*4 gasdev
         integer ZEROWT(2000),idum
+	integer ilen
 	character*80 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
 	logical first,offset,jdcatc,last,dithmsg,tz,track,search
@@ -121,10 +122,11 @@ c       N. Wex transformations at pepoch
 	if(card(1:4).eq.'END ') go to 45
 	if(card(1:7).eq.'INCLUDE') then
 	  lu=lu+1
-	  infile=card(9:78)
+	  j1 = 8
+	  call citem(card,78,j1,infile,ilen)
 	  write(31,1012) card(1:78)
 1012	  format(1x,a78)
-	  open(lu,file=infile,status='old',err=1013)
+	  open(lu,file=infile(1:ilen),status='old',err=1013)
 	  rewind lu
 	else
 	  call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
