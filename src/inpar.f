@@ -500,7 +500,7 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
          read(cfit,*)nfit(13)
          seteps=.true.
 
-      else if(key(1:5).eq.'T0ASC'.and.lk.eq.5)then
+      else if(key(1:5).eq.'TASC'.and.lk.eq.4)then
          read(value,*)t0asc
          read(cfit,*)nfit(11)         
          
@@ -618,13 +618,13 @@ C  Warnings
 
       if(nbin.eq.9)then
          if(seteps .and. t0asc.eq.0.)then
-            write(*,'('' WARNING: T0ASC not set, use T0ASC=T0 !!!'')')
+            write(*,'('' WARNING: TASC not set, use TASC=T0 !!!'')')
             t0asc=t0(1)
             t0(1)=0.
          endif
 
          if(.not.seteps .and. t0(1).eq.0.)then
-            write(*,'('' WARNING: T0 not set, use T0=T0ASC !!!'')')
+            write(*,'('' WARNING: T0 not set, use T0=TASC !!!'')')
             t0(1)=t0asc
             t0asc=0.
          endif
@@ -640,6 +640,13 @@ C  Warnings
             edot=0.
             nfit(25)=0
          endif
+      endif
+
+      if(t0asc.ne.0.and.nbin.ne.1.and.nbin.ne.9)then
+         write(*,'('' WARNING: TASC only for BT and ELL1 models,'',
+     +        '' use T0=TASC !!!'')')
+         t0(1)=t0asc
+         t0asc=0.         
       endif
 
       return
