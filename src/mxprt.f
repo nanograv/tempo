@@ -1,5 +1,5 @@
 c      $Id$
-	subroutine mxprt(a,gcor,nn,mfit,nbin)
+	subroutine mxprt(a,gcor,nn,mfit,nbin,eclcoord)
 
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
@@ -8,6 +8,7 @@ c      $Id$
 	character*1 agcor,line(NPA)
 	character*11 mark
 	integer*4 mfit(NPAP1)
+	logical eclcoord
 
 	data param/'  f0','  f1','  f2',' Dec','  RA','pmdc','pmra',
      +    '   x','   e','  T0','  Pb','  Om','Omdt','gama','  DM',
@@ -22,6 +23,13 @@ c      $Id$
 	   param(38)='e1dt'
 	   param(39)='e2dt'
 	endif
+	if (eclcoord) then
+	  param(5)='beta'
+	  param(6)='lambda'
+	  param(7)='pmbeta'
+	  param(8)='pmlambda'
+	endif
+	  
 
 	close(72)
 	open(72,file='matrix.tmp',status='unknown',form='unformatted')
