@@ -259,7 +259,7 @@ c  Print updated parameters
 10511	   format (/' Calculated values (assuming GR):')
 10512	   format (/' Omegadot:           ',f11.7)
 10513	   format (' Gamma:               ',f10.7)
-10514	   format (' Pbdot(-12):      ',f14.6)
+10514	   format (' Pbdot(-12):     ',f15.7)
 10515	   format (' Sin i:              ',f11.7)
 10516	   format (' A0 used (-6):       ',f11.7)
 10517	   format (' A0 if aligned (-6): ',f11.7)
