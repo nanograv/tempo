@@ -19,6 +19,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	real*4 gasdev
         integer ZEROWT(2000),idum
 	integer ilen
+        integer wflag
 	character*80 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
 	logical first,offset,jdcatc,last,dithmsg,tz,track,search
@@ -83,7 +84,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	modscrn=10
         nw=1
 	if(first)then
-	   call ztim(0,0.d0,nct,fct)
+	   call ztim(0,0.d0,nct,fct,wflag)
 	   write (31,1011)
  1011	   format(/'    N     TOBS   WORD    NJMP    WGT',
      +     '     DTIME       TIME     DPHASE      PHASE'/)
@@ -304,8 +305,11 @@ c   Back to processing of all TOAs
 	if(nddm.eq.0) ddm=0	!Disable DM corrections if not wanted
 	dmtot=dm+ddm
 	if(ndmcalc.ge.2) then   
+          fac = 1
 	  do 61 i=1,ndmcalc-1
-61	  dmtot=dmtot + dmcof(i) * yrs**i
+            fac = fac * yrs / real(i)
+	    dmtot=dmtot + fac*dmcof(i) 
+61          continue
 	endif
         if (usedmx) then
           do i = 1, ndmx
@@ -317,6 +321,12 @@ c   Back to processing of all TOAs
               goto 80
             endif
           end do
+          if (ndmx+1.ge.NDMXMAX) then
+            print *,"Error at TOA number ",n
+            print *,"Too many dm offsets.  Maximum: NDMXMAX=",NDMXMAX
+            print *,"  To change this, edit dim.h & recompile tempo"
+            stop
+          endif 
           ndmx = ndmx + 1
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
@@ -333,8 +343,9 @@ c   Back to processing of all TOAs
 
 	bval=dmtot/2.41d-16
 	  
+        wflag = 1
         if (nsite.ge.0) then
-          call ztim(nfmjd,ffmjd,nct,fct)
+          call ztim(nfmjd,ffmjd,nct,fct,wflag)
         elseif (freqhz.lt.1) then ! barycenter, infinite frequency
           nct = nfmjd
           fct = ffmjd
@@ -352,7 +363,8 @@ c   Back to processing of all TOAs
           frq = freqhz * 1.e-6
         endif
 
-	if(search.and.ct00.gt.0.d0.and.((nct+fct-ct00).gt.trkmax)) then
+	if(search.and.ct00.gt.0.d0.and.(abs(nct+fct-ct00).gt.trkmax)) 
+     +       then
 	  nblk=nblk+1
 	  call pcard(card2,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
      +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search)
@@ -391,7 +403,7 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
         endif
 
         if (jits .eq. 0) then
-            if (a1(1).ne.0.d0) then
+            if (a1(1).ne.0.d0) then ! zero weight in case of orbital phase cut
               phi = dmod((ct-t0(1))*86400./pb(1) + 9000.,1.d0)
               if ((pha2.gt.pha1 .and. phi.gt.pha1 .and. phi.lt.pha2).or.
      +           (pha2.lt.pha1 .and.(phi.lt.pha2 .or. phi.gt.pha1)))then
@@ -400,6 +412,11 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
                 zerowt(nz) = n
               endif
             endif
+            if (wflag.eq.0.and.wgt.ne.0) then ! zero weight in case of
+                wgt = 0                       ! sun angle (phi) cut
+                nz = nz + 1
+                zerowt(nz) = n
+              endif
           else 
             if (nw .le. nz) then
               if (n. eq. zerowt(nw)) then
@@ -410,6 +427,7 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
         endif
 
 	if(last) wgt=1.d-10*wgt
+
 	wt=wgt
 
 	if(xitoa) then				!Write the ITOA file
@@ -433,7 +451,7 @@ C  Write itoa file correctly, including observatory code.  (VMK, June94)
 
 	if(track.and.n.gt.1) then
 	  dt=dt+ntrk
- 	  if ((ct-ct00).lt.trkmax) then
+ 	  if (abs(ct-ct00).lt.trkmax) then
 	    if(abs(dt+1.d0-dt00).lt.abs(dt-dt00)) then
 	      dt=dt+1.d0
 	      ntrk=ntrk+1
@@ -493,8 +511,11 @@ C  DM-related partial derivatives
         endif
 
 	if(nfit(16).ge.2) then
+          fac = 1.
 	  do 89 i=1,nfit(16)-1
-89	  x(40+i)=x(16) * yrs**i
+            fac = fac * yrs / real(i)
+	    x(40+i)= fac * x(16) 
+89        continue
 	endif
 	x(17)=f0*dtdpx
 	x(36)=f0*dtdpmrv
