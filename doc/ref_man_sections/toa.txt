@@ -22,7 +22,7 @@ Princeton Format
     2-2     must be blank
     16-24   Observing frequency (MHz)
     25-44   TOA (decimal point must be in column 30 or column 31)
-    45-53   TOA uncertainty 
+    45-53   TOA uncertainty (microseconds)
     69-78   DM correction (pc cm^-3)
 
 Parkes Format
@@ -32,7 +32,7 @@ Parkes Format
     26-34   Observing frequency (MHz)
     35-55   TOA (decimal point must be in column 42)
     56-63   Phase offset (fraction of P0, added to TOA)
-    64-71   TOA uncertainty
+    64-71   TOA uncertainty (microseconds)
     80-80   Observatory (one-character code)
 
 ITOA Format
@@ -40,7 +40,7 @@ ITOA Format
   columns     item
     1-2     ignored, but must not be blank (often PSRNAME goes here)
    10-28    TOA (decimal point must be in column 15)
-   29-34    TOA uncertainty 
+   29-34    TOA uncertainty (microseconds)
    35-45    Observing frequency (MHz)
    46-55    DM correction (pc cm^-3)
    58-59    Observatory (two-letter code)
