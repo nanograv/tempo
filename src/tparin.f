@@ -64,6 +64,8 @@ c     default values of parameters
       nptsmax = NPTSDEF
       parfile = 'def'
 
+      infile = ''	
+
       call getenv ('TEMPO',path)
       lpth = index(path,' ')-1
       hlpfile = path(1:lpth)//'/tempo.hlp'	
@@ -156,7 +158,7 @@ c     default values of parameters
         
       enddo
 
-      if (ipar.lt.1) goto 9999   ! error -- not enough parameters
+      if (ipar.lt.1 .and. .not. tz) goto 9999   ! error -- not enough parameters
 
       return
 

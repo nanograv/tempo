@@ -272,7 +272,7 @@ c  Open TDB-TDT clock offset file
 
 	  jits = 0
 
-	  if(infile(1:1).eq.'-')then
+	  if(infile.eq.'') then
 	    tzfile='tz.in'
 	  else
 	    tzfile=infile
