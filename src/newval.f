@@ -1,5 +1,5 @@
 c      $Id$
-	subroutine newval(chisqr,nfree,rms0,rms1,nits,jits,wmax,nboot)
+        subroutine newval(chisqr,nfree,rms0,rms1,nits,jits,wmax,nboot)
 
 	implicit real*8 (a-h,o-z)
 	parameter (TWOPI=6.28318530717958648d0)
@@ -25,18 +25,18 @@ c      $Id$
 
 	if(jits.lt.nits)jits=jits+1
 
-	if(posepoch.eq.0.)then
-	   write(31,1038) psrname,ephfile(nephem)(1:5),clklbl(nclk),
-     +  	pepoch
- 1038	   format(/'PSR ',a12,'  Ephem.: ',a,'  Clock: ',a12,
-     +       '  Ref. MJD: ',f12.4)
-	else
-	   write(31,1039) psrname(1:10),ephfile(nephem)(1:5),
-     +          clklbl(nclk)(1:10),pepoch, posepoch
- 1039	   format(/'PSR ',a,' Ephem: ',a,' Clk: ',a,
-     +       ' P Ref:',f11.4,' Pos Ref:',f11.2)
-	endif
-
+        if(posepoch.eq.0.)then
+          write(31,1038) psrname,ephfile(nephem)(1:5),clklbl(nclk),
+     +         pepoch
+ 1038     format(/'PSR ',a12,'  Ephem.: ',a,'  Clock: ',a12,
+     +         '  Ref. MJD: ',f12.4)
+        else
+          write(31,1039) psrname(1:10),ephfile(nephem)(1:5),
+     +         clklbl(nclk)(1:10),pepoch, posepoch
+ 1039     format(/'PSR ',a,' Ephem: ',a,' Clk: ',a,
+     +         ' P Ref:',f11.4,' Pos Ref:',f11.2)
+        endif
+        
 
 	if (eclcoord) then
 	  write (31,1040)
@@ -171,7 +171,7 @@ c      $Id$
 	ppng=ppng+freq(19)
 	write(31,1055)p0,p1,dm,dmcof(1),ppng
 
-	if((nfit(7).ne.0.or.nfit(8).ne.0) .and. (.not.eclcoord)) 
+	if((nfit(7).ne.0.or.nfit(8).ne.0) .and. (.not.eclcoord))
      +       call propmo(pmra,pmdec,pmrerr,pmderr,pra,pdec)
 
 C  Compute braking index
@@ -334,12 +334,13 @@ C Close output .par file
 	write(31,1100) rms0,rms1
 1100	format(/'Weighted RMS residual: pre-fit',f10.3,
      +  ' us. Predicted post-fit',f10.3,' us.')
-	write(*,1101)  rms0,rms1
+	if (.not.quiet) write(*,1101)  rms0,rms1
 1101	format(/' Weighted RMS residual: pre-fit',f10.3,
      +  ' us. Predicted post-fit',f10.3,' us.')
 	if(chisqr.ne.0.d0) then
 	  write(31,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
-	  write(*,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+          if (.not.quiet)
+     +      write(*,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
 1110	  format(' Chisqr/nfree:',f9.2,'/',i5,' =',f9.4,
      +    '   pre/post:',f7.2,'   Wmax:',f7.1)
 	endif
@@ -348,7 +349,8 @@ C Close output .par file
 	  open(33,file='gro.1',status='unknown')
 	  if(dt2sec.gt.0.d0) dt2sec=dt2sec-p0
 	  t0geo=t0geo-dt2sec/86400.d0
-	  if(abs(t0geo-pepoch).gt.1.d-3) write(*,1112) t0geo,pepoch
+	  if(abs(t0geo-pepoch).gt.1.d-3.and..not.quiet) 
+     +      write(*,1112) t0geo,pepoch
 1112	  format(/5x,'### Warning: t0geo=',f10.3,' and pepoch=',f10.3,
      +      ' do not match! ###')
 	  dt=(t0geo-pepoch)*86400.d0

@@ -3,7 +3,8 @@ c      $Id$
 	logical gro,sim,xitoa,oldpar,psrframe,jumpout,eclcoord
 	logical usestart, usefinish
         logical usedmx
-        logical npulsein, npulseout, infoout
+        logical npulsein, npulseout, infoout, quiet, polystdout
+        logical autotz
 	integer parunit, nskip, iboot
         integer infolen
         integer ssdmflag
@@ -15,11 +16,13 @@ c      $Id$
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    pmra,pmdec,pmrv,dt2sec,
-     +    t0geo,nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
+     +    t0geo,gain,tres,
+     +    nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
-     +    nfcalc,gain,tres,ntoa,nparam0,infolen,infoout,ssdmflag
+     +    nfcalc,ntoa,nparam0,infolen,infoout,ssdmflag,
+     +    quiet,polystdout,autotz
 
 
 

@@ -1,5 +1,5 @@
 c      $Id$
-      SUBROUTINE UT1RED(nmjd,fmjd,ATUT,UT1)
+      SUBROUTINE UT1RED(nmjd,fmjd,ATUT,UT1,quiet)
 C***********************************************************************
 C         R.KING   OCT 1980    SUBROUTINE UT1RED
 C         READ UT1 VALUES FROM AN EXTERNAL DATA SET
@@ -12,6 +12,7 @@ C  OUTPUT:  UT1      - VALUE OF UT1 - UTC AT NMJD+FMJD  (IN SEC)
 
       IMPLICIT REAL*8 (A-H,O-Z)
       include 'dim.h'
+      logical quiet
 
       DIMENSION TAB(4),Y1(2),Y2(2),IUT(NUTMAX)
       CHARACTER VARFMT*32,flag*3
@@ -95,12 +96,12 @@ C        SECOND DIFFERENCE INTERPOLATION
 
       else
          imsg=imsg+1
-         if(imsg.lt.nmsg)then
+         if(imsg.lt.nmsg.and..not.quiet)then
             write(*,500)nmjd,mjd1,mjd2
             write(31,500)nmjd,mjd1,mjd2
  500        format(' *** Warning - MJD =',i6,
      +            ' outside UT1 table range (',i5,'-',i5,')') 
-         else if(imsg.eq.nmsg)then
+         else if(imsg.eq.nmsg.and..not.quiet)then
             write(*,510)
             write(31,510)
  510        format(' *** Warning - Further UT1 messages suppressed')     

@@ -74,6 +74,7 @@ c      $Id$
  1013	   format(40x,2f20.0)
 
 	else                                       ! New-style parameters
+
 	   if(parfile.eq.'def')then
 	      kd=index(pardir,' ')-1
 	      kn=index(pname,' ')-1
@@ -81,7 +82,7 @@ c      $Id$
 	   else
 	      path=parfile
 	   endif
-	   open(49,file=path,status='old',err=999)
+	   open(49,file=path,status='old',err=998)
 	   call rdpar(nits)	! To get TZ ref params
 	   rewind 49
 	endif

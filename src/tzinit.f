@@ -6,6 +6,8 @@ c      $Id$
 	character line*80,item*40
 	real*8 maxhadef
 
+	integer sitea2n ! external function
+
 	include 'dim.h'
 	include 'tz.h'
         include 'acom.h'
@@ -17,7 +19,9 @@ c      $Id$
  90	write(*,'(''Failed to open '',a)')path
 	stop
 
- 92	open(13,file='polyco.dat',status='unknown')
+ 92	continue
+	lupolyco=13
+	open(lupolyco,file=polycofile,status='unknown')
 
 c Read default values of asite,maxha,nspan,ncoeff & freq from 1st line of tz.in
 c Free format, but must be in order
@@ -30,16 +34,7 @@ c Free format, but must be in order
 	   stop
 	endif
 	tzsite=item(1:1)
-	if(tzsite.ge.'0'.and.tzsite.le.'9')then
-	   nsite=ichar(tzsite)-48
-	else if(tzsite.ge.'a'.and.tzsite.le.'z')then
-	   nsite = ichar(tzsite)-87
-	else if (tzsite.eq.'@') then
-	   nsite = -1
-	else
-	   write (*,*) 'Don''t understand observing site ''',tzsite,''''
-	   stop
-	endif
+	nsite = sitea2n(tzsite)
 
 	call citem(line,ll,jn,item,jl) ! maxha
 	read(item,*)maxhadef

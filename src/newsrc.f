@@ -1,5 +1,5 @@
 c      $Id$
-	subroutine newsrc(nits,jits,nboot)
+        subroutine newsrc(nits,jits,nboot)
 
 	implicit real*8 (A-H,O-Z)
 	character DECSGN*1,path*160,str1*80,str2*80
@@ -170,7 +170,7 @@ C  Convert units
 	   pmra=pmra*1d1
 	   pmdec=pmdec*1d1
 	   px=px*1d3
-	   write(31,1036)
+	   if (.not.quiet) write(31,1036)
  1036	   format(' Input B1950 coords converted to J2000')
 	endif
 
@@ -343,23 +343,27 @@ c  Beginning of iteration loop
 
  30     continue
         if (jits.eq.-1) jits=0
-	write(31,'(/)')
-	if(nits.gt.1)write(31,1038)jits+1,nits
- 1038	format('Iteration',i3,' of',i3/)
+	if (.not.quiet) then
+          write(31,'(/)')
+          if(nits.gt.1)write(31,1038)jits+1,nits
+ 1038     format('Iteration',i3,' of',i3/)
+        endif
 
 	p0=1.d0/f0
 	p1=-f1/f0**2
 	if(si.gt.1.d0) si=1.d0
 
-	write(31,1039) bmodel(nbin),nbin,nddm
- 1039	format('Binary model: ',a,' nbin: ',i2,'   nddm:',i2)
-	if(psrframe)write(31,'(''Parameters in pulsar frame'')')
-        write (31,1040) psrname
- 1040   format (/'Assumed parameters -- PSR ',a12/)
-
+        if (.not.quiet) then
+          write(31,1039) bmodel(nbin),nbin,nddm
+ 1039     format('Binary model: ',a,' nbin: ',i2,'   nddm:',i2)
+          if(psrframe)write(31,'(''Parameters in pulsar frame'')')
+          write (31,1040) psrname
+ 1040     format (/'Assumed parameters -- PSR ',a12/)
+        ENDIF
 
 	if (eclcoord) then
-          write (31,1042) pra*360.d0/TWOPI,pdec*360.d0/TWOPI
+          if (.not.quiet) 
+     +         write (31,1042) pra*360.d0/TWOPI,pdec*360.d0/TWOPI
  1042     format ('LAMBDA:',f25.13/'BETA:',f27.13)
 	else
           call radian (pra,irh,irm,rsec,123,1)
@@ -371,115 +375,118 @@ c  Beginning of iteration loop
 	  rsec=rsec-irs
 	  ids=dsec
 	  dsec=dsec-ids
-	  write(31,1043) irh,irm,irs,rsec,decsgn,idd,idm,ids,dsec
+          if (.not.quiet) 
+     +         write(31,1043) irh,irm,irs,rsec,decsgn,idd,idm,ids,dsec
  1043	  format ('RA: ',11x,i2.2,':',i2.2,':',i2.2,f9.8/
      +         'DEC:',10x,a1,i2.2,':',i2.2,':',i2.2,f9.8)
         endif
 
-        if (eclcoord) then
-	   if(pmra.ne.0.0)write(31,'(''PMLAMBDA (mas/yr):'',f18.4)')pmra
-	   if(pmdec.ne.0.0)write(31,'(''PMBETA (mas/yr):'',f17.4)')pmdec
-        else
-	   if(pmra.ne.0.0)write(31,'(''PMRA (mas/yr):'',f18.4)')pmra
-	   if(pmdec.ne.0.0)write(31,'(''PMDEC (mas/yr):'',f17.4)')pmdec
-        endif
-	if(px.ne.0.0)write(31,'(''Parallax (mas):'',f17.4)')px
-
-	if(posepoch.gt.0.)then
-	   write (31,1100) posepoch
- 1100	   format('Pos Epoch (MJD):',f16.8)
-	endif
-
-        write (31,1044) f0,p0,f1,p1*1.d15,f2,f3
- 1044   format ('F0 (s-1): ',f22.17,6x,'(P0 (s):',f24.19,')'/
+        if (.not.quiet) then
+          if (eclcoord) then
+            if(pmra.ne.0.)write(31,'(''PMLAMBDA (mas/yr):'',f18.4)')pmra
+            if(pmdec.ne.0.)write(31,'(''PMBETA (mas/yr):'',f17.4)')pmdec
+          else
+            if(pmra.ne.0.0)write(31,'(''PMRA (mas/yr):'',f18.4)')pmra
+            if(pmdec.ne.0.0)write(31,'(''PMDEC (mas/yr):'',f17.4)')pmdec
+          endif
+          if(px.ne.0.0)write(31,'(''Parallax (mas):'',f17.4)')px
+          
+          if(posepoch.gt.0.)then
+            write (31,1100) posepoch
+ 1100       format('Pos Epoch (MJD):',f16.8)
+          endif
+          
+          write (31,1044) f0,p0,f1,p1*1.d15,f2,f3
+ 1044     format ('F0 (s-1): ',f22.17,6x,'(P0 (s):',f24.19,')'/
      +         'F1 (s-2): ',1p,d22.12,0p,6x,'(P1 (-15):',f22.12,')'/
      +         'F2 (s-3): ',1p,d22.9/'F3 (s-4): ',d22.6,0p)
-
-        do i = 1, 5
-          if (f4(i).ne.0)write(31,1045)i+3,-i-4,f4(i)
- 1045     format ('F',i1,' (s',i2,'): ',1p,d22.9)
-        enddo
-	if (f4(6).ne.0)write(31,1046)6+3,-6-4,f4(6)
- 1046	format ('F',i1,' (s',i3,'): ',1p,d22.9)
-        do i = 7, 9
-          if (f4(i).ne.0)write(31,1047)i+3,-i-4,f4(i)
- 1047     format ('F',i2,' (s',i3,'): ',1p,d21.9)
-        enddo
-        write (31,1048) pepoch
- 1048   format ('P Epoch (MJD):',f18.8)
-
-	if(start.gt.0.)then
-	   write (31,1102) start
- 1102	   format ('Start MJD:',f22.8)
-	endif
-	if(finish.lt.100000.)then
-	   write (31,1104) finish
- 1104	   format ('Finish MJD:',f21.8)
-	endif
-
-        write (31,1106) dm
- 1106	format ('DM (cm-3 pc):',f19.6)
-	do i = 1, ndmcalc-1
-	   write (31,1120) i, dmcof(i)
-	enddo
- 1120	format ('DMCOF',i3.3,':',1p,d25.9)
-
-	if(a1(1).ne.0.d0)then
-	   if(nbin.ne.9)then
+          
+          do i = 1, 5
+            if (f4(i).ne.0)write(31,1045)i+3,-i-4,f4(i)
+ 1045       format ('F',i1,' (s',i2,'): ',1p,d22.9)
+          enddo
+          if (f4(6).ne.0)write(31,1046)6+3,-6-4,f4(6)
+ 1046     format ('F',i1,' (s',i3,'): ',1p,d22.9)
+          do i = 7, 9
+            if (f4(i).ne.0)write(31,1047)i+3,-i-4,f4(i)
+ 1047       format ('F',i2,' (s',i3,'): ',1p,d21.9)
+          enddo
+          write (31,1048) pepoch
+ 1048     format ('P Epoch (MJD):',f18.8)
+          
+          if(start.gt.0.)then
+            write (31,1102) start
+ 1102       format ('Start MJD:',f22.8)
+          endif
+          if(finish.lt.100000.)then
+            write (31,1104) finish
+ 1104       format ('Finish MJD:',f21.8)
+          endif
+          
+          write (31,1106) dm
+ 1106     format ('DM (cm-3 pc):',f19.6)
+          do i = 1, ndmcalc-1
+            write (31,1120) i, dmcof(i)
+          enddo
+ 1120     format ('DMCOF',i3.3,':',1p,d25.9)
+          
+          if(a1(1).ne.0.d0)then
+            if(nbin.ne.9)then
 	      write(31,1050) a1(1),e(1),t0(1),pb(1),omz(1)
-	   else
+            else
 	      write(31,2050) a1(1),pb(1),t0asc,eps1,eps2
-	   endif
-	endif
- 1050	format('A1 sin(i) (s):',f18.9/'E:',f30.9/'T0 (MJD):',f23.9/
-     +       'PB (d):',f25.12/'Omega0 (deg):',f19.6)
- 2050	format('A1 sin(i) (s):',f18.9/'Pd (d):',f25.12/
-     +       'TASC (MJD):',f21.9/'eps1:',f27.9/'eps2:',f27.9)
-
-	if(omdot.ne.0.)write(31,'(''Omegadot (deg/yr):'',f14.6)')omdot
-	if(xomdot.ne.0.)write(31,'(''XOMDOT (deg/yr):'',f16.3)')xomdot
-	if(pbdot.ne.0.)write(31,'(''PBdot (-12):'',f20.3)')1.d12*pbdot
-	if(xpbdot.ne.0.)write(31,'(''XPBDOT (-12):'',f19.3)')
-     +       1.d12*xpbdot
-	if(gamma.ne.0.)write(31,'(''Gamma (s):'',f22.6)')gamma
-	if(si.ne.0.)write(31,'(''sin(i):'',f25.6)')si
-	if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am
-	if(am2.ne.0.)write(31,'(''m2 (solar):'',f21.6)')am2
-	if(dr.ne.0.)write(31,'(''dr (-6):'',f24.3)')1.d6*dr
-	if(dth.ne.0.)write(31,'(''dth (-6):'',f23.3)')1.d6*dth
-	if(a0.ne.0.)write(31,'(''A0 (-6):'',f24.3)')1.d6*a0
-	if(b0.ne.0.)write(31,'(''B0 (-6):'',f24.3)')1.d6*b0
-	if(bp.ne.0.)write(31,'(''bp:'',f29.6)')bp
-	if(bpp.ne.0.)write(31,'(''bpp:'',f28.6)')bpp
-	if(xdot.ne.0.)write(31,'(''Xdot (-12):'',f21.6)')1.d12*xdot
-	if(edot.ne.0.)write(31,'(''Edot (-12 s-1):'',f17.6)')1.d12*edot
-	if(om2dot.ne.0.)write(31,'(''om2dot (rad s-2):'',5x,e10.4)')
-     +       om2dot	                                     
-	if(x2dot.ne.0.)write(31,'(''x2dot (s-1):'',10x,e10.4)')x2dot
-	if(eps1dot.ne.0.)write(31,'(''eps1dot (-12 s-1):'',f14.6)')
-     +       eps1dot*1.d12
-	if(eps2dot.ne.0.)write(31,'(''eps2dot (-12 s-1):'',f14.6)')
-     +       eps2dot*1.d12
-
-	if(nplanets.gt.0)then
-           do i=2,nplanets+1
+            endif
+          endif
+ 1050     format('A1 sin(i) (s):',f18.9/'E:',f30.9/'T0 (MJD):',f23.9/
+     +         'PB (d):',f25.12/'Omega0 (deg):',f19.6)
+ 2050     format('A1 sin(i) (s):',f18.9/'Pd (d):',f25.12/
+     +         'TASC (MJD):',f21.9/'eps1:',f27.9/'eps2:',f27.9)
+          
+          if(omdot.ne.0.)write(31,'(''Omegadot (deg/yr):'',f14.6)')omdot
+          if(xomdot.ne.0.)write(31,'(''XOMDOT (deg/yr):'',f16.3)')xomdot
+          if(pbdot.ne.0.)write(31,'(''PBdot (-12):'',f20.3)')1.d12*pbdot
+          if(xpbdot.ne.0.)write(31,'(''XPBDOT (-12):'',f19.3)')
+     +         1.d12*xpbdot
+          if(gamma.ne.0.)write(31,'(''Gamma (s):'',f22.6)')gamma
+          if(si.ne.0.)write(31,'(''sin(i):'',f25.6)')si
+          if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am
+          if(am2.ne.0.)write(31,'(''m2 (solar):'',f21.6)')am2
+          if(dr.ne.0.)write(31,'(''dr (-6):'',f24.3)')1.d6*dr
+          if(dth.ne.0.)write(31,'(''dth (-6):'',f23.3)')1.d6*dth
+          if(a0.ne.0.)write(31,'(''A0 (-6):'',f24.3)')1.d6*a0
+          if(b0.ne.0.)write(31,'(''B0 (-6):'',f24.3)')1.d6*b0
+          if(bp.ne.0.)write(31,'(''bp:'',f29.6)')bp
+          if(bpp.ne.0.)write(31,'(''bpp:'',f28.6)')bpp
+          if(xdot.ne.0.)write(31,'(''Xdot (-12):'',f21.6)')1.d12*xdot
+          if(edot.ne.0.)write(31,'(''Edot (-12 s-1):'',f17.6)')1.d12*edot
+          if(om2dot.ne.0.)write(31,'(''om2dot (rad s-2):'',5x,e10.4)')
+     +         om2dot	                                     
+          if(x2dot.ne.0.)write(31,'(''x2dot (s-1):'',10x,e10.4)')x2dot
+          if(eps1dot.ne.0.)write(31,'(''eps1dot (-12 s-1):'',f14.6)')
+     +         eps1dot*1.d12
+          if(eps2dot.ne.0.)write(31,'(''eps2dot (-12 s-1):'',f14.6)')
+     +         eps2dot*1.d12
+          
+          if(nplanets.gt.0)then
+            do i=2,nplanets+1
               write(31,1051) i,a1(i),i,e(i),i,t0(i),i,pb(i),i,omz(i)
-1051	      format('X(',i1,') (s):',f23.7/'E(',i1,'):',f27.9/
-     +               'T0(',i1,') (MJD):',f20.9/'Pb(',i1,') (d):',f22.6/
-     +               'Om(',i1,') (deg):',f20.6)
-           enddo
-        endif
-        
-	if(ngl.gt.0)then
-	  do i=1,ngl
- 	     write(31,1053)i,glepoch(i),glph(i),glf0(i),
-     +          glf1(i),glf0d(i),gltd(i)
-	  enddo
-	endif
-1053	format('Glitch',i2/'  Epoch (MJD):',f18.6/
+ 1051         format('X(',i1,') (s):',f23.7/'E(',i1,'):',f27.9/
+     +             'T0(',i1,') (MJD):',f20.9/'Pb(',i1,') (d):',f22.6/
+     +             'Om(',i1,') (deg):',f20.6)
+            enddo
+          endif
+          
+          if(ngl.gt.0)then
+            do i=1,ngl
+              write(31,1053)i,glepoch(i),glph(i),glf0(i),
+     +             glf1(i),glf0d(i),gltd(i)
+            enddo
+          endif
+ 1053     format('Glitch',i2/'  Epoch (MJD):',f18.6/
      +         '  dPHS:',f25.6/'  dF0 (s-1):',1p,d20.7/
      +         '  dF1 (s-2):',d20.7/
      +         '  dF0D (s-1):',d19.7,0p/'  TD (d):',f23.5)
+        endif
 
 	if (nbin.gt.0)then
 	   do i=1,3
@@ -530,8 +537,8 @@ c  Beginning of iteration loop
         enddo
 
 
-	nparam=k
-	write(31,1060) nparam
+	nparam=k        
+	if (.not.quiet) write(31,1060) nparam
 1060	format(/'Fit for',i3,
      +      ' parameters, including phase but excluding jumps')
 	nparam0 = nparam  

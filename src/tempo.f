@@ -137,6 +137,7 @@ C  99	gro.99			newval
 	include 'eph.h'
 	include 'trnsfr.h'
 	include 'tz.h'
+        include 'toa.h'
 
 	logical tz,lw, nostop
         logical memerr
@@ -146,6 +147,8 @@ C  99	gro.99			newval
 	character date*9,date2*9,damoyr*9,label*12,parfile*40
 	integer time, n
         real*8 xmean(NPA),alng(36)
+
+        integer sitea2n ! external function
 
 	common/leapsec/mjdleap(50),nleaps
 	data resfile1/'resid1.tmp'/
@@ -160,6 +163,8 @@ C  99	gro.99			newval
 
 	memerr = .false.
         infoout = .false.
+        stflag = .false.
+        tzsitedef = ' '
 
 c  Get command-line arguments
 
@@ -180,52 +185,54 @@ c  Get command-line arguments
 	clklbl(0)='UNCORR'
 	do 510 i=1,20
 	  read(2,1000,end=515)line
-1000	  format(a)
+ 1000     format(a)
 	  j=1
 	  call citem(line,80,j,label,k)
 	  call upcase(label)
 	  call citem(line,80,j,fname,k)
 
 	  if(label(1:8).eq.'OBS_NIST')then
-	     clkfile(1)=fname(1:k)                   ! Obs to UTC(NIST)
-	     clklbl(1)='UTC(NIST)'
+            clkfile(1)=fname(1:k) ! Obs to UTC(NIST)
+            clklbl(1)='UTC(NIST)'
 	  else if(label(1:8).eq.'NIST_UTC')then
-	     clkfile(2)=fname(1:k)                   ! UTC(NIST) to UTC(BIPM)
-	     clklbl(2)='UTC(BIPM)'
+            clkfile(2)=fname(1:k) ! UTC(NIST) to UTC(BIPM)
+            clklbl(2)='UTC(BIPM)'
 	  else if(label(1:9).eq.'NIST_BIPM')then
-	     clkfile(3)=fname(1:k)                   ! UTC(NIST) to TT(BIPM)
-	     clklbl(3)='TT(BIPM)'
+            clkfile(3)=fname(1:k) ! UTC(NIST) to TT(BIPM)
+            clklbl(3)='TT(BIPM)'
 	  else if(label(1:8).eq.'NIST_PTB')then
-	     clkfile(4)=fname(1:k)                   ! UTC(NIST) to UTC(PTB)
-	     clklbl(4)='PTB'
+            clkfile(4)=fname(1:k) ! UTC(NIST) to UTC(PTB)
+            clklbl(4)='PTB'
 	  else if(label(1:8).eq.'NIST_AT1')then
-	     clkfile(5)=fname(1:k)                   ! UTC(NIST) to AT1
-	     clklbl(5)='AT1'
+            clkfile(5)=fname(1:k) ! UTC(NIST) to AT1
+            clklbl(5)='AT1'
 	  else if(label(1:3).eq.'UT1')then
-	     ut1file=fname(1:k)	                     ! UT1 - UT
+            ut1file=fname(1:k)  ! UT1 - UT
 	  else if(label(1:6).eq.'EPHDIR')then
-	     ephdir=fname(1:k)	                     ! BC ephem directory
+            ephdir=fname(1:k)   ! BC ephem directory
 	  else if(label(1:6).eq.'CLKDIR')then
-	     clkdir=fname(1:k)	                     ! Clock files directory
+            clkdir=fname(1:k)   ! Clock files directory
 	  else if(label(1:6).eq.'PARDIR')then
-	     pardir=fname(1:k)	                     ! .par files for -z
+            pardir=fname(1:k)   ! .par files for -z
 	  else if(label(1:6).eq.'TZDIR')then
-	     tzdir=fname(1:k)	                     ! Dir for tz.in
-	  else if(label(1:5).eq.'OBSYS')then
-	     obsyfile=fname(1:k)                     ! Observatory parameters
-	  else if(label(1:5).eq.'TZTOT')then
-	     tztfile=fname(1:k)	                     ! param file for -z
+            tzdir=fname(1:k)    ! Dir for tz.in
+          else if(label(1:5).eq.'OBSYS')then
+            obsyfile=fname(1:k) ! Observatory parameters
+          else if(label(1:5).eq.'TZTOT')then
+            tztfile=fname(1:k)  ! param file for -z
 	  else if(label(1:7).eq.'TDBFILE')then
-	      tdbfile=fname(1:k)
+            tdbfile=fname(1:k)
 	  else if(label(1:7).eq.'EPHFILE')then              
-	     kephem=kephem+1                         ! BC ephemeris names
-	     if(kephem.le.NEPHMAX)then
-		ephfile(kephem)=fname(1:k)
-	     else
-		go to 513
-	     endif
+            kephem=kephem+1     ! BC ephemeris names
+            if(kephem.le.NEPHMAX)then
+              ephfile(kephem)=fname(1:k)
+            else
+              go to 513
+            endif
+          else if (label(1:6).eq.'TZSITE') then
+            tzsitedef = fname(1:1)
 	  else 
-	     write(*,'(''Unrecognised label: '',a)')label
+            write(*,'(''Unrecognised label: '',a)')label
 	  endif
  510	continue
 	go to 515
@@ -234,6 +241,11 @@ c  Get command-line arguments
 	go to 9999
 
  515	close(2)
+
+        if (tz.and.tzsite.eq.' '.and.tzsitedef.ne.' ') then
+          tzsite=tzsitedef
+          nsite=sitea2n(tzsite)
+        endif
 
 c  Open leap second file, read leap second dates, close leap second file
 	k=index(clkdir,' ')-1
@@ -261,7 +273,9 @@ c  Open ut1 file (if present)
 	ut1flag=.false.
 
 c  Open primary output file (tempo.lis)
- 11	open(31,file=listfile,status='unknown')
+ 11	continue
+        if (.not.quiet)
+     +       open(31,file=listfile,status='unknown')
 
 	if (npulsein) then
 	  open(35,file=npulsefile,status='old')
@@ -279,39 +293,60 @@ c  Open TDB-TDT clock offset file
 
 	  jits = 0
 
-	  if(infile.eq.'') then
-	    tzfile='tz.in'
-	  else
-	    tzfile=infile
-	  endif
-	  infile='tz.tmp'
+          if (autotz) then
+            num = 1             ! always one pulsar
+            parunit = 49        ! logical unit number used for .par file
+            if (tzmjdstart.lt.0) then
+              fmjdnow=40587+time()/86400.d0
+              tzmjdstart = fmjdnow
+            endif
+            fmjd1 = tzmjdstart
+            fmjd2 = tzmjdstart
+            if (polycofile.eq.'-') then
+              lupolyco = 6
+            else
+              lupolyco = 13
+              open (lupolyco,file=polycofile,status='unknown')
+            endif
 
-	  if(.not.oldpar)parunit=49
-	  open(50,file=infile,status='unknown')
-	
-	  call tzinit(obsyfile,sitelng,num)
-	  fmjdnow=40587+time()/86400.d0
-	  date=damoyr(int(fmjdnow))
+          else  !.not. autotz   (use tz.in file)
 
-	  write(*,1010) date,fmjdnow
- 1010	  format(/' Current date is ',a9,', or MJD',
-     +      f10.3//' Enter first and last MJD,',
-     +      ' or hit return to run for today: ')
-	  read(*,fmt='(a80)') line
-          do j=80,1,-1
-             if(line(j:j).ne.' ')then
+            if(infile.eq.'') then
+              tzfile='tz.in'
+            else
+              tzfile=infile
+            endif
+            infile='tz.tmp'
+            
+            if(.not.oldpar)parunit=49
+            open(50,file=infile,status='unknown')
+            
+            call tzinit(obsyfile,sitelng,num)
+            fmjdnow=40587+time()/86400.d0
+            date=damoyr(int(fmjdnow))
+            
+            if (.not.quiet) then
+              write(*,1010) date,fmjdnow
+ 1010         format(/' Current date is ',a9,', or MJD',
+     +             f10.3//' Enter first and last MJD,',
+     +             ' or hit return to run for today: ')
+            endif
+            read(*,fmt='(a80)') line
+            do j=80,1,-1
+              if(line(j:j).ne.' ')then
                 read (line,*,err=710) fmjd1,fmjd2
                 go to 710
-             endif
-          enddo
-	  fmjd1=0.d0
-	  fmjd2=0.d0
- 710	  continue
-	  if(fmjd1.eq.0.d0) fmjd1=fmjdnow
-	  if(fmjd2.eq.0.d0) fmjd2=fmjd1+0.5d0
+              endif
+            enddo
+	    fmjd1=0.d0
+	    fmjd2=0.d0
+ 710	    continue
+	    if(fmjd1.eq.0.d0) fmjd1=fmjdnow
+	    if(fmjd2.eq.0.d0) fmjd2=fmjd1+0.5d0
+          endif
 	  date=damoyr(int(fmjd1))
 	  date2=damoyr(int(fmjd2))
-	  write(*,1012) date,date2
+	  if (.not.quiet) write(*,1012) date,date2
  1012	  format(1x,a9,' through ',a9/)
  
 	  do ipsr=1,num
@@ -325,7 +360,7 @@ c  Open TDB-TDT clock offset file
 		  write(*,1014)
 		  STOP
 	       else
-		  write(*,1016)
+		  if (.not.quiet) write(*,1016)
 	       endif
 	    endif
 	    if(finish.ne.0. .and. 
@@ -334,7 +369,7 @@ c  Open TDB-TDT clock offset file
 		  write(*,1014)
 		  STOP
 	       else
-		  write(*,1016)
+		  if (.not.quiet) write(*,1016)
 	       endif
 	    endif
  1014	    format(' ERROR: Requested MJD or TZRMJD outside parameter ',
@@ -346,7 +381,7 @@ c  Open TDB-TDT clock offset file
 	      tsid=1.d0/1.002737909d0
 	     
 	      do afmjd=fmjd1,fmjd2,tsid
-	  	call atimfake(oldpar,afmjd,nbin,nt,ncoord,sitelng,ipsr)
+	  	call atimfake(afmjd,nbin,nt,sitelng,ipsr)
 		rewind 50
 		close(2)
 		call setup(version,infile,obsyfile,alng,nsmax,parfile)
@@ -375,9 +410,8 @@ c  Open TDB-TDT clock offset file
 	    endif
  890      continue
           close(21)
-          close(31)
+          if (.not.quiet) close (31)
           close(50)
-	  call system('rm tempo.lis tz.tmp')
 
 	else  ! Standard TEMPO execution
 
@@ -414,11 +448,11 @@ c  Open parameter and residual files
 	  jits=0
 
 	  if(oldpar.or.parunit.eq.50)then
-	     write(*,1050) version,infile(1:nfl)
+             if (.not.quiet) write(*,1050) version,infile(1:nfl)
  1050	     format(' TEMPO v ',f6.3,
      +          ' Princeton/ATNF Pulsar Collaboration'/' Data from ',a)
 	  else
-	     write(*,1051) version,infile(1:nfl),parfile
+             if (.not.quiet) write(*,1051) version,infile(1:nfl),parfile
  1051	     format(' TEMPO v ',f6.3,
      +       ' Princeton/ATNF Pulsar Collaboration'/
      +	     ' Data from ',a, ',   Input parameters from ',a)
@@ -439,14 +473,16 @@ C         The main loop:
 
 	  if (memerr) then
             call tfree()
-	    write (*,1060)
- 1060	    format ("Warning: arrays too small on first pass.")
-	    write (*,1061) nptsmax, nparmax
- 1061	    format ("  Current settings:        -m ",i7," -l ",i7)
-	    write (*,1062) n, nparam
- 1062	    format ("  Better to run:     tempo -m ",i7," -l ",i7)
-	    write (*,1063)
- 1063	    format ("  Re-allocating arrays and running again.")
+            if (.not.quiet) then
+	      write (*,1060)
+ 1060	      format ("Warning: arrays too small on first pass.")
+	      write (*,1061) nptsmax, nparmax
+ 1061	      format ("  Current settings:        -m ",i7," -l ",i7)
+	      write (*,1062) n, nparam
+ 1062	      format ("  Better to run:     tempo -m ",i7," -l ",i7)
+	      write (*,1063)
+ 1063	      format ("  Re-allocating arrays and running again.")
+            endif
             nptsmax = n
             nparmax = nparam+8
             memerr = .false.

@@ -1,11 +1,12 @@
 c      $Id$
-	subroutine clockcor(fmjd,nsite,n,deltat,clk)
+	subroutine clockcor(fmjd,nsite,nn,deltat,clk)
 
 	implicit real*8 (a-h,o-z)
 	save
 	character*9 date,damoyr,datez2,datez3,csite*35
 	include 'dim.h'
 	include 'clocks.h'
+	include 'acom.h'
 	data lsite/0/,ii/1/,td1/0.d0/,nmsg/0/,maxmsg/20/
 	data csite/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
 
@@ -27,13 +28,13 @@ c time order, but entries for different sites can be in any order.
 	      ii=ii+1
 	      if(ii.gt.ndate)then
 		 nmsg=nmsg+1
-		 if(nmsg.le.maxmsg) then
+		 if(nmsg.le.maxmsg.and..not.quiet) then
 		    write(*,1005) fmjd,csite(nsite:nsite)
 		    write(31,1005) fmjd,csite(nsite:nsite)
  1005		    format(' Clk corr error: TOA at',f12.5,
      +		    ' greater than last clk file entry for nsite ',a1)
 		 endif
-		 if(nmsg.eq.maxmsg+1) print*,
+		 if(nmsg.eq.maxmsg+1.and..not.quiet) print*,
      +      '*** Additional clock-correction messages suppressed. ***'
 		 ii=1
 		 clk1=0.d0
@@ -75,14 +76,14 @@ c time order, but entries for different sites can be in any order.
 		    off2 = td2-fmjd
 		    if (off1.gt.1 .and. off2.gt.1) then
 		       nmsg=nmsg+1
-		       if(nmsg.le.maxmsg) then
+		       if(nmsg.le.maxmsg.and..not.quiet) then
 			  write (*,1020) fmjd,csite(nsite:nsite),
      +		              td1,td2
 			  write (31,1020) fmjd,csite(nsite:nsite),td1,td2
  1020			  format('No clock corr for TOA at',f9.2,' site ',
      +		            a1,'; nearest at ',f9.2,' and ',f9.2)
 		       endif
-		       if(nmsg.eq.maxmsg+1) print*,
+		       if(nmsg.eq.maxmsg+1.and..not.quiet) print*,
      +    '*** Additional clock-correction messages suppressed. ***'
 		       clk1 = 0
 		    elseif (off1.lt.off2) then
@@ -128,7 +129,7 @@ c time order, but entries for different sites can be in any order.
 	   enddo
 
  48	   date=damoyr(int(fmjd))
-	   if(date.ne.datez2) write(*,1055) n,date,clkfile(2)(1:40)
+	   if(date.ne.datez2) write(*,1055) nn,date,clkfile(2)(1:40)
  1055	   format(i5,2x,a9,' No entry in clock file ',a50)
 	   datez2=date
 	endif
@@ -161,7 +162,7 @@ c time order, but entries for different sites can be in any order.
 	   enddo
 
  58	   date=damoyr(int(fmjd))
-	   if(date.ne.datez3) write(*,1055) n,date,clkfile(nclk)(1:40)
+	   if(date.ne.datez3) write(*,1055) nn,date,clkfile(nclk)(1:40)
 	   datez3=date
 	endif
 

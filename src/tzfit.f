@@ -60,7 +60,8 @@ c      $Id$
         uts=nutsec-3600*nuthrs-60*nutmin
         utprint=10000.d0*nuthrs + 100.d0*nutmin + uts
         date=damoyr(int(nrmjd))
-        write(*,1051) pname,date,nuthrs,nutmin,rms
+        if (.not.quiet) 
+     +       write(*,1051) pname,date,nuthrs,nutmin,rms
  1051   format(' PSR ',a12,1x,a9,'  UTC: ',i4.2,i2.2,'   rms:',f9.3,
      +       ' us.')
         
@@ -91,11 +92,11 @@ c  log_10 of rms fit error in periods
         
         nx = nrmjd/10
         fx = (nrmjd-10*nx) + frmjd
-        write(13,1070) pname(1:10),date,utprint,nx,fx,dmpsr,z,rms,
+        write(lupolyco,1070) pname(1:10),date,utprint,nx,fx,dmpsr,z,rms,
      +       rphase,f0,nsite,nspan,ncoeff,tzfreq,binpha	
  1070   format(a10,1x,a9,f11.2,i7,f13.11,f21.6,1x,f6.3,f7.3/
      +       f20.6,f18.12,3i5,f10.3,a16)
-        write(13,1080) (d(i),i=1,ncoeff)		
+        write(lupolyco,1080) (d(i),i=1,ncoeff)		
  1080   format(3d25.17)
         
  100  continue

@@ -20,6 +20,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
         integer ZEROWT(2000),idum
 	integer ilen
         integer wflag
+        integer nread
 	character*80 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
         character*20 amjd
@@ -34,6 +35,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	include 'orbit.h'
 	include 'glitch.h'
 	include 'tz.h'
+        include 'toa.h'
+        integer sitea2n ! external function
 
 	common /CONST/ PI,TWOPI,SECDAY,CONVD,CONVS,AULTSC,VELC,EMRAT,OBLQ,
      +              GAUSS,RSCHW,AULTVL
@@ -43,17 +46,21 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	common/obsp/ site(3),pos(3),freqhz,bval,sitvel(3)
 	data first/.true./,card2/'JUMP'/,idum/-1/
 
+        character*1 siten2a  ! external function
+
 	offset=.true.
 	jdcatc=.false.
 	do 1 j=1,NPA
 1	xmean(j)=0.
 
-	rewind 50
         if (npulsein.or.npulseout) rewind 35
-	do i=1,nskip
-	  read(50,1002)
- 1002	  format(a1)
-	enddo
+        if (.not.stflag) then
+          rewind 50
+	  do i=1,nskip
+	    read(50,1002)
+ 1002	    format(a1)
+	  enddo
+        endif
 
 	dphase=0.d0
 	deltat=0.d0
@@ -85,9 +92,10 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	sumwt=0.
 	modscrn=10
         nw=1
+        nread = 0
 	if(first)then
 	   call ztim(0,0.d0,nct,fct,wflag)
-	   write (31,1011)
+	   if (.not.quiet)write (31,1011)
  1011	   format(/'    N     TOBS   WORD    NJMP    WGT',
      +     '     DTIME       TIME     DPHASE      PHASE'/)
 	   nz=0
@@ -132,114 +140,130 @@ c       N. Wex transformations at pepoch
 C       The main loop starts here!
 
    10  	continue
-   	read(lu,1010,end=40) card
-1010	format(a80)
-	if(card(1:1).lt.'A'.and.card(1:1).ne.'#') go to 50
-	if((card(1:1).ge.'a').and.(card(1:1).le.'z')) go to 50
-	if(card(1:4).eq.'END ') go to 45
-	if(card(1:7).eq.'INCLUDE') then
-	  lu=lu+1
-	  j1 = 8
-	  call citem(card,78,j1,infile,ilen)
-	  write(31,1012) card(1:78)
-1012	  format(1x,a78)
-	  open(lu,file=infile(1:ilen),status='old',err=1013)
-	  rewind lu
-	else
-	  call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
-     +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
-     +         lw)
-	endif
-	go to 10
 
- 1013	write(*,'(''Failed to open INCLUDE file: '',a)')infile
-	STOP
+        if (stflag)then  ! READ TOAS FROM STORAGE ARRAYS
 
-50	continue
-	if(card(1:35).eq.'                                   ') goto 10
+          nread = nread + 1
+          if (nread.gt.stntoa) goto 45
 
+          nsite = stnsite(nread)
+          rfrq = stfrq(nread)
+          nfmjd = stnmjd(nread)
+          ffmjd = stfmjd(nread)
+          terr = sterr(nread)
+          ddm = stddm(nread)
+          asite = siten2a(nsite)
+
+        else   ! READ TOAS (AND OTHER CARDS) DATA FROM FILE
+
+          read(lu,1010,end=40) card
+ 1010     format(a80)
+          if(card(1:1).lt.'A'.and.card(1:1).ne.'#') go to 50
+          if((card(1:1).ge.'a').and.(card(1:1).le.'z')) go to 50
+          if(card(1:4).eq.'END ') go to 45
+          if(card(1:7).eq.'INCLUDE') then
+            lu=lu+1
+            j1 = 8
+            call citem(card,78,j1,infile,ilen)
+            if (.not.quiet)write(31,1012) card(1:78)
+ 1012       format(1x,a78)
+            open(lu,file=infile(1:ilen),status='old',err=1013)
+            rewind lu
+          else
+            call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
+     +           jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,
+     +           search, lw)
+          endif
+          go to 10
+          
+ 1013     write(*,'(''Failed to open INCLUDE file: '',a)')infile
+          STOP
+          
+ 50       continue
+          if(card(1:35).eq.'                                   ') 
+     +         goto 10
+          
 c  default: Princeton format
-	nfmt=0
+          nfmt=0
 c  first character blank: Parkes format
-	if(card(1:1).eq.' ') nfmt=1
+          if(card(1:1).eq.' ') nfmt=1
 c  first character not blank, second character not blank:
 c    could be either ITOA format, in which case first field is PSR name
 c    or Princeton format, but with "scan number" starting at column 2
 c    (Berkeley sometimes does this).  Differentiate between the 
 c    two cases by searching for the "+" or "-" indicative of a pulsar name.
-	if(card(1:1).ne.' ' .and. card(2:2).ne.' ') then
-	  do i = 1, 80
-	    if(card(i:i).eq." ") then
-	      nfmt=0
-	      goto 51
-	    elseif (card(i:i).eq."+") then
-	      nfmt=2
-	      goto 51
-	    elseif (card(i:i).eq."-") then
-	      nfmt=2
-	      goto 51
-	    endif
-	  enddo
-	  nfmt = 2 ! shouldn't get here....but just in case
-	endif
- 51	continue
-
-	if(nfmt.eq.0) then				! Princeton format
-
-	  read(card,10500) asite,rfrq,amjd,aterr,ddm
-10500	  format(a1,14x,f9.0,a20,a9,15x,f10.0)
-
-          ! Clean up MJD and separate out integer and
-          ! fractional parts.  It can have either of these forms:
-          ! " xxxxx.xxxxxxxxxxxxx" or "xxxxx.xxxxxxxxxxxxxx"
-          ! Sometimes it has a space and then junk, such as:
-          ! "xxxxx.xxxxxxxxxx xxx". anything after the space
-          ! should be ignored.
-          i1 = index(amjd,'.')
-          i2 = index(amjd(i1+1:20),' ') 
-          if (i2.eq.0) then
-            i2 = 20
-          else
-            i2 = i1+i2
+          if(card(1:1).ne.' ' .and. card(2:2).ne.' ') then
+            do i = 1, 80
+              if(card(i:i).eq." ") then
+                nfmt=0
+                goto 51
+              elseif (card(i:i).eq."+") then
+                nfmt=2
+                goto 51
+              elseif (card(i:i).eq."-") then
+                nfmt=2
+                goto 51
+              endif
+            enddo
+            nfmt = 2            ! shouldn't get here....but just in case
           endif
-          read (amjd(1:i1-1),*) nfmjd
-          read (amjd(i1:i2),*) ffmjd
+ 51       continue
 
-	  if(nfmjd.lt.30000)nfmjd=nfmjd+39126           ! Convert 1966 days to MJD
+          if(nfmt.eq.0) then				! Princeton format
 
-	  iz = 1
-	  do i=1,9
- 	    if(aterr(i:i).eq.' ') iz=i
-	  end do
-	  terr=0.
-	  if (iz.le.9) read(aterr(iz:9),*,err=54,end=54) terr
-54	  continue
+            read(card,10500) asite,rfrq,amjd,aterr,ddm
+10500       format(a1,14x,f9.0,a20,a9,15x,f10.0)
 
-	else if(nfmt.eq.1) then				! Parkes format
-	  read(card,1051) rfrq,nfmjd,ffmjd,phs,terr,asite
-1051	  format(25x,f9.0,i7,f14.13,f8.6,f8.1,8x,a1)
-	  ffmjd=ffmjd+phs*p0/86400.d0
-	
-	else if(nfmt.eq.2) then				! ITOAF format
-	  read(card,1052) nfmjd,ffmjd,terr,rfrq,ddm,bsite,comment
-1052	  format(9x,i5,f14.13,f6.2,f11.4,f10.6,2x,a2,2x,a8)
-	  asite=' '
-	  do iobs=1,36
-	     if(bsite.eq.obskey(iobs)(4:5))then
+            ! Clean up MJD and separate out integer and
+            ! fractional parts.  It can have either of these forms:
+            ! " xxxxx.xxxxxxxxxxxxx" or "xxxxx.xxxxxxxxxxxxxx"
+            ! Sometimes it has a space and then junk, such as:
+            ! "xxxxx.xxxxxxxxxx xxx". anything after the space
+            ! should be ignored.
+            i1 = index(amjd,'.')
+            i2 = index(amjd(i1+1:20),' ') 
+            if (i2.eq.0) then
+              i2 = 20
+            else
+              i2 = i1+i2
+            endif
+            read (amjd(1:i1-1),*) nfmjd
+            read (amjd(i1:i2),*) ffmjd
+
+            if(nfmjd.lt.30000)nfmjd=nfmjd+39126       ! Convert 1966 days to MJD
+
+            iz = 1
+            do i=1,9
+              if(aterr(i:i).eq.' ') iz=i
+            end do
+            terr=0.
+            if (iz.le.9) read(aterr(iz:9),*,err=54,end=54) terr
+ 54         continue
+
+          else if(nfmt.eq.1) then ! Parkes format
+            read(card,1051) rfrq,nfmjd,ffmjd,phs,terr,asite
+ 1051       format(25x,f9.0,i7,f14.13,f8.6,f8.1,8x,a1)
+            ffmjd=ffmjd+phs*p0/86400.d0
+            
+          else if(nfmt.eq.2) then ! ITOAF format
+            read(card,1052) nfmjd,ffmjd,terr,rfrq,ddm,bsite,comment
+ 1052       format(9x,i5,f14.13,f6.2,f11.4,f10.6,2x,a2,2x,a8)
+            asite=' '
+            do iobs=1,36
+              if(bsite.eq.obskey(iobs)(4:5))then
 		asite=obskey(iobs)(1:1)
 		goto 56
-	     endif
-	  enddo
-	endif
+              endif
+            enddo
+          endif
 
- 56	if(ffmjd.gt.1.d0) then
-	  nfmjd=nfmjd+1
-	  ffmjd=ffmjd-1.d0
-	endif
-	nsite = 99
-	if (asite.ge.'0' .and. asite.le.'9') nsite = ichar(asite)-48
-	if (asite.ge.'a' .and. asite.le.'z') nsite = ichar(asite)-87
-	if (asite.eq.'@') nsite = -1
+ 56       if(ffmjd.gt.1.d0) then
+            nfmjd=nfmjd+1
+            ffmjd=ffmjd-1.d0
+          endif
+          nsite = sitea2n(asite)
+
+        endif  ! end of read-data-from-file-or-memory if statement
 
 	fmjd=nfmjd+ffmjd
 	if(rfrq.lt.fmin .or. rfrq.gt.fmax .or. 
@@ -292,7 +316,8 @@ c   Get here on end-of-file
 	endif
 
 c   Get here on end-of-all-files
-45	if(.not.gro) go to 100
+45	continue
+        if(.not.gro) go to 100
 	last=.true.
 	nsite=0
 	rfrq=0.
@@ -385,7 +410,6 @@ c   Back to processing of all TOAs
 	  nblk=nblk+1
 	  call pcard(card2,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
      +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
-     +     lw)
 	  if(nblk.ge.2) call pcard(card2,mode,zawgt,deltat,fmjd,
      +      dphase,sigm,offset,jdcatc,
      +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw)
@@ -551,13 +575,15 @@ C  DM-related partial derivatives
      +     buf,npmsav,ksav,nbuf,memerr)
 
 	nitsz=max0(nits,1)
-	if(mod(n,20*modscrn).eq.1) write(*,1099) max0(nitsz,1)
+	if(mod(n,20*modscrn).eq.1.and..not.quiet) 
+     +        write(*,1099) max0(nitsz,1)
 1099	format(/'    N       MJD       Residual (p)  Residual (us)',
      +    '  Iteration (of',i2,')'/)
 	if(n.gt.200) modscrn=100
 	amjd1=min(amjd1,fmjd)
 	amjd2=max(amjd2,fmjd)
-	if(mod(n,modscrn).eq.1) write(*,1100)n,fmjd,dt,1d6*dt*p0,
+	if(mod(n,modscrn).eq.1.and..not.quiet) 
+     +        write(*,1100)n,fmjd,dt,1d6*dt*p0,
      +    jits+1
 1100	format(i6,f15.8,f11.6,f15.3,11x,i2)
 
@@ -568,7 +594,7 @@ C  DM-related partial derivatives
 c End of input file detected
 100	continue
 
-        if(mod(n,modscrn).ne.1) 
+        if(mod(n,modscrn).ne.1.and..not.quiet) 
      +    write(*,1100)n,fmjdlast,dt,1d6*dt*p0,jits+1
 
 	start=amjd1-1.d-3

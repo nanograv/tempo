@@ -1,5 +1,5 @@
-c      $Id$
-	subroutine setup(version,infile,obsyfile,alng,nsmax,parfile)
+c       $Id$
+        subroutine setup(version,infile,obsyfile,alng,nsmax,parfile)
 
 	implicit real*8 (a-h,o-z)
 	parameter (TWOPI=6.28318530717958648d0)
@@ -12,7 +12,6 @@ c      $Id$
 	data ault/499.004786d0/
 	data obsnum/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
 
-C###	call fdate(timstr)
 	nsec=time()
 	timstr=damoyr(40587+nsec/86400)
 	nsec=mod(nsec,86400)
@@ -22,7 +21,8 @@ C###	call fdate(timstr)
 	write(timstr(10:),1000) nhr,nmin,nsec
  1000	format(2x,i2.2,':',i2.2,':',i2.2,' UTC')
 
-	write(31,30) version,timstr(1:23)
+	if (.not.quiet)
+     +       write(31,30) version,timstr(1:23)
 30	format(55(1h*)/1h*,53x,1h*/
      +    '*',17x,'TEMPO version',f7.3,16x,1h*/1h*,53x,1h*/,
      +    1h*,11x,'Analysis of pulsar timing data',12x,1h*/
@@ -44,8 +44,8 @@ C  alat = X, along = Y, and elev = Z
  34	do 10 j=1,36
 	  read(2,40,end=11) alat,along,elev,icoord,obsnam,obskey(j)
  40	  format(3f15.0,2x,i1,2x,a12,8x,a5)
-	  if(alat.ne.0.) write(31,50) obsnum(j:j),obsnam,alat,along,
-     +         elev
+	  if(alat.ne.0..and..not.quiet) 
+     +         write(31,50) obsnum(j:j),obsnam,alat,along,elev
  50	  format(a1,3x,a12,f15.2,f16.2,f12.1)
  
 	  if(icoord.eq.0)then
@@ -91,18 +91,20 @@ c     +        8.d-9*dcos(6.d0*hlt(j)))+elev
  12	      hrd(i)=0.d0
 	endif
 	close(2)
-        
-	len=index(infile,' ')-1
-	if(oldpar.or.parunit.eq.50)then
-	   write (31,60) infile(1:len)
- 60	   format (/'Input data from ',a)
-	else
-	   len1=index(parfile,' ')-1
-	   write (31,61) infile(1:len),parfile(1:len1)
- 61	   format (/'Input data from ',a,',  Parameters from ',a)
-	endif
-	write(31,62)obsyfile
- 62	format('Observatory data from ',a55)
+
+        if (.not.quiet) then
+          len=index(infile,' ')-1
+          if(oldpar.or.parunit.eq.50)then
+            write (31,60) infile(1:len)
+ 60         format (/'Input data from ',a)
+          else
+            len1=index(parfile,' ')-1
+            write (31,61) infile(1:len),parfile(1:len1)
+ 61         format (/'Input data from ',a,',  Parameters from ',a)
+          endif
+          write(31,62)obsyfile
+ 62       format('Observatory data from ',a55)
+        endif
 
 	return
 	end

@@ -262,6 +262,7 @@ C  Control parameters
            read(value(1:itmp-1),*)ntzrmjd
            read(value(itmp:32),*)ftzrmjd
          endif
+         if (ntzrmjd.lt.30000) ntzrmjd = ntzrmjd + 39126  ! convert fut to mjd
 
       else if(key(1:6).eq.'TZRFRQ')then
          read(value,*)tzrfrq

@@ -23,7 +23,7 @@ c     For common block usage, see comments in ZTIM
       integer wflag
 
 c     get coordinates of site of observation in lt-sec
-      if(ut1flag)call UT1RED(nmjdc,fmjdc,atut,ut1ut)
+      if(ut1flag)call UT1RED(nmjdc,fmjdc,atut,ut1ut,quiet)
       fmjdu1 = fmjdu + ut1ut/secday
       nmjdu1 = nmjdu
       if(fmjdu1.ge.1.d0)then
@@ -270,8 +270,6 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          if(DABS(dt_SSB-dt_SSB_old).gt.1.0d-10) goto 201
 
          fmjdc = fmjdu+(ETAT+ATUT+bclt-TDIS-dt_shapiro)/SECDAY
-c         if(mod(n,20).eq.1)write(31,*)dt_roemer,dt_px,dt_pm,dt_pmtt,dt_pmtr,
-c     :      delt,bclt,tdis,dt_shapiro,fmjdc,posep
       endif
 
       if(fmjdc.ge.1.d0)then

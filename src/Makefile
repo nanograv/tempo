@@ -34,12 +34,13 @@ SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
         gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f newbin.f \
         newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
-        setup.f sort.f space_motion.f ell12bt.f tdbinit.f tdbread.f tempo.f \
+        setup.f sitea2n.f siten2a.f \
+	sort.f space_motion.f ell12bt.f tdbinit.f tdbread.f tempo.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
         vmemw.f  ztim.f 
 SRC2 = cutil.c
 SRC3 = acom.h array.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
-	orbit.h tdbcom.h trnsfr.h tz.h vcom.h 
+	orbit.h tdbcom.h trnsfr.h tz.h vcom.h toa.h 
 SRC4 = Makefile
 
 OBJS = $(SRC1:.f=.o) $(SRC2:.c=.o)
@@ -79,7 +80,7 @@ clean:
 # dependencies of Tempo subroutines
 
 arrtim.o: arrtim.f acom.h orbit.h dp.h bcom.h trnsfr.h clocks.h dim.h glitch.h tz.h
-atimfake.o: atimfake.f dim.h tz.h
+atimfake.o: atimfake.f dim.h tz.h toa.h
 bnrybt.o: bnrybt.f dp.h orbit.h dim.h
 bnrybtx.o: bnrybt.f dp.h orbit.h dim.h
 bnrydd.o: bnrydd.f dp.h orbit.h dim.h
