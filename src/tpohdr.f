@@ -50,6 +50,7 @@ c      $Id$
      +   	   ' illegal, check tztot.dat'
 	      stop
 	   end if
+	   np = 4
 	   if (nbin.eq.0) then
 	      np = 4
 	   else if (nbin.eq.1 .or. nbin.eq.3) then
