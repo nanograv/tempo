@@ -155,7 +155,7 @@ c       N. Wex transformations at pepoch
 	  do 52 i=1,9
 52	  if(aterr(i:i).eq.' ') iz=i
 	  terr=0.
-	  read(aterr(iz:9),*,err=54) terr
+	  read(aterr(iz:9),*,err=54,end=54) terr
 54	  continue
 
 	else if(nfmt.eq.1) then				! Parkes format

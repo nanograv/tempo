@@ -530,7 +530,7 @@ c=======================================================================
       fit1='  1'
 
       do i = 1, nxoff
-        write (71,1090),i,dct(i),fit1,ferr(60+NGLT*NGLP+i)/f0
+        write (71,1090) i,dct(i),fit1,ferr(60+NGLT*NGLP+i)/f0
  1090   format('JUMP_',i1,f20.8,a,f20.8)
       enddo
 
