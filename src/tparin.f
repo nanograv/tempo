@@ -88,12 +88,12 @@ c     default values of parameters
               nostop = .true.
             else if (s(i:i).eq.'d') then
               path = getparm(s,i,ii,iarg,narg)
-              if (lpth.eq."") goto 9999 ! error
+              if (path.eq.'') goto 9999 ! error
               lpth = index(path,' ')-1
               hlpfile = path(1:lpth)//'/tempo.hlp'
             else if (s(i:i).eq.'f') then
               parfile = getparm(s,i,ii,iarg,narg)
-              if (parfile.eq."") goto 9999 ! error
+              if (parfile.eq.'') goto 9999 ! error
             else if (s(i:i).eq.'g') then
               gro = .true.
               obsflag = 'P'
