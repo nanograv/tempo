@@ -11,8 +11,8 @@ CCFLAGS =
 OBJS =	a1ut1f.o a1utcf.o ang.o arrtim.o atimfake.o bigendian.o \
 	blkdbat.o bnrybt.o bnrydd.o bnryddgr.o bnryddp.o bnryddt.o bnryeh.o \
 	bootmc.o chebpc.o citem.o clockcor.o cutil.o damoyr.o dot.o dskrd.o \
-	earth.o  ephinit.o ephread.o fit.o fk4tofk5.o galco.o gasdev.o \
-	inpar.o interp.o lmst.o matinv.o mxprt.o \
+	earth.o  ephinit.o ephread.o equ2ecl.o fit.o fk4tofk5.o galco.o  \
+	gasdev.o inpar.o interp.o lmst.o matinv.o mxprt.o \
 	newbin.o newsrc.o newval.o nutation.o obsite.o pcard.o pcshft.o \
 	pospm_conv.o prcnut.o precession.o propmo.o radian.o \
 	ran1.o resid.o setup.o sort.o space_motion.o tdbinit.o \
