@@ -5,6 +5,7 @@ c      $Id$
 	include 'dim.h'
 	include 'acom.h'
 	include 'orbit.h'
+        logical err
 cvk     Parameters for finding mass function
 	parameter (TWOPI=6.28318530717958648d0)
       	parameter (gm=1.3271243999e26)
@@ -101,13 +102,25 @@ C  e^2 errors are .le. a1*e^2
 
 C  Write out mass function and error
 
-	    fm=4.d0*((twopi/2.0d0)**2)*((a1(i)*cvel)**3)/((pb(i)**2)*gm)
-	    efm=(fm/(a1(i)*cvel))*sqrt(9.0d0*((ferr(j+9)*cvel)**2)+
-     +		((4.0d0*(a1(i)*cvel)**2/(pb(i))**2)*(ferr(j+12)**2)))
+c	    fm=4.d0*((twopi/2.0d0)**2)*((a1(i)*cvel)**3)/((pb(i)**2)*gm)
+c	    efm=(fm/(a1(i)*cvel))*sqrt(9.0d0*((ferr(j+9)*cvel)**2)+
+c     +		((4.0d0*(a1(i)*cvel)**2/(pb(i))**2)*(ferr(j+12)**2)))
 
-	    write(31,1009) fm,efm
- 1009	    format(/'Mass function: ',f13.10,' +/- ',f13.10,
-     +		' solar masses')
+	    fm = twopi**2 * (a1(i)*cvel)**3 / (pb(i)**2 * gm)
+            call covar (j+9,j+12,c,err)
+            if (.not. err) then
+              efm = fm * sqrt(    9.d0*(ferr(j+9)/a1(i))**2 
+     +             +  4.d0*(ferr(j+12)/pb(i))**2  
+     +             - 12.d0*c/(a1(i)*pb(i))        )
+              write(31,1009) fm,efm
+ 1009         format(/'Mass function: ',f13.10,' +/- ',f13.10,
+     +             ' solar masses')
+            else
+              write(31,1010) fm
+ 1010         format(/'Mass function: ',f13.10,
+     +             ' solar masses')
+            endif
+
 	    pb(i)=pb(i)/8.64d4	! Convert back to days for iteration
 	    ferr(j+12)=ferr(j+12)/8.64d4 ! and for output
 	 enddo
