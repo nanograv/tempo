@@ -12,7 +12,7 @@ C  Converts integer*4 MJD to dd-mmm-yy
 
 	iday=mjd-39126+1
 	iyr=1966
-	do 10 i=1,33
+	do 10 i=1,133
 	nd=365
 	if(mod(iyr,4).eq.0) nd=366
 	if(iday.le.nd) go to 20
@@ -28,7 +28,7 @@ C  Converts integer*4 MJD to dd-mmm-yy
 	iyr=iyr-1900
 	if (iyr.gt.99) iyr=iyr - 100
 	write(date,1040) iday,mo,iyr
-1040	format(i2,'-',a3,'-',i2)
+1040	format(i2,'-',a3,'-',i2.2)
 	damoyr=date
 
 	return
