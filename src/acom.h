@@ -2,8 +2,9 @@ c      $Id$
 
 	logical gro,sim,xitoa,oldpar,psrframe,jumpout,eclcoord
 	logical usestart, usefinish
-        logical npulsein, npulseout
+        logical npulsein, npulseout, infoout
 	integer parunit, nskip, iboot
+        integer infolen
 
 	common pdec,pra,ba(3),bc(3),dm,dt,dt2,freq(NPAP1),
      +    ferr(NPAP1),fmin,hlt(36),hrd(36),wt,x(NPAP1),era,ec,
@@ -13,12 +14,13 @@ c      $Id$
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,parunit,
      +    nskip,iboot,ndmcalc,
-     +    nfcalc,gain,tres,ntoa,nparam0
+     +    nfcalc,gain,tres,ntoa,nparam0,infolen,infoout
 
 
-	character psrname*12,obsflag*1,pardir*80,obskey*5
+	character psrname*12,obsflag*1,pardir*80,infotxt*160
+        character obskey*5
 
-        common/acomch/psrname,pardir,obsflag,obskey(36) 
+        common/acomch/psrname,pardir,obsflag,infotxt,obskey(36) 
 
 
         real*8 array(NPA,NPA) ! moved here from fit.f, djn, 8-Sep-98

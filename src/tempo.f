@@ -112,6 +112,7 @@ C  32	resid2.tmp		tempo
 C  33	gro.1			tempo
 C  34	gro.2			newbin
 C  35   pulse number file       tempo
+C  36   info.tmp                tempo
 C  42	ut1.dat			tempo
 C  43   TDB-TDT ephemeris       tempo/tdbinit
 C  44   BC ephemeris            newsrc/ephinit
@@ -141,13 +142,14 @@ C  99	gro.99			newval
         logical memerr
         character*80 infile,ut1file,resfile1,obsyfile,
      +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
-	character*160 npulsefile
+	character*160 npulsefile, infofile
 	character date*9,date2*9,damoyr*9,label*12,parfile*40
 	integer time, n
         real*8 xmean(NPA),alng(36)
 
 	common/leapsec/mjdleap(50),nleaps
 	data resfile1/'resid1.tmp'/,resfile2/'resid2.tmp'/
+        data infofile/'info.tmp'/
 	data listfile/'tempo.lis'/,lw/.true./
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
      +       'MSS','ELL1','BTX','BT1P','BT2P'/
@@ -155,6 +157,7 @@ C  99	gro.99			newval
 	version = 11.005
 
 	memerr = .false.
+        infoout = .false.
 
 c  Get command-line arguments
 
@@ -345,7 +348,7 @@ c  Open TDB-TDT clock offset file
 		call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
      +               ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,
      +               nits,jits,buf(1+bufoff),npmsav(1+npmsavoff),
-     +               ksav(1+ksavoff),nbuf,memerr)
+     +               ksav(1+ksavoff),nbuf,memerr,infofile)
 
 		call tzfit(ipsr,dnpls(2+dnplsoff),f0,dm,ct2,t0,pb)
 		rewind 31
@@ -427,7 +430,7 @@ C         The main loop:
           call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
      +         ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,nits,jits,
      +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),nbuf,
-     +         memerr)
+     +         memerr,infofile)
 
 	  if (memerr) then
             call tfree()

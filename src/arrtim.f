@@ -1,7 +1,7 @@
 c      $Id$
       subroutine arrtim(mode,xmean,sum,sumwt,dnpls,ddmch,ct2,
      +     alng,nsmax,nz,tz,nptsmax,nits,jits,
-     +     buf,npmsav,ksav,nbuf,memerr)
+     +     buf,npmsav,ksav,nbuf,memerr,infofile)
 
 C  Reads pulse arrival times (at observatory, in UTC) from unit 4. Then
 C  computes equivalent coordinate times at solar system barycenter,
@@ -23,6 +23,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
 	logical first,offset,jdcatc,last,dithmsg,tz,track,search
 	logical memerr
+        character*160 infofile
 	include 'acom.h'
 	include 'bcom.h'
 	include 'dp.h'
@@ -421,6 +422,25 @@ c   write out tracking-corrected pulse number
 	  write(35,fmt='(f14.0)') dn-ntrk
 	endif
 
+c   Write out "INFO" lines to info.tmp.  Write a line if:
+c     -- this file has already been opened, in which case
+c        there must be a line for every TOA, even if it
+c        has zero length
+c     -- this file has not been opened yet, but the current
+c        TOA has a comment;  in this case, open the file
+c        and write out lines of zero length for any previous
+c        TOAs 
+        if (infolen.ne.0 .or. infoout) then
+          if (.not.infoout) then ! need to set up file,
+            open(36,file=infofile)
+            do i = 1, n-1
+              write (36,fmt='()') ! write n-1 blank lines to the file
+            end do        
+            infoout = .true.
+          endif
+          write (36,fmt='(a)') infotxt(1:infolen)
+        endif
+
 
 C  Take a shortcut when called by TZ:
 	if(tz) then
@@ -481,6 +501,11 @@ c End of input file detected
      +     buf,npmsav,ksav,nbuf,memerr)
 
 	endif
+
+        if (infoout) then
+          close (36)
+          infoout = .false.
+        endif
 9990	continue
 	return
 	end

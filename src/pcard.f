@@ -1,4 +1,4 @@
-c      $Id$
+c       $Id$
 	subroutine pcard(card,mode,zawgt,deltat,fut,dphase,sigm,offset,
      +  jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search)
 
@@ -19,14 +19,42 @@ C Don't bother printing it unless this is the first iteration
 	go to 200
 
 14	continue
+C Parse cards with non-numerical parameters here
+
+        if(card(1:4).ne.'INFO') goto 17
+	do i = index(card,' ')+1, 80 ! find start of comment text
+          if (card(i:i).ne.' ') then
+            infotxt(1:80-i+1)=card(i:80)
+            infolen=80-i+1
+            goto 15
+          endif
+        end do
+	infolen = 0
+	goto 16
+ 15	continue
+        do i = infolen, 1, -1   ! find end of comment text
+          if (infotxt(i:i).ne.' ' .and.
+     +         infotxt(i:i).ne.char(0)) then
+            infolen = i
+            goto 16
+          endif
+        end do
+        infolen = 0  ! shoudln't get here...but just in case....
+ 16	continue
+        goto 200
+
+
+C Only cards with numerical parameters starting here
+ 17     continue
+C Parse numerical parameter
 	parm = 0.
-	do 17 i = index(card,' ')+1, 70
+	do 18 i = index(card,' ')+1, 70
 	    if (card(i:i).ne.' ') then
 		read(card(i:i+9),fmt='(f10.0)') parm
-		goto 18
+		goto 19
 	    endif
-17	    continue
-18	continue
+ 18         continue
+ 19         continue
 
 c	if (card(5:5).eq.' ') then
 c	    read(card(6:),fmt='(f11.0)') parm
@@ -181,14 +209,15 @@ C  in effect.  So we'll now turn it off:
 	search=.true.
 	go to 121		!Now set trkmax=parm and track=.true.
 
-120	if(card(1:4).ne.'TRAC') go to 130
+120	if(card(1:4).ne.'TRAC') go to 180
 	write(31,1060) N,CARD(1:6),parm
 121	track=.true.
 	trkmax=parm
 	if(trkmax.eq.0.d0) trkmax=9999.d0
 	goto 200
 
-130	if (card(1:3).ne.'TOA') goto 999
+
+180	if (card(1:3).ne.'TOA') goto 999
 c       don't do anything -- just skip over this card
 	goto 200
 		
