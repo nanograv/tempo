@@ -161,8 +161,13 @@ c	ipointer = mallocxi(resb(1),20*npts,4,resboff)
           date=damoyr(int(fmjd))
           dt2sec=dt2*p0firs
           phase=0.
-          if(a1(1).ne.0.)
-     +         phase=dmod((ct-t0(1))*86400.d0/pb(1)+1000000.d0,1.d0)
+          if(a1(1).ne.0.) then
+            if (nbin.ne.9) then
+               phase=dmod((ct-t0(1))*86400.d0/pb(1)+1000000.d0,1.d0)
+            else
+               phase=dmod((ct-t0asc)*86400.d0/pb(1)+1000000.d0,1.d0)
+            endif
+          endif
 
           if(nprnt.eq.0.or.mod(i,mprt).eq.1) then
             write(adn,1106) dn
