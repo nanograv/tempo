@@ -78,7 +78,7 @@ ARCHIVE_T_0 = 0437.par 0437.tim tempo.lis.original 0437-4715.par.original
 ARCHIVE_T = $(ARCHIVE_T_0:%=test/%)
 
 # files in the 'clock' directory
-ARCHIVE_C_0 = bipmnist.92 leap.sec ut1.dat utccorr.tot time.dat
+ARCHIVE_C_0 = bipmnist.96 leap.sec ut1.dat utccorr.tot time.dat
 ARCHIVE_C = $(ARCHIVE_C_0:%=clock/%)
 
 # include the entire 'tzpar' directory (primarily so it gets created)
