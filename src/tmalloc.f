@@ -6,11 +6,11 @@
 
 	include 'array.h'
 
-        call mallocx(dnpls,nptsmax,8,dnplsoff)
-        call mallocx(ddmch,nptsmax,8,ddmchoff)
-        call mallocx(ksav,nptsmax,4,ksavoff)
-        call mallocx(npmsav,nptsmax,4,npmsavoff)
-        call mallocx(buf,nbuf,8,bufoff)
+        call mallocxd(dnpls,nptsmax,8,dnplsoff)
+        call mallocxd(ddmch,nptsmax,8,ddmchoff)
+        call mallocxi(ksav,nptsmax,4,ksavoff)
+        call mallocxi(npmsav,nptsmax,4,npmsavoff)
+        call mallocxd(buf,nbuf,8,bufoff)
 
         return
         end
@@ -23,11 +23,11 @@ C----------------------------------------------------------------
         implicit none
         include 'array.h'
 
-        call freex(dnpls)
-        call freex(ddmch)
-        call freex(ksav)
-        call freex(npmsav)
-        call freex(buf)
+        call freexd(dnpls)
+        call freexd(ddmch)
+        call freexi(ksav)
+        call freexi(npmsav)
+        call freexd(buf)
 
         return
         end

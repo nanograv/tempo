@@ -20,7 +20,7 @@ FC = f77
 FFLAGS= -O3 
 
 CC = cc
-CFLAGS = 
+CFLAGS = -xO3
 
 
 # source code for tempo itself.  
@@ -47,15 +47,17 @@ OBJS = $(SRC1:.f=.o) $(SRC2:.c=.o)
 
 # source code for "matrix"
 
-MATRIX_DIR = ../contrib/matrix/
-MATRIX_SRC = $(MATRIX_DIR)matrix.f
+MATRIX_SRC = matrix.f
+MATRIX_OBJS = $(MATRIX_SRC:.f=.o)
 
-# source code  for "tdbgen"
+# source code  for "tdbgen"  
+#   SRC_F_1 are unique to tdgben;  SRC_F_2 is shared with Tempo
 
-TDBGEN_SRC_F = tdbgen.f tdb1ns.f bigendian.f
+TDBGEN_SRC_F_1 = tdbgen.f tdb1ns.f
+TDBGEN_SRC_F_2 = bigendian.f
 TDBGEN_SRC_C = cutil.c
-TDBGEN_SRC = $(TDBGEN_SRC_F) $(TDBGEN_SRC_C)	
-TDBGEN_OBJS = $(TDBGEN_SRC_F:.f=.o) $(TDBGEN_SRC_C:.c=.o)
+TDBGEN_SRC_1 = $(TDBGEN_SRC_F_1) 
+TDBGEN_OBJS = $(TDBGEN_SRC_F_1:.f=.o) $(TDBGEN_SRC_F_2:.f=.o) $(TDBGEN_SRC_C:.c=.o)
 
 
 
@@ -67,6 +69,9 @@ tempo:	$(OBJS)
 
 tdbgen: $(TDBGEN_OBJS)
 	$(FC) $(FFLAGS) -o tdbgen $(TDBGEN_OBJS)
+
+matrix: $(MATRIX_OBJS)
+	$(FC) $(FFLAGS) -o matrix $(MATRIX_OBJS)
 
 clean:
 	rm -f *.o *~
@@ -113,12 +118,13 @@ ut1red.o: ut1red.f dim.h
 vmemw.o: vmemw.f dim.h vcom.h
 ztim.o: ztim.f trnsfr.h
 
-
+# dependency of matrix:
+matrix.o: matrix.f dim.h
 
 # file lists for creating an archive of tempo
 
 # files in the 'src' directory
-ARCHIVE_S_0 = $(SRC1) $(SRC2) $(SRC3) $(SRC4) $(MATRIX_SRC) $(TDBGEN_SRC) 
+ARCHIVE_S_0 = $(SRC1) $(SRC2) $(SRC3) $(SRC4) $(MATRIX_SRC) $(TDBGEN_SRC_1) 
 ARCHIVE_S = $(ARCHIVE_S_0:%=src/%)
 
 # files in the 'test' directory
@@ -152,3 +158,5 @@ archive:
 	mv tempo.tar.gz ..; \
 	cd ..; rm -r tmp
 
+archive-src:
+	cd ..; tar -cvf temposrc.tar $(ARCHIVE_S); gzip temposrc.tar

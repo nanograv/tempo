@@ -142,6 +142,9 @@ void usleep_(long int *n)
   usleep(*n);
 }
 
+
+
+
 /* mallocx and freex are variants on code suggested
    by Richard Dodgson (U.Tasmania)  
 
@@ -170,7 +173,14 @@ void usleep_(long int *n)
       call somesub(b)
 
       call freex(ipointer)
+
+   Finally, note that linux complains if the fortran code calling
+   mallocx or freex uses different types of arguments in different calls.  
+   To eliminate annoying warning messages, use mallocxi and freexi
+   for integers and mallocxd and freexd for doubles.
 */
+
+
 
 /* use global storage to retain "original" address of arrays and
    "malloc'd" address of arrays  */
@@ -178,6 +188,8 @@ void usleep_(long int *n)
 #define MAXADDR 10
 int naddr=0;
 void *addr1[MAXADDR], *addr2[MAXADDR];
+
+
 
 void mallocx_(void *a, int *nelem, int *size, int *idx) {
 
@@ -229,4 +241,22 @@ void freex_(void *a) {
 }
 
 
+
+
+void freexi_(int *a) {
+  freex_((void *)a);
+}
+
+void freexd_(double *a) {
+  freex_((void *)a);
+}
+
+
+void mallocxi_(int *a, int *nelem, int *size, int *idx) {
+  mallocx_((void *)a, nelem, size, idx);
+}
+
+void mallocxd_(double *a, int *nelem, int *size, int *idx) {
+  mallocx_((void *)a, nelem, size, idx);
+}
 
