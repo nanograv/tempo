@@ -123,6 +123,8 @@ c      $Id$
 
       eclcoord = .false.
 
+      iboot = 0
+
       return
       end
 
