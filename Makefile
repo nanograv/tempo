@@ -51,5 +51,5 @@ install:
           fi
 
 archive:
-	tar -cvf tpowww.tar Makefile.am $(TPO_PAGES) $(REFDIR)/*.txt
+	tar -cvf tpowww.tar Makefile $(TPO_PAGES) $(REFDIR)/*.txt
 	gzip tpowww.tar
