@@ -1,0 +1,10 @@
+   MJD       EECO-REF    NIST-REF NS      DATE    COMMENTS
+=========    ========    ======== ==    ========  ========
+ 30000.0        0.0         0.0   @                 Barycenter: no correction
+ 60000.0        0.0         0.0   @                 Barycenter: no correction
+INCLUDE time_ao.dat
+INCLUDE time_bonn.dat
+INCLUDE time_gb140.dat
+INCLUDE time_gb853.dat
+INCLUDE time_jb.dat
+INCLUDE time_vla.dat
