@@ -20,6 +20,7 @@ c time order, but entries for different sites can be in any order.
 	      ii=1
 	   endif
 	   if(fmjd.lt.td1)ii=1
+	   if (ii.eq.1) td1=0.d0
 	   
  10	   td2=tdate(ii)
 	   if(jsite(ii).ne.nsite)then
