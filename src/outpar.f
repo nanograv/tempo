@@ -66,14 +66,14 @@ c      $Id$
         else
            write(71,1021)irh,irm,irs,rs
         endif
- 1021   format('RA',i9.2,':',i2.2,':',i2.2,f9.8,a,f20.8)
+ 1021   format('RAJ',i8.2,':',i2.2,':',i2.2,f9.8,a,f20.8)
         
         if(nfit(5).gt.0)then
            write(71,1022)decsgn,idd,idm,ids,ds,fit1,eds
         else
            write(71,1022)decsgn,idd,idm,ids,ds
         endif
- 1022   format('DEC',6x,a,i2.2,':',i2.2,':',i2.2,f8.7,a,f20.7)
+ 1022   format('DECJ',5x,a,i2.2,':',i2.2,':',i2.2,f8.7,a,f20.7)
         
         if(pmra.ne.0.)then
            if(nfit(8).gt.0)then
@@ -601,3 +601,5 @@ c=======================================================================
 
       return
       end
+
+
