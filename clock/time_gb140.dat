@@ -1,5 +1,7 @@
    MJD       EECO-REF    NIST-REF NS      DATE    COMMENTS
 =========    ========    ======== ==    ========  ========
+     0.         0.          0.    a               No corrections for early
+ 49320.5        0.          0.    a                 data.  Bummer!
  49321.50       5.766      -3.121 a f  30-Nov-93  From Green Bank mmmyy.TP files
  49322.50       5.766      -3.126 a f   1-Dec-93     10th clock offset in a given entry
  49369.50       5.766      -4.731 a f  17-Jan-94     5.766 us compensates for cable length
