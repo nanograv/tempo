@@ -77,7 +77,7 @@ c	get doppler shift
 c       ztim will shift freqhz (in Hz) to frqf (in MHz);
 c       these are passed in common blocks defined above
         if (nsite.ge.0) then
-          freqhz = 1.d0
+          freqhz = 1.d9
           call ztim(nrmjd,frmjd,nct,fct)
           freqhz = freqhz * 1.d-6
           z = (frq-freqhz)/freqhz
