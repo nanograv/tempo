@@ -106,8 +106,8 @@ C        SECOND DIFFERENCE INTERPOLATION
  510        format(' *** Warning - Further UT1 messages suppressed')     
          endif
 C     Extrapolate using last value in table
-         if (mjd.le.mjd1) then
-           ut1 = 0.
+         if (nmjd.le.mjd1) then
+           ut1 = iut(1)*units
          else
            ut1=iut(nvtot)*units   
          endif

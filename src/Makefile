@@ -34,7 +34,7 @@ SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
         gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f newbin.f \
         newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
-        setup.f sort.f space_motion.f tasc2t0.f tdbinit.f tdbread.f tempo.f \
+        setup.f sort.f space_motion.f ell12bt.f tdbinit.f tdbread.f tempo.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
         vmemw.f  ztim.f 
 SRC2 = cutil.c
@@ -93,9 +93,10 @@ bt2ell1.o: bt2ell1.f orbit.h dim.h
 clockcor.o: clockcor.f dim.h clocks.h
 covar.o: acom.h dim.h
 cutil.o: cutil.c
-fit.o: fit.f acom.h bcom.h orbit.h dim.h tz.h
+ell12bt.o: ell12bt.f dim.h orbit.h
 ephinit.o: ephinit.f ephcom.h
 ephread.o: ephread.f ephcom.h
+fit.o: fit.f acom.h bcom.h orbit.h dim.h tz.h
 inpar.o: inpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h
 matinv.o: dim.h
 mxprt.o: mxprt.f dim.h
@@ -106,7 +107,6 @@ outpar.o: outpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h t
 pcard.o: pcard.f acom.h dim.h
 resid.o: resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.o: setup.f acom.h dim.h
-tasc2t0.o: tasc2t0.f orbit.h dim.h
 tdbinit.o: tdbinit.f tdbcom.h
 tdbread.o: tdbread.f tdbcom.h
 tempo.o: tempo.f acom.h bcom.h dp.h orbit.h dim.h trnsfr.h tz.h

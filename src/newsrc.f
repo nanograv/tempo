@@ -122,7 +122,7 @@ C  ELL1: convert e,omega -> eps1,eps2 (if necessary) and set nell1
 C  nell1=0 -> fit for eps1dot,eps2dot 
 C  nell1=1 -> fit for omdot,edot 
  
-	if(nbin.eq.1.and.t0asc.ne.0) call tasc2t0()
+	if(nbin.eq.1.and.t0asc.ne.0) call ell12bt()
 
 	if(nbin.eq.9)then
 	   if(t0(1).ne.0.) call bt2ell1()
