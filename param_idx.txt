@@ -1,4 +1,6 @@
 Tempo parameter indexes
+ 
+ Following run from 1 to NPAR1 = 60
 
   1  R0          Pulsar phase
   2  f0          Frequency
@@ -62,7 +64,7 @@ Tempo parameter indexes
  59  f4(8)       Frequency eleventh derivative
  60  f4(9)       Frequency twelfth derivative
  
- Following run from 60 to 60*NGLP*NGLT  (60*5*4)
+ Following run from NPAR1+1=61 to NPAR2 = NPAR1 + NGLT*NGLP = 105 
  
  61  glph(1)     Glitch 1 change in phase (surrogate for glitch epoch)
  62  glf0p(1)    Glitch 1 permanent change in frequency
@@ -84,12 +86,43 @@ Tempo parameter indexes
  78  glf1p(4)    Glitch 4 permanent change in frequency derivative
  79  glf0d1(4)   Glitch 4 exponential term frequency step
  80  gltd1(4)    Glitch 4 exponential term time constant
- 
- Following run from 60+GLP*NGLT+1 to 60+GLP*NGLT+NJUMP
- 
- 81  dct(1)      Jump 1 offset
- 82  dct(2)      Jump 2 offset
        .              .
        .              .
-140  dct(60)     Jump 60 offset
+105  gltd1(9)    Glitch 9 exponential term time constant
  
+ Following run from NPAR2+1 = 106 to NPAR3 = NPAR2 + NJUMP = 225
+ 
+106  dct(1)      Jump 1 offset
+107  dct(2)      Jump 2 offset
+       .              .
+       .              .
+225  dct(120)    Jump 120 offset
+ 
+ Following run from NPAR3+1 = 226 to NPAR4 = NPAR3 + NFBMAX = 245
+
+226  fb(1)       Orbital frequency
+227  fb(2)       Orbital frequency 1st derivative
+       .              .
+       .              .
+245  fb(20)      Orbital frequency 19th derivative
+ 
+ Following run from NPAR4+1 = 246 to NPAR5 = NPAR4 + (NXDOTMAX-1) = 254
+
+246  xdot2(1)    Orbit Proj Semi-major axis 2nd derivative
+247  xdot2(2)    Orbit Proj Semi-major axis 3rd derivative
+       .              .
+       .              .
+254  xdot2(9)    Orbit Proj Semi-major axis 10th derivative
+ 
+ Following run from NPAR5+1 = 255 to NPA = NPAR5 + 2*NFBJMAX = 494
+ 
+255  tfbj(1)     Time of orbital frequency jump 1
+256  fbj(1)      Size of orbital frequency jump 1
+257  tfbj(2)     Time of orbital frequency jump 2
+258  fbj(2)      Size of orbital frequency jump 2
+       .              .
+       .              .
+493  tfbj(120)     Time of orbital frequency jump 120
+494  fbj(120)      Size of orbital frequency jump 120
+
+
