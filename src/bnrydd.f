@@ -17,13 +17,21 @@ c  parameters.
 c  Initial guesses for all parameters must be placed in common/orbit/ by the
 c  calling program.  
 
+c  Variable name 'x' changed to 'xx' to avoid conflict with variable
+c     'x' defined inacom.h
+
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
+        include 'acom.h'
 	real*8 fctn(NPAP1),k,m2
 	parameter (TWOPI=6.28318530717958648d0,SUNMASS=4.925490947d-6)
 	parameter (RAD=360.d0/twopi)
 	include 'dp.h'
 	include 'orbit.h'
+      common /CRDS/ RCB(6),RBE(6),RCE(6),RSE(3),RCA(3),RSA(3),RBA(3),
+     +             REA(3),PSID,EPSD,PC,PS,TSID,PRN(3,3),ATUT,UT1UT,ETAT,
+     +             DTGR,TDIS,BCLT      
+	include 'trnsfr.h'
 
 	an=twopi/pb(1)
 	k=omdot/(RAD*365.25d0*86400.d0*an)
@@ -31,7 +39,7 @@ c  calling program.
 
 	tt0=(ct-t0(1))*86400.d0
 
-	x=a1(1)+xdot*tt0
+	xx=a1(1)+xdot*tt0
 	ecc=e(1)+edot*tt0
 	er =ecc*(1.d0+dr)
 	eth=ecc*(1.d0+dth)
@@ -41,7 +49,7 @@ c  calling program.
 	if(orbits.lt.0.d0) norbits=norbits-1
 	phase=twopi*(orbits-norbits)
 
-c  Compute eccentric anomaly u by iterating Kepler's equation.
+c  Compute eccentric anomaly u by iterating Keplers equation.
 	u=phase+ecc*sin(phase)*(1+ecc*cos(phase))
 10	du=(phase-(u-ecc*sin(u)))/(1.d0-ecc*cos(u))
 	u=u+du
@@ -56,11 +64,32 @@ c  DD equations 17b, 17c, 29, and 46 through 52
 	ae=atan2(sae,cae)
 	if(ae.lt.0.0) ae=ae+twopi
 	ae=twopi*orbits + ae - phase
-	omega=omz(1)/RAD + k*ae
+
+        if (useannorb) then
+          deltai0 = -rca(1)*sin(pra) + rca(2)*cos(pra)
+          deltaj0 = -rca(1)*sin(pdec)*cos(pra) +
+     +            -rca(2)*sin(pdec)*sin(pra) +
+     +             rca(3)*cos(pdec)
+          if (usefixeddist) then  ! use fixed distance in kpc
+            dist = 499.00478364D0/(twopi/fixeddist/1000/3600/360)
+          else                    ! use parallax distance
+            dist = 499.00478364D0/(twopi*px/1000/3600/360)
+          endif
+          Omkopeikin = twopi/4-(PAAscNode/360*twopi)
+          omegax = -(1.d0/si)/dist*
+     +           (deltai0*cos(Omkopeikin)+deltaj0*sin(Omkopeikin))
+          coti = -sqrt(1/si**2-1)  ! hack -- hard-wired for negative cot i
+          xxterm = coti/dist * 
+     +           (deltai0*sin(Omkopeikin)-deltaj0*cos(Omkopeikin))
+          xx = xx*(1.d0+xxterm)
+          omega=omz(1)/RAD + k*ae + omegax
+        else
+          omega=omz(1)/RAD + k*ae 
+        endif
 	sw=sin(omega)
 	cw=cos(omega)
-	alpha=x*sw
-	beta=x*sqrt(1-eth**2)*cw
+	alpha=xx*sw
+	beta=xx*sqrt(1-eth**2)*cw
 	bg=beta+gamma
 	dre=alpha*(cu-er) + bg*su
 	drep=-alpha*su + bg*cu
@@ -79,12 +108,12 @@ c  Now compute d2bar, the orbital time correction in DD equation 42.
 	torb=-d2bar
 
 c  Now we need the partial derivatives. Use DD equations 62a - 62k.
-	csigma=x*(-sw*su+sqr1me2*cw*cu)/onemecu
-	ce=su*csigma-x*sw-ecc*x*cw*su/sqr1me2
+	csigma=xx*(-sw*su+sqr1me2*cw*cu)/onemecu
+	ce=su*csigma-xx*sw-ecc*xx*cw*su/sqr1me2
 	cx=sw*cume+sqr1me2*cw*su
-	comega=x*(cw*cume-sqr1me2*sw*su)
+	comega=xx*(cw*cume-sqr1me2*sw*su)
 	cgamma=su
-	cdth=-ecc*ecc*x*cw*su/sqr1me2
+	cdth=-ecc*ecc*xx*cw*su/sqr1me2
 	cm2=-2*dlogbr
 	csi=2*m2*(sw*cume+sqr1me2*cw*su)/brace
 
