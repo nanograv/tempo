@@ -70,6 +70,7 @@ c     default values of parameters
       xitoa = .false.
       quiet = .false.
       polystdout = .false.
+      jumpbarycenter = .false.
       nparmax = NPARDEF
       nptsmax = NPTSDEF
       parfile = 'def'
@@ -116,6 +117,8 @@ c     default values of parameters
               goto 9999         ! error/help
             else if (s(i:i).eq.'j') then
               jumpout = .true.
+            else if (s(i:i).eq.'J') then
+              jumpbarycenter = .true.
             else if (s(i:i).eq.'l') then
               s2 = getparm(s,i,ii,iarg,narg)
               read (s2,*) nparmax

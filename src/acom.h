@@ -7,6 +7,11 @@ c      $Id$
         logical autotz
         logical useannorb   ! flag to use annual-orbital parallax
         logical usefixeddist! flag to use fixed input distance in ann-orb px
+        logical jumpbarycenter ! flag to apply jumps in barycenter instead of
+                               ! obs frame.  Jumps used to be done in
+                               ! bary frame, but now (10-jul-04) default
+                               ! is obs frame
+
 	integer parunit, nskip, iboot
         integer infolen
         integer ssdmflag
@@ -30,7 +35,7 @@ c      $Id$
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,ssdmflag,
      +    quiet,polystdout,autotz,
-     +    useannorb,usefixeddist
+     +    useannorb,usefixeddist,jumpbarycenter
 
 
 

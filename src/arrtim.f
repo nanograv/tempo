@@ -295,6 +295,10 @@ C  Get clock corrections
 	else
 	   call clockcor(fmjd,nsite,n,deltat,clk2)
 	endif
+	
+        if(.not.jumpbarycenter.and.nxoff.gt.0
+     +           .and.x(NPAR2+nxoff).ne.0.d0)
+     +    clk2=clk2+dct(nxoff)/86400.d0  
 
 	if(dither.ne.0.d0 .and. (.not.sim)) then
 	  clk2=clk2+dither*gasdev(idum)/86400.d6
@@ -418,7 +422,7 @@ c   Back to processing of all TOAs
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd
 	jdcatc=.false.
-	if(nxoff.gt.0.and.x(NPAR2+nxoff).ne.0.d0)
+	if(jumpbarycenter.and.nxoff.gt.0.and.x(NPAR2+nxoff).ne.0.d0)
      +    fct=fct+dct(nxoff)/86400.d0
 	ct=nct+fct
 	cp=p0+p1*(ct-pepoch)*86400.d0
