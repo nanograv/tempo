@@ -17,10 +17,11 @@ options:
   -r          Save the partial-derivatives file, resid1.tmp 
   -v          Print out version number
   -x          Make an export file in ITOA format
-  -z[m]	      Compute polonomial coefficients [m for MJD dates] 
+  -z	      Compute polonomial coefficients for predictions 
 
 For more details, see:
   http://pulsar.princeton.edu/tempo
-  http://wwwatnf.atnf.csiro.au/research/pulsar/psr/timing/tempo
+  http://www.atnf.csiro.au/research/pulsar/timing/tempo
+
 
 
