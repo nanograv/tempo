@@ -117,8 +117,8 @@ C Read pulsar list and nspan, ncoeff, maxha and freq overrides
  312      continue
           if (.not.quiet) then
     	    if(tzof(i).gt.0.)then
-              write(*,'(1x,a,3i8,1x,f12.5)') name(i),nsp(i),nco(i),
-     +           mxha(i),tzof(i)
+              write(*,'(1x,a,2i8,x,f7.2,1x,f12.5)') name(i),nsp(i),
+     +           nco(i), mxha(i),tzof(i)
             else
               write(*,'(1x,a,3i8,2x,''from tzref'')') 
      +           name(i),nsp(i),nco(i)
