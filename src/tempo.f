@@ -143,7 +143,7 @@ C  99	gro.99			newval
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
      +       'MSS','ELL1','BT1P','BT2P'/
 
-	version = 11.003
+	version = 11.004
 
 c  Get command-line arguments
 
