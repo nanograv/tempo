@@ -340,7 +340,9 @@ C  Get clock corrections
      +    fct=fct+dct(nxoff)/86400.d0
 	ct=nct+fct
 	cp=p0+p1*(ct-pepoch)*86400.d0
-	call earth(cp,x(5),x(6),be,era,edc,pra,pdec,erd)
+	if (nsite.ge.0) then
+	  call earth(cp,x(5),x(6),be,era,edc,pra,pdec,erd)
+	endif
 	if(ct.gt.ctmax) ctmax=ct
 	wgt=1.0
 	if(mode.eq.1.and.sigm.eq.0.d0) then
