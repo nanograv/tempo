@@ -4,9 +4,11 @@ c      $Id$
 	implicit real*8 (a-h,o-z)
 	character path*96,obsyfile*80
 	character line*80,item*40
+	real*8 maxhadef
 
 	include 'dim.h'
 	include 'tz.h'
+        include 'acom.h'
 
 	kd=index(tzdir,' ')-1
 	path=tzdir(1:kd)//tzfile
@@ -58,9 +60,11 @@ c Free format, but must be in order
 C Read pulsar list and nspan, ncoeff, maxha and freq overrides
 	read(11,*)
 	read(11,*)
-	write(*,'(''TZ source list for site = '',a/)')tzsite
-	write(*,'(''    PSR        Nspan  Ncoeffs  Maxha    Freq'')')
-	write(*,'(''----------------------------------------------'')')
+        if (.not.quiet) then
+  	  write(*,'(''TZ source list for site = '',a/)')tzsite
+	  write(*,'(''    PSR        Nspan  Ncoeffs  Maxha    Freq'')')
+	  write(*,'(''----------------------------------------------'')')
+        endif
 	
 	do 310 i=1,ntzmax
 
@@ -110,12 +114,15 @@ C Read pulsar list and nspan, ncoeff, maxha and freq overrides
 	     read(item,*)tzof(i)
 	  endif
 
- 312	  if(tzof(i).gt.0.)then
-            write(*,'(1x,a,3i8,1x,f12.5)') name(i),nsp(i),nco(i),
-     +         mxha(i),tzof(i)
-          else
-            write(*,'(1x,a,3i8,2x,''from tzref'')') 
-     +         name(i),nsp(i),nco(i)
+ 312      continue
+          if (.not.quiet) then
+    	    if(tzof(i).gt.0.)then
+              write(*,'(1x,a,3i8,1x,f12.5)') name(i),nsp(i),nco(i),
+     +           mxha(i),tzof(i)
+            else
+              write(*,'(1x,a,3i8,2x,''from tzref'')') 
+     +           name(i),nsp(i),nco(i)
+            endif
           endif
  310	continue
 	print*,' Sorry, ',ntzmax,' pulsar limit'

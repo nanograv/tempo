@@ -6,6 +6,7 @@ C	@(#)atimfake.f	9.19 2/3/94
 	parameter (n=31,pi=3.141592653589793d0)
 	real*8 x(n)
 	logical oldpar
+        real*8 maxha
 
 	include 'dim.h'
 	include 'tz.h'
