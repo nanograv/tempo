@@ -1,29 +1,46 @@
 c      $Id$
-      SUBROUTINE PROPMO(FA,FD,EA,ED,ARA,ADC)
-      IMPLICIT REAL*8 (A-H,O-Z)
-	parameter (TWOPI=6.28318530717958648d0)
+      subroutine propmo(fa,fd,ea,ed,ara,adc)
 
-      FDA=DABS(FD)
-C###      FAC=FA*DCOS(ADC)
-	fac=fa
-      FAA=DABS(FAC)
-      EAC=EA*DCOS(ADC)
-C  PM (PMERR) IS SPACE PROPER MOTION
-C  PHI (PHIERR) IS POSITION ANGLE OF SPACE VECTOR
-C  GALANG IS POSITION ANGLE IN GALACTIC COORDINATE
-      PM=DSQRT(FD**2+FAC**2)
-      PMERR=(FDA*ED+FAA*EAC)/PM
-      PHI=DATAN2(FAC,FD)
-      IF (PHI.LT.0.) PHI=PHI+TWOPI
-      PHIERR=(FAA*ED+FDA*EAC)/PM**2
-      PHI=PHI*180./3.1415926
-      PHIERR=PHIERR*180./3.1415926
-C  CONVERT ANGLE PHI FROM CELESTIAL COORD TO GALACTOC CO.
-      CALL GALCO (ARA,ADC,Q,PHI,GALANG)
-      WRITE(31,10) PM,PMERR,PHI,PHIERR,GALANG
-10    FORMAT(/'Composite proper motion =',f9.4,' +/-',f9.4,' mas/yr'/
-     +  'Position angle:  Celestial:',F8.2,' +/-',F7.2,' deg',
-     +  '  Galactic:',F8.2,' deg')
+      implicit none
 
-      RETURN
-      END
+      real*8 twopi
+      parameter (twopi=6.28318530717958648d0)
+
+      real*8 fa, fd, ea, ed, ara, adc
+
+      real*8 pm, phi, pmerr, phierr
+      real*8 c
+
+      real*8 q, galang
+
+      logical err
+
+
+c  pm  (pmerr) is space proper motion
+c  phi (phierr) is position angle of space vector
+c  galang is position angle in galactic coordinate
+
+      pm=dsqrt(fd**2+fa**2)
+      phi=datan2(fa,fd)
+      if (phi.lt.0.) phi=phi+twopi
+      phi=phi*180./3.1415926
+      call covar(7,8,c,err)
+      if (.not. err) then
+        pmerr = sqrt(fa*fa*ea*ea+fd*fd*ed*ed+2*c*fa*fd)/pm
+        phierr = sqrt(ea*ea*fd*fd + fa*fa*ed*ed + 2*c*fa*fd) / pm**2
+        phierr = phierr *180./3.1415926
+        call galco (ara,adc,q,phi,galang)
+        write(31,10) pm,pmerr,phi,phierr,galang
+ 10     format(/'Composite proper motion =',f9.4,' +/-',f9.4,' mas/yr'/
+     +       'Position angle:  Celestial:',F8.2,' +/-',F7.2,' deg',
+     +       '  Galactic:',F8.2,' deg')
+      else
+        write(31,20) pm, phi, galang
+ 20     format(/'Composite proper motion =',f9.4,' mas/yr'/
+     +       'Position angle:  Celestial:',F8.2,' deg',
+     +       '  Galactic:',F8.2,' deg')
+      endif
+
+
+      return
+      end
