@@ -672,7 +672,7 @@ C***************************************************************************
         else
           write(71,1022)decsgn,idd,idm,ids,ds
         endif
- 1022   format('DEC',6x,a,i2.2,':',i2.2,':',i2.2,f8.7,,a,f20.7)
+ 1022   format('DEC',6x,a,i2.2,':',i2.2,':',i2.2,f8.7,a,f20.7)
 
         if(pmra.ne.0.)then
           if(nfit(8).gt.0)then
@@ -815,7 +815,7 @@ C***************************************************************************
          enddo
       endif
 
-      write(71,'(''EPHEM'',13x,,a)')ephfile(nephem)(1:5)
+      write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',15x,a)')clklbl(nclk)
       write(71,'(''TZRMJD '',f21.13)')tzrmjd
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
