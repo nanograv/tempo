@@ -23,14 +23,14 @@ c      $Id$
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
+     +    PAAscNode,solarn0,fixeddist,
      +    nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,ssdmflag,
      +    quiet,polystdout,autotz,
-     +    useannorb,PAAscNode,solarn0,
-     +    usefixeddist,fixeddist
+     +    useannorb,usefixeddist
 
 
 
