@@ -33,6 +33,9 @@ REF_IDX_PAGE = reference_manual.html
 
 REFDIR = ref_man_sections
 
+EXTRA_DIST = $(TPO_PAGES)
+SUBDIRS = $(REFDIR)
+
 install:
 	if [ ! -d $(INSTALLDIR) ] ; then mkdir $(INSTALLDIR) ; fi
 	if [ ! -d $(REFINSTALLDIR) ] ; then mkdir $(REFINSTALLDIR) ; fi
