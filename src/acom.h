@@ -1,6 +1,6 @@
 c      $Id$
 
-	logical gro,sim,xitoa,oldpar,psrframe,eclcoord
+	logical gro,sim,xitoa,oldpar,psrframe,jumpout,eclcoord
 	logical usestart, usefinish
         logical npulsein, npulseout
 	integer parunit, nskip, iboot
@@ -10,7 +10,7 @@ c      $Id$
      +    era,ec,erd,fmax,tmax,start,finish,amjd1,amjd2,posepoch,posep,
      +    dither,xjdoff(2,NJUMP),dct(NJUMP),pmra,pmdec,pmrv,dt2sec,
      +    t0geo,nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
-     +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,
+     +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,parunit,
      +    nskip,iboot,ndmcalc,
      +    nfcalc

@@ -77,6 +77,7 @@ c      $Id$
       do i=1,NJUMP
          xjdoff(1,i)=0.
          xjdoff(2,i)=0.
+         dct(i)=0.
       enddo
       
       ngl=0
@@ -565,6 +566,11 @@ C  Glitches
          if (ikey.gt.ngl) ngl=ikey
          read(value,*) gltd(ikey)
          read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+5)
+
+C  Jumps
+
+       else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
+         read(value,*) dct(ikey)
 
       else if(key(1:4).eq.'HEAD') then
 c        (Do nothing) (DJN)

@@ -261,8 +261,6 @@ C Output new parameters
 
 C Output binary parameters
 	if(a1(1).ne.0.0) call newbin(nits,jits)
-C Close output .par file
-	close(71)
 
 	if(nxoff.gt.0) then
 	  koff=60+NGLT*NGLP
@@ -287,7 +285,11 @@ C Close output .par file
 65	  dct(i)=dct(i)+freq(koff+i)*p0
 	  write(31,1061) (dct(i),i=ia,ib)
 70	  continue
+	  if (jumpout) call outjumppar
 	endif
+
+C Close output .par file
+	close(71)
 
 	asig=asig*p0*1000.
 	if(nboot.gt.0) write(31,1085) nboot

@@ -277,7 +277,7 @@ C  Get clock corrections
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd
 	jdcatc=.false.
-	if(jits.gt.0.and.nxoff.gt.0.and.x(60+NGLT*NGLP+nxoff).ne.0.d0)
+	if(nxoff.gt.0.and.x(60+NGLT*NGLP+nxoff).ne.0.d0)
      +    fct=fct+dct(nxoff)/86400.d0
 	ct=nct+fct
 	cp=p0+p1*(ct-pepoch)*86400.d0

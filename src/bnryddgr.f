@@ -22,6 +22,7 @@ c  calling program.
 	real*8 fctn(NPAP1),k,m,m1,m2
 	parameter (TWOPI=6.28318530717958648d0,SUNMASS=4.925490947d-6)
 	parameter (RAD=360.d0/twopi)
+	parameter (ARRTOL=1.d-10)
 	include 'orbit.h'
 
 	tt0=(ct-t0(1))*86400.d0
@@ -32,7 +33,11 @@ c  calling program.
 	m2=am2*SUNMASS
 	m1=m-m2
 	arr0=(m/(an**2)) ** (1.d0/3)
-	arr=arr0*(1+(m1*m2/m**2 - 9)*0.5d0*m/arr0) ** (2.d0/3)
+	arr = arr0
+ 5	continue
+	arrold = arr
+	arr=arr0*(1+(m1*m2/m**2 - 9)*0.5d0*m/arr) ** (2.d0/3)
+	if (abs((arr-arrold)/arr).gt.ARRTOL) goto 5
 	arr=arr0*(1+(m1*m2/m**2 - 9)*0.5d0*m/arr) ** (2.d0/3)
 	ar=arr*m2/m
 	si=x/ar
@@ -112,6 +117,7 @@ c  Now we need the partial derivatives. Use DD equations 62a - 62k.
       fact2=(3*m/(2*arr**4)) * (1.d0 + fact1)
       denom=an0*fact1/arr + fact2/an0
       darrdm2=dnum/denom
+
       cgamma=su
       dgmdm2=( (m+2*m2)/arr - (m2*(m+m2)*darrdm2/arr**2) )*ecc/
      1                          (an*m)
@@ -142,7 +148,9 @@ c  Now we need the partial derivatives. Use DD equations 62a - 62k.
       ddrdm=-dr/m -dr*darrdm/arr + 6/arr
       dthdm=-dth/m - dth*darrdm/arr + (7*m-m2)/(arr*m)
       dpbdm=pbdot/(m-m2) - pbdot/(3*m)
-      cm=ck*dkdm+cgamma*dgamdm+cdr*ddrdm+cdth*dthdm+cpbdot*dpbdm
+      dsidm=-(m*x/(arr*m2))*(-1.d0/m+darrdm/arr)
+      cm=ck*dkdm+cgamma*dgamdm+cdr*ddrdm+cdth*dthdm+cpbdot*dpbdm+
+     1     csini*dsidm
 
 	fctn(9)=cx*f0
 	fctn(10)=ce*f0

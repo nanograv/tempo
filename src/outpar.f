@@ -300,7 +300,7 @@ c=======================================================================
             write(71,1013)omz(1)
          endif
       endif
- 1013 format('OM',f24.6,a,f20.6)
+ 1013 format('OM',f24.12,a,f20.12)
 
       if(nbin.eq.9)then
          if(nfit(11).gt.0)then
@@ -503,9 +503,36 @@ c=======================================================================
             else
                write(71,3030)j,omz(j)
             endif
- 3030       format('OM_',i1,f22.6,a,f20.6)
+ 3030       format('OM_',i1,f22.12,a,f20.12)
          enddo
       endif
+
+      return
+      end
+
+c=======================================================================
+
+      subroutine outjumppar
+
+      implicit real*8 (A-H,O-Z)
+
+      parameter (TWOPI=6.28318530717958648d0)
+
+      include 'dim.h'     
+      include 'acom.h'
+      include 'bcom.h'
+      include 'trnsfr.h'
+      include 'dp.h'
+      include 'orbit.h'
+
+      character fit1*3
+
+      fit1='  1'
+
+      do i = 1, nxoff
+        write (71,1090),i,dct(i),fit1,ferr(60+NGLT*NGLP+i)/f0
+ 1090   format('JUMP_',i1,f20.8,a,f20.8)
+      enddo
 
       return
       end

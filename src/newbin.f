@@ -270,6 +270,15 @@ c  Print updated parameters
 10515	   format (' Sin i:              ',f11.7)
 10516	   format (' A0 used (-6):       ',f11.7)
 10517	   format (' A0 if aligned (-6): ',f11.7)
+	   call covar (21,22,c,err)
+	   if (.not.err) then
+	     am1err = sqrt(ferr(21)**2 + ferr(22)**2 - 2*c)
+	     write(31,10518) am-am2,am1err
+	   else
+	     write(31,10519) am-am2
+	   endif
+10518	   format (' M1:                 ',f11.7,' +- ',f11.7)
+10519	   format (' M1:                 ',f11.7)
 	endif
 
 C  Print (calculated) edot and omegadot for ELL1 model, if nell1=0 

@@ -159,6 +159,7 @@ c  Get command-line arguments
 	tz       =.false.
         npulsein =.false.
         npulseout=.false.
+	jumpout  =.false.
 	parfile='def'
 
 	call getenv('TEMPO',path)
@@ -206,6 +207,9 @@ c  Get command-line arguments
                    write(*,'(''Unrecongnised option: '',a)')infile
                    goto 9998
                  endif
+
+	       else if(infile(2:2) .eq. 'j')then
+		 jumpout=.true.
 
 	      else if(infile(2:2).eq.'o')then
 		 oldpar=.true.
@@ -469,8 +473,6 @@ c  Open parameter and residual files
 
 	  jits=0
           open(32,file=resfile2,form='unformatted',status='unknown')
-          do 50 i=1,NJUMP
- 50	    dct(i)=0.d0
 
 	  if(oldpar.or.parunit.eq.50)then
 	     write(*,1050) version,infile(1:nfl)
