@@ -117,7 +117,7 @@ C  nell1=0 -> fit for eps1dot,eps2dot
 C  nell1=1 -> fit for omdot,edot 
  
 	if(nbin.eq.9)then
-	   if(e(1).ne.0. .or. omz(1).ne.0.) call bt2ell1()
+	   if(t0(1).ne.0.) call bt2ell1()
 	   if(nfit(14).ne.0 .or. nfit(25).ne.0
      +        .or. omdot.ne.0. .or. edot .ne.0.) nell1=1
 	endif
@@ -207,9 +207,11 @@ C  Check to make sure selected parameters are consistent with model
 	   nfit(23)=0
 	endif
         
-	if(t0(1).lt.39999.5d0) t0(1)=t0(1)+39999.5d0  !Convert old style to MJD
-	if(t0(2).lt.39999.5d0) t0(2)=t0(2)+39999.5d0
-	if(t0(3).lt.39999.5d0) t0(3)=t0(3)+39999.5d0
+	if(nbin.ne.9)then	!Convert old style to MJD, t0(1)=0 in ELL1
+	   if(t0(1).lt.39999.5d0) t0(1)=t0(1)+39999.5d0
+	   if(t0(2).lt.39999.5d0) t0(2)=t0(2)+39999.5d0
+	   if(t0(3).lt.39999.5d0) t0(3)=t0(3)+39999.5d0
+	endif
 
 	if(OLDPAR)then	       ! in old style files, xomdot and xpbdot
  	   xomdot=0.	       ! replaced omdot and pbdot in value and
@@ -386,13 +388,13 @@ c  Beginning of iteration loop
 	   if(nbin.ne.9)then
 	      write(31,1050) a1(1),e(1),t0(1),pb(1),omz(1)
 	   else
-	      write(31,2050) a1(1),pb(1),t0(1),eps1,eps2
+	      write(31,2050) a1(1),pb(1),t0asc,eps1,eps2
 	   endif
 	endif
  1050	format('A1 sin(i) (s):',f18.9/'E:',f30.9/'T0 (MJD):',f23.9/
      +       'PB (d):',f25.12/'Omega0 (deg):',f19.6)
- 2050	format('A1 sin(i) (s):',f18.9/'Pd (d):',f25.12/'T0 (MJD):',f23.9/
-     +       'eps1:',f27.9/'eps2:',f27.9)
+ 2050	format('A1 sin(i) (s):',f18.9/'Pd (d):',f25.12/
+     +       'T0ASC (MJD):',f20.9/'eps1:',f27.9/'eps2:',f27.9)
 
 	if(omdot.ne.0.)write(31,'(''Omegadot (deg/yr):'',f14.6)')omdot
 	if(xomdot.ne.0.)write(31,'(''XOMDOT (deg/yr):'',f16.3)')xomdot

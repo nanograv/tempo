@@ -40,7 +40,7 @@ c  calling program.
 c  In TEMPO we use the variable e(1) for eps1, omz(1) for eps2,
 c  edot for eps1dot, and omdot for eps2dot 
 
-      tt0=(ct-t0(1))*86400.d0
+      tt0=(ct-t0asc)*86400.d0
       orbits=tt0/pb(1)-0.5d0*(pbdot+xpbdot)*(tt0/pb(1))**2
       norbits=orbits
       if(orbits.lt.0.d0) norbits=norbits-1

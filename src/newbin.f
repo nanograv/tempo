@@ -18,8 +18,8 @@ c --- output of Keplerian parameters ---
 	   write(31,'(//5x,''A1 sin(i)'',8x,''E'',10x,''T0(MJD)'',14x,
      +          ''PB'',9x,''OMEGA''/)')
 	else
-	   write(31,'(//4x,''x (sec)'',6x,''eps1'',10x,''eps2'',12x,
-     +         ''Pb(days)'',11x,''T0(MJD)''/)')
+	   write(31,'(//4x,''A1 sin(i)'',4x,''EPS1'',10x,''EPS2'',12x,
+     +         ''PB(days)'',11x,''T0ASC(MJD)''/)')
 	endif 
 
 	do i=1,1+nplanets
@@ -29,7 +29,7 @@ c --- output of Keplerian parameters ---
 	      write(31,1006) a1(i),e(i),t0(i),pb(i)/8.64d4,omz(i)
  1006	      format(f14.9,f14.10,f16.9,f18.12,f11.6)
 	   else
-	      write(31,2006) a1(i),eps1,eps2,pb(i)/8.64d4,t0(i)
+	      write(31,2006) a1(i),eps1,eps2,pb(i)/8.64d4,t0asc
  2006         format(f14.9,f14.10,f14.10,f18.12,f18.11)
            endif
 	      
@@ -53,21 +53,22 @@ c --- output of Keplerian parameters ---
 
 C  Update parameters
 
-	    a1(i)  = a1(i)  + freq(j+9)
-	    t0(i)  = t0(i)  + dt0
-	    pb(i)  = pb(i)  + freq(j+12)
+	    a1(i) = a1(i)  + freq(j+9)
+	    pb(i) = pb(i)  + freq(j+12)
 	    if(nbin.ne.9)then
 	       e(i)   = e(i)   + freq(j+10)
 	       omz(i) = omz(i) + dom
+	       t0(i)  = t0(i)  + dt0
 	    else
-	       eps1 = eps1 + freq(10)
-	       eps2 = eps2 + freq(13)
+	       eps1  = eps1   + freq(10)
+	       eps2  = eps2   + freq(13)
+	       t0asc = t0asc  + dt0
 	    endif
 
 	    if(nbin.ne.9)then
 	       write(31,1006) a1(i),e(i),t0(i),pb(i)/8.64d4,omz(i)
 	    else
-	       write(31,2006) a1(i),eps1,eps2,pb(i)/8.64d4,t0(i) 
+	       write(31,2006) a1(i),eps1,eps2,pb(i)/8.64d4,t0asc
 
 C  Print (calculated) eccentricity and omega (for ELL1 model) and 
 C  maximum error of ELL1 model. Since ELL1 neglects effects of order
@@ -79,15 +80,22 @@ C  e^2 errors are .le. a1*e^2
 	          eeps2=ferr(13)
 		  eecal=((eps1*eeps1)**2+(eps2*eeps2)**2)**.5/ecal 
 		  write(31,2007) ecal,eecal                        
- 2007		  format(/'eccentricity:',2x,f12.10,' +/- ',f12.10)       
+ 2007		  format(/'Eccentricity, E:              ',
+     +                 f14.12,' +/- ',f14.12)       
 		  omcal=360.d0/TWOPI*DATAN2(eps1,eps2)
 		  if(omcal.lt.0) omcal=omcal+360                      
 		  eomcal=((eps2*eeps1)**2+(eps1*eeps2)**2)**.5/ecal**2
 		  eomcal=360.d0/TWOPI*eomcal                      
 		  write(31,2008) omcal,eomcal                       
- 2008		  format('omega:',9x,f12.8,' +/- ',f12.8,' deg')
-		  write(31,2009) ecal**2*a1(1)*1.d9                 
- 2009		  format(/'[ Difference ELL1-DD < ',f6.1,' ns ]')    
+ 2008		  format('Longitude of periastron, OM:  ',
+     +                 f14.10,' +/- ',f14.10,' deg')
+		  t0peri=t0asc+omcal/360.0*pb(i)/8.64d4
+		  et0peri=eomcal/360.0*pb(i)/8.64d4
+		  write(31,2009) t0peri,et0peri
+ 2009		  format('Time of periastron, T0:       ',
+     +                 f14.8,' +/- ',f14.8,' MJD')
+		  write(31,2010) ecal**2*a1(1)*1.d9  		  
+ 2010		  format(/'[ Difference ELL1-DD < ',f7.1,' ns ]')    
  	       endif
 	    endif                                                        
 
@@ -148,8 +156,8 @@ c --- output of non-Keplerian parameters, I ---
         else if(nbin.eq.9)then
 	   if(nell1.eq.0)then
 	      write(31,10509)
-10509	      format(//'   xdot(-12)   eps1dot(-12)  eps2dot(-12)',
-     +           '    Pbdot(-12)   sin(i)    m2'/)
+10509	      format(//'   XDOT(-12)   EPS1DOT(-12)  EPS2DOT(-12)',
+     +           '    PBDOT(-12)   sin(i)    m2'/)
 	      write(31,10529) xdot*e12,eps1dot*e12,eps2dot*e12,
      +	         pbdot*e12,si,am2
 	      write(31,10529) freq(24)*e12,freq(39)*e12,freq(40)*e12,
@@ -159,8 +167,8 @@ c --- output of non-Keplerian parameters, I ---
 10529	      format(f13.9,f14.9,f14.9,f14.9,f10.6,f10.6)
 	   else
 	      write(31,10559)
-10559	      format(//'    xdot(-12)  omdot(deg/yr)   edot(-12) ',
-     +           '    Pbdot(-12)    sin(i)        m2'/)
+10559	      format(//'    XDOT(-12)  OMDOT(deg/yr)   EDOT(-12) ',
+     +           '    PBDOT(-12)    sin(i)        m2'/)
 	      write(31,10579) xdot*e12,omdot,edot*e12,pbdot*e12,si,am2
 	      write(31,10579) freq(24)*e12,freq(14),freq(25)*e12,
      +           e6*freq(18),freq(20),freq(22)
@@ -254,13 +262,13 @@ C  (i.e. fit for eps1dot and/or eps2dot)
               edotcal=(eps1*eps1dot+eps2*eps2dot)/ecal
               eedotcal=((eps1*ee1dot)**2+(eps2*ee2dot)**2)**.5/ecal
               write(31,20511) edotcal*e12,eedotcal*e12
-20511	      format(/'edot (-12 s-1): ',f12.8,' +/- ',f12.8,)
+20511	      format(/'edot (-12 s-1): ',f12.8,' +/- ',f12.8)
               omdotcal=(eps2*eps1dot-eps1*eps2dot)/ecal**2
               eomdotcal=((eps1*ee2dot)**2+(eps2*ee1dot)**2)**.5/ecal**2
               omdotcal=omdotcal*360.0/TWOPI*365.25*86400
               eomdotcal=eomdotcal*360.0/TWOPI*365.25*86400
               write(31,20512) omdotcal,eomdotcal
-20512	      format('omdot (deg/yr): ',f12.8,' +/- ',f12.8,)
+20512	      format('omdot (deg/yr): ',f12.8,' +/- ',f12.8)
            endif
         endif
 

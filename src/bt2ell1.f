@@ -9,7 +9,7 @@ C  respect to ascending node).
       parameter(TWOPI=6.28318530717958648d0)
       include 'orbit.h'
 
-      t0(1) = t0(1)-omz(1)/360.d0*pb(1)
+      t0asc = t0(1)-omz(1)/360.d0*pb(1)
 
       om    = omz(1)*TWOPI/360.d0
       eps1  = e(1)*DSIN(om)
@@ -18,6 +18,7 @@ C  respect to ascending node).
       an    = TWOPI/pb(1) + omdot*TWOPI/360.d0/365.25d0
       pb(1) = TWOPI/an
 
+      t0(1)=0.
       e(1)=0.
       omz(1)=0.
 

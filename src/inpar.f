@@ -50,6 +50,9 @@ c      $Id$
          pb(i)=0.
          omz(i)=0.
       enddo
+      t0asc=0.
+      eps1=0.
+      eps2=0.
       omdot=0.
       gamma=0.
       pbdot=0.
@@ -67,8 +70,6 @@ c      $Id$
       afac=0.
       om2dot=0.
       x2dot=0.
-      eps1=0.
-      eps2=0.
       eps1dot=0.
       eps2dot=0.
 
@@ -125,6 +126,8 @@ C  The error/comment is ignored by TEMPO
 
       character line*80, key*8, value*24, cfit*1, temp*80
 
+      logical seteps            ! indicate when eps1 and/or eps2
+                                ! had been set
       logical setepsdot         ! indicate when eps1dot and/or eps2dot
                                 ! had been set
       logical set2dot           ! indicate when om2dot and/or x2dot
@@ -132,6 +135,7 @@ C  The error/comment is ignored by TEMPO
       logical setecl, setequ    ! indicate when some ecliptic or
 	                        ! equatorial coordinate has been set
 
+      seteps    = .false.
       setepsdot = .false.
       set2dot   = .false.
       setecl    = .false.
@@ -484,10 +488,16 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
       else if(key(1:4).eq.'EPS1'.and.lk.eq.4)then
          read(value,*)eps1
          read(cfit,*)nfit(10)
+         seteps=.true.
 
       else if(key(1:4).eq.'EPS2'.and.lk.eq.4)then
          read(value,*)eps2
          read(cfit,*)nfit(13)
+         seteps=.true.
+
+      else if(key(1:5).eq.'T0ASC'.and.lk.eq.5)then
+         read(value,*)t0asc
+         read(cfit,*)nfit(11)         
          
       else if(key(1:7).eq.'EPS1DOT'.and.lk.eq.7)then
          read(value,*)eps1dot
@@ -669,6 +679,18 @@ C  Warnings
       endif
 
       if(nbin.eq.9)then
+         if(seteps .and. t0asc.eq.0.)then
+            write(*,'('' WARNING: T0ASC not set, use T0ASC=T0 !!!'')')
+            t0asc=t0(1)
+            t0(1)=0.
+         endif
+
+         if(.not.seteps .and. t0(1).eq.0.)then
+            write(*,'('' WARNING: T0 not set, use T0=T0ASC !!!'')')
+            t0(1)=t0asc
+            t0asc=0.
+         endif
+
          if((nfit(14).ne.0.or.omdot.ne.0.) .and. setepsdot)then
             write(*,'('' WARNING: omdot is not used !!!'')')
             omdot=0.

@@ -269,10 +269,12 @@ c=======================================================================
       endif
  1010 format('E',f25.10,a,f20.10)
 
-      if(nfit(11).gt.0)then
-         write(71,1011)t0(1),fit1,ferr(11)
-      else
-         write(71,1011)t0(1)
+      if(nbin.ne.9)then
+         if(nfit(11).gt.0)then
+            write(71,1011)t0(1),fit1,ferr(11)
+         else
+            write(71,1011)t0(1)
+         endif
       endif
  1011 format('T0',f24.9,a,f20.9)
 
@@ -293,6 +295,13 @@ c=======================================================================
  1013 format('OM',f24.6,a,f20.6)
 
       if(nbin.eq.9)then
+         if(nfit(11).gt.0)then
+            write(71,2011)t0asc,fit1,ferr(11)
+         else
+            write(71,2011)t0asc
+         endif
+ 2011    format('T0ASC',f21.9,a,f20.9)
+
          if(nfit(10).gt.0)then
             write(71,2010)eps1,fit1,ferr(10)
          else
