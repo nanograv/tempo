@@ -294,13 +294,15 @@ c  Open TDB-TDT clock offset file
      +      f10.3//' Enter first and last MJD,',
      +      ' or hit return to run for today: ')
 	  read(*,fmt='(a80)') line
-	  if (index(line,",").eq.0) goto 710
-	  read (line,*,err=710) fmjd1,fmjd2
-	  goto 720
- 710	  continue
+          do j=80,1,-1
+             if(line(j:j).ne.' ')then
+                read (line,*,err=710) fmjd1,fmjd2
+                go to 710
+             endif
+          enddo
 	  fmjd1=0.d0
 	  fmjd2=0.d0
- 720	  continue
+ 710	  continue
 	  if(fmjd1.eq.0.d0) fmjd1=fmjdnow
 	  if(fmjd2.eq.0.d0) fmjd2=fmjd1+0.5d0
 	  date=damoyr(int(fmjd1))
@@ -477,3 +479,5 @@ C         The main loop:
 
  9999	continue
 	end
+
+
