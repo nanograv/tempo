@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 # Makefile.in generated automatically by automake 1.3 from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
@@ -28,42 +27,43 @@
 
 SHELL = /bin/sh
 
-srcdir = .
-top_srcdir = ..
-prefix = /usr/local
-exec_prefix = ${prefix}
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
-bindir = ${exec_prefix}/bin
-sbindir = ${exec_prefix}/sbin
-libexecdir = ${exec_prefix}/libexec
-datadir = ${prefix}/share
-sysconfdir = ${prefix}/etc
-sharedstatedir = ${prefix}/com
-localstatedir = ${prefix}/var
-libdir = ${exec_prefix}/lib
-infodir = ${prefix}/info
-mandir = ${prefix}/man
-includedir = ${prefix}/include
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
 oldincludedir = /usr/include
 
 DISTDIR =
 
-pkgdatadir = $(datadir)/tempo
-pkglibdir = $(libdir)/tempo
-pkgincludedir = $(includedir)/tempo
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
 
 top_builddir = ..
 
-ACLOCAL = aclocal
-AUTOCONF = autoconf
-AUTOMAKE = automake
-AUTOHEADER = autoheader
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
 
-INSTALL = /usr/bin/install -c
-INSTALL_PROGRAM = ${INSTALL}
-INSTALL_DATA = ${INSTALL} -m 644
-INSTALL_SCRIPT = ${INSTALL_PROGRAM}
-transform = s,x,x,
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
 
 NORMAL_INSTALL = :
 PRE_INSTALL = :
@@ -71,10 +71,10 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-LN_S = ln -s
-MAKEINFO = makeinfo
-PACKAGE = tempo
-VERSION = 11.03
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
 
 FC = f77
 FFLAGS= -O3 
@@ -115,10 +115,10 @@ CONFIG_CLEAN_FILES =
 PROGRAMS =  $(bin_PROGRAMS)
 
 
-DEFS =  -DPACKAGE=\"tempo\" -DVERSION=\"11.03\" -DHAVE_GETTIMEOFDAY=1  -I. -I$(srcdir) 
-CPPFLAGS = 
-LDFLAGS = 
-LIBS = 
+DEFS = @DEFS@ -I. -I$(srcdir) 
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
 tempo_OBJECTS =  a1ut1f.o a1utcf.o ang.o arrtim.o atimfake.o bigendian.o \
 blkdbat.o bnrybt.o bnrydd.o bnryddgr.o bnryddt.o bnryeh.o bnryell1.o \
 bnrymss.o bootmc.o bt2ell1.o chebpc.o citem.o clockcor.o covar.o \
@@ -140,7 +140,7 @@ tdbtrans_OBJECTS =  tdbgen.o tdb1ns.o bigendian.o cutil.o
 tdbtrans_LDADD = $(LDADD)
 tdbtrans_DEPENDENCIES = 
 tdbtrans_LDFLAGS = 
-CFLAGS = -g -O2
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
