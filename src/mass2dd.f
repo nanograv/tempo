@@ -4,7 +4,6 @@ c       given system masses m, m2 and keplerian parameters x, ecc, an
 c       calculate values of arr, ar, si, gamma, pbdot under GR
 
 	implicit none
-
 	real*8 TWOPI,SUNMASS,ARRTOL
 	parameter (TWOPI=6.28318530717958648d0,SUNMASS=4.925490947d-6)
 	parameter (ARRTOL=1.d-10)

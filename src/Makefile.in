@@ -92,7 +92,8 @@ tempo_SOURCES = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.
         bnrybt.f bnrydd.f bnryddgr.f bnryddt.f bnryeh.f bnryell1.f bnrymss.f \
         bootmc.f bt2ell1.f chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
         dskrd.f earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f \
-        galco.f gasdev.f inpar.f interp.f lmst.f matinv.f mxprt.f newbin.f \
+        galco.f gasdev.f inpar.f interp.f lmst.f mass2dd.f \
+	matinv.f mxprt.f newbin.f \
         newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
         setup.f sort.f space_motion.f tasc2t0.f tdbinit.f tdbread.f tempo.f \
@@ -124,8 +125,8 @@ tempo_OBJECTS =  a1ut1f.o a1utcf.o ang.o arrtim.o atimfake.o bigendian.o \
 blkdbat.o bnrybt.o bnrydd.o bnryddgr.o bnryddt.o bnryeh.o bnryell1.o \
 bnrymss.o bootmc.o bt2ell1.o chebpc.o citem.o clockcor.o covar.o \
 damoyr.o dot.o dskrd.o earth.o ephinit.o ephread.o equ2ecl.o fit.o \
-fk4tofk5.o galco.o gasdev.o inpar.o interp.o lmst.o matinv.o mxprt.o \
-newbin.o newsrc.o newval.o nutation.o obsite.o outpar.o pcard.o \
+fk4tofk5.o galco.o gasdev.o inpar.o interp.o lmst.o mass2dd.o matinv.o \
+mxprt.o newbin.o newsrc.o newval.o nutation.o obsite.o outpar.o pcard.o \
 pcshft.o pospm_conv.o prcnut.o precession.o propmo.o radian.o ran1.o \
 resid.o setup.o sort.o space_motion.o tasc2t0.o tdbinit.o tdbread.o \
 tempo.o timcalc.o tpohdr.o tzfit.o tzinit.o ut1red.o vmemw.o ztim.o \
