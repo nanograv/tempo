@@ -318,7 +318,7 @@ C  Get clock corrections
           if (fct.lt.0.) then
             fct = fct + 1
             nct = nct - 1
-          elseif (ftc.ge.1.) then
+          elseif (fct.ge.1.) then
             fct = fct - 1
             nct = nct + 1
           endif
