@@ -62,8 +62,10 @@ MATRIX_OBJS = $(MATRIX_SRC:.f=.o)
 
 # source code  for "tdbgen"
 
-TDBGEN_SRC = tdbgen.f tdb1ns.f
-TDBGEN_OBJS = $(TDBGEN_SRC:.f=.o)
+TDBGEN_SRC_F = tdbgen.f tdb1ns.f bigendian.f
+TDBGEN_SRC_C = cutil.c
+TDBGEN_SRC = $(TDBGEN_SRC_F) $(TDBGEN_SRC_C)	
+TDBGEN_OBJS = $(TDBGEN_SRC_F:.f=.o) $(TDBGEN_SRC_C:.c=.o)
 
 
 
