@@ -9,9 +9,9 @@ c      $Id$
 	include 'dim.h'
 	include 'acom.h'
 	include 'tz.h'
+	include 'trnsfr.h'
 
 	common /obsp/ site(3), pos(3), freqhz, bval, sitvel(3)
-	common /trnsfr/ frq,be(3),px,dtdpx,dtdppng,etatdm,nddm
 
 	nspan=nsp(ipsr)
 	ncoeff=nco(ipsr)

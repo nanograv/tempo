@@ -334,7 +334,7 @@ C	  open parameter and residual files
 	  endif
 	  open(50,file=infile,status='unknown')
 	
-	  call tzinit(obsyfile,sitelng,oldpar,num)
+	  call tzinit(obsyfile,sitelng,num)
 	  fmjdnow=40587+time()/86400.d0
 	  date=damoyr(int(fmjdnow))
 

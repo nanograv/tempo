@@ -1,8 +1,7 @@
 c      $Id$
-	subroutine tzinit(obsyfile,sitelng,oldpar,num)
+	subroutine tzinit(obsyfile,sitelng,num)
 
 	implicit real*8 (a-h,o-z)
-	logical oldpar
 	character path*96,obsyfile*80
 	character line*80,item*40
 

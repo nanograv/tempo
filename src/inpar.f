@@ -606,7 +606,7 @@ c       (Do nothing) (DJN)
 
 C***************************************************************************
 
-      subroutine outpar(irh,irm,rsec,ers,decsgn,idd,idm,dsec,eds)
+      subroutine outpar(nits,irh,irm,rsec,ers,decsgn,idd,idm,dsec,eds)
 
       implicit real*8 (A-H,O-Z)
       character decsgn*1, fit1*3

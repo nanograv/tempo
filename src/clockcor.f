@@ -1,5 +1,5 @@
 c      $Id$
-	subroutine clockcor(fmjd,nsite,n,p0,deltat,clk)
+	subroutine clockcor(fmjd,nsite,n,deltat,clk)
 
 	implicit real*8 (a-h,o-z)
 	save
@@ -76,7 +76,7 @@ c time order, but entries for different sites can be in any order.
 		       nmsg=nmsg+1
 		       if(nmsg.le.maxmsg) then
 			  write (*,1020) fmjd,csite(nsite:nsite),
-     +		              td1+tmm,td2+tmm
+     +		              td1,td2
 			  write (31,1020) fmjd,csite(nsite:nsite),td1,td2
  1020			  format('No clock corr for TOA at',f9.2,' site ',
      +		            a1,'; nearest at ',f9.2,' and ',f9.2)

@@ -199,7 +199,7 @@ C  Get clock corrections
 	if(nfmt.eq.2)then      ! No correction for ITOA input
 	   clk2=0.                           
 	else
-	   call clockcor(fmjd,nsite,n,p0,deltat,clk2)
+	   call clockcor(fmjd,nsite,n,deltat,clk2)
 	endif
 
 	if(dither.ne.0.d0 .and. (.not.sim)) then

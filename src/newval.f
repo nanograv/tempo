@@ -239,7 +239,8 @@ C  Compute braking index
 
 C Output new parameters
 	rewind 71
-	call outpar(irh,irm,rsec,ferr(6),decsgn,idd,idm,dsec,ferr(5))
+	call outpar(nits,irh,irm,rsec,ferr(6),decsgn,idd,idm,
+     +       dsec,ferr(5))
 
 C Output binary parameters
 	if(a1(1).ne.0.0) call newbin(nits,jits)
