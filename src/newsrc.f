@@ -2,7 +2,7 @@ c      $Id$
 	subroutine newsrc(nits,jits,nboot)
 
 	implicit real*8 (A-H,O-Z)
-	character DECSGN*1,path*160
+	character DECSGN*1,path*160,str1*80,str2*80
 	character*1 ctmp, dtmp
         parameter (TWOPI=6.28318530717958648d0)
 
@@ -242,12 +242,43 @@ C Read clock corrections
 	if(nclk.gt.0)then
 	   kc=index(clkdir,' ')-1                     ! Obs to NIST
 	   path=clkdir(1:kc)//clkfile(1)
-	   open(2,file=path,status='old',err=900)
-	   read(2,450)		                      !Skip header lines
-	   read(2,450)
- 450	   format(a1)
+	   open(20,file=path,status='old',err=900)
+	   ifile = 20
+ 420	   format(a1)
 	   do 451 i=1,NPT-1	                      !Read the whole file
-	      read(2,1451,end=452) tdate(i),xlor,xjup,ctmp,dtmp
+ 430          continue                             !Jump here to read new card
+	      read(ifile,fmt='(a80)',end=432) str1
+	      goto 435
+ 432            continue             !end of file gets here
+                close(ifile)
+		if (ifile.eq.20) goto 452
+	        ifile = ifile - 1
+	      goto 430
+ 435          continue
+	      call upcase(str1)
+              idx = 1
+	      call citem(str1,80,idx,str2,lstr2)
+              if (str2(1:1).eq.'#') goto 430      !Ignore comment lines
+	      if (str2(1:3).eq.'MJD') goto 430    !Ignore a commonly used...
+	      if (str2(1:5).eq.'=====') goto 430  !   ...header format
+	      if (str2(1:7).eq.'INCLUDE') then
+		ifile = ifile + 1
+		if (ifile.eq.30) then
+		  write (*,*) 'Can''t nest INCLUDE''d time.dat files',
+     +				' more than 10 deep.'
+		  stop
+	 	endif
+	        call citem(str1,80,idx,str2,lstr2)
+		path=clkdir(1:kc)//str2
+	        open(ifile,file=path,status='old',err=900)
+	        read(ifile,420)		              !Skip header lines
+	        read(ifile,420)
+                goto 430
+	      endif
+
+	      read(str1,1451) tdate(i),xlor,xjup,ctmp,dtmp
+		
+	      
  1451	      format(f9.0,2f12.0,1x,a1,1x,a1)
 	      jsite(i) = 99
 	      call upcase(ctmp)
@@ -265,7 +296,6 @@ C Read clock corrections
 	   write(*,'(''WARNING: '',a,'' too long, not all read'')')
      +  	clkfile(1)(1:k)
  452	   ndate=i-1
-	   close(2)
 	endif
 
 	if(nclk.eq.2)then                           ! NIST to UTC
