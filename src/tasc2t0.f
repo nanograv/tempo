@@ -5,6 +5,7 @@ C  (for BT model).
 
       implicit real*8(a-h,o-z)
       parameter(twopi=6.28318530717958648d0)
+      include 'dim.h'
       include 'orbit.h'
 
       om = omz(1)*twopi/360.d0

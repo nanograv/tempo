@@ -7,6 +7,7 @@ C  respect to ascending node).
 
       implicit real*8(a-h,o-z)
       parameter(TWOPI=6.28318530717958648d0)
+      include 'dim.h'
       include 'orbit.h'
 
       t0asc = t0(1)-omz(1)/360.d0*pb(1)

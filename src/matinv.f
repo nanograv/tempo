@@ -1,12 +1,13 @@
 c      $Id$
-	subroutine matinv (array,NPA,norder,det)
+	subroutine matinv (array,norder,det)
 
 C  Inverts a square symmetric matrix array(norder,norder).
 C  Result is returned in the same array, determinant in det.
 
 	implicit real*8 (a-h,o-z)
+	include 'dim.h'
 	dimension array(NPA,NPA)
-	integer ik(100),jk(100)
+	integer ik(NPA),jk(NPA)
 
 	det=1.
 	do 100 k=1,norder

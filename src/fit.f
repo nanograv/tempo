@@ -78,7 +78,7 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
             array(k,j)=array(j,k)
  77       continue
  78     continue
-	call matinv(array,NPA,nterms,det)
+	call matinv(array,nterms,det)
 	if(det.eq.0.d0) stop 'fit 78'
 	do 80 i=1,nterms
           gcor(i)=sqrt(abs(1.d0 - 1.d0/array(i,i)))

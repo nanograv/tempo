@@ -82,10 +82,10 @@ C  Convert PB to days if greater than 3600 (ie min Pb for old style = 1h)
 
 	   if(ngl.ne.0)then
 	     do i=1,ngl
-	       read(50,1035)(nfit(60+(i-1)*NGLP+j),j=1,NGLP),glepoch(i),
+	       read(50,1035)(nfit(NPAR1+(i-1)*NGLP+j),j=1,NGLP),glepoch(i),
      +	         glph(i),glf0(i),glf1(i),glf0d(i),gltd(i)
-	       if((nfit(60+(i-1)*NGLP+4).ne.0.or.
-     +           nfit(60+(i-1)*NGLP+5).ne.0).and.gltd(i).eq.0.d0)then
+	       if((nfit(NPAR1+(i-1)*NGLP+4).ne.0.or.
+     +           nfit(NPAR1+(i-1)*NGLP+5).ne.0).and.gltd(i).eq.0.d0)then
                  write(0,*)' WARNING: Exp term requested but gltd = 0;', 
      +             ' set = 1.0d'
 		   gltd(i)=1.d0
@@ -387,16 +387,18 @@ c  Beginning of iteration loop
      +         'F1 (s-2): ',1p,d22.12,0p,6x,'(P1 (-15):',f22.12,')'/
      +         'F2 (s-3): ',1p,d22.9/'F3 (s-4): ',d22.6,0p)
 
-        do i = 1, 6
+        do i = 1, 5
           if (f4(i).ne.0)write(31,1045)i+3,-i-4,f4(i)
  1045     format ('F',i1,' (s',i2,'): ',1p,d22.9)
         enddo
+	if (f4(6).ne.0)write(31,1046)6+3,-6-4,f4(6)
+ 1046	format ('F',i1,' (s',i3,'): ',1p,d22.9)
         do i = 7, 9
-          if (f4(i).ne.0)write(31,1046)i+3,-i-4,f4(i)
- 1046     format ('F',i2,' (s',i3,'): ',1p,d22.9)
+          if (f4(i).ne.0)write(31,1047)i+3,-i-4,f4(i)
+ 1047     format ('F',i2,' (s',i3,'): ',1p,d21.9)
         enddo
-        write (31,1047) pepoch
- 1047   format ('P Epoch (MJD):',f18.8)
+        write (31,1048) pepoch
+ 1048   format ('P Epoch (MJD):',f18.8)
 
 	if(start.gt.0.)then
 	   write (31,1102) start
@@ -410,9 +412,9 @@ c  Beginning of iteration loop
         write (31,1106) dm
  1106	format ('DM (cm-3 pc):',f19.6)
 	do i = 1, ndmcalc-1
-	   write (31,1048) i, dmcof(i)
+	   write (31,1120) i, dmcof(i)
 	enddo
- 1048	format ('DMCOF',i1,':',1p,d25.9)
+ 1120	format ('DMCOF',i1,':',1p,d25.9)
 
 	if(a1(1).ne.0.d0)then
 	   if(nbin.ne.9)then
@@ -502,14 +504,22 @@ c  Beginning of iteration loop
 	  enddo
 	endif
 
-	if(ngl.ne.0)then
-	  do i=61,60+NGLT*NGLP
+	if(ngl.ne.0)then                        !Glitch parameters
+	  do i=NPAR1+1,NPAR2
 	    if(nfit(i).ne.0)then
 	      k=k+1
 	      mfit(k)=i
 	    endif
 	  enddo
 	endif
+
+	do i=NPAR3+1,NPAR5+2*NFBJMAX		!FB, XDOT, FBJ
+  	  if(nfit(i).ne.0) then
+  	    k=k+1
+	    mfit(k)=i
+          endif
+        enddo
+
 
 	nparam=k
 	write(31,1060) nparam

@@ -4,17 +4,18 @@ c      $Id$
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
 	real*8 a(NPA,NPA),sig(NPA),gcor(NPA)
-	character*4 param(39),paramj
+	character*5 param(39),paramj
 	character*1 agcor,line(NPA)
 	character*11 mark
 	integer*4 mfit(NPAP1)
 	logical eclcoord
 
-	data param/'  f0','  f1','  f2',' Dec','  RA','pmdc','pmra',
-     +    '   x','   e','  T0','  Pb','  Om','Omdt','gama','  DM',
-     +    '  px','Pbdt','PPNg','   s','   M','  m2',' dth','xdot',
-     +    'edot','  x2','  e2',' T02',' Pb2',' Om2','  x3','  e3',
-     +    ' T03',' Pb3',' Om3','PMRV','XOmd','Xpbd','om2d',' x2d'/
+        data param/'   f0','   f1','   f2','  Dec','   RA',' pmdc',
+     +       ' pmra','    x','    e','   T0','   Pb','   Om',' Omdt',
+     +       'gamma','   DM','   px',' Pbdt',' PPNg','    s','    M',
+     +       '   m2','  dth',' xdot',' edot','   x2','   e2','  T02',
+     +       '  Pb2','  Om2','   x3','   e3','  T03','  Pb3','  Om3',
+     +       ' PMRV',' XOmd',' Xpbd',' om2d','  x2d'/
 	data mark/' 123456789*'/
 
 	if(nbin.eq.9)then
@@ -38,9 +39,9 @@ c      $Id$
 5	sig(j)=sqrt(a(j,j))
 
 	write(31,1005) (mod(i,10),i=1,nn)
-1005	format(12x,'G  ',70i1)
+1005	format(12x,'G  ',500i1)
 	write(31,1006) ('-',i=1,nn)
-1006	format(12x,'-  ',70a1)
+1006	format(12x,'-  ',500a1)
 
 	do 20 j=1,nn
 	do 10 k=1,nn
@@ -76,26 +77,40 @@ c      $Id$
 	  paramj=param(jj-1)			!One of the listed params
 	else if(jj.le.50) then
 	  write(paramj,1017) jj-40		!DM polynomial coeffs
-1017	  format(' DM',z1)
-	else if(jj.le.60) then
+1017	  format('  DM',z1)
+	else if(jj.le.NPAR1) then
 	  write(paramj,1018) jj-50+2		!Freq derivatives
-1018	  format('  f',z1)
-	else if(jj.lt.60+NGLT*NGLP)then		!Gltiches
-	  jj1=jj-61
+ 1018     format('  f',i2.2)
+	else if(jj.lt.NPAR2)then		!Gltiches
+	  jj1=jj-(NPAR1+1)
 	  jj2=mod(jj1,NGLP)+1
 	  jj1=jj1/NGLP+1
 	  write(paramj,1030)jj1,jj2
-1030	  format('GL',2i1)
-	else
-	  write(paramj,1019) jj-(60+NGLT*NGLP)		!Offsets
-1019	  format(' O',i2)
+1030	  format(' GL',2i1)
+	elseif (jj.lt.NPAR3)then
+	  write(paramj,1019) jj-(NPAR2)		!Offsets
+1019	  format(' O',i3.3)
 	  if(paramj(2:3).eq.'O ') paramj(2:3)=' O'
+	elseif (jj.lt.NPAR4) then
+	  write(paramj,1050) jj-NPAR3-1
+ 1050	  format(' FB',i2.2)
+	elseif (jj.lt.NPAR5) then
+	  write(paramj,1060) jj-NPAR4+2
+ 1060	  format(' XD',i2.2)
+	else
+	  if (2*int(jj/2).ne.jj) then
+	    write(paramj,1070) (jj-NPAR4+1)/2
+ 1070	    format('FJ',i3.3)
+	  else
+	    write(paramj,1080) (jj-NPAR4)/2
+ 1080	    format('TJ',i3.3)
+	  endif
 	endif
 
 	write(72) nn,j,paramj,gcor(j),sig(j),
      +    (a(j,k)/(sig(j)*sig(k)),k=1,nn)
 20	write(31,1020) float(j),paramj,agcor,(line(i),i=1,nn)
-1020	format(f4.0,2x,a4,'| ',a1,2x,70a1)
+1020	format(f4.0,2x,a5,'| ',a1,2x,500a1)
 
 	write(31,1006) ('-',i=1,nn)
 	write(31,1005) (mod(i,10),i=1,nn)

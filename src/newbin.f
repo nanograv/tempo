@@ -348,9 +348,72 @@ c  print updated parameters
 	   write(31,10621) xdot*e12,edot*e12  
 	endif
 
-c ------
+c ------ Output of non-Keplerian parameters, III:  FB(n)
 
  100	continue
+
+	if (nbin.eq.10)  then
+          do i = 1, NFBMAX, 3
+	    ii = min(i+2,NFBMAX)
+	    iii = min(i+1,NFBMAX)
+            if (fb(i).ne.0 .or. freq(NPAR3+i).ne.0 .or.
+     +          fb(ii).ne.0 .or. freq(NPAR3+ii).ne.0 .or.
+     +          fb(iii).ne.0 .or. freq(NPAR3+iii).ne.0) then
+  	      write (31,10710) (j-1,j=i,ii)
+	      write (31,10711) (fb(j),j=i,ii)
+	      write (31,10711) (freq(NPAR3+j),j=i,ii)
+	      write (31,10711) (ferr(NPAR3+j),j=i,ii)
+              do j = i, ii
+                fb(j) = fb(j)+freq(NPAR3+j)
+              enddo
+	      write (31,10711) (fb(j),j=i,ii)
+            endif
+          end do
+
+10710	  format (/24x,'fb',z1,14x,'fb',z1,15x,'fb',z1)
+10711     format (5x,1p,3d22.12)
+	   
+          do i = 2, NXDOTMAX, 3
+	    ii = min(i+2,NXDOTMAX)
+	    iii = min(i+1,NXDOTMAX)
+            if (xdot2(i).ne.0 .or. freq(NPAR4+(i-1)).ne.0 .or.
+     +          xdot2(ii).ne.0 .or. freq(NPAR4+(ii-1)).ne.0 .or.
+     +          xdot2(iii).ne.0 .or. freq(NPAR4+(iii-1)).ne.0) then
+	      write (31,10720) i, i+1, i+2
+	      write (31,10721) (xdot2(j),j=i,ii)
+	      write (31,10721) (freq(NPAR4+(j-1)),j=i,ii)
+	      write (31,10721) (ferr(NPAR4+(j-1)),j=i,ii)
+              do j = i, ii
+                xdot2(j) = xdot2(j)+freq(NPAR4+(j-1))
+              enddo
+	      write (31,10721) (xdot2(j),j=i,ii)
+            endif
+          end do
+10720	  format (/23x,'xdot',z1,13x,'xdot',z1,13x,'xdot',z1)
+10721     format (15x,3d18.8)
+
+	  do i = 1, nfbj
+	    if (i.lt.10) then
+	      write (31,10730) i, i
+            else if (i.lt.100) then
+	      write (31,10731) i, i
+            else
+	      write (31,10732) i, i
+            endif
+	    write (31,10735) tfbj(i), fbj(i)
+	    write (31,10735) freq(NPAR5+2*i-1),freq(NPAR5+2*i)
+	    write (31,10735) ferr(NPAR5+2*i-1),ferr(NPAR5+2*i)
+	    tfbj(i) = tfbj(i) + freq(NPAR5+2*i-1)
+	    fbj(i) = fbj(i) + freq(NPAR5+2*i)
+	    write (31,10735) tfbj(i), fbj(i)
+	  enddo
+10730	  format (/23x,'tfbj_',i1,12x,'fbj_',i1)
+10731	  format (/23x,'tfbj_',i2,11x,'fbj_',i2)
+10732	  format (/23x,'tfbj_',i3,10x,'fbj_',i3)
+10735     format (15x,f18.8,e18.8)
+
+
+        endif
 
 	if(gro.and.(nits.eq.0.or.jits.eq.nits)) then
 	   open(34,file='gro.2',status='unknown')

@@ -94,6 +94,9 @@ C                    coords, tdb argument to JPL ephemeris. (RNM)
 C  11.001 20-JAN-98  Ecliptic coordinates, Year 2000 fixes (DJN)
 C  11.002 11-MAR-98  Separate pos'n epoch; add START/FINISH (RNM)
 C                    Added "ell1" binary model (NW)
+C  11.005 24-MAR-00  Add BNRYBTX model; clean up parameter indexing;
+C                    add "-c" option to iterate even when seem converted;
+C                    other fixes (DJN)
 
 C Logical units			Opened by
 C----------------------------------------------------------------
@@ -133,7 +136,7 @@ C  99	gro.99			newval
 	include 'trnsfr.h'
 	include 'tz.h'
 
-	logical tz,lw
+	logical tz,lw, nostop
         character*80 infile,ut1file,resfile1,obsyfile,
      +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
 	character*160 npulsefile
@@ -144,9 +147,9 @@ C  99	gro.99			newval
 	data resfile1/'resid1.tmp'/,resfile2/'resid2.tmp'/
 	data listfile/'tempo.lis'/,lw/.true./
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
-     +       'MSS','ELL1','BT1P','BT2P'/
+     +       'MSS','ELL1','BTX','BT1P','BT2P'/
 
-	version = 11.004
+	version = 11.005
 
 c  Get command-line arguments
 
@@ -160,6 +163,7 @@ c  Get command-line arguments
         npulsein =.false.
         npulseout=.false.
 	jumpout  =.false.
+	nostop   =.false.  ! if true, don't stop even if apparently converged
 	parfile='def'
 
 	call getenv('TEMPO',path)
@@ -176,7 +180,10 @@ c  Get command-line arguments
 
 	   if(infile(1:1).eq.'-')then
 
-	      if(infile(2:2).eq.'d')then
+	      if(infile(2:2).eq.'c')then
+                 nostop = .true.
+
+	      else if(infile(2:2).eq.'d')then
 		 iarg=iarg+1
 		 call getarg(iarg,path)
 		 lpth=index(path,' ')-1
@@ -497,7 +504,9 @@ c  Open parameter and residual files
 	  if(nboot.gt.0)
      + 	     call bootmc(n,mode,nz,nboot,nparam,mfit,freq,ferr)
           call newval(chisqr,n-nparam,rms0,rms1,nits,jits,wmax,nboot)
-	  if(abs(rms1 - rms0).le.max(1.d-4*abs(rms0),0.1d0)) go to 9999
+	  if(abs(rms1 - rms0).le.max(1.d-4*abs(rms0),0.1d0).and.
+     +		.not.nostop) go to 9999
+
           if(jits.lt.nits .or. nits.eq.9) go to 60
 
 	endif

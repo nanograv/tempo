@@ -37,7 +37,7 @@ c      $Id$
       enddo
       px=0.
       dm=0.
-      do i=1,10
+      do i=1,9
          dmcof(i)=0.
       enddo
       start=0.
@@ -90,6 +90,12 @@ c      $Id$
          glepoch(i)=0.
       enddo
 
+      nfbj = 0
+      do i = 1, NFBJMAX
+        tfbj(i) = 0.
+        fbj(i) = 0.
+      enddo
+
       ndmcalc=0
       nfcalc=0
 
@@ -130,7 +136,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*8, value*24, cfit*1, temp*80
+      character line*80, key*8, value*80, cfit*1, temp*80
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -140,6 +146,8 @@ C  The error/comment is ignored by TEMPO
                                 ! had been set
       logical setecl, setequ    ! indicate when some ecliptic or
 	                        ! equatorial coordinate has been set
+      logical setpb, setfb      ! indicate when orbital period/pdot or
+                                ! orbital frequency/fdot has been set
 
 
       gain = 1.d0
@@ -149,6 +157,8 @@ C  The error/comment is ignored by TEMPO
       set2dot   = .false.
       setecl    = .false.
       setequ    = .false.
+      setpb     = .false.
+      setfb     = .false.
 
       ll=80
 
@@ -249,7 +259,7 @@ C  Period/Frequency parameters
          read(value,*)f0
          read(cfit,*)nfit(2)
 
-      else if(key(1:2).eq.'F1')then
+      else if(key(1:2).eq.'F1'.and.lk.eq.2)then
          read(value,*)f1
          if(cfit.ge.'A')then
             call upcase(cfit)
@@ -277,10 +287,9 @@ C  Period/Frequency parameters
         if (ifit.gt.0) nfit(3)=max(nfit(3),jj)
         nfcalc = max(nfcalc,jj)
 
-      else if(key(1:1).eq.'F' .and.
-     +           key(2:2).ge.'A' .and. key(2:2).le.'C') then
-        jj = ichar(key(2:2))-55  ! A=10, B=11, C=12
-        read (value,*)f4(jj-3)
+      else if(key(1:2).eq.'F1' .and. lk.eq.3) then
+        read(key(2:3),*)jj
+        read(value,*)f4(jj-3)
         read(cfit,*)ifit
         if (ifit.gt.0) nfit(3)=max(nfit(3),jj)
         nfcalc = max(nfcalc,jj)
@@ -394,6 +403,7 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
       else if(key(1:4).eq.'PB_1'.or.(key(1:2).eq.'PB'.and.lk.eq.2))then
          read(value,*)pb(1)
          read(cfit,*)nfit(12)
+         setpb = .true.
 
       else if(key(1:4).eq.'OM_1'.or.(key(1:2).eq.'OM'.and.lk.eq.2))then
          read(value,*)omz(1)
@@ -450,6 +460,32 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
       else if(key(1:5).eq.'PBDOT')then
          read(value,*)pbdot
          read(cfit,*)nfit(18)
+         setpb = .true.
+
+	! note: order is important: 'FBJ' should be before 'FB'
+      else if(key(1:3).eq.'FBJ'.and.ikey.ge.1.and.ikey.le.NFBJMAX)then
+         if (ikey.gt.nfbj) nfbj=ikey
+         read(value,*) fbj(ikey)
+         read(cfit,*)nfit(NPAR5+2*ikey)
+            
+	! note: order is important: 'FBJ' should be before 'FB'
+      else if(key(1:2).eq.'FB')then
+         if (lk.eq.2) then   ! "FB" -- treat it as "FB0"
+           setfb = .true.
+           read(value,*)fb(1)
+           read(cfit,*)nfit(NPAR3+1)
+         else if (key(3:3).ge.'0'.and.key(3:3).le.'9') then
+           setfb = .true.
+           read(key(3:lk),*)jj
+           if (jj.eq.0.or.jj.eq.1) setfb = .true.
+           read(value,*)fb(jj+1)
+           read(cfit,*)nfit(NPAR3+jj+1)
+         endif
+ 
+      else if(key(1:4).eq.'TFBJ'.and.ikey.ge.1.and.ikey.le.NFBJMAX)then
+         if (ikey.gt.nfbj) nfbj=ikey
+         read(value,*) tfbj(ikey)
+         read(cfit,*)nfit(NPAR5+2*ikey-1)
 
       else if(key(1:5).eq.'PPNGA')then
          read(value,*)nfit(19)
@@ -471,8 +507,14 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
          read(cfit,*)nfit(23)
 
       else if(key(1:4).eq.'XDOT')then
-         read(value,*)xdot
-         read(cfit,*)nfit(24)
+         if (lk.eq.4 .or. key(5:5).eq.'1') then
+           read(value,*)xdot
+           read(cfit,*)nfit(24)
+         else if (key(5:5).ge.'2'.and.key(5:5).le.'9') then
+           read(key(5:5),*)jj
+           read(value,*)xdot2(jj)
+           read(cfit,*)nfit(NPAR4+jj-1)
+         endif
 
       else if(key(1:4).eq.'EDOT')then
          read(value,*)edot
@@ -520,6 +562,7 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
          read(cfit,*)nfit(40)
          setepsdot=.true.
 
+
 C  Fixed binary parameters
 
       else if(key(1:2).eq.'DR')then
@@ -542,6 +585,7 @@ C  Fixed binary parameters
 
 C  Glitches
 
+
       else if(key(1:4).eq.'GLEP'.and.ikey.ge.1.and.ikey.le.NGLT) then
         if (ikey.gt.ngl) ngl=ikey
         read(value,*) glepoch(ikey)
@@ -549,28 +593,28 @@ C  Glitches
       else if(key(1:4).eq.'GLPH'.and.ikey.ge.1.and.ikey.le.NGLT) then
         if (ikey.gt.ngl) ngl=ikey
         read(value,*) glph(ikey)
-        read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+1)
+        read(cfit,*) nfit(NPAR1+NGLP*(ikey-1)+1)
 
        else if(key(1:4).eq.'GLF1'.and.ikey.ge.1.and.ikey.le.NGLT) then
          if (ikey.gt.ngl) ngl=ikey
          read(value,*) glf1(ikey)
-         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+3)
+         read(cfit,*) nfit(NPAR1+NGLP*(ikey-1)+3)
 
        else if(key(1:5).eq.'GLF0D'.and.ikey.ge.1.and.ikey.le.NGLT) then
          if (ikey.gt.ngl) ngl=ikey
          read(value,*) glf0d(ikey)
-         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+4)
+         read(cfit,*) nfit(NPAR1+NGLP*(ikey-1)+4)
 
        else if(key(1:4).eq.'GLF0'.and.ikey.ge.1.and.ikey.le.NGLT) then
          if (ikey.gt.ngl) ngl=ikey
          read(value,*) glf0(ikey)
-         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+2)
+         read(cfit,*) nfit(NPAR1+NGLP*(ikey-1)+2)
 
 
        else if(key(1:4).eq.'GLTD'.and.ikey.ge.1.and.ikey.le.NGLT) then
          if (ikey.gt.ngl) ngl=ikey
          read(value,*) gltd(ikey)
-         read(cfit,*) nfit(NGL0+NGLP*(ikey-1)+5)
+         read(cfit,*) nfit(NPAR1+NGLP*(ikey-1)+5)
 
        else if(key(1:4).eq.'GAIN') then
          read (value,*) gain
@@ -612,6 +656,18 @@ C  Warnings
 	    eclcoord=.true.
 	 endif
       endif
+
+      if(setfb)then
+	if(setpb)then
+	    write (*,'(''ERROR: cannot mix orbital period/pbdot and'',
+     +	         '' orbital frequency/fbdot'')')
+	    stop
+        else
+          pbdot = -fb(2)/fb(1)*fb(1)*1.d15
+          pb(1) = (1.d0/fb(1))/86400.d0
+        endif
+      endif
+
 
       if(nbin.eq.0.and.(nfit(9).ne.0.or.nfit(10).ne.0.or.nfit(11).ne.0
      +     .or.nfit(12).ne.0.or.nfit(13).ne.0.or.a1(1).ne.0.))then

@@ -17,7 +17,7 @@
 # compilers and compiler flags
 
 FC = f77
-FFLAGS= -O3 
+FFLAGS= -O3 -C
 
 CC = cc
 CCFLAGS = 
@@ -27,7 +27,8 @@ CCFLAGS =
 # (note: variables SRC3 and SRC4 are used for making archives)
 
 SRC1 = a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f blkdbat.f \
-        bnrybt.f bnrydd.f bnryddgr.f bnryddt.f bnryeh.f bnryell1.f bnrymss.f \
+        bnrybt.f bnrybtx.f bnrydd.f bnryddgr.f bnryddt.f bnryeh.f bnryell1.f \
+        bnrymss.f \
         bootmc.f bt2ell1.f chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
         dskrd.f earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f \
         galco.f gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f \
@@ -75,6 +76,7 @@ clean:
 arrtim.o: arrtim.f acom.h orbit.h dp.h bcom.h trnsfr.h clocks.h dim.h glitch.h tz.h
 atimfake.o: atimfake.f dim.h tz.h
 bnrybt.o: bnrybt.f dp.h orbit.h dim.h
+bnrybtx.o: bnrybt.f dp.h orbit.h dim.h
 bnrydd.o: bnrydd.f dp.h orbit.h dim.h
 bnryddgr.o: bnryddgr.f orbit.h dim.h
 bnryddt.o: bnryddt.f orbit.h dim.h
@@ -82,14 +84,16 @@ bnryeh.o: bnryeh.f dp.h orbit.h dim.h
 bnryell1.o: bnryell1.f dp.h orbit.h dim.h
 bnrymss.o: bnrymss.f dp.h orbit.h dim.h
 bootmc.o: bootmc.f dim.h
-bt2ell1.o: bt2ell1.f orbit.h
+bt2ell1.o: bt2ell1.f orbit.h dim.h
 clockcor.o: clockcor.f dim.h clocks.h
+covar.o: acom.h dim.h
 cutil.o: cutil.c
 fit.o: fit.f acom.h bcom.h orbit.h dim.h tz.h
 ephinit.o: ephinit.f ephcom.h
 ephread.o: ephread.f ephcom.h
-mxprt.o: mxprt.f dim.h
 inpar.o: inpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h
+matinv.o: dim.h
+mxprt.o: mxprt.f dim.h
 newbin.o: newbin.f acom.h orbit.h dim.h
 newsrc.o: newsrc.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h
 newval.o: newval.f acom.h bcom.h dp.h trnsfr.h orbit.h dim.h glitch.h
@@ -97,14 +101,14 @@ outpar.o: outpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h glitch.h t
 pcard.o: pcard.f acom.h dim.h
 resid.o: resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.o: setup.f acom.h dim.h
-tasc2t0.o: tasc2t0.f orbit.h
+tasc2t0.o: tasc2t0.f orbit.h dim.h
 tdbinit.o: tdbinit.f tdbcom.h
 tdbread.o: tdbread.f tdbcom.h
-tempo.o: tempo.f acom.h bcom.h dp.h orbit.h dim.h tz.h
+tempo.o: tempo.f acom.h bcom.h dp.h orbit.h dim.h trnsfr.h tz.h
 timcalc.o: timcalc.f acom.h dim.h trnsfr.h
-tzinit.o: tzinit.f dim.h tz.h
 tpohdr.o: tpohdr.f dim.h tz.h
-tzfit.o: tzfit.f dim.h acom.h tz.h
+tzfit.o: tzfit.f dim.h acom.h trnsfr.h tz.h
+tzinit.o: tzinit.f dim.h tz.h
 ut1red.o: ut1red.f dim.h 
 vmemw.o: vmemw.f dim.h vcom.h
 ztim.o: ztim.f trnsfr.h

@@ -281,7 +281,7 @@ C  Get clock corrections
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd
 	jdcatc=.false.
-	if(nxoff.gt.0.and.x(60+NGLT*NGLP+nxoff).ne.0.d0)
+	if(nxoff.gt.0.and.x(NPAR2+nxoff).ne.0.d0)
      +    fct=fct+dct(nxoff)/86400.d0
 	ct=nct+fct
 	cp=p0+p1*(ct-pepoch)*86400.d0
@@ -364,6 +364,12 @@ C  Write itoa file correctly, including observatory code.  (VMK, June94)
 	dt00=dt
 	ct00=ct
 
+c   write out tracking-corrected pulse number
+	if (npulseout.and.jits.eq.0) then
+	  write(35,fmt='(f14.0)') dn-ntrk
+	endif
+
+
 C  Take a shortcut when called by TZ:
 	if(tz) then
 	  if(n.eq.2) ct2=ct
@@ -382,6 +388,7 @@ C  Take a shortcut when called by TZ:
 	x(19)=f0*dtdppng
 	do 90 j=1,nparam-1
 90	fctn(j)=x(mfit(j+1))
+c	print *,"arrtim: Z1",fctn(19)
 	do 92 j=nparam,NPAP1
 92	fctn(j)=0.
 	do 93 j=1,nparam-1

@@ -152,13 +152,22 @@ c      $Id$
       do i = 1, 9
          if (f4(i).ne.0)then
             if(nfit(51+i).gt.0)then
-               write(71,1035)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
+	       if (i+3.lt.10) then
+                 write(71,1035)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
+               else
+                 write(71,1036)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
+               endif	
             else
-               write(71,1035)i+3,f4(i)
+	       if (i+3.lt.10) then
+                 write(71,1035)i+3,f4(i)
+               else
+                 write(71,1036)i+3,f4(i)
+               endif
             endif
          endif
       enddo
- 1035 format('F',z1,1p,d24.12,a,d20.12)
+ 1035 format('F',i1,1p,d24.12,a,d20.12)
+ 1036 format('F',i2,1p,d23.12,a,d20.12)
 
       write(71,'(''PEPOCH'',f20.6)')pepoch
       if (usestart) then
@@ -192,7 +201,7 @@ c      $Id$
 
       if(ngl.gt.0)then
          do i=1,ngl
-            ii=60+(i-1)*NGLP
+            ii=NPAR1+(i-1)*NGLP
             write(71,'(''GLEP_'',i1,f18.6)')i,glepoch(i)
             if(nfit(ii+1).gt.0)then
                write(71,1061)i,glph(i),fit1,ferr(ii+1)
@@ -286,10 +295,12 @@ c=======================================================================
       endif
  1011 format('T0',f24.9,a,f20.9)
 
-      if(nfit(12).gt.0)then
-         write(71,1012)pb(1),fit1,ferr(12)
-      else
-         write(71,1012)pb(1)
+      if (nbin.ne.10) then
+        if(nfit(12).gt.0)then
+          write(71,1012)pb(1),fit1,ferr(12)
+        else
+          write(71,1012)pb(1)
+        endif
       endif
  1012 format('PB',f24.12,a,f20.12)
 
@@ -361,6 +372,36 @@ c=======================================================================
       endif
  1018 format('PBDOT',f21.7,a,f20.7)
 
+      do i = 1, NFBMAX
+        if (fb(i).ne.0.or.ferr(NPAR3+i).ne.0) then
+         if(nfit(NPAR3+i).gt.0)then
+            write(71,1019)i-1,fb(i),fit1,ferr(NPAR3+i)
+         else
+            write(71,1019)i-1,fb(i)
+         endif
+        endif
+      enddo
+ 1019 format('FB',z1,1p,d23.12,a,d20.12)
+
+      do i = 1, nfbj
+        if (tfbj(i).ne.0.or.ferr(NPAR5+2*i-1).ne.0) then
+          if (ferr(NPAR5+2*i-1).gt.0)then
+            write (71,1045)i,tfbj(i),fit1,ferr(NPAR5+2*i-1)
+          else
+            write (71,1045)i,tfbj(i)
+          endif
+        endif
+        if (fbj(i).ne.0.or.ferr(NPAR5+2*i).ne.0) then
+          if (ferr(NPAR5+2*i).gt.0)then
+            write (71,1046)i,fbj(i),fit1,ferr(NPAR5+2*i)
+          else
+            write (71,1046)i,fbj(i)
+          endif
+        endif
+      enddo
+ 1045 format('TFBJ_',z1,f20.6,a,f20.6)
+ 1046 format('FBJ_',z1,1p,d21.12,a,d20.12)
+      
       if(xpbdot.ne.0.)then
          if(nfit(38).gt.0)then
             write(71,1038)xpbdot*1.d12,fit1,ferr(38)*1.d6
@@ -405,6 +446,7 @@ c=======================================================================
          endif
       endif
  1023 format('DTHETA',f20.6,a,f20.6)
+
       if(xdot.ne.0.)then
          if(nfit(24).gt.0)then
             write(71,1024)xdot*1.d12,fit1,ferr(24)*1.d12
@@ -413,15 +455,26 @@ c=======================================================================
          endif
       endif
  1024 format('XDOT',f22.6,a,f20.6)
+
+      do i = 2, NXDOTMAX
+        if (xdot2(i).ne.0.or.ferr(NPAR4+(i-1)).ne.0) then
+          if(nfit(NPAR4+(i-1)).gt.0)then
+            write(71,1025)i,xdot2(i),fit1,ferr(NPAR4+(i-1))
+          else
+            write(71,1025)i,xdot2(i)
+          endif
+        endif
+      enddo
+ 1025 format('XDOT',z1,1p,d21.12,a,d20.12)
       
       if(edot.ne.0.)then
          if(nfit(25).gt.0)then
-            write(71,1025)edot*1.d12,fit1,ferr(25)*1.d12
+            write(71,1030)edot*1.d12,fit1,ferr(25)*1.d12
          else
-            write(71,1025)edot*1.d12
+            write(71,1030)edot*1.d12
          endif
       endif
- 1025 format('EDOT',f22.6,a,f20.6)
+ 1030 format('EDOT',f22.6,a,f20.6)
 
       if(nbin.eq.8)then
          if(om2dot.ne.0.)then
@@ -530,8 +583,16 @@ c=======================================================================
       fit1='  1'
 
       do i = 1, nxoff
-        write (71,1090) i,dct(i),fit1,ferr(60+NGLT*NGLP+i)/f0
+	if (i.lt.10) then
+          write (71,1090) i,dct(i),fit1,ferr(NPAR2+i)/f0
+	else if (i.lt.100) then
+          write (71,1091) i,dct(i),fit1,ferr(NPAR2+i)/f0
+        else
+          write (71,1092) i,dct(i),fit1,ferr(NPAR2+i)/f0
+        endif
  1090   format('JUMP_',i1,f20.8,a,f20.8)
+ 1091   format('JUMP_',i2,f19.8,a,f20.8)
+ 1092   format('JUMP_',i3,f18.8,a,f20.8)
       enddo
 
       return

@@ -190,7 +190,7 @@ C  Compute braking index
 		write(31,1082) (-freq(51+i)*(1.d-9)**(i+4),i=ia,ib)
 		write(31,1082) (ferr(51+i)*(1.d-9)**(i+4),i=ia,ib)
 		write(31,1082) (f4(i)-freq(51+i)*(1.d-9)**(i+4),i=ia,ib)
- 1082		format(15x,1p,3d18.8,0p)
+ 1082		format(5x,1p,3d22.12,0p)
 	     enddo
 
 	     do i=1,nfcalc-3
@@ -219,22 +219,22 @@ C  Compute braking index
 	    glf1z=glf1(i)
 	    glf0dz=glf0d(i)
 	    gltdz=gltd(i)
-	    glph(i)=glphz-freq(60+(i-1)*NGLP+1)
-	    glf0(i)=glf0z-freq(60+(i-1)*NGLP+2)*1.d-9
-	    glf1(i)=glf1z-freq(60+(i-1)*NGLP+3)*1.d-18
-	    glf0d(i)=glf0dz-freq(60+(i-1)*NGLP+4)*1.d-9
-	    gltd(i)=gltdz-freq(60+(i-1)*NGLP+5)/86400.d0
+	    glph(i)=glphz-freq(NPAR1+(i-1)*NGLP+1)
+	    glf0(i)=glf0z-freq(NPAR1+(i-1)*NGLP+2)*1.d-9
+	    glf1(i)=glf1z-freq(NPAR1+(i-1)*NGLP+3)*1.d-18
+	    glf0d(i)=glf0dz-freq(NPAR1+(i-1)*NGLP+4)*1.d-9
+	    gltd(i)=gltdz-freq(NPAR1+(i-1)*NGLP+5)/86400.d0
 	    glf0t=glf0(i)+glf0d(i)
-	    glf0e=ferr(60+(i-1)*NGLP+2)*1.d-9
-	    glf0de=ferr(60+(i-1)*NGLP+4)*1.d-9
+	    glf0e=ferr(NPAR1+(i-1)*NGLP+2)*1.d-9
+	    glf0de=ferr(NPAR1+(i-1)*NGLP+4)*1.d-9
 	    write(31,1065)i,glepoch(i)
 	    write(31,1066)
 	    write(31,1067)glphz,glf0z,glf1z,glf0dz,gltdz
 	    write(31,1067)glph(i)-glphz,glf0(i)-glf0z,glf1(i)-glf1z,
      +           glf0d(i)-glf0dz,gltd(i)-gltdz
-	    write(31,1067)ferr(60+(i-1)*NGLP+1),glf0e,
-     +           ferr(60+(i-1)*NGLP+3)*1.d-18,glf0de,
-     +           ferr(60+(i-1)*NGLP+5)/86400.d0
+	    write(31,1067)ferr(NPAR1+(i-1)*NGLP+1),glf0e,
+     +           ferr(NPAR1+(i-1)*NGLP+3)*1.d-18,glf0de,
+     +           ferr(NPAR1+(i-1)*NGLP+5)/86400.d0
 	    write(31,1067)glph(i),glf0(i),glf1(i),glf0d(i),gltd(i)
 	    if(glf0t.ne.0.d0)then
 	       glf0te=sqrt(glf0e**2 + glf0de**2)
@@ -245,7 +245,7 @@ C  Compute braking index
 	       fph=glph(i)-iph
 	       glep1z=glepoch(i)+dglep(i,fph)
 	       glep2z=glepoch(i)+dglep(i,fph-sign(1.d0,fph))
-	       glepe=ferr(60+(i-1)*NGLP+1)/
+	       glepe=ferr(NPAR1+(i-1)*NGLP+1)/
      +   	    (abs(glf0(i)+glf0d(i))*86400.d0)
 	       write(31,1069)glep1z,glep2z,glepe
 	    endif
@@ -269,7 +269,7 @@ C Output binary parameters
 	if(a1(1).ne.0.0) call newbin(nits,jits)
 
 	if(nxoff.gt.0) then
-	  koff=60+NGLT*NGLP
+	  koff=NPAR2
 	  do 70 n=1,(nxoff+3)/4
 	  ib=n*4
 	  ia=ib-3

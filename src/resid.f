@@ -43,6 +43,7 @@ c      $Id$
 	if(nbin.eq.7) call bnryddt(ct,f0,torb,x)
 	if(nbin.eq.8) call bnrymss(torb,x)
 	if(nbin.eq.9) call bnryell1(torb,x)
+	if(nbin.eq.10) call bnrybtx(torb,x)
 
 	ntpd=nct-nepoch
 	ftpd=fct-fepoch+torb/86400.d0
@@ -72,13 +73,13 @@ c      $Id$
 	      dt1=tp-tgl(i)
 	      dt9=dt1/1.d9
 	      td9=gltd(i)*86400.d-9
-	      x(60+(i-1)*NGLP+1)=1.d0
-	      x(60+(i-1)*NGLP+2)=dt9
-	      x(60+(i-1)*NGLP+3)=0.5d0*dt9**2
+	      x(NPAR1+(i-1)*NGLP+1)=1.d0
+	      x(NPAR1+(i-1)*NGLP+2)=dt9
+	      x(NPAR1+(i-1)*NGLP+3)=0.5d0*dt9**2
 	      if(td9.ne.0.d0)then
 	        expf=exp(-dt9/td9)
-	        x(60+(i-1)*NGLP+4)=td9*(1.d0-expf)
-	        x(60+(i-1)*NGLP+5)=glf0d(i)*(1.d0-(1.d0+dt9/td9)*expf)
+	        x(NPAR1+(i-1)*NGLP+4)=td9*(1.d0-expf)
+	        x(NPAR1+(i-1)*NGLP+5)=glf0d(i)*(1.d0-(1.d0+dt9/td9)*expf)
 	      else
 	        expf=1.d0
 	      endif
@@ -86,7 +87,7 @@ c      $Id$
      +          +glf0d(i)*gltd(i)*86400.d0*(1.d0-expf)
 	    else
 	      do j=1,NGLP
-	        x(60+(i-1)*NGLP+j)=0.d0
+	        x(NPAR1+(i-1)*NGLP+j)=0.d0
 	      enddo
 	    endif
 	  enddo
@@ -114,9 +115,12 @@ c      $Id$
         else
           ddnprd = 0
         endif
-	if (npulseout.and.jits.eq.0) then
-	  write(35,fmt='(f14.0)') dnprd
-         endif
+c  used to write out pulse number here;
+c  moved this to arrtim, so that it would
+c  come after tracking corrections
+c	if (npulseout.and.jits.eq.0) then
+c	  write(35,fmt='(f14.0)') dnprd
+c         endif
 	phasefrac=phase5-nphase
 	dt=phasefrac+dphase+ddnprd
 	if(nits.gt.0) then
