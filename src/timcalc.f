@@ -140,7 +140,10 @@ c     relevant closer than sun-grazing in any case.
          DTDPPNG = 0.5D0*DTGR
          TDIS = 0D0
 c
-         if (FREQHZ.LE.1D-1) goto 115
+         if (FREQHZ.LE.1D-1) then
+           freqf = freqhz
+           goto 115
+         endif
 c     correct the observing frequency to barycentric frame for dispersion
 c     delay calculation
 c     first add observatory velocity to EMB's (JMW)
@@ -150,7 +153,6 @@ c     first add observatory velocity to EMB's (JMW)
 C     R IS DISTANCE FROM SUN TO SITE
          FREQF=FREQHZ*(1D0-VOVERC)
 C     compute interplanetary effect assuming 10 e-/cc at 1 AU
-         if(freqhz.lt.2.d0)go to 115
          CTH = DOT(POS,RSA)/DSQRT(DOT(RSA,RSA))
          THETH = DACOS(CTH)
          PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
@@ -220,7 +222,10 @@ c just the transverse proper motion is taken into account
          dt_shapiro = -2.d0*RSCHW*DLOG(arg_ln) 
 
          TDIS = 0D0
-         if(FREQHZ.LE.1.D-1) goto 210
+         if(FREQHZ.LE.1.D-1) then ! catch freq=0 (infinite frequency) case
+           freqf = freqhz
+           goto 210
+         endif
 
 c correct the observing frequency to barycentric frame for dispersion
 c delay calculation
@@ -231,8 +236,6 @@ c first add observatory velocity to EMB's (JMW)
          VOVERC = DOT(POS,VOBS)
          FREQF=FREQHZ*(1D0-VOVERC)
 
-         if(FREQHZ.LE.1.D6) goto 210
-
 c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          THETH = DACOS(CTH)
          PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)
@@ -240,7 +243,8 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
 		
          TDIS = (BVAL+PLDIS)/FREQF**2
 
- 210     nmjdc=nmjdu
+ 210     continue
+         nmjdc=nmjdu
 
          dt_SSB = bclt-TDIS-dt_shapiro      
          

@@ -306,10 +306,11 @@ C  Get clock corrections
 	  
         if (nsite.ge.0) then
           call ztim(nfmjd,ffmjd,nct,fct)
-        elseif (freqhz.lt.1) then
+        elseif (freqhz.lt.1) then ! barycenter, infinite frequency
           nct = nfmjd
           fct = ffmjd
-        else
+          frq = freqhz * 1.e-6
+        else                    ! barycenter, non-infinite frequency
           nct = nfmjd
           fct = ffmjd - bval/freqhz**2/SECDAY
           if (fct.lt.0.) then
@@ -319,6 +320,7 @@ C  Get clock corrections
             fct = fct - 1
             nct = nct + 1
           endif
+          frq = freqhz * 1.e-6
         endif
 
 	if(search.and.ct00.gt.0.d0.and.((nct+fct-ct00).gt.trkmax)) then
