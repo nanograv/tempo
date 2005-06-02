@@ -5,6 +5,7 @@ C  Returns a random deviate between 0.0 and 1.0.  Set IDUM to
 C  any negative value to initialize or reinitialize the sequence.
 
 	save r
+        save iff, ix1, ix2, ix3
 	dimension r(97)
 	parameter (m1=259100,ia1=7141,ic1=54773)
 	parameter (m2=134456,ia2=8121,ic2=28411)

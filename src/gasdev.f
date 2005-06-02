@@ -5,6 +5,7 @@ C  Returns a normally distributed deviate with zero mean and
 C  unit variance, using ran1(idum) as the source of uniform 
 C  deviates.
 
+        save iset, gset
 	data iset/0/
 
 	if(iset.eq.0) then
