@@ -31,6 +31,8 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	character mark*1,adn*14,date*9,damoyr*9
 	character*80 resfile2
 
+        integer isetflag
+
 cc       Under linux/g77, output is always flushed.  this
 cc       causes huge problems when writing out 80 bytes at
 cc       a time to resid2.tmp (unit 32), especially when 
@@ -142,7 +144,7 @@ c	rewind 32
 c        open(32,file=resfile2,form='unformatted',status='unknown',
 c     +		recl = 80*npts)
 c	ipointer = mallocxi(resb(1),20*npts,4,resboff)
-	flags = 1*512 + 1*64 + 2        ! octal 1102 = O_TRUNC || O_CREAT || O_RDWR
+        flags = isetflag()
 	filemode  = 6*64 + 6*8 + 2  ! octal 662 = rw-rw-r--
 	fd = open(resfile2,flags,filemode)
 	resn(1) = 72

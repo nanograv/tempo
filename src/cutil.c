@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+#include <fcntl.h>
 
 /*  FORTRAN:  fd = close(filedes)      */
 close_(filedes)
@@ -10,6 +10,7 @@ int *filedes;
 {
 return(close(*filedes));
 }
+
 /*  FORTRAN:  fd = open(filnam,flags,mode)  */
 int open_(filnam,flags,mode)
 char filnam[];
@@ -18,6 +19,20 @@ int *mode;
 {
   return(open(filnam,*flags,*mode));
 }
+
+/*  FORTRAN:  nflag = isetflag() */
+/*  Set flag for writing to a file.  Specifically:
+      - read and write to file
+      - create file if it doesn't exist
+      - truncate any existing file 
+    This used to be hard-wired in Fortran code, but different libraries
+    use different flag values.  
+*/
+int isetflag_()
+{
+  return((int)(O_TRUNC | O_CREAT | O_RDWR));
+}
+
 /* FORTRAN:  fd = creat(filnam,mode) */
 creat_(filnam,mode)
 char filnam[];

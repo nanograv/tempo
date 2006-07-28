@@ -304,7 +304,9 @@ C Read clock corrections
  452	   ndate=i-1
 	endif
 
-	if(nclk.eq.2)then                           ! NIST to UTC
+	if(nclk.ge.2)then                           ! NIST to UTC
+              ! note: this conversion may be used backwards as a step in 
+              !       converting ITOA-format TOAs (in UTC) to other formats
 	   path=clkdir(1:kc)//clkfile(2)            
 	   open(2,file=path,status='old',err=900)
 	   read(2,1090)

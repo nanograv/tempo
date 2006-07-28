@@ -1,5 +1,8 @@
 c      $Id$
-	subroutine clockcor(fmjd,nsite,nn,deltat,clk)
+	subroutine clockcor(fmjd,nsite,nn,deltat,clk,nfmt)
+
+c       modified DJN 22 Jul '06: if nfmt=2 (itoa), allow
+c       UTC->TT(BIPM) correction
 
 	implicit real*8 (a-h,o-z)
 	save
@@ -8,14 +11,15 @@ c      $Id$
 	include 'clocks.h'
 	include 'acom.h'
 	data lsite/0/,ii/1/,td1/0.d0/,nmsg/0/,maxmsg/20/
+        data nutcmsg/0/
 	data csite/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
 
-c Observatory to NIST correction
+c SECTION 1: Observatory to NIST correction
 c File entries at UT 00h interpolated to fmjd. Works for different sites 
 c and out-of-order toas. Clock entries for a given site must be in increasing 
 c time order, but entries for different sites can be in any order.
 	clk1=0.
-	if(nclk.gt.0)then
+	if(nclk.gt.0.and.nfmt.ne.2)then
 	   if(nsite.ne.lsite)then
 	      lsite=nsite
 	      ii=1
@@ -99,9 +103,17 @@ c time order, but entries for different sites can be in any order.
 
 56	continue 
 
-	clk2=0.d0				!Get clk2: UTC(NIST) to UTC
-	clkoff=0.d0
-	if(nclk.eq.2) then
+c SECTION 2: This has two uses which give the opposite sign:
+c  1.  For "normal" observatory TOAs which were converted to UTC(NIST) in 
+c      Section 1, this does a further conversion from UTC(NIST) to UTC
+c  2.  For TOAs already in UTC (i.e., TOAs in ITOA format), this section
+c      can do a back conversion from UTC back to UTC(NIST);  this is useful
+c      only if section 3 is invoked (which does UTC(NIST) to "other")
+c      and hence is only run if nclk==3 [UTC(NIST)] AND nfmt==2 [ITOA]
+
+	clk2=0.d0				
+	clkoff=0.d0      
+	if(nclk.eq.2.and.nfmt.ne.2 .or. nclk.ge.3.and.nfmt.eq.2) then
 	   do i=1,NPT
 	      if(abs(fmjd-tutc(i)).le.5.d0) then
 		 if (fmjd.lt.tutc(i)) then
@@ -129,12 +141,23 @@ c time order, but entries for different sites can be in any order.
 	   enddo
 
  48	   date=damoyr(int(fmjd))
-	   if(date.ne.datez2) write(*,1055) nn,date,clkfile(2)(1:40)
- 1055	   format(i5,2x,a9,' No entry in clock file ',a50)
+           if(date.ne.datez2.and..not.quiet) then
+             nutcmsg = nutcmsg + 1
+             if (nutcmsg.le.maxmsg) then
+               write(*,1055) nn,date,clkfile(2)(1:40)
+ 1055          format(i5,2x,a9,' No entry in clock file ',a40)
+             else if (nutcmsg.eq.maxmsg+1) then
+               write(*,*) " Additional messages suppressed for ",
+     +                         clkfile(2)(1:40)
+             endif
+           endif
 	   datez2=date
 	endif
+49      continue
+        if (nfmt.eq.2) clk2=-clk2     !  backconvert UTC->UTC(NIST)
 
-49	clk3=0.d0				!Get clk3: UTC to "other"
+c  SECTION 3: UTC to TT(BIPM)
+	clk3=0.d0				
 	if(nclk.ge.3) then
 	   do i=1,NPT
 	      if(abs(fmjd-tbipm(i)).le.5.d0) then

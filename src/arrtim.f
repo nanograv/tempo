@@ -290,10 +290,15 @@ C Store toa for tz reference phase
 	endif
 
 C  Get clock corrections
-	if(nfmt.eq.2 .or. nsite.le.0)then ! no correction for...
-	   clk2=deltat/86400.d0             !     ...ITOA, sites 0 and @
-	else
-	   call clockcor(fmjd,nsite,n,deltat,clk2)
+	if(nsite.eq.-1)then         ! no correction for sites 0 and @
+	   clk2=deltat/86400.d0      
+	else if (nsite.eq.0) then
+           nfmt = 2                 ! this hack tells clockcor to treat the
+                                    ! TOA as UTC.  clockcor can convert it
+                                    ! to TT(BIPM) if requested in the tempo header
+	   call clockcor(fmjd,nsite,n,deltat,clk2,nfmt)
+	else 
+	   call clockcor(fmjd,nsite,n,deltat,clk2,nfmt)
 	endif
 	
         if(.not.jumpbarycenter.and.nxoff.gt.0
@@ -350,7 +355,8 @@ c   Back to processing of all TOAs
 	ddmch(n)=ddm		!Save ddm
 	if(nddm.eq.0) ddm=0	!Disable DM corrections if not wanted
 	dmtot=dm+ddm
-	if(ndmcalc.ge.2) then   
+!        if(ndmcalc.ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then   
+        if(ndmcalc.ge.2) then
           fac = 1
 	  do 61 i=1,ndmcalc-1
             fac = fac * yrs / real(i)

@@ -74,6 +74,8 @@ c      $Id$
       x2dot=0.
       eps1dot=0.
       eps2dot=0.
+      dmvar1 = 0.
+      dmvar2 = 999999.
 
       nxoff=0
       do i=1,NJUMP
@@ -226,6 +228,12 @@ C  Control parameters
 
       else if(key(1:4).eq.'NDDM')then
          read(value,*)nddm
+
+      else if(key(1:4).eq.'DMVAR1')then
+         read(value,*)dmvar1
+
+      else if(key(1:4).eq.'DMVAR2')then
+         read(value,*)dmvar2
 
       else if(key(1:6).eq.'PHIMIN')then
          read(value,*)phimin
