@@ -12,6 +12,18 @@
 #  To make an archive file (in Princeton):
 #     make archive
 
+#  For MacOS 10.4 / gcc 4.0 it has been found that the standard makefile
+#  does not quite work.  Use any one of the following fixes:
+#
+#  [1] Run "gcc_select 3.3" before making tempo
+#   or
+#  [2] Add "-lSystemStubs" to the line below in which tempo
+#      itself is made:
+#       $(FC) $(FFLAGS) -o tempo $(OBJS) -lSystemStubs
+#   or
+#  [3] Add "/usr/lib/libSystemStubs.a" to the tempo link line:
+#       $(FC) $(FFLAGS) -o tempo $(OBJS) /usr/lib/libSystemStubs.a
+
 
 
 # compilers and compiler flags
