@@ -355,8 +355,8 @@ c   Back to processing of all TOAs
 	ddmch(n)=ddm		!Save ddm
 	if(nddm.eq.0) ddm=0	!Disable DM corrections if not wanted
 	dmtot=dm+ddm
-!        if(ndmcalc.ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then   
-        if(ndmcalc.ge.2) then
+        if(ndmcalc.ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then   
+!        if(ndmcalc.ge.2) then
           fac = 1
 	  do 61 i=1,ndmcalc-1
             fac = fac * yrs / real(i)

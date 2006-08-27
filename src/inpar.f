@@ -229,10 +229,10 @@ C  Control parameters
       else if(key(1:4).eq.'NDDM')then
          read(value,*)nddm
 
-      else if(key(1:4).eq.'DMVAR1')then
+      else if(key(1:6).eq.'DMVAR1')then
          read(value,*)dmvar1
 
-      else if(key(1:4).eq.'DMVAR2')then
+      else if(key(1:6).eq.'DMVAR2')then
          read(value,*)dmvar2
 
       else if(key(1:6).eq.'PHIMIN')then

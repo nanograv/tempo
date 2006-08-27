@@ -249,6 +249,9 @@ c      $Id$
  1082     format('DMXR2_',i4.4,5p,d16.8)
         enddo
       endif
+      if (dmvar1.ne.0.) write (71,1083) 1,dmvar1
+      if (dmvar2.ne.0.) write (71,1083) 2,dmvar2
+ 1083 format ('DMVAR',i1,f25.8)
 
       write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',15x,a)')clklbl(nclk)
