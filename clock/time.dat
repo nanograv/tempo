@@ -2,6 +2,7 @@
 =========    ========    ======== ==    ========  ========
  00000.0        0.0         0.0   @                 Barycenter: no correction
  99999.0        0.0         0.0   @                 Barycenter: no correction
+INCLUDE time_nancay.dat
 INCLUDE time_ao.dat
 INCLUDE time_bonn.dat
 INCLUDE time_gb140.dat
@@ -10,3 +11,4 @@ INCLUDE time_gb853.dat
 INCLUDE time_jb.dat
 INCLUDE time_vla.dat
 INCLUDE time_pks.dat
+INCLUDE time_wsrt.dat
