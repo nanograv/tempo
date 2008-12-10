@@ -28,7 +28,7 @@ c       NEPHMAX  max number of ephemerides
 c       NUTMAX   max number of ut1 corrections
 
 	parameter (NPTSDEF=60000)
-	parameter (NPT=15000)
+	parameter (NPT=20000)
 	parameter (NGLT=9,NGLP=5)
 	parameter (NJUMP=120)
 	parameter (NFBMAX=20)
