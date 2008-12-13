@@ -1,3 +1,5 @@
+c      $Id$
+c
 	subroutine tmalloc(nptsmax,nbuf)
 
         implicit none

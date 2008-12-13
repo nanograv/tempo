@@ -1,3 +1,5 @@
+c      $Id$
+c
 c  Adjustable arrays:
 	integer dnplsoff
 	real*8 dnpls(1)

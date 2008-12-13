@@ -1,3 +1,5 @@
+c      $Id$
+c
       character*1 function siten2a(n)
 
 C     convert integer n into an ASCII observatory code

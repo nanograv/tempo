@@ -1,3 +1,5 @@
+c      $Id$
+c
       integer function sitea2n(s)
 
 C     convert first character of ascii string s into a numerical

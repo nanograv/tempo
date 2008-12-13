@@ -1,3 +1,5 @@
+c      $Id$
+c
       subroutine covar(l,m,c,err)
 
 c     Sets 'c' to the element of the covariance matrix array()

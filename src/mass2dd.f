@@ -1,3 +1,5 @@
+c      $Id$
+c
 	subroutine mass2dd(am,am2,x,ecc,an,arr,ar,xk,si,gamma,pbdot)
 
 c       given system masses m, m2 and keplerian parameters x, ecc, an

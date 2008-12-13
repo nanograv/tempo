@@ -1,3 +1,5 @@
+c      $Id$
+c
       subroutine tparin(nostop,tz,lw,lpth,nparmax,nptsmax,
      +     version,npulsefile,infile,path,resfile1,hlpfile,parfile)
 
