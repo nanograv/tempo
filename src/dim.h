@@ -47,4 +47,4 @@ c       NUTMAX   max number of ut1 corrections
         parameter (NPAP1=NPA+1)
 	parameter (NPARDEF=28)
         parameter (NBOOTMAX=1024)
-        parameter (NTZMAX=1000,NCLKMAX=5,NEPHMAX=5,NUTMAX=3000)
+        parameter (NTZMAX=1000,NCLKMAX=5,NEPHMAX=5,NUTMAX=6000)
