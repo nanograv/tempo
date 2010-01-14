@@ -1,10 +1,11 @@
 To make Tempo:
 
-  cd src
-  make tempo
+  ./prepare (only if compiling from a CVS checkout)
+  ./configure [any desired options]
+  make
+  make install (optional)
 
 For further documentation and details on installation and testing, see:
 
-  http://pulsar.princeton.edu/tempo
-  http://www.atnf.csiro.au/research/pulsar/psr/timing/tempo
   http://tempo1.sourceforge.net
+  http://www.atnf.csiro.au/research/pulsar/psr/timing/tempo

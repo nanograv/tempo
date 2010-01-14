@@ -1,5 +1,5 @@
-CLKDIR     /Users/dnice/tree/lib/tempo/clock/
-PARDIR     /Users/dnice/tree/lib/tempo/tzpar/
+CLKDIR     @abs_top_srcdir@/clock/
+PARDIR     @abs_top_srcdir@/tzpar/
 TZDIR      ./
 OBS_NIST   time.dat
 NIST_UTC   utccorr.tot                     UTC(NIST) to UTC
@@ -7,10 +7,10 @@ NIST_BIPM  bipmnist.06.extrap              UTC(NIST) to TT(BIPM)
 NIST_PTB   ptbnist.90                      UTC(NIST) to UTC(PTB)
 NIST_AT1   at1nist.90                      UTC(NIST) to AT1
 UT1        ut1.dat                         UT1 - UT
-EPHDIR     /Users/dnice/tree/lib/tempo/ephem/
+EPHDIR     @abs_top_srcdir@/ephem/
 EPHFILE    DE200.1950.2050
 EPHFILE    DE405.1950.2050
 TDBFILE    TDB.1950.2050
-OBSYS      /Users/dnice/tree/lib/tempo/obsys.dat      Observatory list
+OBSYS      @abs_top_srcdir@/obsys.dat      Observatory list
 TZTOT      tztot.dat
 TZSITE     1
