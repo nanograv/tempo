@@ -16,6 +16,10 @@ AC_CONFIG_FILES([
 	src/Makefile
 	tempo.cfg
 	src/bigendian.f
+	clock/Makefile
+	ephem/Makefile
+	test/Makefile
+	tzpar/Makefile
 ])
 AC_OUTPUT
 
