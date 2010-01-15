@@ -1,0 +1,6 @@
+c     @configure_input@
+c     Endian check now done by configure
+      logical function bigendian()
+      bigendian = @BIGENDIAN@
+      return
+      end

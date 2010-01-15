@@ -1,14 +1,21 @@
 AC_INIT([tempo], [12.000])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+
 AC_PROG_CC
+
 AC_PROG_F77
 if test "$F77" = gfortran; then
     FFLAGS+=" -ffixed-form -ffixed-line-length-none -std=legacy"
 fi
+
+AC_C_BIGENDIAN([BIGENDIAN=".true."], [BIGENDIAN=".false."])
+AC_SUBST(BIGENDIAN)
+
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	tempo.cfg
+	src/bigendian.f
 ])
 AC_OUTPUT
 
