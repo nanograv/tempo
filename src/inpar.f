@@ -448,7 +448,7 @@ C  Position parameters
      +        key(3:3).ge.'0'.and.key(3:3).le.'9') then 
         read(key(3:lk),*)jj
         if (jj.lt.1.or.jj.gt.NDMCOFMAX) then
-          write (*,'(''DM derivative '',i,'' too high.)'')') jj
+          write (*,'(''DM derivative '',i3,'' too high.)'')') jj
           stop
         endif
         read(value,*)dmcof(jj)
