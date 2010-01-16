@@ -1,0 +1,3 @@
+c   config.h - values created by configure
+c   @configure_input@
+        parameter (ISBIGENDIAN = @BIGENDIAN@)

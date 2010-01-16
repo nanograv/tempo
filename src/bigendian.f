@@ -1,6 +1,6 @@
-c     @configure_input@
 c     Endian check now done by configure
       logical function bigendian()
-      bigendian = @BIGENDIAN@
+      include 'config.h'
+      bigendian = ISBIGENDIAN
       return
       end

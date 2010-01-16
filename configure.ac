@@ -15,7 +15,7 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	tempo.cfg
-	src/bigendian.f
+	src/config.h
 	clock/Makefile
 	ephem/Makefile
 	test/Makefile
