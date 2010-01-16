@@ -11,6 +11,8 @@ fi
 AC_C_BIGENDIAN([BIGENDIAN=".true."], [BIGENDIAN=".false."])
 AC_SUBST(BIGENDIAN)
 
+AC_CHECK_HEADERS([malloc.h])
+
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
