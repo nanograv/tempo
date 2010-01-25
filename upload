@@ -1,0 +1,10 @@
+#! /bin/csh
+# Uploads documentation to Sourceforge.  Gets username from CVS root.
+
+set SFUSER = `awk -F@ '{print $1}' CVS/Root`
+set SFPATH = ${SFUSER},tempo@web.sourceforge.net:htdocs/
+
+echo "Uploading webpages as $SFUSER"
+
+rsync -av -C --exclude=upload --exclude=.cvsignore . $SFPATH/
+
