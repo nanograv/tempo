@@ -1,45 +1,68 @@
 Control commands allowed in free-format headers:
 
-CLK    Terrestrial time standard  
-       Allowed values: 'UNCORR' (default), 'UTC(NIST)', 'UTC(BIPM)', 
+CLK     Terrestrial time standard  
+        Allowed values: 'UNCORR' (default), 'UTC(NIST)', 'UTC(BIPM)', 
                        'TT(BIPM)', 'PTB', 'AT1'
 
-COORD  Input coordinate system
-       Allowed values: 'B1950', 'J2000' (default)
+COORD   Input coordinate system
+        Allowed values: 'B1950', 'J2000' (default)
 
-EPHEM  Solar system ephemeris
-       Allowed values:  First five characters of file names listed
-                        in tempo.cfg file (see below).  Typically
-                        'DE200' and 'DE405'
+DMVAR1  Earlist MJD for which DM variations will be applied
+        Allowed values: floating point MJD
+ 
+DMVAR2  Latest MJD for which DM variations will be applied
+        Allowed values: floating point MJD
 
-IBOOT  Bootstrap error analysis, with 2^n iterations
-       Allowed values:  integers n
+DMX     Fit DM offsets over intervals of x days
+        Allowed values: floating point span length 'x'
 
-NDDM   Model DM as an n-th order polynomial expansion in time
-       Allowed values:  integers n
+EPHEM   Solar system ephemeris
+        Allowed values:  First five characters of file names listed
+                         in tempo.cfg file (see below).  Typically
+                         'DE200' and 'DE405'
 
-NITS   Iterate solution n times, or fewer if it converges.
-       Allowed values:  integers n
-       Special case: n=9: iterate until convergence
+IBOOT   Bootstrap error analysis, with 2^n iterations
+        Allowed values:  integers n
 
-NPRNT  Print every 10^n TOA line in file tempo.lis
-       Allowed values:  integers n
+NDDM    Model DM as an n-th order polynomial expansion in time
+        Allowed values:  integers n
 
-PSR    Pulsar name (normally without the leading B or J)
-       Allowed values:  up to 12 characters
+NITS    Iterate solution n times, or fewer if it converges.
+        Allowed values:  integers n
+        Special case: n=9: iterate until convergence
 
-BINARY Binary model to use (see BINARY MODELS, below)
-       Allowed values:  'NONE', 'BT', 'EH', 'DD', 'DDGR', 'H88',
-                        'BT+', 'DDT', 'MSS', 'ELL1', 'BT1P', 'BT2P'
+NPRNT   Print every 10^n TOA line in file tempo.lis
+        Allowed values:  integers n
 
-START  Ignore TOAs before this date (MJD) (if flag is nonzero)
-       Allowed values:  single-precision real numbers
-       Allowed flags:  integers; START will be used only if flag is nonzero
+PHIMIN  Minimum Earth-Pulsar-Sun angle for inclusion in analysis
+        TOAs with angle less than PHIMIN are given zero weight
+        Allowed values:  floating point angle x in degrees
 
-FINISH Ignore TOAs after this date (MJD) (if flag is nonzero)
-       Allowed values:  single-precision real numbers
-       Allowed flags:  integers; FINISH will be used only if flag is nonzero
+PSR     Pulsar name (normally without the leading B or J)
+        Allowed values:  up to 12 characters
 
-GAIN   Fraction of correction added to each parameter on each iteration
-       Allowed values:  positive real numbers
-       Default value: 1
+BINARY  Binary model to use (see BINARY MODELS, below)
+        Allowed values:  'NONE', 'BT', 'EH', 'DD', 'DDGR', 'H88',
+                         'BT+', 'DDT', 'MSS', 'ELL1', 'BT1P', 'BT2P'
+
+START   Ignore TOAs before this date (MJD) (if flag is nonzero)
+        Allowed values:  single-precision real numbers
+        Allowed flags:  integers; START will be used only if flag is nonzero
+
+FINISH  Ignore TOAs after this date (MJD) (if flag is nonzero)
+        Allowed values:  single-precision real numbers
+        Allowed flags:  integers; FINISH will be used only if flag is nonzero
+
+GAIN    Fraction of correction added to each parameter on each iteration
+        Allowed values:  positive real numbers
+        Default value: 1
+
+TZRMJD  Reference toa for phase prediction
+        Allowed values:  MJD (integer, fraction read separately)
+
+TZRFRQ  Frequency of reference TOA for phase prediction
+        Allowed values:  float
+
+TZRSITE Observatory of referendce TOA for phase prediction
+        Allowed values:  observatory site codes
+

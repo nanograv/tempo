@@ -4,22 +4,27 @@ tempo [options] [filename]
 
 
 options:
-  -c          Do all requested iterations, even if apparently converged
-  -d<path>    Path to 'tempo.cfg', default: environment variable 'TEMPO'
-  -f<par>     Over-rides the default parameter file name with <par>
-  -g[O]       GRO mode; 'O' is single-letter observatory code
-  -h          Help message
-  -j          Output JUMP values in xxx.par file
-  -l<xx>      Max number of parameters to be fit (guides memory allocation)
-  -m<xx>      Max number of TOAs to be fit (guides memory allocation)
-  -no<file>   Write out absolute pulse numbers to file
-  -ni<file>   Get absolute pulse numbers from file
-  -o          'Old-style' parameters at head of <fname>
-  -p          Parameters corrected for pulsar space motion
-  -r          Save the partial-derivatives file, resid1.tmp 
-  -v          Print out version number
-  -x          Make an export file in ITOA format
-  -z	      Compute polonomial coefficients for predictions 
+  -c            Do all requested iterations, even if apparently converged
+  -d<path>      Path to 'tempo.cfg', default: environment variable 'TEMPO'
+  -f<par>       Over-rides the default parameter file name with <par>
+  -g[O]         GRO mode; 'O' is single-letter observatory code
+  -h            Help (prints this message)
+  -j            Output JUMP values in xxx.par file
+  -J            Apply JUMPs after barycenter correction (normally done before)
+  -l<xx>        Max number of parameters to be fit (guides memory allocation)
+  -m<xx>        Max number of TOAs to be fit (guides memory allocation)
+  -no<file>     Write out absolute pulse numbers to file
+  -ni<file>     Get absolute pulse numbers from file
+  -o            'Old-style' parameters at head of <fname>
+  -p            Parameters corrected for pulsar space motion
+  -r            Save the partial-derivatives file, resid1.tmp
+  -s0           No solar system DM corrections (no value other than '0' allowed)
+  -v            Print out version number
+  -w            less output to tempo.lis; no resid2.tmp
+  -x            Make an export file in ITOA format
+  -z            Compute polonomial coefficients for predictions
+  -Z<par>=<val> New method for specifying polynomial coefficient calculations
+
 
 
 
@@ -55,6 +60,11 @@ OPTIONS
 -j
    Write offset values ("JUMP_1", etc.) to parameter file.
 
+-J
+   Apply offset values (JUMPs) after barycenter corection.  Use this
+   option if JUMPs are due to time offsets in the pulsar behavior
+   rather than time offsets due to observatory and data processing issues
+
 -l <xxx>
 -m <yyy>
    Expected maximum number of parameters (xxx) and TOAs (yyy) in the fit.  
@@ -79,7 +89,13 @@ OPTIONS
 -r write pre-fit residuals and their derivatives with respect
    to each parameter to file 'resid1.tmp'
 
+-s turn off solar system DM correction.  Must be run as '-s0'.  In principle
+   the '0' can be replaced with other flags, but no other values are 
+   presently allowed
+
 -v report version number
+
+-w minimizes output to tempo.lis; does not produce resid2.tmp
 
 -x write TOAs in interchange time of arrival (ITOA) format to file 'itoa.out'
 
@@ -87,4 +103,21 @@ OPTIONS
    to file polyco.dat (see PREDICTION MODE). If given, <fname> overrides
    'tz.in' for the file listing default prediction parameters and source list.
 
+-Z<par>=<val> 
+   New method for specifying polynomial coefficient calculations
+   Any -Z parameter invokes this mode and minimizes tempo output ("quiet mode")
+     -Z parameters are:
+        Parmater:  Default:      Description:
+        PSR                      Pulsar name (same as PULSAR)
+        PULSAR                   Pulsar name (same as PSR)
+        OBS                      Observatory (same as SITE)
+        SITE                     Observatory (same as OBS)
+        OUT        polyco.dat    Output file name
+        START      current time  Start time for polyco block
+        NCOEFF     15            Number of coefficients
+        FREQ       1420          Radio frequency of observation
+        SPAN       60            Time span in minutes for polyco block
+                                   (xxxH or xxxS for hours or seconds)
+        TOBS       1             Observing time in hours
+                                   (xxxM or xxxS for minutes or seconds)
 
