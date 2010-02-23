@@ -1,6 +1,13 @@
 #! /bin/csh
 # Uploads documentation to Sourceforge.  Gets username from CVS root.
 
+# Check that we're running from right dir
+set ldir = `pwd | awk -F/ '{print $NF}'`
+if ($ldir != "doc") then
+  echo "The upload script must be run from the doc/ subdir."
+  exit
+endif
+
 set SFUSER = `awk -F@ '{print $1}' CVS/Root`
 set SFPATH = ${SFUSER},tempo@web.sourceforge.net:htdocs/
 
