@@ -13,6 +13,9 @@ C	@(#)atimfake.f	9.19 2/3/94
         include 'acom.h'
         integer sitea2n ! external function
 
+        character*20 amjd
+        integer i1, i2
+
 	if(oldpar)then
 	   write(50,1012) nbin,ncoord
  1012	   format('2',25x,i1,18x,'1',i1)
@@ -23,19 +26,33 @@ C	@(#)atimfake.f	9.19 2/3/94
 	   end if
 	   write(50,1000) (params(i),i=1,np)
  1000	   format(a80)
-	   read(params(np),1013) tzrfrq
- 1013	   format(15x,f9.0)
-	else
-	   i=0                                         ! Write ref toa line
-           stflag = .true.
-           stntoa = 1
-           stnsite(stntoa) = sitea2n(tzrsite)
-           stfrq(stntoa) = tzrfrq
-           stnmjd(stntoa) = ntzrmjd
-           stfmjd(stntoa) = ftzrmjd
-           sterr(stntoa) = 0.
-           stddm(stntoa) = 0.
+	   read(params(np),1013) tzrsite, tzrfrq, amjd
+ 1013	   format(a1,14x,f9.0,a20)
+c          parse TOA into int+fracion (code from arrtim.f; see notes there)
+           i1 = index(amjd,'.')
+           i2 = index(amjd(i1+1:20),' ')
+           if (i2.eq.0) then
+             i2 = 20
+           else
+             i2 = i1+i2
+           endif
+           read (amjd(1:i1-1),*) ntzrmjd
+           read (amjd(i1:i2),*) ftzrmjd
+           if (ntzrmjd.lt.30000) ntzrmjd=ntzrmjd+39126   !convert to MJD
+
+
+
 	endif
+
+c       store reference TOA line
+        stflag = .true.
+        stntoa = 1
+        stnsite(stntoa) = sitea2n(tzrsite)
+        stfrq(stntoa) = tzrfrq
+        stnmjd(stntoa) = ntzrmjd
+        stfmjd(stntoa) = ftzrmjd
+        sterr(stntoa) = 0.
+        stddm(stntoa) = 0.
 
 	nspan=nsp(ipsr)
 	maxha=mxha(ipsr)

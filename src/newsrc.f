@@ -3,7 +3,7 @@ c      $Id$
 
 	implicit real*8 (A-H,O-Z)
 	character DECSGN*1,path*160,str1*80,str2*80
-	character*1 ctmp, dtmp
+	character*1 ctmp, dtmp, ntmp
         parameter (TWOPI=6.28318530717958648d0)
 
 	include 'dim.h'
@@ -24,15 +24,18 @@ c      $Id$
 C  Zero out all input parameters and fit coefficients.
 	call zeropar(nits)      
 
-	if(OLDPAR)then
+	if(oldpar)then
         
 C --- old input format ---        
 
 C  Columns:                 1 ... 25       27   29    33   34   40   42
-	   read(50,1010) (nfit(i),i=1,25),nbin,nprnt,nits,iboot,ngl,nddm,
+	   read(50,1010) (nfit(i),i=1,25),nbin,nprnt,ntmp,iboot,ngl,nddm,
 C                44    46     47      51 ... 60
      +   	nclk,nephem,ncoord,(nfit(i),i=26,35)
- 1010	   format(25z1,1x,z1,1x,i1,3x,i1,z1,4x,3i2,1x,2i1,3x,10i1)
+ 1010	   format(25z1,1x,z1,1x,i1,3x,a1,z1,4x,3i2,1x,2i1,3x,10i1)
+
+           if (ntmp.eq." ") ntmp = '1'  ! if blank, use default nits=1
+           read (ntmp,*) nits
 
            if(nbin.ge.9)then
 	      nplanets=nbin-8
@@ -219,7 +222,7 @@ C  Check to make sure selected parameters are consistent with model
 	   if(t0(3).lt.39999.5d0) t0(3)=t0(3)+39999.5d0
 	endif
 
-	if(OLDPAR)then	       ! in old style files, xomdot and xpbdot
+	if(oldpar)then	       ! in old style files, xomdot and xpbdot
  	   xomdot=0.	       ! replaced omdot and pbdot in value and
 	   xpbdot=0.	       ! flag fields in the header.
 	   if(nbin.eq.4)then
