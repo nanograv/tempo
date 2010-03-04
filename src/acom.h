@@ -29,6 +29,7 @@ c      $Id$
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
+     +    dmx1(NDMXMAX),dmxep(NDMXMAX),
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
      +    PAAscNode,solarn0,solarn01,fixeddist,

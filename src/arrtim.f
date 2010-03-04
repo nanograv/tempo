@@ -369,9 +369,12 @@ c   Back to processing of all TOAs
      +           .and.nfmjd+ffmjd.le.max(dmxr2(i),dmxr1(i)+dmxt)) then
               dmxr1(i)=min(dmxr1(i),nfmjd+ffmjd)
               dmxr2(i)=max(dmxr2(i),nfmjd+ffmjd)
+              if(dmxep(i).lt.10) dmxep(i)=(dmxr1(i)+dmxr2(i))/2.0
               idmx = i
               goto 80
             endif
+            if(dmxep(idmx).lt.10) dmxep(idmx)=
+     +           (dmxr1(idmx)+dmxr2(idmx))/2.0
           end do
           if (ndmx+1.ge.NDMXMAX) then
             print *,"Error at TOA number ",n
@@ -383,14 +386,18 @@ c   Back to processing of all TOAs
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
           idmx = ndmx
-          nfit(NPAR6+ndmx)=1
-          nparam=nparam+1
-          mfit(nparam)=NPAR6+ndmx
+          nfit(NPAR6+2*ndmx-1)=1
+          nfit(NPAR6+2*ndmx)=1
+          nparam=nparam+2
+          mfit(nparam)=NPAR6+2*ndmx
  80       continue
         endif
-
+C IHS Does not enforce continuity of DM at DMX boundaries.
         if (usedmx) then
-          dmtot = dmtot + dmx(idmx)
+                write(*,*) 'Adding at ',fmjd,dmx(idmx) + dmx1(idmx)*
+     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
+          dmtot = dmtot + dmx(idmx) + dmx1(idmx)*
+     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
         endif
 
 	bval=dmtot/2.41d-16
@@ -553,17 +560,22 @@ C  DM-related partial derivatives
 
 	x(16)=0.d0
         if (usedmx) then
-          do i = 1, NDMXMAX
+          do i = 1, 2*NDMXMAX
             x(NPAR6+i) = 0
           end do
         endif
 
 	if(frq.gt.1.d0) then
           x(16)=f0*1.0d4/(2.41d0*frq**2)
-          if (usedmx) x(NPAR6+idmx) = x(16)
+          if (usedmx) then
+             x(NPAR6+2*idmx-1) = x(16)
+             x(NPAR6+2*idmx) = x(16)*((nfmjd+ffmjd-dmxep(idmx))/365.25)
+          endif
         endif
 
-	if(nfit(16).ge.2) then
+C	if(nfit(16).ge.2) then
+C IHS based on Jan 2009: change to allow dmpoly in one section
+        if(ndmcalc.ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then
           fac = 1.
 	  do 89 i=1,nfit(16)-1
             fac = fac * yrs / real(i)

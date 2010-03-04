@@ -103,6 +103,8 @@ c      $Id$
       ndmx = 0
       do i = 1, NDMXMAX
         dmx(i) = 0.
+        dmxep(i) = 0.
+        dmx1(i) = 0.
       enddo
 
       ndmcalc=0
@@ -414,7 +416,27 @@ C  Position parameters
          endif
          ndmx = max(ndmx,ikey)
          read(value,*)dmx(ikey)
-         read(cfit,*)nfit(NPAR6+ikey)
+         read(cfit,*)nfit(NPAR6+2*ikey-1)
+
+      else if(key(1:5).eq.'DMX1_') then
+         if (ikey.gt.NDMXMAX) then
+           write(*,'(''DMX key too high: '',a)')key
+           stop
+         endif
+         ndmx = max(ndmx,ikey)
+         read(value,*)dmx1(ikey)
+         read(cfit,*)nfit(NPAR6+2*ikey)
+C IHS force fit of DMX value if DMX1 is to be fit
+         if((nfit(NPAR6+2*ikey)).gt.0) nfit(NPAR6+2*ikey-1)=1
+         if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
+
+      else if(key(1:6).eq.'DMXEP_') then
+         if (ikey.gt.NDMXMAX) then
+           write(*,'(''DMX key too high: '',a)')key
+           stop
+         endif
+         ndmx = max(ndmx,ikey)
+         read(value,*)dmxep(ikey)
 
       else if(key(1:6).eq.'DMXR1_') then
          if (ikey.gt.NDMXMAX) then
@@ -744,6 +766,17 @@ C  Warnings
       if(nfit(16).lt.0.or.nfit(16).gt.NDMCOFMAX.or.ndmcalc.lt.0
      +   .or.ndmcalc.gt.NDMCOFMAX)
      +   write(*,'('' WARNING: Fit parameter for DM out of range'')')
+
+C IHS addition to prevent pathological double-fit of DM0 in one case
+
+      if(ndmcalc.ge.2 .and. nfit(16).ge.1 .and. usedmx) then
+        write(*,'(''ERROR: Cannot fit for DM0 when combining'',
+     +          '' DM polynomial and DMX offset fits.  Fit for the'',
+     +          '' polynomial in the relevant section first,'',
+     +          '' then freeze the DM0 to DMN coefficients '',
+     +          '' while fitting for the DMX values.'')')
+        stop
+      endif
 
       if(setecl)then
 	 if(setequ)then

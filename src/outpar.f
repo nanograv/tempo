@@ -241,17 +241,21 @@ c      $Id$
         write (71,1079),dmxt
  1079   format ('DMX',d22.8)
         do i = 1, ndmx
-          write (71,1080) i,dmx(i),nfit(NPAR6+i),ferr(NPAR6+i)
+          write (71,1080) i,dmx(i),nfit(NPAR6+2*i-1),ferr(NPAR6+2*i-1)
  1080     format('DMX_',i4.4,1p,d18.8,i3,d20.8)
-          write (71,1081) i,dmxr1(i)
- 1081     format('DMXR1_',i4.4,5p,d16.8)
-          write (71,1082) i,dmxr2(i)
- 1082     format('DMXR2_',i4.4,5p,d16.8)
+          write (71,1081) i,dmx1(i),nfit(NPAR6+2*i),ferr(NPAR6+2*i)
+ 1081     format('DMX1_',i4.4,1p,d17.8,i3,d20.8)
+          write (71,1082) i,dmxep(i)
+ 1082     format('DMXEP_',i4.4,5p,d16.8)
+          write (71,1083) i,dmxr1(i)
+ 1083     format('DMXR1_',i4.4,5p,d16.8)
+          write (71,1084) i,dmxr2(i)
+ 1084     format('DMXR2_',i4.4,5p,d16.8)
         enddo
       endif
-      if (dmvar1.ne.0.) write (71,1083) 1,dmvar1
-      if (dmvar2.ne.999999.) write (71,1083) 2,dmvar2
- 1083 format ('DMVAR',i1,f25.8)
+      if (dmvar1.ne.0.) write (71,1095) 1,dmvar1
+      if (dmvar2.ne.999999.) write (71,1095) 2,dmvar2
+ 1095 format ('DMVAR',i1,f25.8)
 
       write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',15x,a)')clklbl(nclk)

@@ -166,7 +166,7 @@ c      $Id$
 	p1e=1.d-3*dsqrt((2.d9*ferr(2)*f1/f0**3)**2+(ferr(3)/f0**2)**2)
 	write(31,1055)p0e,p1e,ferr(16),ferr(NPAR7+1),ferr(19)
 
-	dm=dm+freq(16)
+        if(.not.(ndmcalc.ge.2 .and. usedmx)) dm=dm+freq(16)
 	dmcof(1)=dmcof(1)+freq(NPAR7+1)
 	ppng=ppng+freq(19)
 	write(31,1055)p0,p1,dm,dmcof(1),ppng
@@ -272,12 +272,21 @@ C  Compute braking index
 	    write (31,1059) ("DM Off",i,i=ia,ib)
 	    write (31,1060) (dmxr1(i),dmxr2(i),i=ia,ib)
 	    write (31,1061) (dmx(i),i=ia,ib)
-	    write (31,1061) (freq(k),k=koff+ia,koff+ib)
-	    write (31,1061) (ferr(k),k=koff+ia,koff+ib)
+            write (31,1061) (freq(k),k=koff+2*ia-1,koff+2*ib-1,2)
+            write (31,1061) (ferr(k),k=koff+2*ia-1,koff+2*ib-1,2)
 	    do i = ia, ib
-	      dmx(i) = dmx(i)+freq(koff+i)
+	      dmx(i) = dmx(i)+freq(koff+2*i-1)
 	    end do
-	    write (31,1061) (dmx(i),i=ia,ib)
+            write (31,1061) (dmx(i),i=ia,ib)
+            write (31,1059) ("DM Dot",i,i=ia,ib)
+            write (31,1060) (dmxr1(i),dmxr2(i),i=ia,ib)
+            write (31,1061) (dmx1(i),i=ia,ib)
+            write (31,1061) (freq(k),k=koff+2*ia,koff+2*ib,2)
+            write (31,1061) (ferr(k),k=koff+2*ia,koff+2*ib,2)
+            do i = ia, ib
+              dmx1(i) = dmx1(i)+freq(koff+2*i)
+            end do
+            write (31,1061) (dmx1(i),i=ia,ib)
 	  end do
 	end if
 	      
