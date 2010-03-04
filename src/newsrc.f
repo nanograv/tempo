@@ -91,8 +91,8 @@ C  Convert PB to days if greater than 3600 (ie min Pb for old style = 1h)
 
 	   if(ngl.ne.0)then
 	     do i=1,ngl
-	       read(50,1035)(nfit(NPAR1+(i-1)*NGLP+j),j=1,NGLP),glepoch(i),
-     +	         glph(i),glf0(i),glf1(i),glf0d(i),gltd(i)
+	       read(50,1035)(nfit(NPAR1+(i-1)*NGLP+j),j=1,NGLP),
+     +	         glepoch(i),glph(i),glf0(i),glf1(i),glf0d(i),gltd(i)
 	       if((nfit(NPAR1+(i-1)*NGLP+4).ne.0.or.
      +           nfit(NPAR1+(i-1)*NGLP+5).ne.0).and.gltd(i).eq.0.d0)then
                  write(0,*)' WARNING: Exp term requested but gltd = 0;', 
