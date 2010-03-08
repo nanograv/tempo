@@ -575,7 +575,7 @@ C  DM-related partial derivatives
 
 C	if(nfit(16).ge.2) then
 C IHS based on Jan 2009: change to allow dmpoly in one section
-        if(ndmcalc.ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then
+        if(nfit(16).ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then
           fac = 1.
 	  do 89 i=1,nfit(16)-1
             fac = fac * yrs / real(i)
