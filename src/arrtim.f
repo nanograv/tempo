@@ -387,15 +387,21 @@ c   Back to processing of all TOAs
           dmxr2(ndmx) = nfmjd+ffmjd
           idmx = ndmx
           nfit(NPAR6+2*ndmx-1)=1
-          nfit(NPAR6+2*ndmx)=1
-          nparam=nparam+2
-          mfit(nparam)=NPAR6+2*ndmx
+          nparam=nparam+1
+          mfit(nparam)=NPAR6+2*ndmx-1
+	  if (usedmx1.gt.0) then ! DMX and DMX1
+            nfit(NPAR6+2*ndmx)=1
+            nparam=nparam+1
+            mfit(nparam)=NPAR6+2*ndmx
+	  else ! Just DMX
+            nfit(NPAR6+2*ndmx)=0
+          endif
  80       continue
         endif
 C IHS Does not enforce continuity of DM at DMX boundaries.
         if (usedmx) then
-                write(*,*) 'Adding at ',fmjd,dmx(idmx) + dmx1(idmx)*
-     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
+C                write(*,*) 'Adding at ',fmjd,dmx(idmx) + dmx1(idmx)*
+C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
           dmtot = dmtot + dmx(idmx) + dmx1(idmx)*
      +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
         endif
