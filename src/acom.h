@@ -2,7 +2,7 @@ c      $Id$
 
 	logical gro,sim,xitoa,oldpar,psrframe,jumpout,eclcoord
 	logical usestart, usefinish
-        logical usedmx
+        logical usedmx, firstdmx
         logical npulsein, npulseout, infoout, quiet, polystdout
         logical autotz
         logical useannorb   ! flag to use annual-orbital parallax
@@ -38,7 +38,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,ssdmflag,
-     +    quiet,polystdout,autotz,
+     +    quiet,polystdout,autotz,firstdmx,
      +    useannorb,usefixeddist,jumpbarycenter,
      +    tdbif99fmt 
 

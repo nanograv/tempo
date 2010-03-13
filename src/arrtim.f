@@ -386,15 +386,17 @@ c   Back to processing of all TOAs
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
           idmx = ndmx
-          nfit(NPAR6+2*ndmx-1)=1
-          nparam=nparam+1
-          mfit(nparam)=NPAR6+2*ndmx-1
-	  if (usedmx1.gt.0) then ! DMX and DMX1
-            nfit(NPAR6+2*ndmx)=1
+	  if (ndmx.gt.1 .or. firstdmx) then ! Skip 1st DMX if needed
+            nfit(NPAR6+2*ndmx-1)=1
             nparam=nparam+1
-            mfit(nparam)=NPAR6+2*ndmx
-	  else ! Just DMX
-            nfit(NPAR6+2*ndmx)=0
+            mfit(nparam)=NPAR6+2*ndmx-1
+	    if (usedmx1.gt.0) then ! DMX and DMX1
+              nfit(NPAR6+2*ndmx)=1
+              nparam=nparam+1
+              mfit(nparam)=NPAR6+2*ndmx
+	    else ! Just DMX
+              nfit(NPAR6+2*ndmx)=0
+            endif
           endif
  80       continue
         endif
