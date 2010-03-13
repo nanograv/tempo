@@ -257,6 +257,7 @@ c      $Id$
       if (dmvar2.ne.999999.) write (71,1095) 2,dmvar2
  1095 format ('DMVAR',i1,f25.8)
 
+      write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',15x,a)')clklbl(nclk)
       write(71,'(''NTOA'',i22)')ntoa
