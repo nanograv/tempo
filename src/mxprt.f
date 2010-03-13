@@ -121,8 +121,13 @@ c                                                  --DJN 19 Dec 2001
  1080	    format('TJ',i3.3)
 	  endif
 	else if(jj.lt.NPAR7) then
-	  write (paramj,1090) jj-NPAR6
- 1090	  format('DX',i3.3)
+          if (mod(jj-NPAR6,2).eq.1) then
+	    write (paramj,1090) (jj-NPAR6+1)/2
+ 1090	    format('DX',i3.3)
+          else 
+	    write (paramj,1091) (jj-NPAR6)/2
+ 1091	    format('D1',i3.3)
+          endif
 	else 
 	  write(paramj,1100) jj-NPAR7		!DM polynomial coeffs
  1100	  format('DM',i3.3)
