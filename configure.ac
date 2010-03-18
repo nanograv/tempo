@@ -22,6 +22,7 @@ AC_CONFIG_FILES([
 	ephem/Makefile
 	test/Makefile
 	tzpar/Makefile
+	util/print_resid/Makefile
 ])
 AC_OUTPUT
 
