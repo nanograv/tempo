@@ -695,7 +695,7 @@ sub dmxcheck {
     }
   }
   close GETDMX_B;
-  die "Error: DMX not used in parameter file $psr.psr\n" if (!$dmxinuse);
+  die "Error: DMX not used in parameter file $psr.par\n" if (!$dmxinuse);
 
   if ($eflag || $gflag) {
     foreach $i (0..$#{$mjd}) {
@@ -722,7 +722,7 @@ sub dmxcheck {
       $usedmx[$j] = 1;
       $usedmx[$j] = 0 if (($maxfreq[$j]-$minfreq[$j])/$maxfreq[$j] < $gdiff);
     }
-    foreach $i (0..$#{$mjd}-1) {
+    foreach $i (0..$#{$mjd}) {   # this used to loop through $#{$mjd}-1.  Why???
       $ok[$i] = 0 if ($usedmx[$dmxrange[$i]]==0);
     }
   }
