@@ -3,10 +3,9 @@
 # cull -- removes high-residual points from a tempo file
 #         based on 20 Jan 99 version of cull.f
 #         which was based on 13 Feb 93 version of avtime
-#
-#         DJN  7 Feb 00
-#
-#         Modified 12 Dec 01: added orbital phase cull (-p, -q)
+#         innumerable modifications since then
+#         DJN is to blame for all code written before 18 March 2010
+#         After that date, check the CVS log 
 #
 #
 
@@ -14,8 +13,10 @@ $usage =
   "Use:\n" .
   "  cull infile outfile [flags]\n" .
   "Parameters:\n".
-  "  infile: input TOA file\n" .
-  "  outfile: output TOA file\n" .
+  "  infile:  input TOA file\n" .
+  "  outfile: output TOA file(*)\n" .
+  "           (*) exception:  when using -o flag, outfile parameter is an extension\n".
+  "                    added to input file names to create output files names\n".
   "Flags:\n" .
   "  -r: -rx.xxx = maximum residaual as a fraction of pulse period\n" .
   "      -rxxxs  = maximum residual, seconds\n" .
@@ -39,6 +40,7 @@ $usage =
   "  -l: keep only one orbit of TOAs, from phase zero to one\n".
   "  -m: monitor progress of program with xxx/xxx display\n".
   "  -n: convert Parkes/Jodrell format TOAs to Princeton format\n".
+  "  -o: preserve the INCLUDE file structure, add 'outext' parameter to each file name\n".
   "  -t: incorporate TIME offsets directly into TOAs\n".
   "  -uxxx -vyyy: include only TOAs with frequency between xxx and yyy MHz\n".
   "  -w: remove points with zero weight\n".
@@ -58,6 +60,7 @@ $kflag = 0;
 $lflag = 0;
 $mflag = 0;
 $nflag = 0;
+$oflag = 0;
 $pflag = 0;  # residual cut defined as fraciton of a pulse period
 $rflag = 0;
 $rnflag = 1;
@@ -130,6 +133,8 @@ foreach $par (@ARGV) {
         $mflag = 1;
       } elsif ($f eq "n") {#       -n
         $nflag = 1;
+      } elsif ($f eq "o") {#       -o
+        $oflag = 1;
       } elsif ($f eq "r") {#       -r
         $rflag = 1;
         if ($par=~/s$/) {             #   parameter ends in 's'
@@ -211,6 +216,8 @@ if ($pha1in>=0 && $pha1in<=1 && $pha2in>=0 && $pha2in<=1) {
 
 ($infile,$outfile) = @param;
 
+$outext = $outfile if ($oflag);
+
 # read in the residuals
 open (A,"resid2.tmp\n");
 binmode A;
@@ -258,9 +265,6 @@ if ($rflag) {  # preparatory work for cull-by-residual
 
 # now we are ready to process TOAs
 
-open (Z,">$outfile");
-open (Y,">e.tmp");
-
 
 # check to see if it has a header with parameters at the top of the file
 # (rather than just being a .tim file)
@@ -275,9 +279,16 @@ while (<A>) {
 }
 close A;
 
-# now open the file for real
+# now open the input file for real
 
 open (A,$infile);
+
+# open the output files
+
+$outfile = "$infile.$outext" if ($oflag);
+open (Z,">$outfile");
+open (Y,">e.tmp");
+
 
 # copy the header if one is present
 
@@ -294,8 +305,11 @@ if ($hdrflag) {
 
 $skip = 0;
 
-$fh[0] = *A;
-$fhx = $fh[0];
+$fhin[0] = *A;
+$fhinx = $fhin[0];
+
+$fhout[0] = *Z;
+$fhoutx = $fhout[0];
 
 $i=0;
 $| = 1 if ($mflag);
@@ -313,25 +327,41 @@ $emax = 1.e99;
 for(;;) {
 
   printf "\b\b\b\b\b\b\b\b\b\b\b%5d/%5d", $i,$n if ($mflag);
-  if (eof($fhx)) {     # file processing and input section
-    close pop @fh;
-    last if ($#fh==-1);
-    $fhx = $fh[$#fh];
+  if (eof($fhinx)) {     # file processing and input section
+    close pop @fhin;
+    close pop @fhout if ($oflag);
+    last if ($#fhin==-1);
+    $fhinx = $fhin[$#fhin];
+    $fhoutx = $fhout[$#fhout] if ($oflag);
     next;
   }
-  $a = <$fhx>;
+  $a = <$fhinx>;
   if ($a=~/^ *$/) {
     $a1 = "";
   } else {
     $a1 = uc((split(' ',$a))[0]);
   }
   if ($a1=~/^INCLUDE/) {
+    if ($oflag) {
+      $a2 = $a;
+      chomp $a2;
+      $a2 =~ s/ *$//;
+      print $fhoutx "$a2.$outext\n";  # print INCLUDE line 
+    }
     local *A;
     local $infile;
     $infile = (split(" ",$a))[1];
     open (A,$infile);
-    $fh[$#fh+1] = *A;
-    $fhx = $fh[$#fh];
+    $fhin[$#fhin+1] = *A;
+    $fhinx = $fhin[$#fhin];
+    if ($oflag) {
+      local *Z;
+      local $outfile;
+      $outfile = "$infile.$outext";
+      open (Z,">$outfile");
+      $fhout[$#fhout+1] = *Z;
+      $fhoutx = $fhout[$#fhout];
+    }
     next;
   } 
   #                      process commands
@@ -496,7 +526,7 @@ for(;;) {
     }
   }
   
-  print Z $a if (!($cflag && $cull));
+  print $fhoutx $a if (!($cflag && $cull));
     
 }
 
