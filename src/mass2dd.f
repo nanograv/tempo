@@ -25,6 +25,8 @@ c       calculate values of arr, ar, si, gamma, pbdot under GR
 	ar=arr*m2/m
 	si=x/ar
         xk=3*m/(arr*(1-ecc**2))                 
+C IHS based on 060327 changing to non-tw89 defn for omdot.
+        xk=3*m/(arr0*(1-ecc**2))                 
 	gamma=ecc*m2*(m1+2*m2)/(an*arr*m)
 	pbdot=-(96*twopi/5) * an**(5.d0/3) * (1-ecc**2)**(-3.5d0) * 
      +    (1+ (73.d0/24)*ecc**2 + (37.d0/96)*ecc**4) * 

@@ -6,7 +6,7 @@ CLEANFILES = $(EXTRA_PROGRAMS)
 tempo_SOURCES = \
         a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
         blkdbat.f bnrybt.f bnrybtx.f bnrydd.f bnryddgr.f bnryddt.f  \
-        bnryeh.f bnryell1.f bnrymss.f bootmc.f bt2ell1.f \
+        bnryeh.f bnryell1.f bnrymss.f bnrydds.f bootmc.f bt2ell1.f \
         chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
         earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f galco.f \
         gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f newbin.f \

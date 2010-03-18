@@ -130,7 +130,7 @@ c --- output of non-Keplerian parameters, I ---
 	if(     omdot.eq.0.0   .and.gamma.eq.0.0   .and.pbdot.eq.0.0
      +     .and.si.eq.0.0      .and.am.eq.0.0      .and.am2.eq.0.0
      +     .and.dth.eq.0.0     .and.xdot.eq.0.0    .and.edot.eq.0.0
-     +     .and.xomdot.eq.0.0  .and.xpbdot.eq.0.0
+     +     .and.xomdot.eq.0.0  .and.xpbdot.eq.0.0   .and.shapmax.eq.0.0
      +     .and.om2dot.eq.0.0  .and.x2dot.eq.0.0
      +     .and.ferr(14).eq.0.0.and.ferr(15).eq.0.0.and.ferr(18).eq.0.0
      +     .and.ferr(20).eq.0.0.and.ferr(21).eq.0.0.and.ferr(22).eq.0.0
@@ -189,6 +189,16 @@ c --- output of non-Keplerian parameters, I ---
      +           e6*ferr(18),ferr(20),ferr(22)
 10579	      format(f13.9,f14.9,f14.9,f14.9,f10.6,f10.6)
 	   endif
+        else if(nbin.eq.13)then !!!!!!!!! new in DDS
+           write(31,10522)
+10522      format(//'     OMDOT     GAMMA    PBDOT(-12)    SHAPMAX',
+     +              '       M          m2      DTH(-6)'/)
+           write(31,10523) omdot,gamma,pbdot*e12,shapmax,
+     +          am,am2,e6*dth
+           write(31,10523) freq(14),freq(15),e6*freq(18),freq(20),
+     +        freq(21),freq(22),freq(23)*e6
+           write(31,10523) ferr(14),ferr(15),e6*ferr(18),ferr(20),
+     +        ferr(21),ferr(22),ferr(23)*e6
 	else
            write(31,10501)
 10501      format(//'     OMDOT     GAMMA      PBDOT(-12)   sin(i)',
@@ -202,11 +212,19 @@ c --- output of non-Keplerian parameters, I ---
 	endif       
         
         if(sim) then
-           write(70,1110) nint(pb(1)*8.64d4),a1,e,nint(omz(1)),omdot,
+           if (nbin.eq.13) then
+             write(70,1110) nint(pb(1)*8.64d4),a1,e,nint(omz(1)),omdot,
+     +           nint(e6*gamma),pbdot*e12,
+     +           shapmax,e6*dth,nerr(ferr(14),8),nerr(ferr(15),8),
+     +           nerr(e6*ferr(18),6),nerr(ferr(20),5),nerr(ferr(22),4),
+     +            nerr(ferr(23),8),nerr(ferr(25),18)
+           else
+            write(70,1110) nint(pb(1)*8.64d4),a1,e,nint(omz(1)),omdot,
      +        nint(e6*gamma),pbdot*e12,
      +        si,e6*dth,nerr(ferr(14),8),nerr(ferr(15),8),
      +        nerr(e6*ferr(18),6),nerr(ferr(20),5),nerr(ferr(22),4),
      +        nerr(ferr(23),8),nerr(ferr(25),18)
+           endif
  1110      format(i6,2f6.3,i4,f7.3,i5,f8.3,f6.3,f5.1,7i5)
 	endif
 
@@ -215,7 +233,12 @@ c  Update parameters
         omdot  = omdot  + freq(14)
 	gamma  = gamma  + freq(15)
         pbdot  = pbdot  + freq(18)/e6
-	si     = si     + freq(20)
+c       --- new in DDS !! ---
+        if (nbin.eq.13) then
+           shapmax = shapmax + freq(20)
+        else
+           si     = si     + freq(20)
+        endif
 	am     = am     + freq(21)
 	am2    = am2    + freq(22)
 	dth    = dth    + freq(23)
@@ -243,6 +266,8 @@ c  Print updated parameters
 	      write(31,10529) xdot*e12,eps1dot*e12,eps2dot*e12,
      +           pbdot*e12,si,am2
 	   endif
+        else if (nbin.eq.13) then
+           write(31,10523) omdot,gamma,pbdot*e12,shapmax,am,am2,e6*dth
 	else
 	   write(31,10521) omdot,gamma,pbdot*e12,si,am,am2
 	endif
@@ -254,10 +279,32 @@ c  Print updated parameters
 10510	  format (/'MTOT derived from sin i, M2: ',f10.7)
 	endif
 
+        if(nbin.eq.13 .and. shapmax.ne.0. .and. am2.ne.0.) then
+
+          si = 1.0d0 - exp(-1.0d0*shapmax)
+          si_lo = 1.0d0 - exp(-1.0d0*(shapmax-ferr(20)))
+          si_hi = 1.0d0 - exp(-1.0d0*(shapmax+ferr(20)))
+
+c          write(31,*) si, si_lo, si_hi
+          amtot = (am2*si/(a1(1)*cvel))**1.5 * gm**0.5 *
+     +          pb(1)*86400.d0/twopi
+          write (31,11513) si, (si_hi-si), (si-si_lo), amtot
+11513     format (/,'Corresponding sin(i): ', f10.7,
+     +         ' (+ ',f10.7,', - ',f10.7,')',
+     +            /,'MTOT derived from sin i, M2: ',f10.7)
+          si = asin(si)*360.0d0/TWOPI
+          si_lo = asin(si_lo)*360.0d0/TWOPI
+          si_hi = asin(si_hi)*360.0d0/TWOPI
+          write(31,11514) si, si_lo, si_hi
+11514     format(/,'Inclination angle (deg): ',f10.5,
+     +             ' ( ',f10.5,' - ',f10.5,')')
+        endif
+
 	if(nbin.eq.4) then  !  write out calculated values for DDGR
-	   omd=360.d0*365.25d0*xk/pb(1)
+C IHS based on 060317 comment: omd should be set after the call to mass2dd 
 	   call mass2dd(am,am2,a1(1),e(1),twopi/(pb(1)*86400.d0),
      +      arr,ar,xk,si,gamma,pbdot)
+	   omd=360.d0*365.25d0*xk/pb(1)
 	   write(31,10511)
 	   write(31,10512) omd
 	   write(31,10513) gamma

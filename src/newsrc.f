@@ -61,6 +61,7 @@ C   9   ELL1 (wex small eccentricity model)
 C  10   BTX (BT plus freq derivatives and jumps)
 C  11	BT, 2 orbits
 C  12	BT, 3 orbits
+C  13   DDS
 
 C  Get initial parameter values from lines 2-4 of data file
 	   read(50,1020) psrname,pra,pdec,pmra,pmdec,rv,p0,p1,pepoch,
@@ -454,6 +455,7 @@ c  Beginning of iteration loop
      +         1.d12*xpbdot
           if(gamma.ne.0.)write(31,'(''Gamma (s):'',f22.6)')gamma
           if(si.ne.0.)write(31,'(''sin(i):'',f25.6)')si
+          if(shapmax.ne.0.)write(31,'(''SHAPMAX:'',f25.6)')shapmax
           if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am
           if(am2.ne.0.)write(31,'(''m2 (solar):'',f21.6)')am2
           if(dr.ne.0.)write(31,'(''dr (-6):'',f24.3)')1.d6*dr

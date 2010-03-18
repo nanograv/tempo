@@ -59,6 +59,7 @@ c      $Id$
       gamma=0.
       pbdot=0.
       si=0.
+      shapmax=0. !!!! NEW in DDS
       am=0.
       am2=0.
       dr=0.
@@ -502,6 +503,10 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
      +      read(value,'(2x,i1)') nplanets
  22      continue
 
+c next two lines by sets on 29 Aug 05
+      else if(key(1:4).eq.'PLAN')then
+         read(value,*)nplanets
+
       else if(key(1:4).eq.'A1_1'.or.(key(1:2).eq.'A1'.and.lk.eq.2))then
          read(value,*)a1(1)
          read(cfit,*)nfit(9)
@@ -675,6 +680,10 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
          read(value,*)eps2dot
          read(cfit,*)nfit(40)
          setepsdot=.true.
+
+      else if(key(1:7).eq.'SHAPMAX')then
+         read(value,*) shapmax
+         read(cfit,*)nfit(20)
 
 C  Fixed binary parameters
 

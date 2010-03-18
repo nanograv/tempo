@@ -446,7 +446,7 @@ c=======================================================================
       endif
  1038 format('XPBDOT',f20.7,a,f20.7)
 
-      if(si.ne.0.)then
+      if((si.ne.0.).and.(shapmax.eq.0)) then
          if(nfit(20).gt.0)then
             write(71,1020)si,fit1,ferr(20)
          else
@@ -454,6 +454,15 @@ c=======================================================================
          endif
       endif
  1020 format('SINI',f22.6,a,f20.6)
+
+      if(shapmax.ne.0.)then
+         if(nfit(20).gt.0)then
+            write(71,1099) shapmax,fit1,ferr(20)
+         else
+            write(71,1099) shapmax
+         endif
+      endif
+ 1099 format('SHAPMAX',f19.6,a,f20.6)
 
       if(am.ne.0.)then
          if(nfit(21).gt.0)then
