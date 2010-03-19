@@ -8,6 +8,7 @@ c      $Id$
 	include 'dim.h'
 	include 'acom.h'
 	include 'bcom.h'
+	include 'vcom.h'
 	include 'orbit.h'
 	include 'tz.h'
 
@@ -82,10 +83,13 @@ c	rewind 32
 	fnpts=npts-nz
 	wmean=sum/fnpts
 
+	if(ldesign) write(37) npts, nterms
+
 	do 67 i=1,npts
           call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
      +     buf,npmsav,ksav)
           weight=weight/wmean
+	  if(ldesign) write(37) ct, weight, (fctn(j)-xmean(j), j=1,nterms)
           sigma=sigma+weight*(y-ymean)**2
           do 66 j=1,nterms
             fx=fctn(j)-xmean(j)

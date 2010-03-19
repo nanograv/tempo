@@ -60,6 +60,7 @@ c     default values of parameters
       gro = .false.
       jumpout = .false.
       lresid1 = .false.
+      ldesign = .false.
       nostop = .false.
       npulsein = .false.
       npulseout = .false.
@@ -107,6 +108,9 @@ c     default values of parameters
               if (path.eq.'') goto 9999 ! error
               lpth = index(path,' ')-1
               hlpfile = path(1:lpth)//'/tempo.hlp'
+	    else if (s(i:i).eq.'D') then
+	      ldesign = .true.
+	      open(37,file='design.tmp',form='unformatted',status='unknown')
             else if (s(i:i).eq.'f') then
               parfile = getparm(s,i,ii,iarg,narg)
               if (parfile.eq.'') goto 9999 ! error
