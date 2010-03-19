@@ -106,6 +106,8 @@ c      $Id$
         dmx(i) = 0.
         dmxep(i) = 0.
         dmx1(i) = 0.
+	dmxf1(i) = 0.
+	dmxf2(i) = 0.
       enddo
 
       ndmcalc=0

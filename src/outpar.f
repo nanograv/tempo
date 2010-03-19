@@ -251,6 +251,10 @@ c      $Id$
  1083     format('DMXR1_',i4.4,5p,d16.8)
           write (71,1084) i,dmxr2(i)
  1084     format('DMXR2_',i4.4,5p,d16.8)
+          write (71,1085) i,dmxf1(i)
+ 1085     format('DMXF1_',i4.4,f16.3)
+          write (71,1086) i,dmxf2(i)
+ 1086     format('DMXF2_',i4.4,f16.3)
         enddo
       endif
       if (dmvar1.ne.0.) write (71,1095) 1,dmvar1

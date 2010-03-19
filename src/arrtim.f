@@ -578,6 +578,11 @@ C  DM-related partial derivatives
           if (usedmx) then
              x(NPAR6+2*idmx-1) = x(16)
              x(NPAR6+2*idmx) = x(16)*((nfmjd+ffmjd-dmxep(idmx))/365.25)
+C Figure out min/max freq used in each DMX segment
+	     if (dmxf1(idmx).eq.0) dmxf1(idmx)=rfrq
+	     if (dmxf2(idmx).eq.0) dmxf2(idmx)=rfrq
+	     dmxf1(idmx) = min(dmxf1(idmx),rfrq)
+	     dmxf2(idmx) = max(dmxf2(idmx),rfrq)
           endif
         endif
 
