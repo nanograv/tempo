@@ -150,7 +150,7 @@ c     +		recl = 80*npts)
 c	ipointer = mallocxi(resb(1),20*npts,4,resboff)
         flags = isetflag()
 	filemode  = 6*64 + 6*8 + 2  ! octal 662 = rw-rw-r--
-	fd = open(resfile2,flags,filemode)
+	if (lw) fd = open(resfile2,flags,filemode)
 	resn(1) = 72
 	resn(20) = 72
 
@@ -211,14 +211,14 @@ c     +         ct,dt2,dt2sec,phase,frq,weight,terr,y,ddmch(i)
 c	  do j = 1, 20
 c            resb(20*(i-1)+j+resboff) = resn(j)
 c          enddo
-          nwrt = write(fd,resn,80)
+          if (lw) nwrt = write(fd,resn,80)
           wmax=max(wmax,weight)
           chisq=chisq+weight*dt2**2
  108    continue
 c	write (32,rec=1) (resb(resboff+i),i=1,npts)
 c	call freexi(ipointer)
 c	close (32)
-	nwrt = close(fd)
+	if (lw) nwrt = close(fd)
 
 	freen=fnpts-nterms-1
 	chisqr=chisq*wmean/freen
