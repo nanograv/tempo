@@ -26,7 +26,11 @@ while (<>) {
             $ophase /= $wtsum;
 
             # How to compute error....
-            $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
+            if ($count>1) {
+                $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
+            } else {
+                $rchi2 = 1.0;
+            }
             $err = sqrt($err)/$wtsum;
             $err *= sqrt($rchi2);
 
@@ -65,7 +69,11 @@ if ($count>0) {
     $freq /= $wtsum;
     $res  /= $wtsum;
     $ophase /= $wtsum;
-    $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
+    if ($count>1) { 
+        $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
+    } else {
+        $rchi2 = 1.0;
+    }
     $err = sqrt($err)/$wtsum;
     $err *= sqrt($rchi2);
     $wr2_tot += $res*$res*(1.0/($err*$err));
@@ -76,6 +84,6 @@ if ($count>0) {
         $mjd, $freq, $res, $err, $ophase, $rchi2);
 }
 
-# Print statistics
+
 print sprintf("# WRMS = %.3f ns\n", sqrt($wr2_tot/$wt_tot));
 print sprintf("#  RMS = %.3f ns\n", sqrt($r2_tot/$ct_tot));
