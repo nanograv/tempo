@@ -764,6 +764,8 @@ c Do nothing parameters
       else if(key(1:4).eq.'HEAD') then
       else if(key(1:4).eq.'TRES') then
       else if(key(1:4).eq.'NTOA') then
+      else if(key(1:5).eq.'DMXF1') then
+      else if(key(1:5).eq.'DMXF2') then
 
       else if(key(1:3).eq.'TOA') then   ! end of parameter list 
 	goto 900
