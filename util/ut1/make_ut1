@@ -1,0 +1,46 @@
+#! /usr/bin/perl
+
+# Create a ut1.dat file out of ut1_tai.dat
+#
+# Run get_ut1 to retr current ut1_tai.dat from hpiers.obspm.fr
+
+$datf = "ut1_tai.dat";
+$mjdmax=0;
+open (IN, $datf) or die "Error opening $datf\n";
+while (<IN>) {
+    chomp;
+    s/^\s+//;
+    if (/^#/) { next; }
+    ($mjd, $diff, $sig) = split;
+    $imjd = int($mjd);
+    $ut1{$imjd} = int(-10.0*$diff + 0.5);
+    if ($imjd>$mjdmax) { $mjdmax=$imjd; }
+}
+
+# Header lines copied from an old ut1.dat .. are they necessary??
+print 
+  "IH79 TAI-UT1: All data from IERS EOP C04\n";
+print 
+  "(A3,2X,I5,6(I7,1X),20X,I2)       2 2440219 2460000  6  5           1.E-4\n";
+
+# Format in ut1.dat style, print out.
+$mjd0 = 40219; 
+$pos = 0;
+for ($i=$mjd0; $i<$mjdmax; $i+=30) {
+
+    $line = sprintf("%10d",$i);
+
+    for ($j=0; $j<30; $j+=5) {
+        $mjd = $i+$j;
+        if ($mjd>$mjdmax) { $d=0; } else { $d=$ut1{$mjd}; }
+        $line .= sprintf("%7d ", $d);
+    }
+    chop $line;
+
+    # At end of line, print
+    print $line . "\n"; 
+}
+
+# Need this?
+print "END\n";
+
