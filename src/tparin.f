@@ -64,6 +64,7 @@ c     default values of parameters
       nostop = .false.
       npulsein = .false.
       npulseout = .false.
+      phisunout = .false.
       oldpar = .false.
       psrframe = .false.
       lw = .true.
@@ -101,7 +102,9 @@ c     default values of parameters
 
           i = 2
           do while (i.le.ii)
-            if (s(i:i).eq.'c') then
+            if (s(i:i).eq.'a') then
+              phisunout = .true.
+            else if (s(i:i).eq.'c') then
               nostop = .true.
             else if (s(i:i).eq.'d') then
               path = getparm(s,i,ii,iarg,narg)

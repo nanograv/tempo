@@ -166,11 +166,7 @@ C     compute interplanetary effect assuming 10 e-/cc at 1 AU
            PLDIS = PLDIS/2.		
          endif
          TDIS = (BVAL+PLDIS)/FREQF**2
-
-
          phisun = 360*(PI-THETH)/TWOPI
-         if (phisun.lt.phimin) wflag = 0
-        
 c     
  115     nmjdc=nmjdu
          dt_path = bclt-tdis-dtgr-dt_delay
@@ -260,9 +256,7 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          endif
 		
          TDIS = (BVAL+PLDIS)/FREQF**2
-
          phisun = 360*(PI-THETH)/TWOPI
-         if (phisun.lt.phimin) wflag = 0
         
 
  210     continue
@@ -282,6 +276,9 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          nmjdc=nmjdc-1
          fmjdc=fmjdc+1.d0
       endif
+
+      if (phisun.lt.phimin) wflag = 0
+      if (phisunout) write (38,fmt='(f7.3)') phisun
 
 C     SET UP NECESSARY PARAMETERS FOR TEMPO: (JMW)
 
