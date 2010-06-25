@@ -27,18 +27,19 @@ tdbgen_SOURCES = tdbgen.f tdb1ns.f bigendian.f cutil.c
 # dependencies of Tempo subroutines
 
 arrtim.$(OBJEXT): arrtim.f acom.h orbit.h dp.h bcom.h trnsfr.h clocks.h dim.h glitch.h tz.h
-atimfake.$(OBJEXT): atimfake.f dim.h tz.h toa.h
+atimfake.$(OBJEXT): atimfake.f dim.h acom.h tz.h toa.h
 bnrybt.$(OBJEXT): bnrybt.f dp.h orbit.h dim.h
 bnrybtx.$(OBJEXT): bnrybt.f dp.h orbit.h dim.h
-bnrydd.$(OBJEXT): bnrydd.f dp.h orbit.h dim.h
+bnrydd.$(OBJEXT): bnrydd.f dp.h orbit.h acom.h dim.h
 bnryddgr.$(OBJEXT): bnryddgr.f orbit.h dim.h
+bnrydds.$(OBJEXT): bnrydds.f dim.h acom.h dp.h orbit.h trnsfr.h
 bnryddt.$(OBJEXT): bnryddt.f orbit.h dim.h
 bnryeh.$(OBJEXT): bnryeh.f dp.h orbit.h dim.h
 bnryell1.$(OBJEXT): bnryell1.f dp.h orbit.h dim.h
 bnrymss.$(OBJEXT): bnrymss.f dp.h orbit.h dim.h
 bootmc.$(OBJEXT): bootmc.f dim.h
 bt2ell1.$(OBJEXT): bt2ell1.f orbit.h dim.h
-clockcor.$(OBJEXT): clockcor.f dim.h clocks.h
+clockcor.$(OBJEXT): clockcor.f dim.h acom.h clocks.h
 covar.$(OBJEXT): acom.h dim.h
 cutil.$(OBJEXT): cutil.c
 ell12bt.$(OBJEXT): ell12bt.f dim.h orbit.h
@@ -57,14 +58,14 @@ resid.$(OBJEXT): resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.$(OBJEXT): setup.f acom.h dim.h
 tdbinit.$(OBJEXT): tdbinit.f tdbcom.h
 tdbinit2.$(OBJEXT): tdbinit2.f tdbcom.h
-tdbread.$(OBJEXT): tdbread.f tdbcom.h
+tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h
 tempo.$(OBJEXT): tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h
 timcalc.$(OBJEXT): timcalc.f acom.h dim.h dp.h trnsfr.h
 tmalloc.$(OBJEXT): array.h
 tparin.$(OBJEXT): tparin.f acom.h dim.h vcom.h
 tpohdr.$(OBJEXT): tpohdr.f dim.h tz.h
 tzfit.$(OBJEXT): tzfit.f dim.h acom.h trnsfr.h tz.h
-tzinit.$(OBJEXT): tzinit.f dim.h tz.h
+tzinit.$(OBJEXT): tzinit.f dim.h acom.h tz.h
 ut1red.$(OBJEXT): ut1red.f dim.h
 vmemw.$(OBJEXT): vmemw.f dim.h vcom.h
 ztim.$(OBJEXT): ztim.f trnsfr.h
