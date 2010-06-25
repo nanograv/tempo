@@ -1,57 +1,37 @@
-#! /usr/bin/perl
+#!/usr/bin/perl -w
 
 # Average a date-sorted residual file to 1 point per day
 # Expects input in the form produced by print_resid.
 # Sample usage:
 #   print_resid | sort -n -k1 | res_avg
 
-$lastmjd = 0;
+($dt, $df, $dfflag, $cflag) = &resavg_arg_parse(@ARGV);
+
+$mjd00 = 0;
 $r2_tot = 0.0;
 $wr2_tot = 0.0;
 $wt_tot = 0.0;
 $ct_tot = 0.0;
-while (<>) {
+&resavg_clear_variables;
+
+while (<STDIN>) {
     chomp;
     ($mjd0, $freq0, $res0, $err0, $ophase0) = split;
-    $imjd0 = int($mjd0);
     $wt0 = 1.0/($err0*$err0);
 
-    if ($imjd0 != $lastmjd) {
-
-        if ($lastmjd>0) {
-            # Normalize avgs
-            $mjd  /= $wtsum;
-            $freq /= $wtsum;
-            $res  /= $wtsum;
-            $ophase /= $wtsum;
-
-            # How to compute error....
-            if ($count>1) {
-                $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
-            } else {
-                $rchi2 = 1.0;
-            }
-            $err = sqrt($err)/$wtsum;
-            $err *= sqrt($rchi2);
-
-            $wr2_tot += $res*$res*(1.0/($err*$err));
-            $r2_tot += $res*$res;
-            $wt_tot += (1.0/($err*$err));
-            $ct_tot++;
-
-            # Output line
-            print sprintf("%15.9f %9.4f %+.8e %.4e %.8f %f\n",
-                $mjd, $freq, $res, $err, $ophase, $rchi2);
-        }
-
-        # Reset stats
-        $mjd = $freq = $res = $err = $ophase = 0.0;
-        $count = 0;
-        $wtsum = 0;
-        $r2sum = 0;
-        $lastmjd = $imjd0;
+    if ( $count>0 && 
+         ( $mjd0 > $mjd00+$dt || 
+           $dfflag && abs($freq0-$freq00)/$freq00>$df) 
+         ) {
+        # calculate and print cumulated average point
+        &resavg_calculate_print if ($count>0);
+        # reset the statistics
+        &resavg_clear_variables;
     }
-
+    if ($count==0) {
+        $mjd00 = $mjd0;
+        $freq00 = $freq0;
+    }
     # Add into avgs
     $mjd += $mjd0*$wt0;
     $freq += $freq0*$wt0;
@@ -61,29 +41,148 @@ while (<>) {
     $r2sum += $res0*$res0*$wt0;
     $wtsum += $wt0;
     $count++;
+    $ff    += ($freq0**-2)*$wt0;       # accumulate   1/f^2
+    $ffff  += ($freq0**-4)*$wt0;       # accumulate   1/f^4
+    $ffres += ($freq0**-2)*$res*$wt0;  # accumulate res/f^2
 }
 
-# Print the final line
-if ($count>0) {
-    $mjd  /= $wtsum;
-    $freq /= $wtsum;
-    $res  /= $wtsum;
-    $ophase /= $wtsum;
-    if ($count>1) { 
-        $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
-    } else {
-        $rchi2 = 1.0;
-    }
-    $err = sqrt($err)/$wtsum;
-    $err *= sqrt($rchi2);
-    $wr2_tot += $res*$res*(1.0/($err*$err));
-    $r2_tot += $res*$res;
-    $wt_tot += (1.0/($err*$err));
-    $ct_tot++;
-    print sprintf("%15.9f %9.4f %+.8e %.4e %.8f %f\n",
-        $mjd, $freq, $res, $err, $ophase, $rchi2);
-}
-
+# calculate and print the final average point
+&resavg_calculate_print if ($count>0);
 
 print sprintf("# WRMS = %.3f ns\n", sqrt($wr2_tot/$wt_tot));
 print sprintf("#  RMS = %.3f ns\n", sqrt($r2_tot/$ct_tot));
+
+#-----------------------------------------
+
+sub resavg_arg_parse{
+
+  # parse input line (see $usage below for details)
+  #
+  # the parsing code is set up to allow for:
+  #    -- flags of the form '-a'
+  #    -- flags with parameters of the form '-axxxx'
+  #    -- parameters without flags, simply 'xxxx'
+  #
+  # Parameters without flags are accumulated in array @param, however
+  # since there is no use for such parameters in the present code,
+  # this array is not returned to the calling program.  Instead, if
+  # @param ends up with any entries, it is flagged as an error.
+
+  my($usage) = 
+  "Use:\n".
+  "  res_avg [flags]\n" .
+  "Input:\n".
+  "  time-sorted (optionally frequency-sorted as well) residuals in standard input\n".
+  "Output:\n".
+  "  list of date, frequency, residual, error, orbital phase, reduced chi^2\n".
+  "Typical practical use:\n".
+  "  print_resid | sort -n -k1 | res_avg\n".
+  "Flags:\n".
+  "  -c:    calculate weighted avg residual from fit of resid and dm at each epoch\n".
+  "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, for a single\n".
+  "         average point [default: not used]\n".
+  "  -h   : help message\n".
+  "  -txxx: maximum time in days between first TOA used for an average point\n".
+  "         and all other TOAs used for that same point\n"
+;
+
+  my($f);
+  my($par);
+  my(@param)=();
+  
+  # defaults
+  
+  my($dt) = 1;     # max time from first to last TOA in a single average (units=days)
+  
+  my($dfflag) = 0; # flag to produce separate averages for separate frequency ranges
+  my($df) = 0.25;  # max fracional frequency difference (f-f0)/f0 in a single average
+
+  my($cflag) = 0;  # calculate avg residual based on fit of both residual and dm
+  
+  foreach $par (@_) {
+    if ($par=~/^-/) {           # flags
+      $par = substr($par,1);      #   strip off the leading "-"
+      while ($par ne "") {      #   loop through the string
+        $f = substr($par,0,1);  #     strip off the current flag
+        $par = substr($par,1);    #     process flags:
+        if ($f eq "c")      {#       -c
+          $cflag = 1;
+        } elsif ($f eq "f") {#       -f
+          $dfflag = 1;
+          $df = $par;
+          last;
+        } elsif ($f eq "h") {#       -h
+          die $usage;
+        } elsif ($f eq "t") {#       -t
+          $dt = $par;
+          last;
+        }  else {            #       invalid flag
+          print "\nERROR: Invalid flag -$f\n\n";
+          die $usage;
+        }
+      }
+    } else {                  # parameters  
+      push @param, $par;        #   push onto parameter list
+    }
+  }
+
+  if ($#param>=0) {
+    print "\nERROR: following parameters have no meaning: ",join(" ",@param),"\n";
+    die $usage;
+  }
+
+return $dt, $df, $dfflag, $cflag;
+}
+
+#-----------------------------------------
+
+sub resavg_clear_variables{
+  $count = 0;
+  $wtsum = 0;
+  $r2sum = 0;
+  $mjd = $freq = $res = $err = $ophase = 0.0;
+  if ($cflag) {
+    $ff   = 0;
+    $ffff = 0;
+    $ffres = 0;
+  }
+}
+
+
+#-----------------------------------------
+
+sub resavg_calculate_print{
+  # Normalize avgs
+  $mjd  /= $wtsum;
+  $freq /= $wtsum;
+  $res  /= $wtsum;
+  $ophase /= $wtsum;
+            # How to compute error....
+  if ($count>1) { 
+      $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
+  } else {
+      $rchi2 = 1.0;
+  }
+  $err = sqrt($err)/$wtsum;
+  $err *= sqrt($rchi2);
+  $wr2_tot += $res*$res*(1.0/($err*$err));
+  $r2_tot += $res*$res;
+  $wt_tot += (1.0/($err*$err));
+  $ct_tot++;
+
+  if ($cflag) {
+    $a = $wtsum;
+    $b = $ff;
+    $c = $ff;
+    $d = $ffff;
+    $e = $res*$wtsum; # un-do normalization done a few lines above
+    $f = $ffres;
+    $rnew = ($e*$d-$b*$f)/($a*$d-$b*$c);
+  }
+
+  printf "%15.9f %9.4f %+.8e %.4e %11.8f %10.4f",
+      $mjd, $freq, $res, $err, $ophase, $rchi2;
+  print printf "  %12.8f", $rnew if ($cflag);
+  print "\n";
+}
+
