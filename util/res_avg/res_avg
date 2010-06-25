@@ -3,51 +3,60 @@
 # Average a date-sorted residual file to 1 point per day
 # Expects input in the form produced by print_resid.
 # Sample usage:
-#   print_resid | sort -n -k1 | res_avg
+#   print_resid | res_avg
 
 ($dt, $df, $dfflag, $cflag) = &resavg_arg_parse(@ARGV);
 
-$mjd00 = 0;
+&resavg_read;
+
 $r2_tot = 0.0;
 $wr2_tot = 0.0;
 $wt_tot = 0.0;
 $ct_tot = 0.0;
-&resavg_clear_variables;
 
-while (<STDIN>) {
-    chomp;
-    ($mjd0, $freq0, $res0, $err0, $ophase0) = split;
-    $wt0 = 1.0/($err0*$err0);
+# Pop off the first residual, then search for any other residuals
+# residuals that are within the desired time- and frequency ranges.
+# Each residual is removed from the arrays as it is used. 
+# When the arrays are empty, the program is done.
 
-    if ( $count>0 && 
-         ( $mjd0 > $mjd00+$dt || 
-           $dfflag && abs($freq0-$freq00)/$freq00>$df) 
-         ) {
-        # calculate and print cumulated average point
-        &resavg_calculate_print if ($count>0);
-        # reset the statistics
-        &resavg_clear_variables;
+while ($#mjda>-1) {
+
+  &resavg_clear_variables;
+
+  # start with the first residual
+  $mjdmin= $mjda[0];
+  $mjdmax= $mjda[0];
+  $freqmin = $freqa[0];
+  $freqmax = $freqa[0];
+  &resavg_use_residual(0);
+
+  # loop through all other residuals
+  # residuals are removed from the arrays as they are used
+  # hence the loop structure for this process is a little convoluted
+  $i = 0;
+  while ($i<=$#mjda) {
+    # is the residual within the desired time range (and optionally frequency range?)
+    if (  $mjda[$i] >= $mjdmax-$dt &&
+          $mjda[$i] <= $mjdmin+$dt &&
+        ( !$dfflag  ||  $freqa[$i] >= (1.-$df)*$freqmax ) &&
+        ( !$dfflag  ||  $freqa[$i] <= (1.+$df)*$freqmin ) ) {
+      # process the residual
+      &resavg_use_residual($i);
+      # expand time or frequency range to include this residual
+      $mjdmin = $mjd0 if ($mjd0<$mjdmin);
+      $mjdmax = $mjd0 if ($mjd0>$mjdmax);
+      $freqmin = $freq0 if ($freq0<$freqmin);
+      $freqmax = $freq0 if ($freq0>$freqmax);
+      # do not increment $i; 'splice' functions have put next residual into $i position
+    } else {
+      $i++   
     }
-    if ($count==0) {
-        $mjd00 = $mjd0;
-        $freq00 = $freq0;
-    }
-    # Add into avgs
-    $mjd += $mjd0*$wt0;
-    $freq += $freq0*$wt0;
-    $res += $res0*$wt0;
-    $ophase += $ophase0*$wt0;
-    $err += $err0*$err0*$wt0*$wt0;
-    $r2sum += $res0*$res0*$wt0;
-    $wtsum += $wt0;
-    $count++;
-    $ff    += ($freq0**-2)*$wt0;       # accumulate   1/f^2
-    $ffff  += ($freq0**-4)*$wt0;       # accumulate   1/f^4
-    $ffres += ($freq0**-2)*$res*$wt0;  # accumulate res/f^2
+  }
+
+  # process this batch of residuals (write out the averages, etc.)
+  &resavg_calculate_print;
+    
 }
-
-# calculate and print the final average point
-&resavg_calculate_print if ($count>0);
 
 print sprintf("# WRMS = %.3f ns\n", sqrt($wr2_tot/$wt_tot));
 print sprintf("#  RMS = %.3f ns\n", sqrt($r2_tot/$ct_tot));
@@ -61,12 +70,12 @@ sub resavg_arg_parse{
   # the parsing code is set up to allow for:
   #    -- flags of the form '-a'
   #    -- flags with parameters of the form '-axxxx'
-  #    -- parameters without flags, simply 'xxxx'
+  #    -- parameters without flags, simply 'xxxx' (but see velow)
   #
-  # Parameters without flags are accumulated in array @param, however
-  # since there is no use for such parameters in the present code,
-  # this array is not returned to the calling program.  Instead, if
-  # @param ends up with any entries, it is flagged as an error.
+  # Parameters without flags are accumulated in array @param.  Since the code
+  # does not presently have any use for such parameters, this array is not returned
+  # to the calling program.  Its length is checked and, if it has any entries, it
+  # is flagged as an error.
 
   my($usage) = 
   "Use:\n".
@@ -75,15 +84,16 @@ sub resavg_arg_parse{
   "  time-sorted (optionally frequency-sorted as well) residuals in standard input\n".
   "Output:\n".
   "  list of date, frequency, residual, error, orbital phase, reduced chi^2\n".
-  "Typical practical use:\n".
-  "  print_resid | sort -n -k1 | res_avg\n".
+  "Typical use:\n".
+  "  for a single daily TOA: print_resid | res_avg\n".
+  "  for one TOA per widely separated narrow band: print_resid | res_avg -f0.25\n".
   "Flags:\n".
   "  -c:    calculate weighted avg residual from fit of resid and dm at each epoch\n".
-  "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, for a single\n".
-  "         average point [default: not used]\n".
+  "         (experimental!  use with care!)\n".
+  "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, over which residuals\n".
+  "         are averaged [default: not used]\n".
   "  -h   : help message\n".
-  "  -txxx: maximum time in days between first TOA used for an average point\n".
-  "         and all other TOAs used for that same point\n"
+  "  -txxx: maximum time (in days) over which residuals are averaged, [default: 1]\n"
 ;
 
   my($f);
@@ -184,5 +194,62 @@ sub resavg_calculate_print{
       $mjd, $freq, $res, $err, $ophase, $rchi2;
   print printf "  %12.8f", $rnew if ($cflag);
   print "\n";
+}
+
+
+#-----------------------------------------
+
+sub resavg_read{
+  # read data from standard input into a series of arrays
+  # (this code really makes me appreciate perl lists)
+  @mjda = ();
+  @freqa = ();
+  @resa = ();
+  @erra = ();
+  @ophasea = ();
+  while (<STDIN>) {
+    chomp;
+    ($mjd0, $freq0, $res0, $err0, $ophase0) = split;
+    push @mjda, $mjd0;
+    push @freqa, $freq0;
+    push @resa, $res0;
+    push @erra, $err0;
+    push @ophasea, $ophase0; 
+  }
+}
+
+#-----------------------------------------
+
+sub resavg_use_residual{
+  # extract data for a single residual and accumulate it into sums
+
+  my($idx) = $_[0];
+
+  # pull values out of arrays
+
+  $mjd0    = splice (@mjda   ,$idx,1);
+  $freq0   = splice (@freqa  ,$idx,1);
+  $res0    = splice (@resa   ,$idx,1);
+  $err0    = splice (@erra   ,$idx,1);
+  $ophase0 = splice (@ophasea,$idx,1);
+
+  # calculate weight
+  $wt0 = 1.0/($err0*$err0);
+
+  # Add into sums
+  $mjd += $mjd0*$wt0;
+  $freq += $freq0*$wt0;
+  $res += $res0*$wt0;
+  $ophase += $ophase0*$wt0;
+  $err += $err0*$err0*$wt0*$wt0;
+  $r2sum += $res0*$res0*$wt0;
+  $wtsum += $wt0;
+  $count++;
+  if ($cflag) {
+    $ff    += ($freq0**-2)*$wt0;       # accumulate   1/f^2
+    $ffff  += ($freq0**-4)*$wt0;       # accumulate   1/f^4
+    $ffres += ($freq0**-2)*$res*$wt0;  # accumulate res/f^2
+  }
+
 }
 
