@@ -465,7 +465,8 @@ c  Beginning of iteration loop
           if(bp.ne.0.)write(31,'(''bp:'',f29.6)')bp
           if(bpp.ne.0.)write(31,'(''bpp:'',f28.6)')bpp
           if(xdot.ne.0.)write(31,'(''Xdot (-12):'',f21.6)')1.d12*xdot
-          if(edot.ne.0.)write(31,'(''Edot (-12 s-1):'',f17.6)')1.d12*edot
+          if(edot.ne.0.)
+     +        write(31,'(''Edot (-12 s-1):'',f17.6)')1.d12*edot
           if(om2dot.ne.0.)write(31,'(''om2dot (rad s-2):'',5x,e10.4)')
      +         om2dot	                                     
           if(x2dot.ne.0.)write(31,'(''x2dot (s-1):'',10x,e10.4)')x2dot
