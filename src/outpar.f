@@ -260,6 +260,8 @@ c      $Id$
       if (dmvar1.ne.0.) write (71,1095) 1,dmvar1
       if (dmvar2.ne.999999.) write (71,1095) 2,dmvar2
  1095 format ('DMVAR',i1,f25.8)
+      if (.not.firstdmx) write (71,1096)
+ 1096 format ('DMXFIX 1')
 
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
