@@ -113,7 +113,8 @@ c     default values of parameters
               hlpfile = path(1:lpth)//'/tempo.hlp'
 	    else if (s(i:i).eq.'D') then
 	      ldesign = .true.
-	      open(37,file='design.tmp',form='unformatted',status='unknown')
+	      open(37,file='design.tmp',form='unformatted',
+     +                                       status='unknown')
             else if (s(i:i).eq.'f') then
               parfile = getparm(s,i,ii,iarg,narg)
               if (parfile.eq.'') goto 9999 ! error
