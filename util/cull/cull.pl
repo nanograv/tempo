@@ -219,7 +219,7 @@ if ($pha1in>=0 && $pha1in<=1 && $pha2in>=0 && $pha2in<=1) {
 $outext = $outfile if ($oflag);
 
 # read in the residuals
-open (A,"resid2.tmp\n");
+open (A,"resid2.tmp") or die "Error opening resid2.tmp";
 binmode A;
 $n = 0;
 $p = 0;
