@@ -188,11 +188,12 @@ sub resavg_calculate_print{
     $e = $res*$wtsum; # un-do normalization done a few lines above
     $f = $ffres;
     $rnew = ($e*$d-$b*$f)/($a*$d-$b*$c);
+    $rnewerr = $d/($a*$d-$b*$c);  
   }
 
   printf "%15.9f %9.4f %+.8e %.4e %11.8f %10.4f",
       $mjd, $freq, $res, $err, $ophase, $rchi2;
-  print printf "  %12.8f", $rnew if ($cflag);
+  print printf "  %12.8f  %12.8f", $rnew, $rnewerr if ($cflag);
   print "\n";
 }
 
