@@ -40,7 +40,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
-     +    quiet,polystdout,autotz,firstdmx,nonewdmx
+     +    quiet,polystdout,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,
      +    tdbif99fmt 
 
