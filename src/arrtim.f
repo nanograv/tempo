@@ -376,6 +376,13 @@ c   Back to processing of all TOAs
             if(dmxep(idmx).lt.10) dmxep(idmx)=
      +           (dmxr1(idmx)+dmxr2(idmx))/2.0
           end do
+          if (nonewdmx) then ! give this point zero weight, don't create new range
+            wgt = 0
+            nz = nz + 1
+            zerowt(nz) = n
+            idmx = 0
+            goto 85
+          endif
           if (ndmx+1.ge.NDMXMAX) then
             print *,"Error at TOA number ",n
             print *,"Too many dm offsets.  Maximum: NDMXMAX=",NDMXMAX
@@ -400,8 +407,10 @@ c   Back to processing of all TOAs
           endif
  80       continue
         endif
+
+ 85     continue
 C IHS Does not enforce continuity of DM at DMX boundaries.
-        if (usedmx) then
+        if (usedmx .and. idmx>0) then
 C                write(*,*) 'Adding at ',fmjd,dmx(idmx) + dmx1(idmx)*
 C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
           dmtot = dmtot + dmx(idmx) + dmx1(idmx)*
@@ -575,7 +584,7 @@ C  DM-related partial derivatives
 
 	if(frq.gt.1.d0) then
           x(16)=f0*1.0d4/(2.41d0*frq**2)
-          if (usedmx) then
+          if (usedmx.and.idmx>0) then
              x(NPAR6+2*idmx-1) = x(16)
              x(NPAR6+2*idmx) = x(16)*((nfmjd+ffmjd-dmxep(idmx))/365.25)
 C Figure out min/max freq used in each DMX segment

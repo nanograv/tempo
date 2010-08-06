@@ -3,6 +3,7 @@ Usage: tempo [options] [filename]
 
 options:
   -a            Write Earth-Sun-Pulsar angle for each TOA to file phisun.tmp
+  -b            Give zero weight to any TOA not in an existing DMX range
   -c            Do all requested iterations, even if apparently converged
   -d<path>      Path to 'tempo.cfg', default: environment variable 'TEMPO'
   -D            Write design matrix to design.tmp (unformatted)

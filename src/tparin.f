@@ -65,6 +65,7 @@ c     default values of parameters
       npulsein = .false.
       npulseout = .false.
       phisunout = .false.
+      nonewdmx = .false.
       oldpar = .false.
       psrframe = .false.
       lw = .true.
@@ -104,6 +105,8 @@ c     default values of parameters
           do while (i.le.ii)
             if (s(i:i).eq.'a') then
               phisunout = .true.
+            else if (s(i:i).eq.'b') then
+              nonewdmx = .true.
             else if (s(i:i).eq.'c') then
               nostop = .true.
             else if (s(i:i).eq.'d') then

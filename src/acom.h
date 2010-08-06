@@ -2,7 +2,7 @@ c      $Id$
 
 	logical gro,sim,xitoa,oldpar,psrframe,jumpout,eclcoord
 	logical usestart, usefinish
-        logical usedmx, firstdmx
+        logical usedmx, firstdmx, nonewdmx
         logical npulsein, npulseout, infoout, quiet, polystdout
         logical phisunout
         logical autotz
@@ -40,7 +40,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
-     +    quiet,polystdout,autotz,firstdmx,
+     +    quiet,polystdout,autotz,firstdmx,nonewdmx
      +    useannorb,usefixeddist,jumpbarycenter,
      +    tdbif99fmt 
 
