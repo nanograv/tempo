@@ -29,6 +29,7 @@ void usage() {
             "Other options:\n"
             "  -s, --stats      Print stats at beginning\n"
             "  -b, --bands      Print blank lines between bands\n"
+            "  -z, --zap        Don't print zero-weighted points\n"
             "  -h, --help       Print this message\n"
             "Calling with no args is equivalent to:\n"
             "  print_resid -mfreo resid2.tmp\n", 
@@ -87,6 +88,7 @@ int main(int argc, char *argv[]) {
         {"help",       0, NULL, 'h'},
         {"stats",      0, NULL, 's'},
         {"bands",      0, NULL, 'b'},
+        {"zap",        0, NULL, 'z'},
         {"mjd",        0, NULL, 'm'},
         {"res_phase",  0, NULL, 'p'},
         {"res_sec",    0, NULL, 't'},
@@ -103,8 +105,8 @@ int main(int argc, char *argv[]) {
     char outputs[MAX_OUTS];
     int nout=0;
     outputs[0]='\0';
-    int do_stat=0, do_band=0;
-    while ((opt=getopt_long(argc,argv,"hsbmptrofweid",long_opts,&opti))!=-1) {
+    int do_stat=0, do_band=0, zap_zero_wt=0;
+    while ((opt=getopt_long(argc,argv,"hsbzmptrofweid",long_opts,&opti))!=-1) {
         switch (opt) {
             case 'm':
             case 'p':
@@ -130,6 +132,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'b':
                 do_band=1;
+                break;
+            case 'z':
+                zap_zero_wt=1;
                 break;
             case 'h':
             default:
@@ -224,8 +229,9 @@ int main(int argc, char *argv[]) {
     /* Print outputs */
     float last_rf=0.0;
     for (i=0; i<npts; i++) {
-        if ((fabs(r[i].rf_bary-last_rf)>100.0) && (i>0) && do_band) 
+        if ((fabs(r[i].rf_bary-last_rf)>50.0) && (i>0) && do_band) 
             printf("\n\n"); 
+        if (zap_zero_wt && r[i].weight==0.0) continue; 
         for (j=0; j<nout; j++) {
             switch (outputs[j]) {
                 case 'm':
