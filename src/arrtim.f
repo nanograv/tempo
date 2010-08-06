@@ -378,8 +378,10 @@ c   Back to processing of all TOAs
           end do
           if (nonewdmx) then ! give this point zero weight, don't create new range
             wgt = 0
-	    if (jits.eq.0) nz = nz + 1
-            zerowt(nz) = n
+            if (jits.eq.0) then 
+              nz = nz + 1
+              zerowt(nz) = n
+            endif
             idmx = 0
             goto 85
           endif
