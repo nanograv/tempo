@@ -11,4 +11,4 @@ print_resid: write residual information in ASCII text form
 res_avg:     average date-sorted residuals to one point per day
 wgttpo:      find optimal weights to make reduced chi^2==1 for data subsets
 ut1:         scripts for producing ut1.dat from IERS data
-
+dmx_ranges:  script for optimizing DMX time ranges
