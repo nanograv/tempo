@@ -27,6 +27,7 @@ $usage =
   "  -sxxx: use xxx-day smoothed timescale for residual test\n".
   "  -axxx: exclude any TOAs before MJD xxx\n".
   "  -bxxx: exclude any TOAs after MJD xxx\n".
+  "  -A: \"and\" -a and -b options (default is \"or\").\n".
   "  -pxxx -qyyy: exclude any TOAs between orbital phases xxx and yyy\n".
   "  -c: remove comment lines starting with 'C' in TOA section\n".
   "  -d: convert any 1966 day numbers (day<20000) to MJD\n".
@@ -86,6 +87,7 @@ $slop = 600./86400;  # slop in days allowed when checking for membership
 
 $mjdmin = 0;
 $mjdmax = 9999999;
+$mjdand = 0;
 
 $pha1in = -1;
 $pha2in = -1;
@@ -179,6 +181,10 @@ foreach $par (@ARGV) {
         last;
       } elsif ($f eq "w") {#       -w
         $wflag = 1;
+        last;
+      } elsif ($f eq "A") {#       -A
+        $mjdand = 1;
+        last;
       }  else {            #       invalid flag
 	print "\nERROR: Invalid flag -$f\n\n";
         die $usage;
@@ -433,8 +439,17 @@ for(;;) {
       if ($wflag && $wgt[$i]==0) {
         $cull = 1;
       }
-      #                    check date range, dmx flag, and dual-frequency flag 
-      if ($mjd[$i]<$mjdmin || $mjd[$i]>$mjdmax || !$fok[$i] || !$eok[$i]) { 
+      #                    check date range
+      if ($mjdand==0 && ($mjd[$i]<$mjdmin || $mjd[$i]>$mjdmax)) {
+        substr($a,0,1) = "C";
+        $cull = 1;
+      }
+      if ($mjdand==1 && ($mjd[$i]<$mjdmin && $mjd[$i]>$mjdmax)) {
+        substr($a,0,1) = "C";
+        $cull = 1;
+      }
+      #                    check dmx flag, and dual-frequency flag 
+      if (!$fok[$i] || !$eok[$i]) { 
         substr($a,0,1) = "C";
         $cull = 1;
       }
