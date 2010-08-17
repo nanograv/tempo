@@ -36,7 +36,7 @@ c time order, but entries for different sites can be in any order.
 		    write(*,1005) fmjd,csite(nsite:nsite)
 		    write(31,1005) fmjd,csite(nsite:nsite)
  1005		    format(' Clk corr error: TOA at',f12.5,
-     +		    ' greater than last clk file entry for nsite ',a1)
+     +             ' greater than last clk file entry for nsite ',a1)
 		 endif
 		 if(nmsg.eq.maxmsg+1.and..not.quiet) print*,
      +      '*** Additional clock-correction messages suppressed. ***'
@@ -82,10 +82,12 @@ c time order, but entries for different sites can be in any order.
 		       nmsg=nmsg+1
 		       if(nmsg.le.maxmsg.and..not.quiet) then
 			  write (*,1020) fmjd,csite(nsite:nsite),
-     +		              td1,td2
-			  write (31,1020) fmjd,csite(nsite:nsite),td1,td2
- 1020			  format('No clock corr for TOA at',f9.2,' site ',
-     +		            a1,'; nearest at ',f9.2,' and ',f9.2)
+     +		             td1,td2
+	                write (31,1020) fmjd,csite(nsite:nsite),
+     +                       td1,td2
+ 1020                     format('No clock corr for TOA at',f9.2,
+     +                       ' site ',
+     +                       a1,'; nearest at ',f9.2,' and ',f9.2)
 		       endif
 		       if(nmsg.eq.maxmsg+1.and..not.quiet) print*,
      +    '*** Additional clock-correction messages suppressed. ***'

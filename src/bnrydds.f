@@ -67,9 +67,9 @@ c  DD equations 17b, 17c, 29, and 46 through 52
 
         if (useannorb) then
           deltai0 = -rca(1)*sin(pra) + rca(2)*cos(pra)
-          deltaj0 = -rca(1)*sin(pdec)*cos(pra) +
-     +            -rca(2)*sin(pdec)*sin(pra) +
-     +             rca(3)*cos(pdec)
+          deltaj0 = (-rca(1))*sin(pdec)*cos(pra) +
+     +              (-rca(2))*sin(pdec)*sin(pra) +
+     +              ( rca(3))*cos(pdec)
           if (usefixeddist) then  ! use fixed distance in kpc
             dist = 499.00478364D0/(twopi/fixeddist/1000/3600/360)
           else                    ! use parallax distance

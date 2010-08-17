@@ -803,7 +803,7 @@ C IHS addition to prevent pathological double-fit of DM0 in one case
       if(setecl)then
 	 if(setequ)then
 	    write (*,'(''ERROR: cannot mix ecliptic and equatorial'',
-     +	         '' coordinates'')')
+     +              '' coordinates'')')
 	    stop
 	 else
 	    eclcoord=.true.

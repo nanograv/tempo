@@ -465,7 +465,7 @@ c  Open parameter and residual files
              if (.not.quiet) write(*,1051) version,infile(1:nfl),parfile
  1051	     format(' TEMPO v ',f6.3,
      +       ' Princeton/ATNF Pulsar Collaboration'/
-     +	     ' Data from ',a, ',   Input parameters from ',a)
+     +       ' Data from ',a, ',   Input parameters from ',a)
 	  endif
 
 	  call setup(version,infile,obsyfile,alng,nsmax,parfile)
