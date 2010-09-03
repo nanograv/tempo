@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 from numpy import *
 import sys
 
@@ -14,9 +15,12 @@ class dmxrange:
 
 divide_freq = 1000.0 # MHz
 offset = 0.5 # days (for making DMX ranges)
-max_diff = 40.0 # days (if no freq match, throw out these dates)
+max_diff = 15.0 # days (if no freq match, throw out these dates)
 
-MJDs, freqs = loadtxt("oneday.resids", usecols = (0,1), unpack=True)
+fname = "oneday.resids"
+if (len(sys.argv)>1): 
+    fname = sys.argv[1]
+MJDs, freqs = loadtxt(fname, usecols = (0,1), unpack=True)
 
 loMJDs = MJDs[freqs < divide_freq]
 hiMJDs = MJDs[freqs > divide_freq]
@@ -46,7 +50,7 @@ for ii, loMJD in enumerate(loMJDs):
         hi_close = hi_close[diffs < hidiffs]
     if len(hi_close):  # add a DMXrange
         DMXs.append(dmxrange([loMJD], list(hi_close)))
-        good_his = good_his.union(good_his, set(hi_close))
+        good_his = good_his.union(set(hi_close))
     else:
         bad_los.append(loMJD)
 
