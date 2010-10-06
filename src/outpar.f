@@ -574,6 +574,8 @@ c=======================================================================
       if(bpp.ne.0.) write (71,2200) 'BPP   ',bpp
  2200 format(a6,f20.7)
 
+      if(useannorb) write(71,'(''PAASCNODE'',f19.2)')PAAscNode
+
       if(nplanets.gt.0)then
          do j=2,nplanets+1
             jj=16+j*5
