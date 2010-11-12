@@ -1,0 +1,273 @@
+#!/usr/bin/perl -w
+
+#   compare_tempo -- compare tempo outputs from two files, or from two
+#                    versions of tempo
+
+#   see usage_die below for usage
+
+$tpo1default = "/Users/niced/tree/bin/tempo";
+$tpo2default = "/Users/niced/tree/bin/tempo";
+$env1 = "";
+$env2 = "";
+$dir1 = "";
+$dir2 = "";
+$iparam = 0;
+
+$tpo1 = $tpo1default;
+$tpo2 = $tpo2default;
+
+while ($#ARGV>=0) {
+  $s = shift(@ARGV);
+  if ($s =~ /^-/) {
+    $s =~ s/^-//;
+    if ($s =~ /^a/) {
+      $tpo1 = substr($s,1);
+    }
+    elsif ($s =~ /^b/) {
+      $tpo2 = substr($s,1);
+    }
+    elsif ($s =~ /^c/) {
+      $env1 = substr($s,1);
+    }
+    elsif ($s =~ /^d/) {
+      $env2 = substr($s,1);
+    }
+    elsif ($s =~ /^e/) {
+      $dir1 = substr($s,1);
+    }
+    elsif ($s =~ /^f/) {
+      $dir2 = substr($s,1);
+    }
+    else {
+      &usage_die;
+    }
+  }
+  else {
+    $iparam++;
+    $file1 = $s if ($iparam==1);
+    $file2 = $s if ($iparam==2);
+    &usage_die if ($iparam>2);
+  }
+}
+
+&usage_die if ($iparam<1);
+
+$file2 = $file1 if ($iparam==1);
+die "Error: file $file1 does not exist\n" if (! -e $file1);
+die "Error: file $file2 does not exist\n" if (! -e $file2);
+
+if ($env1 eq "") {
+  if ($dir1 eq "") {
+    system ("$tpo1 $file1 2>&1 > /dev/null\n");
+  } else {
+    system ("cd $dir1; $tpo1 $file1 2>&1 > /dev/null\n");
+  }
+} else {
+  if ($dir1 eq "") {
+    system ("export TEMPO; TEMPO=$env1; $tpo1 $file1 2>&1 > /dev/null\n");
+  } else {
+    system ("cd $dir1;export TEMPO;TEMPO=$env1;$tpo1 $file1 2>&1 >/dev/null\n");
+  }
+}
+
+($chisqr1,$dof1,$parfile) = &tempo_lis_info($dir1);
+open (A,$parfile);
+@a = <A>;
+foreach $i (0..$#a) {
+  chop $a[$i];
+}
+close A;
+
+system ("rm $parfile\n");
+
+if ($env2 eq "") {
+  if ($dir2 eq "") {
+    system ("$tpo2 $file2 2>&1 > /dev/null\n");
+  } else {
+    system ("cd $dir2; $tpo2 $file2 2>&1 > /dev/null\n");
+  }
+} else {
+  if ($dir2 eq "") {
+    system ("export TEMPO; TEMPO=$env2; $tpo2 $file2 2>&1 > /dev/null\n");
+  } else {
+    system ("cd $dir2;export TEMPO;TEMPO=$env2;$tpo2 $file2 2>&1 >/dev/null\n");
+  }
+}
+
+
+($chisqr2,$dof2,$parfile) = &tempo_lis_info($dir2);
+
+
+open (A,$parfile);
+@b = <A>;
+foreach $i (0..$#b) {
+  chop $b[$i];
+}
+close A;
+
+print "\n";
+print '-'x19 . 'tempo run a' . '-'x19 . '      ';
+print '-'x19 . 'tempo run b' . '-'x19 . "\n";
+$out = ' 'x 110;
+substr($out,0,length($file1)+6) = "file: ".$file1;
+substr($out,55,length($file2)+6) = "file: ".$file2;
+print "$out\n";
+$out = ' 'x 110;
+substr($out,0,length($dir1)+6) = "directory: ".$dir1;
+substr($out,55,length($dir2)+6) = "directory: ".$dir2;
+print "$out\n";
+$out = ' 'x 110;
+substr($out,0,length($tpo1)+7) = "tempo: ".$tpo1;
+substr($out,55,length($tpo2)+7) = "tempo: ".$tpo2;
+print "$out\n";
+$out = ' 'x 110;
+substr($out,0,length($env1)+8) = "\$TEMPO: ".$env1;
+substr($out,55,length($env2)+8) = "\$TEMPO: ".$env2;
+$out = $out . "  "."     b-a     ";
+$out = $out . "  "." (b-a)/max(siga,sigb)";
+$out = $out . "  "."   (b-a)/[(a+b)/2]";
+$out = $out . "  sigb/siga";
+print "$out\n";
+print "\n";
+
+$idxa = 0; 
+$idxb = 0;
+while ($idxa<=$#a && $idxb<=$#b) {
+  ($aname) = (split(" ",$a[$idxa]))[0];
+  ($bname) = (split(" ",$b[$idxb]))[0];
+  if ($aname ne $bname) {
+    $matchflag = 0;
+  A: foreach $i ($idxb+1..$#b) {
+      $bnamex = (split(" ",$b[$i]))[0];
+      if ($bnamex eq $aname) {
+        foreach $j($idxb..$i-1) {
+          $out = ' 'x 110;  
+          substr($out,55,length($b[$j])) = $b[$j];
+          print "$out\n";
+        }
+        $matchflag = 1;
+        $idxb=$i;
+        last A;
+      }
+    }
+    if ($matchflag==0) {
+    B: foreach $i ($idxa+1..$#a) {
+        $anamex = (split(" ",$a[$i]))[0];
+        if ($anamex eq $bname) {
+          foreach $j ($idxa..$i-1) {
+            $out = ' ' x 110;
+            substr($out,0,length($a[$j])) = $a[$j];
+            print "$out\n";
+          }
+          $matchflag = 1;
+          $idxa=$i;
+          last B;
+        }
+      }
+    }
+    if ($matchflag==0) {
+      print "cannot reconcile parameter files starting with these lines:\n";
+      $out = ' 'x 110;  
+      substr($out,0,length($a[$idxa])) = $a[$idxa];
+      substr($out,55,length($b[$idxb])) = $b[$idxb];
+    }
+  }
+  $out = ' 'x 110;  
+  substr($out,0,length($a[$idxa])) = $a[$idxa];
+  substr($out,55,length($b[$idxb])) = $b[$idxb];
+  $a[$idxa] =~ s/D/E/g;
+  $b[$idxb] =~ s/D/E/g;
+  ($atmp1,$aflag,$aerr) = (split(" ",$a[$idxa]))[1,2,3];
+  ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[1,2,3];
+
+  if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
+    @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
+    @btmp = split(":",$btmp1);   #but also works for single number-entries
+    $aparam = 0.;
+    foreach $i (0..$#atmp) {
+      $aparam = 60*$aparam + shift(@atmp);
+    }
+    $bparam = 0.;
+    foreach $i (0..$#btmp) {
+      $bparam = 60*$bparam + shift(@btmp);
+    }
+    $diff = $bparam-$aparam;
+    $diffx = $diff/(0.5*($aparam+$bparam));
+    $diffsig = abs($diff)/$aerr if ($berr<=$aerr);
+    $diffsig = abs($diff)/$berr if ($berr>$aerr);
+    $ratsig = 0;
+    $ratsig = $berr/$aerr if ($aerr>0);
+    $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f",$diff,$diffsig,$diffx,$ratsig);
+  }
+  print "$out\n";
+  $idxa++;
+  $idxb++;
+}
+if ($idxa<=$#a) {
+  foreach $j ($idxa..$#a) {
+    $out = ' ' x 110;
+    substr($out,0,length($a[$j])) = $a[$j];
+    print "$out\n";
+  }
+}
+if ($idxb<=$#b) {
+  foreach $j ($idxb..$#b) {
+    $out = ' ' x 110;
+    substr($out,55,length($b[$j])) = $b[$j];
+    print "$out\n";
+  }
+}
+
+print "\n";
+printf "CHISQR    %16.2f".(" "x29)."CHISQR     %16.2f\n", $chisqr1, $chisqr2;
+printf "DOF       %16d"  .(" "x29)."DOF        %16d\n",   $dof1, $dof2;
+printf "CHISQR/DOF%16.2f".(" "x29)."CHISQR/DOF %16.2f\n", $chisqr1/$dof1, $chisqr2/$dof2;
+
+      
+sub usage_die  {
+  print "\n";
+  print "use:  compare_tempo file1 [file2] [-aAAA] [-bBBB] [-cCCC] [-dDDD] [-eEEE] [-fFFF]\n";
+  print "      file1 = tempo input file for first run\n";
+  print "      file2 = tempo input file for second run ",
+  "[default=same as file1]\n";
+  print "      AAA   = tempo executable, first run     ",
+  "[default=$tpo1default]\n";
+  print "      BBB   = tempo executable, second run    ",
+  "[default=$tpo2default]\n";
+  print "      CCC   = \$TEMPO env variable, first run  ",
+  "[default=preexisting \$TEMPO]\n";
+  print "      DDD   = \$TEMPO env variable, second run ",
+  "[default=preexisting \$TEMPO]\n";
+  print "      EEE   = working directory, first run    ",
+  "[default=current working directory]\n";
+  print "      FFF   = working directory, second  run  ",
+  "[default=current working directory]\n";
+  die "\n";
+}
+
+sub tempo_lis_info {
+  my($dir) = @_;
+  my($psr);
+  my($chisqr,$dof,$parfile);
+  $dir = "." if ($dir eq "");
+  open (AAA,"$dir/tempo.lis");
+  $psr = "error"; # default
+  ($chisqr,$dof) = (-1,-1);  # default
+  while (<AAA>) {
+    if (/Assumed parameters/) {      
+      $psr = (split)[4];
+    }
+    if (/Chisqr\/nfree/) {
+      $_ =~ s/=/ = /g;
+      $_ =~ s/nfree:/nfree: /g;
+#      ($chisqr,$dof) = (split)[1,2];
+      ($dof,$rchisqr) = (split)[2,4];
+      $chisqr = $rchisqr*$dof;
+    }
+  }
+  close (AAA);
+  $parfile = $dir . "/" . $psr . ".par";
+  ($chisqr, $dof, $parfile);
+
+}
+
