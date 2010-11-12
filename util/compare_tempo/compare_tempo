@@ -5,100 +5,75 @@
 
 #   see usage_die below for usage
 
-$tpo1default = "/Users/niced/tree/bin/tempo";
-$tpo2default = "/Users/niced/tree/bin/tempo";
-$env1 = "";
-$env2 = "";
-$dir1 = "";
-$dir2 = "";
-$iparam = 0;
+$tpo1default = "tempo";
+$tpo2default = "tempo";
 
-$tpo1 = $tpo1default;
-$tpo2 = $tpo2default;
+($file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $runtpo) = 
+        compare_tempo_command_line_parse($tpo1default,$tpo2default,@ARGV);
 
-while ($#ARGV>=0) {
-  $s = shift(@ARGV);
-  if ($s =~ /^-/) {
-    $s =~ s/^-//;
-    if ($s =~ /^a/) {
-      $tpo1 = substr($s,1);
-    }
-    elsif ($s =~ /^b/) {
-      $tpo2 = substr($s,1);
-    }
-    elsif ($s =~ /^c/) {
-      $env1 = substr($s,1);
-    }
-    elsif ($s =~ /^d/) {
-      $env2 = substr($s,1);
-    }
-    elsif ($s =~ /^e/) {
-      $dir1 = substr($s,1);
-    }
-    elsif ($s =~ /^f/) {
-      $dir2 = substr($s,1);
-    }
-    else {
-      &usage_die;
-    }
-  }
-  else {
-    $iparam++;
-    $file1 = $s if ($iparam==1);
-    $file2 = $s if ($iparam==2);
-    &usage_die if ($iparam>2);
-  }
-}
-
-&usage_die if ($iparam<1);
-
-$file2 = $file1 if ($iparam==1);
 die "Error: file $file1 does not exist\n" if (! -e $file1);
 die "Error: file $file2 does not exist\n" if (! -e $file2);
 
-if ($env1 eq "") {
-  if ($dir1 eq "") {
-    system ("$tpo1 $file1 2>&1 > /dev/null\n");
+if ($runtpo) { # first tempo run; open par file
+
+  if ($env1 eq "") {
+    if ($dir1 eq "") {
+      system ("$tpo1 $file1 2>&1 > /dev/null\n");
+    } else {
+      system ("cd $dir1; $tpo1 $file1 2>&1 > /dev/null\n");
+    }
   } else {
-    system ("cd $dir1; $tpo1 $file1 2>&1 > /dev/null\n");
+    if ($dir1 eq "") {
+      system ("export TEMPO; TEMPO=$env1; $tpo1 $file1 2>&1 > /dev/null\n");
+    } else {
+      system ("cd $dir1;export TEMPO;TEMPO=$env1;$tpo1 $file1 2>&1 >/dev/null\n");
+    }
   }
-} else {
-  if ($dir1 eq "") {
-    system ("export TEMPO; TEMPO=$env1; $tpo1 $file1 2>&1 > /dev/null\n");
-  } else {
-    system ("cd $dir1;export TEMPO;TEMPO=$env1;$tpo1 $file1 2>&1 >/dev/null\n");
-  }
+
+  ($chisqr1,$dof1,$parfile) = &tempo_lis_info($dir1);
+
+  open (A,$parfile);
+
+} else {       # pre-existing first par file
+
+  open (A,$file1); 
+
 }
 
-($chisqr1,$dof1,$parfile) = &tempo_lis_info($dir1);
-open (A,$parfile);
 @a = <A>;
 foreach $i (0..$#a) {
   chop $a[$i];
 }
 close A;
 
-system ("rm $parfile\n");
+if ($runtpo) { # second tempo run; open par file
 
-if ($env2 eq "") {
-  if ($dir2 eq "") {
-    system ("$tpo2 $file2 2>&1 > /dev/null\n");
+  system ("rm $parfile\n");  # get rid of any pre-existing par file
+
+  if ($env2 eq "") {
+    if ($dir2 eq "") {
+      system ("$tpo2 $file2 2>&1 > /dev/null\n");
+    } else {
+      system ("cd $dir2; $tpo2 $file2 2>&1 > /dev/null\n");
+    }
   } else {
-    system ("cd $dir2; $tpo2 $file2 2>&1 > /dev/null\n");
+    if ($dir2 eq "") {
+      system ("export TEMPO; TEMPO=$env2; $tpo2 $file2 2>&1 > /dev/null\n");
+    } else {
+      system ("cd $dir2;export TEMPO;TEMPO=$env2;$tpo2 $file2 2>&1 >/dev/null\n");
+    }
   }
-} else {
-  if ($dir2 eq "") {
-    system ("export TEMPO; TEMPO=$env2; $tpo2 $file2 2>&1 > /dev/null\n");
-  } else {
-    system ("cd $dir2;export TEMPO;TEMPO=$env2;$tpo2 $file2 2>&1 >/dev/null\n");
-  }
+
+  ($chisqr2,$dof2,$parfile) = &tempo_lis_info($dir2);
+
+  open (A,$parfile);
+
+} else {       # pre-existing first par file
+
+  open (A,$file2); 
+
 }
 
-
-($chisqr2,$dof2,$parfile) = &tempo_lis_info($dir2);
-
-
-open (A,$parfile);
 @b = <A>;
 foreach $i (0..$#b) {
   chop $b[$i];
@@ -106,23 +81,30 @@ foreach $i (0..$#b) {
 close A;
 
 print "\n";
-print '-'x19 . 'tempo run a' . '-'x19 . '      ';
-print '-'x19 . 'tempo run b' . '-'x19 . "\n";
-$out = ' 'x 110;
-substr($out,0,length($file1)+6) = "file: ".$file1;
-substr($out,55,length($file2)+6) = "file: ".$file2;
-print "$out\n";
-$out = ' 'x 110;
-substr($out,0,length($dir1)+6) = "directory: ".$dir1;
-substr($out,55,length($dir2)+6) = "directory: ".$dir2;
-print "$out\n";
-$out = ' 'x 110;
-substr($out,0,length($tpo1)+7) = "tempo: ".$tpo1;
-substr($out,55,length($tpo2)+7) = "tempo: ".$tpo2;
-print "$out\n";
-$out = ' 'x 110;
-substr($out,0,length($env1)+8) = "\$TEMPO: ".$env1;
-substr($out,55,length($env2)+8) = "\$TEMPO: ".$env2;
+
+  print '-'x19 . 'tempo run a' . '-'x19 . '      ';
+  print '-'x19 . 'tempo run b' . '-'x19 . "\n";
+if ($runtpo) {
+  $out = ' 'x 110;
+  substr($out,0,length($file1)+6) = "file: ".$file1;
+  substr($out,55,length($file2)+6) = "file: ".$file2;
+  print "$out\n";
+  $out = ' 'x 110;
+  substr($out,0,length($dir1)+11) = "directory: ".$dir1;
+  substr($out,55,length($dir2)+11) = "directory: ".$dir2;
+  print "$out\n";
+  $out = ' 'x 110;
+  substr($out,0,length($tpo1)+7) = "tempo: ".$tpo1;
+  substr($out,55,length($tpo2)+7) = "tempo: ".$tpo2;
+  print "$out\n";
+  $out = ' 'x 110;
+  substr($out,0,length($env1)+8) = "\$TEMPO: ".$env1;
+  substr($out,55,length($env2)+8) = "\$TEMPO: ".$env2;
+} else {
+  $out = ' 'x 110;
+  substr($out,0,length($file1)+10) = "par file: ".$file1;
+  substr($out,55,length($file2)+10) = "par file: ".$file2;
+}
 $out = $out . "  "."     b-a     ";
 $out = $out . "  "." (b-a)/max(siga,sigb)";
 $out = $out . "  "."   (b-a)/[(a+b)/2]";
@@ -218,32 +200,14 @@ if ($idxb<=$#b) {
   }
 }
 
-print "\n";
-printf "CHISQR    %16.2f".(" "x29)."CHISQR     %16.2f\n", $chisqr1, $chisqr2;
-printf "DOF       %16d"  .(" "x29)."DOF        %16d\n",   $dof1, $dof2;
-printf "CHISQR/DOF%16.2f".(" "x29)."CHISQR/DOF %16.2f\n", $chisqr1/$dof1, $chisqr2/$dof2;
-
-      
-sub usage_die  {
+if ($runtpo) {
   print "\n";
-  print "use:  compare_tempo file1 [file2] [-aAAA] [-bBBB] [-cCCC] [-dDDD] [-eEEE] [-fFFF]\n";
-  print "      file1 = tempo input file for first run\n";
-  print "      file2 = tempo input file for second run ",
-  "[default=same as file1]\n";
-  print "      AAA   = tempo executable, first run     ",
-  "[default=$tpo1default]\n";
-  print "      BBB   = tempo executable, second run    ",
-  "[default=$tpo2default]\n";
-  print "      CCC   = \$TEMPO env variable, first run  ",
-  "[default=preexisting \$TEMPO]\n";
-  print "      DDD   = \$TEMPO env variable, second run ",
-  "[default=preexisting \$TEMPO]\n";
-  print "      EEE   = working directory, first run    ",
-  "[default=current working directory]\n";
-  print "      FFF   = working directory, second  run  ",
-  "[default=current working directory]\n";
-  die "\n";
+  printf "CHISQR    %16.2f".(" "x29)."CHISQR     %16.2f\n", $chisqr1, $chisqr2;
+  printf "DOF       %16d"  .(" "x29)."DOF        %16d\n",   $dof1, $dof2;
+  printf "CHISQR/DOF%16.2f".(" "x29)."CHISQR/DOF %16.2f\n", $chisqr1/$dof1, $chisqr2/$dof2;
 }
+
+#-----------------------------------------
 
 sub tempo_lis_info {
   my($dir) = @_;
@@ -269,5 +233,111 @@ sub tempo_lis_info {
   $parfile = $dir . "/" . $psr . ".par";
   ($chisqr, $dof, $parfile);
 
+}
+
+#-----------------------------------------
+
+sub compare_tempo_command_line_parse {
+
+  # parse input line
+  #  
+  # calling parameters:
+  #    -- $tpo1default
+  #    -- $tpo2default
+  #    -- command line parameters from @ARGV
+  #  
+  #
+  # the parsing code is set up to allow for:
+  #    -- flags of the form '-a'
+  #    -- flags with parameters of the form '-axxxx'
+  #    -- parameters without flags, simply 'xxxx' (but see below)
+  #
+  # Parameters without flags are accumulated in array @param.  
+
+  my($tpo1default) = shift;   # first parameter of subroutine
+  my($tpo2default) = shift;   # second parameter of subroutine
+
+  my($usage) = 
+  "\n".
+  "Use:\n".
+  "    compare_tempo file1 [file2] (options)\n".
+  "What it does:\n".
+  "    default: Run tempo twice (on two files, or two versions of tempo); compare .par files\n".
+  "    -p mode: Compare .par files without actually running tempo\n".
+  "Parameters:\n".
+  "    file1 = tempo input file (or par file in -p mode) for first run\n".
+  "    file2 = tempo input file (or par file in -p mode) for second run [default=same as file1]\n".
+  "Options:\n".
+  "   -aXXX   = tempo executable, first run    [default=$tpo1default]\n".
+  "   -bXXX   = tempo executable, second run   [default=$tpo2default]\n".
+  "   -cXXX   \$TEMPO env variable, first run  [default=preexisting \$TEMPO]\n".
+  "   -dXXX   \$TEMPO env variable, second run [default=preexisting \$TEMPO]\n".
+  "   -eXXX   = working directory, first run   [default=current working directory]\n".
+  "   -fXXX   = working directory, second run  [default=current working directory]\n".
+  "   -h      = help message\n".
+  "   -p      = don't run tempo; read file1 and file2 as tempo .par files\n".
+  "\n";
+
+  my($f);
+  my($par);
+  my(@param)=();
+
+  # defaults
+
+  my($env1) = "";
+  my($env2) = "";
+  my($dir1) = "";
+  my($dir2) = "";
+  my($tpo1) = $tpo1default;
+  my($tpo2) = $tpo2default;
+  my($runtpo) = 1;
+
+  foreach $par (@_) {
+    if ($par=~/^-/) {           # flags
+      $par = substr($par,1);      #   strip off the leading "-"
+      while ($par ne "") {      #   loop through the string
+        $f = substr($par,0,1);  #     strip off the current flag
+        $par = substr($par,1);    #     process flags:
+        if ($f eq "a")      {#       -a
+          $tpo1 = $par;
+          last;
+        } elsif ($f eq "b") {#       -f
+          $tpo2 = $par;
+          last;
+        } elsif ($f eq "c") {#       -f
+          $env1 = $par;
+          last;
+        } elsif ($f eq "d") {#       -f
+          $env2 = $par;
+          last;
+        } elsif ($f eq "e") {#       -f
+          $dir1 = $par;
+          last;
+        } elsif ($f eq "f") {#       -f
+          $dir2 = $par;
+          last;
+        } elsif ($f eq "h") {#       -h
+          die $usage;
+        } elsif ($f eq "p") {#       -t
+          $runtpo = 0;
+        }  else {            #       invalid flag
+          print "\nERROR: Invalid flag -$f\n\n";
+          die $usage;
+        }
+      }
+    } else {                  # parameters
+      push @param, $par;        #   push onto parameter list
+    }
+  }
+
+  if ($#param<0 || $#param>1) {
+    print "\nERROR: following parameters have no meaning: ",join(" ",@param),"\n";
+    die $usage;
+  }
+  my($file1) = $param[0];
+  my($file2) = $file1;
+  $file2 = $param[1] if ($#param>0);
+
+  return $file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $runtpo;
 }
 
