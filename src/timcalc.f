@@ -142,6 +142,10 @@ c     relevant closer than sun-grazing in any case.
          
          DTDPPNG = 0.5D0*DTGR
          TDIS = 0D0
+
+c        angle needed for planetary dispersion and phisun calculations
+         CTH = DOT(POS,RSA)/DSQRT(DOT(RSA,RSA))
+         THETH = DACOS(CTH)
 c
          if (FREQHZ.LE.1D-1) then
            freqf = freqhz
@@ -156,8 +160,6 @@ c     first add observatory velocity to EMB's (JMW)
 C     R IS DISTANCE FROM SUN TO SITE
          FREQF=FREQHZ*(1D0-VOVERC)
 C     compute interplanetary effect assuming 10 e-/cc at 1 AU
-         CTH = DOT(POS,RSA)/DSQRT(DOT(RSA,RSA))
-         THETH = DACOS(CTH)
          if (SSDMFLAG.eq.0) then
            pldis = 0
          else
@@ -166,9 +168,10 @@ C     compute interplanetary effect assuming 10 e-/cc at 1 AU
            PLDIS = PLDIS/2.		
          endif
          TDIS = (BVAL+PLDIS)/FREQF**2
-         phisun = 360*(PI-THETH)/TWOPI
 c     
- 115     nmjdc=nmjdu
+ 115     continue   
+         phisun = 360*(PI-THETH)/TWOPI
+         nmjdc=nmjdu
          dt_path = bclt-tdis-dtgr-dt_delay
       
          go to 101
@@ -230,11 +233,6 @@ c just the transverse proper motion is taken into account
          arg_ln = (R/AULTSC)*(1.0D0+CTH)  ! R/AULTSC term added jun'00 
          dt_shapiro = -2.d0*RSCHW*DLOG(arg_ln) 
 
-         TDIS = 0D0
-         if(FREQHZ.LE.1.D-1) then ! catch freq=0 (infinite frequency) case
-           freqf = freqhz
-           goto 210
-         endif
 
 c correct the observing frequency to barycentric frame for dispersion
 c delay calculation
@@ -243,23 +241,31 @@ c first add observatory velocity to EMB's (JMW)
          do 204 I=1, 3
  204     VOBS(I) = RCE(I+3) + SITVEL(I)
          VOVERC = DOT(POS,VOBS)
-         FREQF=FREQHZ*(1D0-VOVERC)
+         if(FREQHZ.LE.1.D-1) then ! catch freq=0 (infinite frequency) case
+           freqf = freqhz
+         else
+           FREQF=FREQHZ*(1D0-VOVERC)
+         endif
 
 c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          THETH = DACOS(CTH)
-         if (SSDMFLAG.eq.0) then
-           PLDIS = 0
+         if (freqhz.le.1.d-1) then
+           TDIS = 0D0
          else
-           solarn00 = solarn0 + solarn01*(nmjdu+fmjdu-pepoch)/365.25
-           PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn00/10)
-           PLDIS = PLDIS/2.
+           if (SSDMFLAG.eq.0) then
+             PLDIS = 0
+           else
+             solarn00 = solarn0 + solarn01*(nmjdu+fmjdu-pepoch)/365.25
+             PLDIS = 2D14*THETH/R/DSQRT(1D0-CTH**2)*(solarn00/10)
+             PLDIS = PLDIS/2.
+           endif
+           TDIS = (BVAL+PLDIS)/FREQF**2
          endif
-		
-         TDIS = (BVAL+PLDIS)/FREQF**2
-         phisun = 360*(PI-THETH)/TWOPI
-        
 
- 210     continue
+         phisun = 360*(PI-THETH)/TWOPI
+c           Should we worry about phisun in the case of barycenter TOAs?
+c           No, because this routine is not called if nsite<0
+        
          nmjdc=nmjdu
 
          dt_SSB = bclt-TDIS-dt_shapiro      
