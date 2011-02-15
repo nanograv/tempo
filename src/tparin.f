@@ -26,7 +26,7 @@ c     following variables are set in this routine:
       character*80 path
       character*80 resfile1
       character*80 hlpfile
-      character*40 parfile
+      character*160 parfile
       character*160 key
       character*160 val
       integer err

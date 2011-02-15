@@ -145,7 +145,7 @@ C  99	gro.99			newval
         character*80 infile,ut1file,resfile1,obsyfile,
      +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
 	character*160 npulsefile, infofile, phisunfile
-	character date*9,date2*9,damoyr*9,label*12,parfile*40
+	character date*9,date2*9,damoyr*9,label*12,parfile*160
 	integer time, n
         real*8 xmean(NPA),alng(36)
 

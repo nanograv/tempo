@@ -7,7 +7,7 @@ c       $Id$
 	include 'dim.h'
 	include 'acom.h'
 	integer time
-	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*40
+	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*160
 	character*80 infile,obsyfile
 	data ault/499.004786d0/
 	data obsnum/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
