@@ -790,14 +790,21 @@ C  Warnings
      +   write(*,'('' WARNING: Fit parameter for DM out of range'')')
 
 C IHS addition to prevent pathological double-fit of DM0 in one case
+C DJN modified to allow it if at least one DMX value is held fixed at zero
 
       if(ndmcalc.ge.2 .and. nfit(16).ge.1 .and. usedmx) then
+        if (ndmx>0)  then
+           do i = 1, ndmx
+             if (nfit(NPAR6+2*i-1) .EQ. 0) goto 910
+           enddo
+        endif 
         write(*,'(''ERROR: Cannot fit for DM0 when combining'',
      +          '' DM polynomial and DMX offset fits.  Fit for the'',
      +          '' polynomial in the relevant section first,'',
      +          '' then freeze the DM0 to DMN coefficients '',
      +          '' while fitting for the DMX values.'')')
         stop
+  910   continue
       endif
 
       if(setecl)then
