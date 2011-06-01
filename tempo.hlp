@@ -36,8 +36,8 @@ options:
                 START      current time  Start time for polyco block
                 NCOEFF     15            Number of coefficients
                 FREQ       1420          Radio frequency of observation
-                SPAN       60            Time span in minutes for polyco block
-                                           (xxxH or xxxS for hours or seconds)
+                SPAN       60            Time span in seconds for polyco block
+                                           (xxxH or xxxM for hours or minutes)
                 TOBS       1             Observing time in hours
                                            (xxxM or xxxS for minutes or seconds)
 
