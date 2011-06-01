@@ -4,13 +4,13 @@ c      $Id$
       implicit real*8 (a-h,o-z)
       parameter (nn=31,pi=3.141592653589793d0)
       character date*9,damoyr*9,binpha*16
-      real*8 t(nn),ph(nn),c(nn),d(nn),phase(800)
 
       include 'dim.h'
       include 'acom.h'
       include 'tz.h'
       include 'trnsfr.h'
 
+      real*8 t(nn),ph(nn),c(nn),d(nn),phase(NTZARR)
       common /obsp/ site(3), pos(3), freqhz, bval, sitvel(3)
 
       nspan=nsp(ipsr)

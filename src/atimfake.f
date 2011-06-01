@@ -95,7 +95,7 @@ c       store reference TOA line
           fmjd2 = ntmp2*1.d-10 + ntmp1*1.d-8 !    digits)
           do 40 k=1,nn
             i = i + 1
-            if(i.gt.800) stop ' Nspan too small'
+            if(i.gt.NTZARR) stop ' Nspan too small'
             ftmjd(i) = fmjd2 + xx(k)/1440.d0
             ntmjd(i) = nmjd1
             if (ftmjd(i).ge.2.) then

@@ -5,8 +5,8 @@ c      $Id$
        character name(NTZMAX)*12,pname*12,params(6)*80
        integer nsp(NTZMAX),nco(NTZMAX)
        real*8 mxha(NTZMAX)
-       integer ntmjd(800)
-       real*8 ftmjd(800),tmin(800),tzof(NTZMAX)
+       integer ntmjd(NTZARR)
+       real*8 ftmjd(NTZARR),tmin(NTZARR),tzof(NTZMAX)
        real*8 ftzrmjd
        integer ntzrmjd
        real*8 tzmjdstart
