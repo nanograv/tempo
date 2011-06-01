@@ -53,6 +53,7 @@ c     variables used internally in this routine:
 
       integer vall
       character*1 vallast
+      real tmp
 
 
       character*160 getparm  ! external function
@@ -207,25 +208,27 @@ c     default values of parameters
                   vallast = val(vall:vall)
                   call upcase(vallast)
                   if (vallast.eq."H") then
-                       read(val(1:vall-1),*) nsp(1) 
-                       nsp(1) = nsp(1)*60.          ! convert hr to min
-                  else if (vallast.eq."S") then
-                       read(val(1:vall-1),*) nsp(1) 
-                       nsp(1) = nsp(1)/60.          ! convert sec to min 
+                       read(val(1:vall-1),*) tmp    
+                       nsp(1) = tmp*60              ! convert hr to min
                   else if (vallast.eq."M") then
-                       read(val(1:vall-1),*) nsp(1) ! minutes: no conversion
-                  else       !    no trailing letter, interpret as minutes
-                       read(val,*) nsp(1)           ! minutes: no conversion
+                       read(val(1:vall-1),*) tmp    
+                       nsp(1) = tmp                 ! minutes: no conversion
+                  else if (vallast.eq."S") then
+                       read(val(1:vall-1),*) tmp    ! conver min to sec
+                       nsp(1) = tmp/60              ! convert sec to min
+                  else       !    no trailing letter, interpret as seconds
+                       read(val,*) tmp   
+                       nsp(1) = tmp/60              ! convert sec to min
                   endif
                 else if (key(1:4).eq."TOBS") then
                   vallast = val(vall:vall)
                   call upcase(vallast)
                   if (vallast.eq."M") then
-                       read(val(1:vall-1),*) mxha(1) 
-                       mxha(1) = mxha(1)/60.          ! convert min to hr
+                       read(val(1:vall-1),*) tmp
+                       mxha(1) = tmp/60.              ! convert min to hr
                   else if (vallast.eq."S") then
-                       read(val(1:vall-1),*) mxha(1) 
-                       mxha(1) = mxha(1)/3600.        ! convert sec to hr
+                       read(val(1:vall-1),*) tmp     
+                       mxha(1) = tmp/3600.            ! convert sec to hr
                   else if (vallast.eq."H") then
                        read(val(1:vall-1),*) mxha(1)  ! hr: no conversion
                   else       !    no trailing letter, interpret as hr      
