@@ -51,6 +51,10 @@ c     variables used internally in this routine:
       integer i, ii
       character*160 s, s2
 
+      integer vall
+      character*1 vallast
+
+
       character*160 getparm  ! external function
 
 
@@ -186,7 +190,7 @@ c     default values of parameters
                 nsite = sitea2n(tzsite)
               endif
               s2 = getparm(s,i,ii,iarg,narg)
-              call spliteq(s2,key,val,err)
+              call spliteq(s2,key,val,vall,err)
               if (err.eq.1) then
                 write (*,*) "Error: -Z parameter, no value: ",s(i+1:ii)
                 write (*,*)
@@ -200,17 +204,33 @@ c     default values of parameters
                 else if (key(1:6).eq."NCOEFF") then
                   read(val,*) nco(1)
                 else if (key(1:4).eq."SPAN") then
-                  read(val,*) nsp(1) ! native unit: minutes
-                  if (key(5:5).eq."H")
-     +                 nsp(1) = nsp(1)*60. ! convert hr to min
-                  if (key(5:5).eq."S" .or. key(5:5).eq." ")
-     +                 nsp(1) = nsp(1)/60. ! convert sec to min (default)
+                  vallast = val(vall:vall)
+                  call upcase(vallast)
+                  if (vallast.eq."H") then
+                       read(val(1:vall-1),*) nsp(1) 
+                       nsp(1) = nsp(1)*60.          ! convert hr to min
+                  else if (vallast.eq."S") then
+                       read(val(1:vall-1),*) nsp(1) 
+                       nsp(1) = nsp(1)/60.          ! convert sec to min 
+                  else if (vallast.eq."M") then
+                       read(val(1:vall-1),*) nsp(1) ! minutes: no conversion
+                  else       !    no trailing letter, interpret as minutes
+                       read(val,*) nsp(1)           ! minutes: no conversion
+                  endif
                 else if (key(1:4).eq."TOBS") then
-                  read (val,*) mxha(1)
-                  if (key(5:5).eq."M")
-     +                 mxha(1)=mxha(1)/60. ! convert min to hr
-                  if (key(5:5).eq."S".or.key(5:5).eq." ") 
-     +                 mxha(1)=mxha(1)/3600. ! convert sec to hr
+                  vallast = val(vall:vall)
+                  call upcase(vallast)
+                  if (vallast.eq."M") then
+                       read(val(1:vall-1),*) mxha(1) 
+                       mxha(1) = mxha(1)/60.          ! convert min to hr
+                  else if (vallast.eq."S") then
+                       read(val(1:vall-1),*) mxha(1) 
+                       mxha(1) = mxha(1)/3600.        ! convert sec to hr
+                  else if (vallast.eq."H") then
+                       read(val(1:vall-1),*) mxha(1)  ! hr: no conversion
+                  else       !    no trailing letter, interpret as hr      
+                       read(val,*) mxha(1)            ! hr: no conversion
+                  endif
                 else if (key(1:4).eq."FREQ") then
                   read (val,*) tzof(1)
                 else if (key(1:4).eq."SITE".or.key(1:3).eq."OBS") then
@@ -303,17 +323,20 @@ c       otherwise use the next command-line-parameter as return value.
 
 C----------------------------------------------------------------
 
-	subroutine spliteq(s,key,val,err)
+	subroutine spliteq(s,key,val,vall,err)
 
 	character*160 s
         character*160 key
         character*160 val
+        integer vall
         integer err
         integer idx 
         integer j
 
 c       Examine string s(i+1:ii) for a structure of the form "xxx=yyy".
 c       If such a structure is present, return xxx as key and yyy as val.
+c       Return length of val as integer vall (length is defined as
+c         position of leftmost non-space character)
 c       Return values for err:
 c         0 = key and val returned
 c         1 = no equals sign detected, return s(i+1:ii) as key; val empty
@@ -344,6 +367,17 @@ c       necessary, at least in sun fortran, but it seems worth doing.
             val = ""
           endif
         endif
+
+c       find length of vall (position of last non-space character)
+c       robust (if not efficient) to do this independently of previous code
+        vall=160  ! default: maximum length
+        do i = 1, len(val)
+          if (val(i:i).eq.' ') then
+            vall=i-1
+            goto 500
+          endif
+        enddo
+  500   continue
         
         call upcase(key)
         
