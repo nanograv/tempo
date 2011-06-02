@@ -115,7 +115,10 @@ C  Calculate header lines to be skipped when reading TOAs
 c --- free format header ---
 
 	   call rdpar(nits)
-	   if (parunit.eq.49) nskip=0   ! separate par file
+	   if (parunit.eq.49) then      ! separate par file
+               nskip = 0
+               close(49)
+           endif
 
         endif
 
