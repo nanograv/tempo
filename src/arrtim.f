@@ -364,6 +364,18 @@ c   Back to processing of all TOAs
 61          continue
 	endif
         if (usedmx) then
+c         first see whether this point fits into an existing range
+          do i = 1, ndmx
+            if (nfmjd+ffmjd.ge.dmxr1(i)
+     +           .and.nfmjd+ffmjd.le.dmxr2(i)) then
+              if(dmxep(i).lt.10) dmxep(i)=(dmxr1(i)+dmxr2(i))/2.0
+              idmx = i
+              goto 80
+            endif
+            if(dmxep(idmx).lt.10) dmxep(idmx)=
+     +           (dmxr1(idmx)+dmxr2(idmx))/2.0
+          end do
+c         next see whether a range can be expanded to fit it in
           do i = 1, ndmx
             if (nfmjd+ffmjd.ge.min(dmxr1(i),dmxr2(i)-dmxt)
      +           .and.nfmjd+ffmjd.le.max(dmxr2(i),dmxr1(i)+dmxt)) then
@@ -373,8 +385,6 @@ c   Back to processing of all TOAs
               idmx = i
               goto 80
             endif
-            if(dmxep(idmx).lt.10) dmxep(idmx)=
-     +           (dmxr1(idmx)+dmxr2(idmx))/2.0
           end do
           if (nonewdmx) then ! give this point zero weight, don't create new range
             wgt = 0
@@ -391,6 +401,7 @@ c   Back to processing of all TOAs
             print *,"  To change this, edit dim.h & recompile tempo"
             stop
           endif 
+c         it doesn't fit into any existing range, so create a new range
           ndmx = ndmx + 1
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
