@@ -158,6 +158,11 @@ C  Convert units
 	else
 	   posep=pepoch
 	endif
+	if(dmepoch.gt.0.)then
+	   dmep=dmepoch
+	else
+	   dmep=pepoch
+	endif
 	ndmcalc=max(nfit(16),ndmcalc)
 	nfcalc=max(nfit(3),nfcalc)
 
@@ -403,6 +408,11 @@ c  Beginning of iteration loop
           if(posepoch.gt.0.)then
             write (31,1100) posepoch
  1100       format('Pos Epoch (MJD):',f16.8)
+          endif
+          
+          if(dmepoch.gt.0.)then
+            write (31,1110) dmepoch
+ 1110       format('DM Epoch (MJD):',f16.8)
           endif
           
           write (31,1044) f0,p0,f1,p1*1.d15,f2,f3

@@ -28,6 +28,7 @@ c      $Id$
       p2=0.
       pepoch=50000.
       posepoch=0.
+      dmepoch=0.
       f0=0.
       f1=0.
       f2=0.
@@ -420,6 +421,9 @@ C  Position parameters
 
       else if(key(1:5).eq.'POSEP')then
          read(value,*)posepoch
+
+      else if(key(1:7).eq.'DMEPOCH')then
+         read(value,*)dmepoch
 
       else if(key(1:4).eq.'DMX_') then
          if (ikey.gt.NDMXMAX) then

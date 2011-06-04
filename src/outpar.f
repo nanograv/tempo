@@ -199,6 +199,9 @@ c      $Id$
       enddo
  1051 format('DM',i3.3,1p,d21.12,a,d20.12)
 
+      if(dmepoch.gt.0.)write(71,1052)dmepoch
+ 1052 format('DMEPOCH',f18.4)
+
       if(ngl.gt.0)then
          do i=1,ngl
             ii=NPAR1+(i-1)*NGLP

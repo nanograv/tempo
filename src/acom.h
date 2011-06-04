@@ -24,11 +24,12 @@ c      $Id$
         real*8 solarn01     ! solar wind electron density time derivative
         real*8 fixeddist    ! fixed input distance (instead of fit px) 
                             !    for ann-orb px
+        real*8 dmepoch
 
 	common pdec,pra,ba(3),bc(3),dm,dt,dt2,freq(NPAP1),
      +    ferr(NPAP1),fmin,hlt(36),hrd(36),wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
-     +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),
+     +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),dmepoch,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
      +    usedmx1,
@@ -42,7 +43,7 @@ c      $Id$
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,
-     +    tdbif99fmt 
+     +    tdbif99fmt
 
 
 

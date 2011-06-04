@@ -359,7 +359,9 @@ c   Back to processing of all TOAs
 !        if(ndmcalc.ge.2) then
           fac = 1
 	  do 61 i=1,ndmcalc-1
-            fac = fac * yrs / real(i)
+C IHS June 3 2011: use dmyrs now for separate dmepoch
+ 	    dmyrs=(fmjd-dmep)/365.25d0
+            fac = fac * dmyrs / real(i)
 	    dmtot=dmtot + fac*dmcof(i) 
 61          continue
 	endif
@@ -613,7 +615,8 @@ C IHS based on Jan 2009: change to allow dmpoly in one section
         if(nfit(16).ge.2 .and. fmjd.ge.dmvar1 .and. fmjd.le.dmvar2) then
           fac = 1.
 	  do 89 i=1,nfit(16)-1
-            fac = fac * yrs / real(i)
+C IHS June 3 2011: use dmyrs now for separate dmepoch
+            fac = fac * dmyrs / real(i)
 	    x(NPAR7+i)= fac * x(16) 
 89        continue
 	endif
