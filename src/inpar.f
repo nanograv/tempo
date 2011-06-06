@@ -443,8 +443,11 @@ C  Position parameters
          read(value,*)dmx1(ikey)
          read(cfit,*)nfit(NPAR6+2*ikey)
 C IHS force fit of DMX value if DMX1 is to be fit
+         if(((nfit(NPAR6+2*ikey)).gt.0)
+     +		.and.((nfit(NPAR6+2*ikey-1)).eq.0))
+     +		write(*,'(''Fitting DMX value anyway in bin '',a)')key
          if((nfit(NPAR6+2*ikey)).gt.0) nfit(NPAR6+2*ikey-1)=1
-         if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
+C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
 
       else if(key(1:6).eq.'DMXEP_') then
          if (ikey.gt.NDMXMAX) then
