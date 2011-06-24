@@ -1,0 +1,6 @@
+This directory contains programs which are not directly related to
+tempo but are useful for pulsar observers
+
+mjd:    print an MJD in human readable form
+aolst:  calculate LST at Arecibo at a given MJD and UT time
+
