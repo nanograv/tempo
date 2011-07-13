@@ -117,7 +117,8 @@ c --- free format header ---
 	   call rdpar(nits)
 	   if (parunit.eq.49) then      ! separate par file
                nskip = 0
-               close(49)
+               if (.not. tz) close(49)  ! leave open in tz mode for multi-day 
+                                        !   calculations which re-read the par file
            endif
 
         endif

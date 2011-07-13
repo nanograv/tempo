@@ -1,6 +1,6 @@
 c      $Id$
       subroutine arrtim(mode,xmean,sum,sumwt,dnpls,ddmch,ct2,
-     +     alng,nsmax,nz,tz,nptsmax,nits,jits,
+     +     alng,nsmax,nz,nptsmax,nits,jits,
      +     buf,npmsav,ksav,nbuf,memerr,infofile,lw)
 
 C  Reads pulse arrival times (at observatory, in UTC) from unit 4. Then
@@ -24,7 +24,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	character*80 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
         character*20 amjd
-	logical first,offset,jdcatc,last,dithmsg,tz,track,search
+	logical first,offset,jdcatc,last,dithmsg,track,search
 	logical memerr
 	integer i1, i2
         character*160 infofile

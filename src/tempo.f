@@ -140,7 +140,7 @@ C  99	gro.99			newval
 	include 'tz.h'
         include 'toa.h'
 
-	logical tz,lw, nostop
+	logical lw, nostop
         logical memerr
         character*80 infile,ut1file,resfile1,obsyfile,
      +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
@@ -171,7 +171,7 @@ C  99	gro.99			newval
 
 c  Get command-line arguments
 
-        call tparin(nostop,tz,lw,lpth,nparmax,nptsmax,version,
+        call tparin(nostop,lw,lpth,nparmax,nptsmax,version,
      +     npulsefile,infile,path,resfile1,hlpfile,parfile)
 
  	path=path(1:lpth)//'/tempo.cfg'
@@ -397,7 +397,7 @@ c  Open TDB-TDT clock offset file
 		call setup(version,infile,obsyfile,alng,nsmax,parfile)
 		call newsrc(nits,jits,nboot)
 		call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
-     +               ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,
+     +               ddmch(1+ddmchoff),ct2,alng,nsmax,nz,nptsmax,
      +               nits,jits,buf(1+bufoff),npmsav(1+npmsavoff),
      +               ksav(1+ksavoff),nbuf,memerr,infofile,lw)
 
@@ -479,7 +479,7 @@ C         The main loop:
  62       continue  ! re-entry point after re-allocating arrays
           rewind 32
           call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
-     +         ddmch(1+ddmchoff),ct2,alng,nsmax,nz,tz,nptsmax,nits,jits,
+     +         ddmch(1+ddmchoff),ct2,alng,nsmax,nz,nptsmax,nits,jits,
      +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),nbuf,
      +         memerr,infofile,lw)
 

@@ -1,6 +1,6 @@
 c      $Id$
 c
-      subroutine tparin(nostop,tz,lw,lpth,nparmax,nptsmax,
+      subroutine tparin(nostop,lw,lpth,nparmax,nptsmax,
      +     version,npulsefile,infile,path,resfile1,hlpfile,parfile)
 
 c     tparin -- Tempo PARamater INput
@@ -16,7 +16,6 @@ c     parses tempo command-line parameters and sets variables appropriately
 c     following variables are set in this routine:
 
       logical nostop
-      logical tz
       logical lw
       integer lpth
       integer nparmax, nptsmax

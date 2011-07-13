@@ -5,6 +5,7 @@ c      $Id$
         logical usedmx, firstdmx, nonewdmx
         logical npulsein, npulseout, infoout, quiet, polystdout
         logical phisunout
+        logical tz
         logical autotz
         logical useannorb   ! flag to use annual-orbital parallax
         logical usefixeddist! flag to use fixed input distance in ann-orb px
@@ -41,7 +42,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
-     +    quiet,polystdout,autotz,firstdmx,nonewdmx,
+     +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,
      +    tdbif99fmt
 
