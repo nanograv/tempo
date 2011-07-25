@@ -5,7 +5,7 @@
 # Sample usage:
 #   print_resid | res_avg
 
-($dt, $df, $dfflag, $cflag) = &resavg_arg_parse(@ARGV);
+($dt, $df, $dfflag, $cflag, $zflag) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
 
@@ -78,22 +78,29 @@ sub resavg_arg_parse{
   # is flagged as an error.
 
   my($usage) = 
+  "\n".
   "Use:\n".
   "  res_avg [flags]\n" .
+  "\n".
   "Input:\n".
   "  time-sorted (optionally frequency-sorted as well) residuals in standard input\n".
+  "\n".
   "Output:\n".
   "  list of date, frequency, residual, error, orbital phase, reduced chi^2\n".
+  "\n".
   "Typical use:\n".
   "  for a single daily TOA: print_resid | res_avg\n".
   "  for one TOA per widely separated narrow band: print_resid | res_avg -f0.25\n".
+  "\n".
   "Flags:\n".
   "  -c:    calculate weighted avg residual from fit of resid and dm at each epoch\n".
   "         (experimental!  use with care!)\n".
   "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, over which residuals\n".
   "         are averaged [default: not used]\n".
   "  -h   : help message\n".
-  "  -txxx: maximum time (in days) over which residuals are averaged, [default: 1]\n"
+  "  -txxx: maximum time (in days) over which residuals are averaged, [default: 1]\n".
+  "  -z   : ignore input residuals with zero error\n".
+  "\n"
 ;
 
   my($f);
@@ -108,6 +115,7 @@ sub resavg_arg_parse{
   my($df) = 0.25;  # max fracional frequency difference (f-f0)/f0 in a single average
 
   my($cflag) = 0;  # calculate avg residual based on fit of both residual and dm
+  my($zflag) = 0;  # calculate avg residual based on fit of both residual and dm
   
   foreach $par (@_) {
     if ($par=~/^-/) {           # flags
@@ -126,6 +134,8 @@ sub resavg_arg_parse{
         } elsif ($f eq "t") {#       -t
           $dt = $par;
           last;
+        } elsif ($f eq "z") {#       -z
+          $zflag = 1;
         }  else {            #       invalid flag
           print "\nERROR: Invalid flag -$f\n\n";
           die $usage;
@@ -141,7 +151,7 @@ sub resavg_arg_parse{
     die $usage;
   }
 
-return $dt, $df, $dfflag, $cflag;
+return $dt, $df, $dfflag, $cflag, $zflag;
 }
 
 #-----------------------------------------
@@ -211,11 +221,13 @@ sub resavg_read{
   while (<STDIN>) {
     chomp;
     ($mjd0, $freq0, $res0, $err0, $ophase0) = split;
-    push @mjda, $mjd0;
-    push @freqa, $freq0;
-    push @resa, $res0;
-    push @erra, $err0;
-    push @ophasea, $ophase0; 
+    if ($err0>0 or $zflag==0) {
+      push @mjda, $mjd0;
+      push @freqa, $freq0;
+      push @resa, $res0;
+      push @erra, $err0;
+      push @ophasea, $ophase0; 
+    }
   }
 }
 
