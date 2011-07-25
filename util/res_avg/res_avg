@@ -5,7 +5,7 @@
 # Sample usage:
 #   print_resid | res_avg
 
-($dt, $df, $dfflag, $cflag, $zflag) = &resavg_arg_parse(@ARGV);
+($dt, $df, $dfflag, $cflag, $sflag, $zflag) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
 
@@ -115,7 +115,8 @@ sub resavg_arg_parse{
   my($df) = 0.25;  # max fracional frequency difference (f-f0)/f0 in a single average
 
   my($cflag) = 0;  # calculate avg residual based on fit of both residual and dm
-  my($zflag) = 0;  # calculate avg residual based on fit of both residual and dm
+  my($sflag) = 0;  # input residuals in sec (tempo2) not microsec (tempo)
+  my($zflag) = 0;  # ignore zero-error points
   
   foreach $par (@_) {
     if ($par=~/^-/) {           # flags
@@ -131,6 +132,8 @@ sub resavg_arg_parse{
           last;
         } elsif ($f eq "h") {#       -h
           die $usage;
+        } elsif ($f eq "s") {#       -s
+          $sflag = 1;
         } elsif ($f eq "t") {#       -t
           $dt = $par;
           last;
@@ -151,7 +154,7 @@ sub resavg_arg_parse{
     die $usage;
   }
 
-return $dt, $df, $dfflag, $cflag, $zflag;
+return $dt, $df, $dfflag, $cflag, $sflag, $zflag;
 }
 
 #-----------------------------------------
@@ -222,6 +225,7 @@ sub resavg_read{
     chomp;
     ($mjd0, $freq0, $res0, $err0, $ophase0) = split;
     if ($err0>0 or $zflag==0) {
+      $res0 *= 1.e6 if ($sflag);
       push @mjda, $mjd0;
       push @freqa, $freq0;
       push @resa, $res0;
