@@ -4,6 +4,7 @@
 # from Ingrid, Email, 12 April 2010
 
 $outfiledefault = "dmxparse.out";
+$ndmxmax = 100;
 
 $help = 
   "\n".
@@ -52,12 +53,12 @@ die $help if ($#parlist!=0);
 ($file) = @parlist;
 open(IN,$file) || die "cannot open $file for reading: $!";
 open(OUT,">$outfile") || die "cannot open $outfile for writing: $!";
-for ($ib = 0;$ib < 100;$ib++) {
-  $dmval[$ib] = 0;
-  $dmerr[$ib] = 0;
-  $dmr1[$ib] = 0;
-  $dmr2[$ib] = 0;
-  $dmep[$ib] = 0;
+for ($i = 0;$i < $ndmxmax;$i++) {
+  $dmval[$i] = 0;
+  $dmerr[$i] = 0;
+  $dmr1[$i] = 0;
+  $dmr2[$i] = 0;
+  $dmep[$i] = 0;
 }
 $ndm = 0;
 while (<IN>) {
@@ -92,10 +93,10 @@ while (<IN>) {
 }
 close(IN);
 printf "Start, finish, pepoch: %f %f %f\n", $mjdstart, $mjdend,$pepoch;
-for ($dmid = 1; $dmid <= $ndm; $dmid++) {
-  if ($dmr1[$dmid]>0) {  # skip over any unused DMX numbers
-    $dmep[$dmid] = ($dmr1[$dmid]+$dmr2[$dmid])/2.;
-    printf OUT "%f %f %f\n", $dmep[$dmid],$dmval[$dmid],$dmerr[$dmid];
+for ($i = 1; $i < $ndmxmax; $i++) {
+  if ($dmr1[$i]>0) {  # skip over any unused DMX numbers
+    $dmep[$i] = ($dmr1[$i]+$dmr2[$i])/2.;
+    printf OUT "%f %f %f\n", $dmep[$i],$dmval[$i],$dmerr[$i];
   }
 }
 close(OUT);
