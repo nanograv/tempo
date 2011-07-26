@@ -1,11 +1,57 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # dmxparse.pl 
 # from Ingrid, Email, 12 April 2010
 
-($file) = @ARGV;
+$outfiledefault = "dmxparse.out";
+
+$help = 
+  "\n".
+  "Usage: dmxprase infile [flags]\n".
+  "\n".
+  "Input:\n".
+  "   a tempo or tempo2 .par file with DMX lines\n".
+  "\n".
+  "Flags:\n".
+  "   -h      help message\n".
+  "   -o xxx  output file (default $outfiledefault)".
+  "\n".
+  "\n";
+
+$outfile = $outfiledefault;
+@parlist = ();
+
+@a = @ARGV;
+
+A: while ($#a>=0) {
+  $s = shift @a;
+  if (substr($s,0,1) eq "-") {
+    $s = substr($s,1);
+    while (length($s)>0) { 
+      $ss = substr($s,0,1,"");  # "shift" the first charcter out of $s
+      if ($ss eq "h") {
+        die $help;
+      } elsif ($ss eq "o") {
+        if (length($s)>0) {
+          $outfile = $s;
+          next A;
+        } elsif ($#a>=0) {
+          $outfile = shift @a;
+        } else {
+          die $help;
+        }
+      }
+    }
+  } else {
+    push @parlist, $s
+  }
+}
+
+die $help if ($#parlist!=0);
+
+($file) = @parlist;
 open(IN,$file) || die "cannot open $file for reading: $!";
-open(OUT,">dmxparse.out") || die "cannot open dmxparse.out for writing: $!";
+open(OUT,">$outfile") || die "cannot open $outfile for writing: $!";
 for ($ib = 0;$ib < 100;$ib++) {
   $dmval[$ib] = 0;
   $dmerr[$ib] = 0;
@@ -25,11 +71,11 @@ while (<IN>) {
   $dmxtest2 = substr($_,0,5);
   if($dmxtest1 =~ /DMX/ && !($dmxtest2 =~ /DMX  /)) {
     if($dmxtest2 =~ /DMX_0/) {
-       ($jnq1,$dmin,$jnq2,$dmerrin) = split;
-       $dmid = substr($jnq1,4,4);
+       @b = split;
+       $dmid = substr($b[0],4,4);
        $ndm++;
-       $dmval[$dmid] = $dmin;
-       $dmerr[$dmid] = $dmerrin;
+       $dmval[$dmid] = $b[1];
+       $dmerr[$dmid] = $b[3] if ($#b>1); # catch cases with no error
     }
     else {
        ($bound,$epin) = split;
@@ -47,7 +93,9 @@ while (<IN>) {
 close(IN);
 printf "Start, finish, pepoch: %f %f %f\n", $mjdstart, $mjdend,$pepoch;
 for ($dmid = 1; $dmid <= $ndm; $dmid++) {
-  $dmep[$dmid] = ($dmr1[$dmid]+$dmr2[$dmid])/2.;
-  printf OUT "%f %f %f\n", $dmep[$dmid],$dmval[$dmid],$dmerr[$dmid];
+  if ($dmr1[$dmid]>0) {  # skip over any unused DMX numbers
+    $dmep[$dmid] = ($dmr1[$dmid]+$dmr2[$dmid])/2.;
+    printf OUT "%f %f %f\n", $dmep[$dmid],$dmval[$dmid],$dmerr[$dmid];
+  }
 }
 close(OUT);
