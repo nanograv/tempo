@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+# dmxparse.pl 
+# from Ingrid, Email, 12 April 2010
+
+($file) = @ARGV;
+open(IN,$file) || die "cannot open $file for reading: $!";
+open(OUT,">dmxparse.out") || die "cannot open dmxparse.out for writing: $!";
+for ($ib = 0;$ib < 100;$ib++) {
+  $dmval[$ib] = 0;
+  $dmerr[$ib] = 0;
+  $dmr1[$ib] = 0;
+  $dmr2[$ib] = 0;
+  $dmep[$ib] = 0;
+}
+$ndm = 0;
+while (<IN>) {
+  s/D\+/e\+/g;
+  s/D\-/e\-/g;
+  ($jnq,$jnqd) = split;
+  if($jnq =~ /START/) {$mjdstart = $jnqd;}
+  if($jnq =~ /FINISH/) {$mjdend = $jnqd;}
+  if($jnq =~ /PEPOCH/) {$pepoch = $jnqd;}
+  $dmxtest1 = substr($_,0,3);
+  $dmxtest2 = substr($_,0,5);
+  if($dmxtest1 =~ /DMX/ && !($dmxtest2 =~ /DMX  /)) {
+    if($dmxtest2 =~ /DMX_0/) {
+       ($jnq1,$dmin,$jnq2,$dmerrin) = split;
+       $dmid = substr($jnq1,4,4);
+       $ndm++;
+       $dmval[$dmid] = $dmin;
+       $dmerr[$dmid] = $dmerrin;
+    }
+    else {
+       ($bound,$epin) = split;
+       $b1test = substr($bound,0,5);
+       $dmid = substr($bound,6,4);
+       if($b1test =~ /DMXR1/) {
+          $dmr1[$dmid] = $epin;
+       }
+       if($b1test =~ /DMXR2/) {
+          $dmr2[$dmid] = $epin;
+       }
+    }
+  }
+}
+close(IN);
+printf "Start, finish, pepoch: %f %f %f\n", $mjdstart, $mjdend,$pepoch;
+for ($dmid = 1; $dmid <= $ndm; $dmid++) {
+  $dmep[$dmid] = ($dmr1[$dmid]+$dmr2[$dmid])/2.;
+  printf OUT "%f %f %f\n", $dmep[$dmid],$dmval[$dmid],$dmerr[$dmid];
+}
+close(OUT);
