@@ -206,7 +206,10 @@ for i in range(0, len(params)):
    exp_sig = getexp(sig)
 
    # check for first sigma digit 1...
-   if np.int(sig / (10**exp_sig)) == 1 and not flags['-n']:
+   sig_first_1 = np.int(sig / (10**exp_sig))
+   sig_first_2 = np.int(sig / (10**(exp_sig-1)))
+   sig_first_3 = np.int(sig / (10**(exp_sig-2)))
+   if (sig_first_1 == 1 and sig_first_3 - 100 < 95) or sig_first_2 == 99 and not flags['-n']:
       prec = 2
 
    exp_shift = exp_dat
@@ -240,6 +243,7 @@ for i in range(0, len(params)):
       sig_str /= 10
       exp_sig += 1
       exp_LSD += 1
+      # print name, "hurray!"
 
    if exp_sig >= 0:
       sig_str = sig_str * 10**exp_LSD
@@ -260,6 +264,9 @@ for i in range(0, len(params)):
       dat_str *= 10**exp_shift
       exp_sig += exp_shift
       exp_LSD += exp_shift
+      # if we're making this a decimal < 1, there's a zero on the left, which
+      # adds 1 to the number of characters
+      if exp_shift < 0: nchars += 1
       exp_shift = 0
 
    # turn data and sigma into strings (conversion to string rounds, which can
