@@ -185,6 +185,8 @@ units = {\
 'DTHETA':'10^-6',\
 'AFAC':'sin(eta)/sin(lambda)'\
 }
+# NOTE: units for DMn, DMX_???? and DMX1_???? are handled in an if-statement
+# later on
 
 # Format parameters with uncertainties in parentheses
 output = []
@@ -209,7 +211,7 @@ for i in range(0, len(params)):
    sig_first_1 = np.int(sig / (10**exp_sig))
    sig_first_2 = np.int(sig / (10**(exp_sig-1)))
    sig_first_3 = np.int(sig / (10**(exp_sig-2)))
-   if (sig_first_1 == 1 and sig_first_3 - 100 < 95) or sig_first_2 == 99 and not flags['-n']:
+   if ((sig_first_1 == 1 and sig_first_3 - 100 < 95) or sig_first_2 >= 95) and not flags['-n']:
       prec = 2
 
    exp_shift = exp_dat
@@ -243,7 +245,6 @@ for i in range(0, len(params)):
       sig_str /= 10
       exp_sig += 1
       exp_LSD += 1
-      # print name, "hurray!"
 
    if exp_sig >= 0:
       sig_str = sig_str * 10**exp_LSD
@@ -314,7 +315,16 @@ for i in range(0, len(params)):
    str_a = name
    str_b = precolon + dat_str + "(" + sig_str + ")" + exp_str
    try: str_c = units[name]
-   except: str_c = "(Units unknown)"
+   except:
+      # check for some DM-related units before giving up
+      if name[0:4] == "DMX_": str_c = "pc cm^-3"
+      elif name[0:5] == "DMX1_": str_c = "pc cm^-3 yr^-1"
+      elif name[0:2] == "DM":
+         try:
+            dm_num = np.int(name[2:])
+            str_c = "pc cm^-3 yr^-" + np.str(dm_num)
+         except: str_c = "(Units unknown)"
+      else: str_c = "(Units unknown)"
    #
    output.append([str_a, str_b, str_c])
 
