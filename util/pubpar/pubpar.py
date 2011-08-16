@@ -99,6 +99,7 @@ for row in par:
 
 # Convert frequency and frequency derivatives to period and period
 # derivatives if flags['-p'] = True
+already_gave_F0_warning = False
 f0 = 0.0
 deriv = -1
 if flags['-p']:
@@ -119,8 +120,9 @@ if flags['-p']:
          if deriv == 0: params[i][1] = np.abs(per)
          else: params[i][1] = per
          params[i][2] /= (f0*f0)
-      elif (freq and not success):
+      elif (freq and not success and not already_gave_F0_warning):
          print "F0 must come before F(>0) in order to convert frequencies to periods."
+         already_gave_F0_warning = True
 
 # Define dictionary of units
 units = {\
