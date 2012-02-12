@@ -20,6 +20,7 @@ c     inputs:
       character*256 ephfile     ! ephemeris file name
       logical bigendian
       integer nrecl
+      logical openflag
 
 
 c     stuff read from the data file header;  not all is used, but I've
@@ -57,6 +58,9 @@ c     other variables
       iunit = iunitin
       nfl = index(ephfile,' ')-1
 c     
+
+      inquire(unit=iunit,opened=openflag)
+      if (openflag) close(iunit)
 
       open (iunit, file=ephfile(1:nfl), access='DIRECT', 
      +     form='UNFORMATTED',recl=nrecl*1000, status='OLD',err=999)
