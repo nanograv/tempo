@@ -281,7 +281,7 @@ C Arrival time
         endif
 
 C Store toa for tz reference phase
-	if(ntzref.eq.0.and.fmjd.gt.pepoch)then
+	if(ntzref.eq.0.and.fmjd.gt.pepoch.and..not.tz)then
 	   ntzref=n
 	   ntzrmjd=nfmjd
 	   ftzrmjd=ffmjd
@@ -435,7 +435,15 @@ C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
 	bval=dmtot/2.41d-16
 	  
         wflag = 1
-        if (nsite.ge.0) then
+        !   the nfmjd.gt.0 condition in the following prevents ztim
+        !   from being called if 'tz' mode is set but no reference
+        !   TOA has been specified, which sets nfmjd to default value
+        !   of zero and nsite to 0.  This is potentially problematic
+        !   because it is not possible to do a barycenter correction
+        !   for MJD=0 since it is before the time of the ephemeris.
+        !   (in fact, ztim just reinitializes itself if nfmjd=0, so
+        !   in principle it could be run anyway, but that is ugly.)
+        if (nsite.ge.0.and.nfmjd.gt.0) then
           call ztim(nfmjd,ffmjd,nct,fct,wflag)
         elseif (freqhz.lt.1) then ! barycenter, infinite frequency
           nct = nfmjd

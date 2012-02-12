@@ -79,6 +79,11 @@ c      $Id$
       dmvar1 = 0.
       dmvar2 = 999999.
 
+      ntzrmjd = 0.
+      ftzrmjd = 0.
+      tzrfrq = 0.
+      tzrsite = 0.
+
       nxoff=0
       do i=1,NJUMP
          xjdoff(1,i)=0.
@@ -927,6 +932,9 @@ c     binary frequencies, make the conversion
          t0(1)=t0asc
          t0asc=0.         
       endif
+
+      if(tz.and.(ntzrmjd.eq.0)) 
+     +  write (*,'('' WARNING: TZ mode, reference TOA not set'')')
 
       return
       end
