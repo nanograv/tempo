@@ -21,7 +21,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	integer ilen
         integer wflag
         integer nread
-	character*80 card,card2,infile
+	character*160 card,card2,infile
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
         character*20 amjd
 	logical first,offset,jdcatc,last,dithmsg,track,search
@@ -157,14 +157,14 @@ C       The main loop starts here!
         else   ! READ TOAS (AND OTHER CARDS) DATA FROM FILE
 
           read(lu,1010,end=40) card
- 1010     format(a80)
+ 1010     format(a160)
           if(card(1:1).lt.'A'.and.card(1:1).ne.'#') go to 50
           if((card(1:1).ge.'a').and.(card(1:1).le.'z')) go to 50
           if(card(1:4).eq.'END ') go to 45
           if(card(1:7).eq.'INCLUDE') then
             lu=lu+1
             j1 = 8
-            call citem(card,78,j1,infile,ilen)
+            call citem(card,158,j1,infile,ilen)
             if (.not.quiet)write(31,1012) card(1:78)
  1012       format(1x,a78)
             open(lu,file=infile(1:ilen),status='old',err=1013)

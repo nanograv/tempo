@@ -6,7 +6,7 @@ C  Decodes special cards embedded in the arrival-time file, and takes
 C  appropriate action.
 
 	implicit REAL*8 (A-H,O-Z)
-	character*80 CARD
+	character*(*) CARD
 	logical OFFSET,JDCATC,track,search,lw
 	include 'dim.h'
 	include 'acom.h'
