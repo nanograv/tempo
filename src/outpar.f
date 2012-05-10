@@ -304,6 +304,10 @@ c=======================================================================
       fit1='  1'
 
       write(71,'(''BINARY'',12x,a)')bmodel(nbin)
+      
+      if(nplanets.gt.0)then
+        write(71,'(''PLAN'',1x,i2)')nplanets
+      endif
 
       if(nfit(9).gt.0)then
          write(71,1009)a1(1),fit1,ferr(9)
