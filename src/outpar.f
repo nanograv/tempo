@@ -305,7 +305,7 @@ c=======================================================================
 
       write(71,'(''BINARY'',12x,a)')bmodel(nbin)
       
-      if(nplanets.gt.0)then
+      if(nbin.eq.10 .and. nplanets.gt.0)then
         write(71,'(''PLAN'',1x,i2)')nplanets
       endif
 
