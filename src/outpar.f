@@ -533,7 +533,7 @@ c=======================================================================
       endif
  1030 format('EDOT',f22.6,a,f20.6)
 
-      if(nbin.eq.8)then
+      if(nbin.eq.8 .or. nbin.eq.10)then
          if(om2dot.ne.0.)then
             if(nfit(39).gt.0)then
                write(71,1039)om2dot,fit1,ferr(39)
@@ -543,7 +543,7 @@ c=======================================================================
          endif
  1039    format('OM2DOT',10x,e10.4,a,10x,e10.4)
          
-         if(x2dot.ne.0.)then
+         if(x2dot.ne.0. .or. nbin.eq.10)then
             if(nfit(40).gt.0)then
                write(71,1040)x2dot,fit1,ferr(40)
             else

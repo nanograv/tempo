@@ -886,7 +886,7 @@ c     binary frequencies, make the conversion
          stop
       endif
 
-      if(nbin.ne.8 .and. set2dot)then
+      if(nbin.ne.8 .and. nbin.ne.10 .and. set2dot)then
          write(*,'('' WARNING: No OM2DOT or X2DOT in '',a,'' !!!'')') 
      +        bmodel(nbin)
       endif

@@ -363,7 +363,7 @@ c --- Output of non-Keplerian parameters, II ---
      +     .and.ferr(39).eq.0.and.ferr(40).eq.0)
      +     goto 100
 
-	if(nbin.eq.8)then
+	if(nbin.eq.8 .or. nbin.eq.10)then
 	   write(31,10608)
 10608	   format(//'    XDOT(-12)   EDOT(-12)  OM2DOT(s-2)  ',
      +          'X2DOT(s-1)'/)
@@ -389,7 +389,7 @@ c  update parameters
 
 c  print updated parameters
 
-	if(nbin.eq.8)then
+	if(nbin.eq.8 .or. nbin.eq.10)then
 	   write(31,10628) xdot*e12,edot*e12,om2dot,x2dot 
 	else
 	   write(31,10621) xdot*e12,edot*e12  
