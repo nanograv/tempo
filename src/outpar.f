@@ -190,8 +190,8 @@ c      $Id$
 
       do i=1,ndmcalc-1
          if(dmcof(i).ne.0)then
-            if(nfit(NPAR7+i).gt.0)then
-               write(71,1051)i,dmcof(i),fit1,ferr(NPAR7+i)
+            if(nfit(NPAR9+i).gt.0)then
+               write(71,1051)i,dmcof(i),fit1,ferr(NPAR9+i)
             else
                write(71,1051)i,dmcof(i)
             endif
@@ -533,7 +533,29 @@ c=======================================================================
       endif
  1030 format('EDOT',f22.6,a,f20.6)
 
-      if(nbin.eq.8 .or. nbin.eq.10)then
+      do i = 2, NEDOTMAX
+        if (edot2(i).ne.0.or.ferr(NPAR7+(i-1)).ne.0) then
+          if(nfit(NPAR7+(i-1)).gt.0)then
+            write(71,1042)i,edot2(i),fit1,ferr(NPAR7+(i-1))
+          else
+            write(71,1042)i,edot2(i)
+          endif
+        endif
+      enddo
+ 1042 format('EDOT',z1,1p,d21.12,a,d20.12)
+      
+      do i = 2, NOMDOTMAX
+        if (omdot2(i).ne.0.or.ferr(NPAR9+(i-1)).ne.0) then
+          if(nfit(NPAR8+(i-1)).gt.0)then
+            write(71,1041)i,omdot2(i),fit1,ferr(NPAR8+(i-1))
+          else
+            write(71,1041)i,omdot2(i)
+          endif
+        endif
+      enddo
+ 1041 format('OMDOT',z1,1p,d20.12,a,d20.12)
+      
+      if(nbin.eq.8)then
          if(om2dot.ne.0.)then
             if(nfit(39).gt.0)then
                write(71,1039)om2dot,fit1,ferr(39)
@@ -543,7 +565,7 @@ c=======================================================================
          endif
  1039    format('OM2DOT',10x,e10.4,a,10x,e10.4)
          
-         if(x2dot.ne.0. .or. nbin.eq.10)then
+         if(x2dot.ne.0)then
             if(nfit(40).gt.0)then
                write(71,1040)x2dot,fit1,ferr(40)
             else

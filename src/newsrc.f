@@ -536,8 +536,8 @@ c  Beginning of iteration loop
 	if(nfit(16).ge.2) then			!Pointers to DM coeffs
 	  do i=1,nfit(16)-1
 	     k=k+1
-	     mfit(k)=NPAR7+i
-	     nfit(NPAR7+i)=1
+	     mfit(k)=NPAR9+i
+	     nfit(NPAR9+i)=1
 	  enddo
 	endif
 
@@ -550,8 +550,8 @@ c  Beginning of iteration loop
 	  enddo
 	endif
 
-	do i=NPAR3+1,NPAR7	!FB, XDOT, FBJ, DMX 
-				!Note: NPAR7-NPA handled abouve by nfit(16)
+	do i=NPAR3+1,NPAR9	!FB, XDOT, FBJ, DMX 
+				!Note: NPAR9-NPA handled abouve by nfit(16)
   	  if(nfit(i).ne.0) then
   	    k=k+1
 	    mfit(k)=i

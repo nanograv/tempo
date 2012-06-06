@@ -160,16 +160,16 @@ c      $Id$
 
 	p0=1.d0/f0
 	p1=-1.d15*f1/f0**2
-	write(31,1055)p0-p0z,p1-p1z,freq(16),freq(NPAR7+1),freq(19)
+	write(31,1055)p0-p0z,p1-p1z,freq(16),freq(NPAR9+1),freq(19)
 
 	p0e=1.d-9*ferr(2)/f0**2
 	p1e=1.d-3*dsqrt((2.d9*ferr(2)*f1/f0**3)**2+(ferr(3)/f0**2)**2)
-	write(31,1055)p0e,p1e,ferr(16),ferr(NPAR7+1),ferr(19)
+	write(31,1055)p0e,p1e,ferr(16),ferr(NPAR9+1),ferr(19)
 
 C IHS June 3 2011: Remove the condition as fitting DM0 is now allowed even here
 C        if(.not.(ndmcalc.ge.2 .and. usedmx)) dm=dm+freq(16)
         dm=dm+freq(16)
-	dmcof(1)=dmcof(1)+freq(NPAR7+1)
+	dmcof(1)=dmcof(1)+freq(NPAR9+1)
 	ppng=ppng+freq(19)
 	write(31,1055)p0,p1,dm,dmcof(1),ppng
 
@@ -208,10 +208,10 @@ C  Compute braking index
 	    write(31,1083) (dmlabel,i,i=k,kk)
  1083	    format(/8(3x,a2,i3.3,2x))
 	    write(31,1084) (dmcof(i),i=k,kk)
-	    write(31,1084) (freq(NPAR7+i),i=k,kk)
-	    write(31,1084) (ferr(NPAR7+i),i=k,kk)
+	    write(31,1084) (freq(NPAR9+i),i=k,kk)
+	    write(31,1084) (ferr(NPAR9+i),i=k,kk)
 	    do j=k,kk
-	      dmcof(j)=dmcof(j)+freq(NPAR7+j)
+	      dmcof(j)=dmcof(j)+freq(NPAR9+j)
 	    enddo
 	    write(31,1084) (dmcof(i),i=k,kk)
  1084	    format(8f10.6)

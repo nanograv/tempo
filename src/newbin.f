@@ -363,7 +363,7 @@ c --- Output of non-Keplerian parameters, II ---
      +     .and.ferr(39).eq.0.and.ferr(40).eq.0)
      +     goto 100
 
-	if(nbin.eq.8 .or. nbin.eq.10)then
+	if(nbin.eq.8)then
 	   write(31,10608)
 10608	   format(//'    XDOT(-12)   EDOT(-12)  OM2DOT(s-2)  ',
      +          'X2DOT(s-1)'/)
@@ -389,7 +389,7 @@ c  update parameters
 
 c  print updated parameters
 
-	if(nbin.eq.8 .or. nbin.eq.10)then
+	if(nbin.eq.8)then
 	   write(31,10628) xdot*e12,edot*e12,om2dot,x2dot 
 	else
 	   write(31,10621) xdot*e12,edot*e12  
@@ -438,6 +438,44 @@ c ------ Output of non-Keplerian parameters, III:  FB(n)
           end do
 10720	  format (/23x,'xdot',z1,13x,'xdot',z1,13x,'xdot',z1)
 10721     format (15x,3d18.8)
+	   
+          do i = 2, NEDOTMAX, 3
+	    ii = min(i+2,NEDOTMAX)
+	    iii = min(i+1,NEDOTMAX)
+            if (edot2(i).ne.0 .or. freq(NPAR7+(i-1)).ne.0 .or.
+     +          edot2(ii).ne.0 .or. freq(NPAR7+(ii-1)).ne.0 .or.
+     +          edot2(iii).ne.0 .or. freq(NPAR7+(iii-1)).ne.0) then
+	      write (31,10722) i, i+1, i+2
+	      write (31,10723) (edot2(j),j=i,ii)
+	      write (31,10723) (freq(NPAR7+(j-1)),j=i,ii)
+	      write (31,10723) (ferr(NPAR7+(j-1)),j=i,ii)
+              do j = i, ii
+                edot2(j) = edot2(j)+freq(NPAR7+(j-1))
+              enddo
+	      write (31,10723) (edot2(j),j=i,ii)
+            endif
+          end do
+10722	  format (/23x,'edot',z1,13x,'edot',z1,13x,'edot',z1)
+10723     format (15x,3d18.8)
+
+          do i = 2, NOMDOTMAX, 3
+	    ii = min(i+2,NOMDOTMAX)
+	    iii = min(i+1,NOMDOTMAX)
+            if (omdot2(i).ne.0 .or. freq(NPAR8+(i-1)).ne.0 .or.
+     +          omdot2(ii).ne.0 .or. freq(NPAR8+(ii-1)).ne.0 .or.
+     +          omdot2(iii).ne.0 .or. freq(NPAR8+(iii-1)).ne.0) then
+	      write (31,10724) i, i+1, i+2
+	      write (31,10725) (omdot2(j),j=i,ii)
+	      write (31,10725) (freq(NPAR8+(j-1)),j=i,ii)
+	      write (31,10725) (ferr(NPAR8+(j-1)),j=i,ii)
+              do j = i, ii
+                omdot2(j) = omdot2(j)+freq(NPAR8+(j-1))
+              enddo
+	      write (31,10725) (omdot2(j),j=i,ii)
+            endif
+          end do
+10724	  format (/23x,'omdot',z1,13x,'omdot',z1,13x,'omdot',z1)
+10725     format (15x,3d19.8)
 
 	  do i = 1, nfbj
 	    if (i.lt.10) then

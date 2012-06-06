@@ -583,8 +583,14 @@ c next two lines by sets on 29 Aug 05
          read(cfit,*)nfit(35)
 
       else if(key(1:5).eq.'OMDOT')then
-         read(value,*)omdot
-         read(cfit,*)nfit(14)
+         if (lk.eq.5 .or. key(6:6).eq.'1') then
+           read(value,*)omdot
+           read(cfit,*)nfit(14)
+         else if (key(6:6).ge.'2'.and.key(6:6).le.'9') then
+           read(key(6:6),*)jj
+           read(value,*)omdot2(jj)
+           read(cfit,*)nfit(NPAR8+jj-1)
+         endif
 
       else if(key(1:5).eq.'GAMMA')then
          read(value,*)gamma
@@ -650,8 +656,14 @@ c next two lines by sets on 29 Aug 05
          endif
 
       else if(key(1:4).eq.'EDOT')then
-         read(value,*)edot
-         read(cfit,*)nfit(25)
+         if (lk.eq.4 .or. key(5:5).eq.'1') then
+           read(value,*)edot
+           read(cfit,*)nfit(25)
+         else if (key(5:5).ge.'2'.and.key(5:5).le.'9') then
+           read(key(5:5),*)jj
+           read(value,*)edot2(jj)
+           read(cfit,*)nfit(NPAR7+jj-1)
+         endif
 
       else if(key(1:6).eq.'XOMDOT')then
          read(value,*)xomdot
@@ -886,7 +898,7 @@ c     binary frequencies, make the conversion
          stop
       endif
 
-      if(nbin.ne.8 .and. nbin.ne.10 .and. set2dot)then
+      if(nbin.ne.8 .and. set2dot)then
          write(*,'('' WARNING: No OM2DOT or X2DOT in '',a,'' !!!'')') 
      +        bmodel(nbin)
       endif

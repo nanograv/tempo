@@ -625,7 +625,7 @@ C IHS based on Jan 2009: change to allow dmpoly in one section
 	  do 89 i=1,nfit(16)-1
 C IHS June 3 2011: use dmyrs now for separate dmepoch
             fac = fac * dmyrs / real(i)
-	    x(NPAR7+i)= fac * x(16) 
+	    x(NPAR9+i)= fac * x(16) 
 89        continue
 	endif
 	x(17)=f0*dtdpx

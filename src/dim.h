@@ -8,6 +8,8 @@ c       NGLP     number of parameters per glitch
 c       NJUMP    maximum number of jumps
 c       NFBMAX   maximum order of orbital frequency taylor expansion, orbit 1
 c       NXDOTMAX maximum number of orbital size (x) derivatives, orbit 1
+c       NEDOTMAX maximum number of orbital size (x) derivatives, orbit 1
+c       NOMDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NFBJMAX  paximum number of orbital period jumps, orbit 1
 
 c                parameters are in following order:
@@ -15,10 +17,12 @@ c       1       to NPAR1  sixty basic parameters
 c       NPAR1+1 to NPAR2  glitch parameters (NGLT*NGLP)
 c       NPAR2+1 to NPAR3  jump parameters (NJUMP)
 c       NPAR3+1 to NPAR4  Orbital frequency & derivatives (1 to NFBMAX)
-c       NPAR4+1 to NPAR5  Orbital size (ASINI) derivatives (3 to NXDOTMAX)
+c       NPAR4+1 to NPAR5  Orbital size (ASINI) derivatives (2 to NXDOTMAX)
 c       NPAR5+1 to NPAR6  Orbital period jump parameters
 c       NPAR6+1 to NPAR7  DM offsets and first derivatives (1 to 2*NDMXMAX)
-c       NPAR7+1 to NPA    DM derivatives (1 to NDMCOFMAX)
+c       NPAR7+1 to NPAR8  Orbital E derivatives (2 to NEDOTMAX)
+c       NPAR8+1 to NPAR9  Orbital OM derivatives (2 to NOMDOTMAX)
+c       NPAR9+1 to NPA    DM derivatives (1 to NDMCOFMAX)
 c       NPA      total number of parameters (basic+glitch+jump)
 c       NPAP1    total number of parameters plus one
 c       NBUFDEF  default size of virtual memory buffer (why 35*NPTSMAX???)
@@ -33,6 +37,8 @@ c       NUTMAX   max number of ut1 corrections
 	parameter (NJUMP=120)
 	parameter (NFBMAX=20)
 	parameter (NXDOTMAX=10)
+	parameter (NEDOTMAX=10)
+	parameter (NOMDOTMAX=10)
         parameter (NFBJMAX=120)
         parameter (NDMXMAX=240)
         parameter (NDMCOFMAX=30)
@@ -43,7 +49,9 @@ c       NUTMAX   max number of ut1 corrections
         parameter (NPAR5=NPAR4+(NXDOTMAX-1))
 	parameter (NPAR6=NPAR5+2*NFBJMAX)
         parameter (NPAR7=NPAR6+2*NDMXMAX)
-        parameter (NPA=NPAR7+NDMCOFMAX)
+        parameter (NPAR8=NPAR7+(NEDOTMAX-1))
+        parameter (NPAR9=NPAR8+(NOMDOTMAX-1))
+        parameter (NPA=NPAR9+NDMCOFMAX)
         parameter (NPAP1=NPA+1)
 	parameter (NPARDEF=28)
         parameter (NBOOTMAX=1024)

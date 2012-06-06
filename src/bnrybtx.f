@@ -19,7 +19,7 @@ c  DOES NOT USE PB(1) and PBDOT.  USES FB(1..NFB) instead!
 
 C  Allow for more than one orbit:
 C  Note: omdot, pbdot, xdot and edot are only applied to first orbit.
-C IHS 20120601 also allow x2dot and om2dot in this model (for first orbit)
+C IHS 20120606 Add multiple derivatives for e and om
 	torb=0.
         do 20 i=1,1+nplanets
         tt0=(ct-t0(i))*86400.d0
@@ -44,7 +44,12 @@ c                         higher order terms
              orbits = orbits + fac*fb(j)*tt0**j
            enddo
 	   ecc=e(i)+edot*tt0
-	   asini=a1(i)+xdot*tt0+0.5d0* x2dot*tt0**2 ! IHS based on bnrymss
+	   fac = 1.
+	   do j = 2, NEDOTMAX
+	     fac = fac/j
+	     ecc = ecc + fac*edot2(j)*tt0**j
+           enddo
+	   asini=a1(i)+xdot*tt0
 	   fac = 1.
 	   do j = 2, NXDOTMAX
 	     fac = fac/j
@@ -60,8 +65,12 @@ c                         higher order terms
 	if(orbits.lt.0.d0) norbits=norbits-1
 	phase=twopi*(orbits-norbits)
 	if(i.eq.1)then
-	   omega=(omz(i)+omdot*tt0/(86400.d0*365.25d0))/rad +
-     +		0.5d0*om2dot*tt0**2       	! IHS based on bnrymss.  Units?
+	   omega=(omz(i)+omdot*tt0/(86400.d0*365.25d0))/rad
+	   fac = 1.
+	   do j = 2, NOMDOTMAX
+	     fac = fac/j
+	     omega = omega + fac*omdot2(j)*tt0**j
+           enddo
 	else
 	   omega=omz(i)/rad
 	endif
@@ -105,21 +114,27 @@ C  Use Pat Wallace's method of solving Kepler's equation
 	endif
 	fctn(13+ii)=f0*asini*(com*(cbe-ecc) - som*sqrt(tt)*sbe) ! omega
 	if(i.eq.1) then
-	   fctn(14)=fctn(13)*tt0/(rad*365.25d0*86400.d0)
+	   fctn(14)=fctn(13)*tt0/(rad*365.25d0*86400.d0)  ! omdot
 	   fctn(15)=f0*sbe                ! gamma
 	   fctn(18)=0.5d-6*fctn(12)*tt0   ! pb-dot.  1e-6 cancels term in newbin
 	   fctn(24)=tt0*fctn(9)           ! xdot
 	   fctn(25)=tt0*fctn(10)          ! edot
-           fctn(39)=0.5d0*tt0**2*fctn(13) ! IHS after Wex 1998
-           fctn(40)=0.5d0*tt0**2*fctn(9)  ! IHS after Wex 1998
 
 	   fctn(NPAR3+1) = -fctn(12)/fb(1)**2
            do j = 2, NFBMAX
              fctn(NPAR3+j) = 1.d0/j * tt0 * fctn(NPAR3+j-1)
            enddo
-           fctn(NPAR4+1) = 0.5d0 * tt0 * fctn(24)
+           fctn(NPAR4+1) = 0.5d0 * tt0 * fctn(24)  ! More x derivatives
            do j = 3, NXDOTMAX
              fctn(NPAR4+j-1) = (1.d0/j) * tt0 * fctn(NPAR4+j-2) 
+           enddo
+           fctn(NPAR7+1) = 0.5d0 * tt0 * fctn(25)  ! More e derivatives
+           do j = 3, NEDOTMAX
+             fctn(NPAR7+j-1) = (1.d0/j) * tt0 * fctn(NPAR7+j-2) 
+           enddo
+           fctn(NPAR8+1) = 0.5d0 * tt0**2 * fctn(13)  ! More om derivatives
+           do j = 3, NOMDOTMAX
+             fctn(NPAR8+j-1) = (1.d0/j) * tt0 * fctn(NPAR8+j-2) 
            enddo
 	   do j = 1, nfbj
 	     if (tfbj(j).lt.t0(i) .and. tfbj(j).lt.ct) then

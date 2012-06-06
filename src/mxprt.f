@@ -128,8 +128,14 @@ c                                                  --DJN 19 Dec 2001
 	    write (paramj,1091) (jj-NPAR6)/2
  1091	    format('D1',i3.3)
           endif
+	elseif (jj.lt.NPAR8) then
+	  write(paramj,1093) jj-NPAR7+2
+ 1093	  format(' XD',i2.2)
+	elseif (jj.lt.NPAR9) then
+	  write(paramj,1095) jj-NPAR8+2
+ 1095	  format(' XD',i2.2)
 	else 
-	  write(paramj,1100) jj-NPAR7		!DM polynomial coeffs
+	  write(paramj,1100) jj-NPAR9		!DM polynomial coeffs
  1100	  format('DM',i3.3)
 	endif
 
