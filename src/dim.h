@@ -34,7 +34,7 @@ c       NUTMAX   max number of ut1 corrections
 	parameter (NPTSDEF=60000)
 	parameter (NPT=100000)
 	parameter (NGLT=9,NGLP=5)
-	parameter (NJUMP=120)
+	parameter (NJUMP=250)
 	parameter (NFBMAX=20)
 	parameter (NXDOTMAX=10)
 	parameter (NEDOTMAX=10)
