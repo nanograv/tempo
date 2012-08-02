@@ -83,6 +83,7 @@ c	rewind 32
 	fnpts=npts-nz
 	wmean=sum/fnpts
 
+	if(ldesign) rewind(37)
 	if(ldesign) write(37) npts, nterms
 
 	do 67 i=1,npts
