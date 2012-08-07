@@ -34,6 +34,7 @@ c      $Id$
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
      +    usedmx1,
+     +    fdcof(NFDMAX),
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
      +    PAAscNode,solarn0,solarn01,fixeddist,

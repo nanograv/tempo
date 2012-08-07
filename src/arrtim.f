@@ -628,6 +628,19 @@ C IHS June 3 2011: use dmyrs now for separate dmepoch
 	    x(NPAR9+i)= fac * x(16) 
 89        continue
 	endif
+
+C Non-DM frequency dependent shifts (FDn)
+C TODO allow arb reference freq instead of 1 GHz?
+	do 898 i=1,NFDMAX
+	  x(NPAR10+i) = 0.d0
+898     continue
+	if (frq.gt.1.d0) then
+	  fac = log(frq * 1.e-3)
+	  do 899 i=1,NFDMAX
+	    x(NPAR10+i) = f0*fac**i
+899       continue
+	endif
+
 	x(17)=f0*dtdpx
 	x(36)=f0*dtdpmrv
 	x(19)=f0*dtdppng

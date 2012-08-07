@@ -551,12 +551,19 @@ c  Beginning of iteration loop
 	endif
 
 	do i=NPAR3+1,NPAR9	!FB, XDOT, FBJ, DMX 
-				!Note: NPAR9-NPA handled abouve by nfit(16)
+				!Note: NPAR9-NPAR10 handled abouve by nfit(16)
   	  if(nfit(i).ne.0) then
   	    k=k+1
 	    mfit(k)=i
           endif
         enddo
+
+	do i=NPAR10+1,NPA       ! FD terms
+	  if(nfit(i).ne.0) then
+	    k=k+1
+	    mfit(k)=i
+	  endif
+	enddo
 
 
 	nparam=k        

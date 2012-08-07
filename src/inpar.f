@@ -119,6 +119,10 @@ c      $Id$
       ndmcalc=0
       nfcalc=0
 
+      do i=1, NFDMAX
+        fdcof(i) = 0.0
+      enddo
+
       nbin=0
       nplanets=0
       nclk=0
@@ -500,6 +504,16 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
         read(value,*)dmcof(jj)
         if (cfit.gt.'0') nfit(16)=max(nfit(16),jj+1)
         ndmcalc=max(ndmcalc,jj+1)
+
+      else if(key(1:2).eq.'FD'.and.
+     +        key(3:3).ge.'1'.and.key(3:3).le.'9') then
+        read(key(3:lk),*)jj
+	if (jj.lt.1.or.jj.gt.NFDMAX) then
+	  write (*,'(''FD coeff '',i3,'' too high.)'')') jj
+	  stop
+	endif
+        read(value,*)fdcof(jj)
+        read(cfit,*)nfit(NPAR10+jj)
 
 C  Binary parameters
 

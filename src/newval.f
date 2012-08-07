@@ -291,6 +291,10 @@ C  Compute braking index
             write (31,1061) (dmx1(i),i=ia,ib)
 	  end do
 	end if
+
+        do i=1, NFDMAX
+	  fdcof(i) = fdcof(i) + freq(NPAR10+i)
+	enddo 
 	      
 
 C Get rms residuals and ntoa for output

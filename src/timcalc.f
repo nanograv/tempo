@@ -168,6 +168,12 @@ C     compute interplanetary effect assuming 10 e-/cc at 1 AU
            PLDIS = PLDIS/2.		
          endif
          TDIS = (BVAL+PLDIS)/FREQF**2
+
+C     freq-dependent arrival time shifts
+         do 106 i=1,NFDMAX
+	   tdis = tdis + fdcof(i) * (log(freqf*1.0d-9)**i)
+ 106     continue
+         
 c     
  115     continue   
          phisun = 360*(PI-THETH)/TWOPI
@@ -260,6 +266,12 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
              PLDIS = PLDIS/2.
            endif
            TDIS = (BVAL+PLDIS)/FREQF**2
+
+C     freq-dependent arrival time shifts
+           do 206 i=1,NFDMAX
+	     tdis = tdis + fdcof(i) * (log(freqf*1.0d-9)**i)
+ 206       continue
+         
          endif
 
          phisun = 360*(PI-THETH)/TWOPI

@@ -266,6 +266,17 @@ c      $Id$
       if (.not.firstdmx) write (71,1096)
  1096 format ('DMXFIX 1')
 
+      do i=1,NFDMAX
+        if (fdcof(i).ne.0) then
+          if(nfit(NPAR10+i).gt.0) then
+            write(71,1100)i,fdcof(i),fit1,ferr(NPAR10+i)
+          else
+            write(71,1100)i,fdcof(i)
+          endif
+ 1100     format('FD',i1,1p,d16.8,a,d20.8)
+	endif
+      enddo
+
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',15x,a)')clklbl(nclk)
