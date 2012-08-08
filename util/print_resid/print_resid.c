@@ -26,6 +26,7 @@ void usage() {
             "  -e, --err        TOA uncertainty (us)\n"
             "  -i, --prefit_sec Pre-fit residual (sec)\n"
             "  -d, --ddm        Delta DM used (pc/cc)\n"
+            "  -I, --info       Labels from info.tmp\n"
             "Other options:\n"
             "  -s, --stats      Print stats at beginning\n"
             "  -b, --bands      Print blank lines between bands\n"
@@ -99,14 +100,15 @@ int main(int argc, char *argv[]) {
         {"err",        0, NULL, 'e'},
         {"prefit_sec", 0, NULL, 'i'},
         {"ddm",        0, NULL, 'd'},
+        {"info",       0, NULL, 'I'},
         {0,0,0,0}
     };
     int opt, opti;
     char outputs[MAX_OUTS];
     int nout=0;
     outputs[0]='\0';
-    int do_stat=0, do_band=0, zap_zero_wt=0;
-    while ((opt=getopt_long(argc,argv,"hsbzmptrofweid",long_opts,&opti))!=-1) {
+    int do_stat=0, do_band=0, zap_zero_wt=0, do_info=0;
+    while ((opt=getopt_long(argc,argv,"hsbzmptrofweidI",long_opts,&opti))!=-1) {
         switch (opt) {
             case 'm':
             case 'p':
@@ -118,6 +120,7 @@ int main(int argc, char *argv[]) {
             case 'e':
             case 'i':
             case 'd':
+            case 'I':
                 outputs[nout] = opt;
                 nout++;
                 if (nout==MAX_OUTS) { 
@@ -126,6 +129,7 @@ int main(int argc, char *argv[]) {
                     exit(1);
                 }
                 outputs[nout] = '\0';
+                if (opt=='I') do_info=1;
                 break;
             case 's':
                 do_stat=1;
@@ -173,8 +177,30 @@ int main(int argc, char *argv[]) {
     }
     fclose(rf);
 
-    /* Print some summary statistics at top */
     int i,j;
+    char **info_lines = NULL;
+    const int info_len = 80;
+    if (do_info) {
+      info_lines = (char**)malloc(sizeof(char*)*npts);
+      for (i=0; i<npts; i++) 
+        info_lines[i] = (char*)malloc(sizeof(char)*info_len);
+      FILE *info_file = fopen("info.tmp","r");
+      if (info_file==NULL) {
+        fprintf(stderr, "Error opening info.tmp\n");
+        exit(1);
+      }
+      for (i=0; i<npts; i++) {
+        rv = fscanf(info_file, "%s\n", info_lines[i]);
+        if (rv!=1) {
+          fprintf(stderr, "Error reading from info.tmp (i=%d npts=%d rv=%d)\n",
+              i, npts, rv);
+          exit(1);
+        }
+      }
+      fclose(info_file);
+    }
+
+    /* Print some summary statistics at top */
     if (do_stat) {
 
         /* Basic info */
@@ -221,6 +247,9 @@ int main(int argc, char *argv[]) {
                 case 'd':
                     printf("DDM");
                     break;
+                case 'I':
+                    printf("Info");
+                    break;
             }
             if (i==nout-1) { printf("\n"); } else { printf(" "); }
         }
@@ -263,6 +292,9 @@ int main(int argc, char *argv[]) {
                     break;
                 case 'd':
                     printf("%9.5f", r[i].ddm);
+                    break;
+                case 'I':
+                    printf("%s", info_lines[i]);
                     break;
             }
             if (j==nout-1) { printf("\n"); }
