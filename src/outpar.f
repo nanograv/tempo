@@ -131,39 +131,33 @@ c      $Id$
       endif
  1032 format('F1',1p,d24.12,a,d20.12)
 
-      if(f2.ne.0.)then
-         if(nfit(4).gt.0)then
-            write(71,1033)f2,fit1,ferr(4)*1.d-27
-         else
-            write(71,1033)f2
-         endif
+      if(nfit(4).gt.0)then
+         write(71,1033)f2,fit1,ferr(4)*1.d-27
+      else if (f2.ne.0.) then
+         write(71,1033)f2
       endif
  1033 format('F2',1p,d24.12,a,d20.12)
 
-      if(f3.ne.0.)then
-         if(nfit(51).gt.0)then
-            write(71,1034)f3,fit1,ferr(51)*1.d-36
-         else
-            write(71,1034)f3
-         endif
+      if(nfit(NPAR11+1).gt.0)then
+         write(71,1034)f3,fit1,ferr(NPAR11+1)*1.d-36
+      else if (f3.ne.0)then
+         write(71,1034)f3
       endif
  1034 format('F3',1p,d24.12,a,d20.12)
 
-      do i = 1, 9
-         if (f4(i).ne.0)then
-            if(nfit(51+i).gt.0)then
-	       if (i+3.lt.10) then
-                 write(71,1035)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
-               else
-                 write(71,1036)i+3,f4(i),fit1,ferr(51+i)*(1.d-9)**(i+4)
-               endif	
+      do i = 1, nfcalc-3
+         if(nfit(NPAR11+1+i).gt.0)then   ! if fit, print 
+	    if (i+3.lt.10) then
+              write(71,1035)i+3,f4(i),fit1,ferr(NPAR11+1+i)*(1.d-9)**(i+4)
             else
-	       if (i+3.lt.10) then
-                 write(71,1035)i+3,f4(i)
-               else
-                 write(71,1036)i+3,f4(i)
-               endif
-            endif
+              write(71,1036)i+3,f4(i),fit1,ferr(NPAR11+1+i)*(1.d-9)**(i+4)
+            endif	
+         else 
+           if (i+3.lt.10) then
+             write(71,1035)i+3,f4(i)
+           else
+             write(71,1036)i+3,f4(i)
+           endif
          endif
       enddo
  1035 format('F',i1,1p,d24.12,a,d20.12)

@@ -3,6 +3,7 @@ c      $Id$
 c       NPTSDEF  default maximum number of TOAs
 c       NPT      maximum number of clock corrections
 
+c       NFMAX    maximum number of frequency derivatives
 c       NGLT     maximum number of glitches
 c       NGLP     number of parameters per glitch
 c       NJUMP    maximum number of jumps
@@ -23,7 +24,8 @@ c       NPAR6+1 to NPAR7  DM offsets and first derivatives (1 to 2*NDMXMAX)
 c       NPAR7+1 to NPAR8  Orbital E derivatives (2 to NEDOTMAX)
 c       NPAR8+1 to NPAR9  Orbital OM derivatives (2 to NOMDOTMAX)
 c       NPAR9+1 to NPAR10 DM derivatives (1 to NDMCOFMAX)
-c       NPAR10+1 to NPA   Non-DM freq-dependent terms (1 to NFDMAX)
+c       NPAR10+1 to NPAR11 Non-DM freq-dependent terms (1 to NFDMAX)
+c       NPAR11+1 to NPA   Non-DM freq-dependent terms above F2 (3 to NFMAX) 
 c       NPA      total number of parameters (basic+glitch+jump)
 c       NPAP1    total number of parameters plus one
 c       NBUFDEF  default size of virtual memory buffer (why 35*NPTSMAX???)
@@ -34,6 +36,7 @@ c       NUTMAX   max number of ut1 corrections
 
 	parameter (NPTSDEF=60000)
 	parameter (NPT=100000)
+        parameter (NFMAX=20)
 	parameter (NGLT=9,NGLP=5)
 	parameter (NJUMP=250)
 	parameter (NFBMAX=20)
@@ -54,7 +57,8 @@ c       NUTMAX   max number of ut1 corrections
         parameter (NPAR8=NPAR7+(NEDOTMAX-1))
         parameter (NPAR9=NPAR8+(NOMDOTMAX-1))
         parameter (NPAR10=NPAR9+NDMCOFMAX)
-        parameter (NPA=NPAR10+NFDMAX)
+        parameter (NPAR11=NPAR10+NFDMAX)
+        parameter (NPA=NPAR11+NFMAX-2)
         parameter (NPAP1=NPA+1)
 	parameter (NPARDEF=28)
         parameter (NBOOTMAX=1024)

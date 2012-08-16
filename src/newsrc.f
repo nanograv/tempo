@@ -63,6 +63,20 @@ C  11	BT, 2 orbits
 C  12	BT, 3 orbits
 C  13   DDS
 
+C  special case: nfit(3)>1 implies that frequency derivatives 1 through nfit(3) 
+C  are to be fit.  (Example: if nfit(3)=5, fit F1 through F5).  Set the relevant flags.
+
+           nfcalc = nfit(3)
+           if (nfit(4).eq.1) nfcalc = max(nfit(3),4)
+
+           if (nfit(3).ge.2) nfit(4)=1
+           if (nfit(3).ge.3) then
+             do i = 3, nfit(3)
+               nfit(NPAR11+i-2) = 1    
+             enddo
+           endif
+           if (nfit(3).gt.1) nfit(3)=1  
+
 C  Get initial parameter values from lines 2-4 of data file
 	   read(50,1020) psrname,pra,pdec,pmra,pmdec,rv,p0,p1,pepoch,
      +          p2,px,dm
@@ -165,7 +179,6 @@ C  Convert units
 	   dmep=pepoch
 	endif
 	ndmcalc=max(nfit(16),ndmcalc)
-	nfcalc=max(nfit(3),nfcalc)
 
 	if(eclcoord)then
 	   pra=pra*TWOPI/360.d0
@@ -249,12 +262,6 @@ C  Check to make sure selected parameters are consistent with model
 	         nfit(38)=1
 	      endif
 	   endif
-	endif
-
-	if(nfit(3).gt.12) then
-	   write(*,*) 
-     +        ' ERROR: maximum of 12 frequency derivatives allowed'
-	   stop
 	endif
 
 C Read clock corrections
@@ -422,13 +429,16 @@ c  Beginning of iteration loop
      +         'F2 (s-3): ',1p,d22.9/'F3 (s-4): ',d22.6,0p)
           
           do i = 1, 5
-            if (f4(i).ne.0)write(31,1045)i+3,-i-4,f4(i)
+            if (f4(i).ne.0.or.nfit(NPAR11+i+1).gt.0)
+     +                       write(31,1045)i+3,-i-4,f4(i)
  1045       format ('F',i1,' (s',i2,'): ',1p,d22.9)
           enddo
-          if (f4(6).ne.0)write(31,1046)6+3,-6-4,f4(6)
+          if (f4(6).ne.0.or.nfit(NPAR11+7).gt.0) 
+     +                       write(31,1046)6+3,-6-4,f4(6)
  1046     format ('F',i1,' (s',i3,'): ',1p,d22.9)
-          do i = 7, 9
-            if (f4(i).ne.0)write(31,1047)i+3,-i-4,f4(i)
+          do i = 7, nfcalc
+            if (f4(i).ne.0.or.nfit(NPAR11+i+1).gt.0)
+     +                       write(31,1047)i+3,-i-4,f4(i)
  1047       format ('F',i2,' (s',i3,'): ',1p,d21.9)
           enddo
           write (31,1048) pepoch
@@ -517,21 +527,12 @@ c  Beginning of iteration loop
 	endif
 	k=0
 	nfit(1)=1
-	if(nfit(3).ge.2) nfit(4)=1
 
 	do 70 i=1,40				!Set up parameter pointers
 	if(nfit(i).eq.0) go to 70
 	k=k+1
 	mfit(k)=i
 70	continue
-
-	if(nfit(3).ge.3) then			!Pointers to Fn coeffs
-	  do i=1,nfit(3)-2
-	     k=k+1
-	     mfit(k)=50+i
-	     nfit(50+i)=1
-	  enddo
-	endif
 
 	if(nfit(16).ge.2) then			!Pointers to DM coeffs
 	  do i=1,nfit(16)-1
@@ -558,7 +559,7 @@ c  Beginning of iteration loop
           endif
         enddo
 
-	do i=NPAR10+1,NPA       ! FD terms
+	do i=NPAR10+1,NPA       ! FD terms (NPAR10+1 to NPAR11) and Fxx terms (NPAR11+1 to NPA)
 	  if(nfit(i).ne.0) then
 	    k=k+1
 	    mfit(k)=i

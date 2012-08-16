@@ -13,6 +13,7 @@ c      $Id$
       include 'eph.h'
       include 'glitch.h'
 
+
       integer i
 
       do i=1,NPAP1
@@ -117,7 +118,6 @@ c      $Id$
       enddo
 
       ndmcalc=0
-      nfcalc=0
 
       do i=1, NFDMAX
         fdcof(i) = 0.0
@@ -174,7 +174,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*16, value*32, cfit*1, temp*80
+      character line*80, key*16, value*32, cfit*8, temp*80
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -187,6 +187,23 @@ C  The error/comment is ignored by TEMPO
       logical setpb, setfb      ! indicate when orbital period/pdot or
                                 ! orbital frequency/fdot has been set
 
+      integer ffit(NFMAX)  ! local flags for which frequency derivatives f1 through f12 to fit
+                           !  -1: not set at all
+                           !   0 or 1: set as a fit parmaeter from a .par card
+                           ! special meaning of the fit flag of F1:
+                           !   if it has the value xx ("F1 1 xx") then set fit(xx)=1
+                           ! after all parmaeters have been read:
+                           !   --final fit flags are nfit(3), nfit(4), nfit(NPAR11+1) through nfit(NPA)
+                           !   --any derivative f1 through f12 that has not been explicitly
+                           !     set on or off bad has a higher derivative being fit will also
+                           !     be fit itself
+
+      integer i
+ 
+      do i=1, NFMAX
+        ffit(i) = -1
+      enddo
+
 
       gain = 1.d0
       phimin = 0.d0
@@ -198,7 +215,6 @@ C  The error/comment is ignored by TEMPO
       setequ    = .false.
       setpb     = .false.
       setfb     = .false.
-
 
       ll=80
 
@@ -225,10 +241,10 @@ C  Get key, value and cfit
          stop
       endif
       call citem(line,ll,jn,temp,lf)
-      if(temp(1:1).eq.'#' .or. lf.ne.1)then
+      if(temp(1:1).eq.'#'.or.lf.eq.0)then
          cfit='0'
       else 
-         cfit=temp(1:1)
+         cfit=temp
       endif
       ikey = keyidx(key)        ! extract xx in keys of form ssss_xx
 
@@ -329,46 +345,48 @@ C  Period/Frequency parameters
       else if(key(1:2).eq.'P1'.or.key(1:4).eq.'PDOT')then
          read(value,*)p1
          read(cfit,*)nfit(3)
-         nfcalc = max(nfit(3),nfcalc)
 
-      else if(key(1:2).eq.'F0' .or. (key(1:1).eq.'F' .and. lk.eq.1))then
-         read(value,*)f0
-         read(cfit,*)nfit(2)
+      else if(key(1:1).eq.'F') then
 
-      else if(key(1:2).eq.'F1'.and.lk.eq.2)then
-         read(value,*)f1
-         if(cfit.ge.'A')then
+        if (lk.eq.1) then 
+          ifit = 0
+        else 
+          read(key(2:lk),*) ifit
+        endif
+
+        if (ifit.eq.0) then
+          read(value,*)f0
+          read(cfit,*)nfit(2)
+        else if (ifit.eq.1) then
+          read(value,*)f1
+          if(cfit(1:1).ge.'A')then
             call upcase(cfit)
-            nfit(3)=ichar(cfit)-55
-         else
-            nfit(3)=ichar(cfit)-48
-         endif
-         nfcalc = max(nfit(3),nfcalc)
-
-      else if(key(1:2).eq.'F2')then
-         read(value,*)f2
-         read(cfit,*)nfit(4)
-
-      else if(key(1:2).eq.'F3')then
-         read(value,*)f3
-         read(cfit,*)ifit
-         if (ifit.gt.0) nfit(3)=max(nfit(3),3)
-         nfcalc = max(nfcalc,3)
-
-      else if(key(1:1).eq.'F' .and.
-     +           key(2:2).ge.'4' .and. key(2:2).le.'9') then
-        read(key(2:2),*)jj
-        read(value,*)f4(jj-3)
-        read(cfit,*)ifit
-        if (ifit.gt.0) nfit(3)=max(nfit(3),jj)
-        nfcalc = max(nfcalc,jj)
-
-      else if(key(1:2).eq.'F1' .and. lk.eq.3) then
-        read(key(2:3),*)jj
-        read(value,*)f4(jj-3)
-        read(cfit,*)ifit
-        if (ifit.gt.0) nfit(3)=max(nfit(3),jj)
-        nfcalc = max(nfcalc,jj)
+            jfit = ichar(cfit(1:1))-55
+          else
+	    print *,"reading jfit from cfit which is",cfit
+            read(cfit,*) jfit 
+          endif
+          if (jfit.eq.0) ffit(1) = 0
+          if (jfit.gt.0) then
+            ffit(1) = 1
+            ffit(jfit) = 1  ! triggers fit F2 through jfit-1 as well (see note at top)
+          endif
+        else if (ifit.eq.2) then
+          read(value,*)f2
+          read(cfit,*)ffit(2)
+        else if (ifit.eq.3) then
+          read(value,*)f3
+          read(cfit,*)ffit(3)
+        else
+          if (ifit.lt.4.or.ifit.gt.NFMAX) then
+            print *,"Error: illegal frequency derivative in following line"
+            print *,line
+            print *,"Derivative must be between 0 and ",NFMAX
+            stop
+          endif
+          read(value,*)f4(ifit-3)
+          read(cfit,*)ffit(ifit)
+        endif
 
       else if(key(1:4).eq.'PEPO')then
          read(value,*)pepoch
@@ -485,11 +503,11 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
       else if((key(1:3).eq.'DM0'.and.lk.eq.3).or.
      +         key(1:2).eq.'DM'.and.lk.eq.2)then
          read(value,*)dm
-         if(cfit.le.'9')then
-            itmp=ichar(cfit)-48
+         if(cfit(1:1).le.'9')then
+            itmp=ichar(cfit(1:1))-48
          else
             call upcase(cfit)
-            itmp=ichar(cfit)-55
+            itmp=ichar(cfit(1:1))-55
          endif
          nfit(16)=max(nfit(16),itmp)
          ndmcalc = max(ndmcalc,itmp)
@@ -502,7 +520,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
           stop
         endif
         read(value,*)dmcof(jj)
-        if (cfit.gt.'0') nfit(16)=max(nfit(16),jj+1)
+        if (cfit(1:1).gt.'0') nfit(16)=max(nfit(16),jj+1)
         ndmcalc=max(ndmcalc,jj+1)
 
       else if(key(1:2).eq.'FD'.and.
@@ -818,9 +836,31 @@ c Do nothing parameters
 
  900  continue
 
+C  Set fit flags for frequency derivatives higher than 1
+C     First set nfcalc to the highest frequency derivative that has been read in
+C     and set nffit to the highest frequency derivative that is to be fit
+      nfcalc = 0
+      nffit  = 0
+      do i = 1, NFMAX
+        if (ffit(i).gt.-1) nfcalc = i
+        if (ffit(i).gt.0 ) nffit  = i
+      enddo
+C     Now set the nfit values for F1 and higher derivatives.
+C     Note that all nfit values have already been zeroed, so we need only re-set
+C     those which are to be 1.
+              ! F1 (nfit(3))
+      if (ffit(1).gt.0 .or. ffit(1).eq.-1.and.nffit.ge.1) nfit(3) = 1
+              ! F2 (nfit(4))
+      if (ffit(2).gt.0 .or. ffit(2).eq.-1.and.nffit.ge.2) nfit(4) = 1
+              ! F2 (nfit(4))
+      do i = 3, nffit
+        if (ffit(i).gt.0 .or. ffit(i).eq.-1.and.nffit.ge.2) 
+     +                                          nfit(NPAR11+i-2) = 1
+      enddo
+
 C  Warnings
 
-      if(nfit(3).lt.0.or.nfit(3).gt.12.or.nfcalc.lt.0.or.nfcalc.gt.12)
+      if(nfit(3).lt.0.or.nfit(3).gt.NFMAX.or.nfcalc.lt.0.or.nfcalc.gt.12)
      +   write(*,'('' WARNING: Fit parameter for F1 out of range'')')
 
       if(nfit(16).lt.0.or.nfit(16).gt.NDMCOFMAX.or.ndmcalc.lt.0
@@ -961,6 +1001,7 @@ c     binary frequencies, make the conversion
 
       if(tz.and.(ntzrmjd.eq.0)) 
      +  write (*,'('' WARNING: TZ mode, reference TOA not set'')')
+
 
       return
       end

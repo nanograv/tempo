@@ -119,7 +119,7 @@ c      $Id$
 	df0=-freq(2)*1.d-9
 	df1=-freq(3)*1.d-18
 	df2=-freq(4)*1.d-27
-	df3=-freq(51)*1.d-36
+	df3=-freq(NPAR11+1)*1.d-36
 	f0=f0z+df0
 	f1=f1z+df1
 	f2=f2z+df2
@@ -146,7 +146,7 @@ c      $Id$
 	ef0=ferr(2)*1.d-9
 	ef1=ferr(3)*1.d-18
 	ef2=ferr(4)*1.d-27
-	ef3=ferr(51)*1.d-36
+	ef3=ferr(NPAR11+1)*1.d-36
 	write(31,1053)ef0,sf1*ef1,sf2*ef2,sf3*ef3
 
 	write(31,1053)f0,sf1*f1,sf2*f2,sf3*f3
@@ -182,24 +182,24 @@ C  Compute braking index
 	  brkerr=f0*1.d-27*ferr(4)/(f1*f1)
 	  write(31,1080) brkind,brkerr
 1080      format(/'Braking index:',f13.4,' +/-',f13.4)
+        endif
 
-	  if(nfcalc.ge.4) then
-	     do j=4,nfcalc,3
-		ia=j-3
-		ib=min(ia+2,nfcalc-3)
-		write(31,1081) j,j+1,j+2
- 1081		format(/25x,'f',z1,15x,'f',z1,16x,'f',z1)
-		write(31,1082) (f4(i),i=ia,ib)
-		write(31,1082) (-freq(51+i)*(1.d-9)**(i+4),i=ia,ib)
-		write(31,1082) (ferr(51+i)*(1.d-9)**(i+4),i=ia,ib)
-		write(31,1082) (f4(i)-freq(51+i)*(1.d-9)**(i+4),i=ia,ib)
- 1082		format(5x,1p,3d22.12,0p)
-	     enddo
+	if(nfcalc.ge.4) then
+	   do j=4,nfcalc,3
+	    ia=j-3
+	    ib=min(ia+2,nfcalc-3)
+	    write(31,1081) j,j+1,j+2
+ 1081	    format(/25x,'f',i2.2,14x,'f',i2.2,15x,'f',i2.2)
+	    write(31,1082) (f4(i),i=ia,ib)
+	    write(31,1082) (-freq(NPAR11+1+i)*(1.d-9)**(i+4),i=ia,ib)
+	    write(31,1082) (ferr(NPAR11+1+i)*(1.d-9)**(i+4),i=ia,ib)
+	    write(31,1082) (f4(i)-freq(NPAR11+1+i)*(1.d-9)**(i+4),i=ia,ib)
+ 1082	    format(5x,1p,3d22.12,0p)
+	  enddo
 
-	     do i=1,nfcalc-3
-		f4(i)=f4(i)-freq(51+i)*(1.d-9)**(i+4)
-	     enddo
-	  endif
+	   do i=1,nfcalc-3
+	     f4(i)=f4(i)-freq(NPAR11+1+i)*(1.d-9)**(i+4)
+	   enddo
 	endif
 
 	if(ndmcalc.ge.3) then
