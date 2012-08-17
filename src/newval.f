@@ -267,8 +267,8 @@ C  Compute braking index
 
 	if(usedmx) then
 	  koff = NPAR6
-	  do n = 1, (ndmx+3)/4
-	    ib = n*4
+	  do j = 1, (ndmx+3)/4
+	    ib = j*4
 	    ia = ib-3
 	    ib = min(ib,ndmx)
 	    write (31,1059) ("DM Off",i,i=ia,ib)
@@ -315,8 +315,8 @@ C Output binary parameters
 
 	if(nxoff.gt.0) then
 	  koff=NPAR2
-	  do 70 n=1,(nxoff+3)/4
-	  ib=n*4
+	  do 70 k=1,(nxoff+3)/4
+	  ib=k*4
 	  ia=ib-3
 	  ib=min(ib,nxoff)
 	  write(31,1059) (label,i,i=ia,ib)
@@ -330,8 +330,8 @@ C Output binary parameters
 
 	  write(31,1061) (dct(i),i=ia,ib)
 1061	  format(f17.8,4f16.8)
-	  write(31,1061) (freq(k)*p0,k=koff+ia,koff+ib)
-	  write(31,1061) (ferr(k)*p0,k=koff+ia,koff+ib)
+	  write(31,1061) (freq(i)*p0,i=koff+ia,koff+ib)
+	  write(31,1061) (ferr(i)*p0,i=koff+ia,koff+ib)
 	  do 65 i=ia,ib
 65	  dct(i)=dct(i)+freq(koff+i)*p0
 	  write(31,1061) (dct(i),i=ia,ib)
