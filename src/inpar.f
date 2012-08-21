@@ -346,7 +346,8 @@ C  Period/Frequency parameters
          read(value,*)p1
          read(cfit,*)nfit(3)
 
-      else if(key(1:1).eq.'F') then
+      else if((key(1:1).eq.'F'.and..not.(key(1:2).eq.'FB'))
+     +		.or.(key(1:3).eq.'FB ')) then
 
         if (lk.eq.1) then 
           ifit = 0
@@ -363,7 +364,7 @@ C  Period/Frequency parameters
             call upcase(cfit)
             jfit = ichar(cfit(1:1))-55
           else
-	    print *,"reading jfit from cfit which is",cfit
+C 	    print *,"reading jfit from cfit which is",cfit
             read(cfit,*) jfit 
           endif
           if (jfit.eq.0) ffit(1) = 0
