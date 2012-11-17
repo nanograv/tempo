@@ -346,8 +346,9 @@ C  Period/Frequency parameters
          read(value,*)p1
          read(cfit,*)nfit(3)
 
-      else if((key(1:1).eq.'F'.and..not.(key(1:2).eq.'FB'))
-     +		.or.(key(1:3).eq.'FB ')) then
+      else if((key(1:1).eq.'F'.and..not.(key(1:2).eq.'FB')
+     +		.and..not.(key(1:2).eq.'FD'))
+     +		.or.(key(1:3).eq.'FB '.or.key(1:3).eq.'FD ')) then
 
         if (lk.eq.1) then 
           ifit = 0
