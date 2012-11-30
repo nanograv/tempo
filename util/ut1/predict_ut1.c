@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
             gsl_vector_set(acf, il, tmp);
         }
         double tmp = gsl_vector_get(acf, il);
-        tmp /= (double)(npts - il);
+        tmp /= (double)(npts);
         gsl_vector_set(acf, il, tmp);
     }
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
     //}
 
     // Predict ahead by some number of points
-    int next = 30;
+    int next = 50;
     gsl_vector *mjd_ext = gsl_vector_alloc(npts + next);
     gsl_vector *tdiff_ext = gsl_vector_alloc(npts + next);
     gsl_vector *terr_ext = gsl_vector_alloc(npts + next);
