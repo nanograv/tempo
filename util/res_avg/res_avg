@@ -5,9 +5,17 @@
 # Sample usage:
 #   print_resid | res_avg
 
-($dt, $df, $dfflag, $cflag, $sflag, $zflag) = &resavg_arg_parse(@ARGV);
+($dt, $df, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
+
+if ($infoflag) {
+  &resavg_info_read($infofile);
+} else {
+  @infolist = ("") x ($#mjda+1);  # dummy values
+}
+
+chomp(@infolist);
 
 $r2_tot = 0.0;
 $wr2_tot = 0.0;
@@ -18,7 +26,7 @@ $ct_tot = 0.0;
 # residuals that are within the desired time- and frequency ranges.
 # Each residual is removed from the arrays as it is used. 
 # When the arrays are empty, the program is done.
-
+  
 while ($#mjda>-1) {
 
   &resavg_clear_variables;
@@ -28,6 +36,7 @@ while ($#mjda>-1) {
   $mjdmax= $mjda[0];
   $freqmin = $freqa[0];
   $freqmax = $freqa[0];
+  $info = $infolist[0];
   &resavg_use_residual(0);
 
   # loop through all other residuals
@@ -38,6 +47,7 @@ while ($#mjda>-1) {
     # is the residual within the desired time range (and optionally frequency range?)
     if (  $mjda[$i] >= $mjdmax-$dt &&
           $mjda[$i] <= $mjdmin+$dt &&
+          $infolist[$i] eq $info &&
         ( !$dfflag  ||  $freqa[$i] >= (1.-$df)*$freqmax ) &&
         ( !$dfflag  ||  $freqa[$i] <= (1.+$df)*$freqmin ) ) {
       # process the residual
@@ -49,7 +59,7 @@ while ($#mjda>-1) {
       $freqmax = $freq0 if ($freq0>$freqmax);
       # do not increment $i; 'splice' functions have put next residual into $i position
     } else {
-      $i++   
+      $i++;  
     }
   }
 
@@ -70,7 +80,7 @@ sub resavg_arg_parse{
   # the parsing code is set up to allow for:
   #    -- flags of the form '-a'
   #    -- flags with parameters of the form '-axxxx'
-  #    -- parameters without flags, simply 'xxxx' (but see velow)
+  #    -- parameters without flags, simply 'xxxx' (but see below)
   #
   # Parameters without flags are accumulated in array @param.  Since the code
   # does not presently have any use for such parameters, this array is not returned
@@ -97,8 +107,11 @@ sub resavg_arg_parse{
   "         (experimental!  use with care!)\n".
   "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, over which residuals\n".
   "         are averaged [default: not used]\n".
+  "  -ixxx: read info.tmp-style file xxx and only average whose entries match\n".
+  "         are averaged [default: not used]\n".
   "  -h   : help message\n".
   "  -txxx: maximum time (in days) over which residuals are averaged, [default: 1]\n".
+  "  -u   : unweighted averages\n".
   "  -z   : ignore input residuals with zero error\n".
   "\n"
 ;
@@ -115,6 +128,9 @@ sub resavg_arg_parse{
   my($df) = 0.25;  # max fracional frequency difference (f-f0)/f0 in a single average
 
   my($cflag) = 0;  # calculate avg residual based on fit of both residual and dm
+  my($uflag) = 0;  # unweighted average
+  my($infoflag) = 0;  # use info file
+  my($infofile) = "";
   my($sflag) = 0;  # input residuals in sec (tempo2) not microsec (tempo)
   my($zflag) = 0;  # ignore zero-error points
   
@@ -132,11 +148,17 @@ sub resavg_arg_parse{
           last;
         } elsif ($f eq "h") {#       -h
           die $usage;
+        } elsif ($f eq "i") {#       -i
+          $infoflag = 1;
+          $infofile = $par;
+          last;
         } elsif ($f eq "s") {#       -s
           $sflag = 1;
         } elsif ($f eq "t") {#       -t
           $dt = $par;
           last;
+        } elsif ($f eq "u") {#       -u
+          $uflag = 1;
         } elsif ($f eq "z") {#       -z
           $zflag = 1;
         }  else {            #       invalid flag
@@ -154,7 +176,7 @@ sub resavg_arg_parse{
     die $usage;
   }
 
-return $dt, $df, $dfflag, $cflag, $sflag, $zflag;
+return $dt, $df, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile;
 }
 
 #-----------------------------------------
@@ -188,6 +210,9 @@ sub resavg_calculate_print{
   }
   $err = sqrt($err)/$wtsum;
   $err *= sqrt($rchi2);
+  if ($err==0) {$err = 1};  # $err can be zero if there are multiple identical TOAs
+                            #  (causing rchi2 to be zero).  Shouldn't happen in real data asets,
+                            #  it did once, so check for it
   $wr2_tot += $res*$res*(1.0/($err*$err));
   $r2_tot += $res*$res;
   $wt_tot += (1.0/($err*$err));
@@ -204,8 +229,8 @@ sub resavg_calculate_print{
     $rnewerr = sqrt($d/($a*$d-$b*$c));  
   }
 
-  printf "%15.9f %9.4f %+.8e %.4e %11.8f %10.4f",
-      $mjd, $freq, $res, $err, $ophase, $rchi2;
+  printf "%15.9f %9.4f %+.8e %.4e %11.8f %10.4f %s",
+      $mjd, $freq, $res, $err, $ophase, $rchi2, $info;
   print printf "  %12.8f  %12.8f", $rnew, $rnewerr if ($cflag);
   print "\n";
 }
@@ -235,6 +260,15 @@ sub resavg_read{
   }
 }
 
+sub resavg_info_read{
+  # read info.tmp-style file and place its contents in global array infolist
+  local *INFO;
+  my($infofile) = shift(@_);
+  open INFO, $infofile;
+  @infolist = <INFO>;  
+  close INFO;
+}
+
 #-----------------------------------------
 
 sub resavg_use_residual{
@@ -249,6 +283,12 @@ sub resavg_use_residual{
   $res0    = splice (@resa   ,$idx,1);
   $err0    = splice (@erra   ,$idx,1);
   $ophase0 = splice (@ophasea,$idx,1);
+
+  if ($uflag) { $err0=1; }  # unweighted: set all errors to 1
+
+  # remove info line
+
+  splice(@infolist,$idx,1);
 
   # calculate weight
   $wt0 = 1.0/($err0*$err0);
