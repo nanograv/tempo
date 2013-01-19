@@ -1,9 +1,16 @@
 #!/usr/bin/perl -w
 
+use Math::Trig;
+
 # Average a date-sorted residual file to 1 point per day
 # Expects input in the form produced by print_resid.
 # Sample usage:
 #   print_resid | res_avg
+
+# For binary pulsars, in order to problems averaging points with phases that wrap from 1.0 to 0.0
+# (e.g., 0.998,0.999,0.000,0.001), instead of simply averaging the phases, the sums of the sines 
+# of the phases and the sum of the cosines of the phases are both accumulated, then an arctan of
+# the sum is taken to recover the average angle.
 
 ($dt, $df, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile) = &resavg_arg_parse(@ARGV);
 
@@ -185,7 +192,7 @@ sub resavg_clear_variables{
   $count = 0;
   $wtsum = 0;
   $r2sum = 0;
-  $mjd = $freq = $res = $err = $ophase = 0.0;
+  $mjd = $freq = $res = $err = $ophasesin = $ophasecos = 0.0;
   if ($cflag) {
     $ff   = 0;
     $ffff = 0;
@@ -201,7 +208,8 @@ sub resavg_calculate_print{
   $mjd  /= $wtsum;
   $freq /= $wtsum;
   $res  /= $wtsum;
-  $ophase /= $wtsum;
+  $ophase = atan2($ophasesin,$ophasecos)/(2.*pi);
+  $ophase +=1. if ($ophase<0);
             # How to compute error....
   if ($count>1) { 
       $rchi2 = ($r2sum - $wtsum*$res*$res)/($count-1);
@@ -297,7 +305,8 @@ sub resavg_use_residual{
   $mjd += $mjd0*$wt0;
   $freq += $freq0*$wt0;
   $res += $res0*$wt0;
-  $ophase += $ophase0*$wt0;
+  $ophasesin += sin($ophase0*2.*pi)*$wt0;
+  $ophasecos += cos($ophase0*2.*pi)*$wt0;
   $err += $err0*$err0*$wt0*$wt0;
   $r2sum += $res0*$res0*$wt0;
   $wtsum += $wt0;
