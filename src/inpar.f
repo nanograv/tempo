@@ -381,7 +381,7 @@ C 	    print *,"reading jfit from cfit which is",cfit
           read(cfit,*)ffit(3)
         else
           if (ifit.lt.4.or.ifit.gt.NFMAX) then
-            print *,"Error: illegal frequency derivative in following line"
+            print *,"Error: illegal freq derivative in following line"
             print *,line
             print *,"Derivative must be between 0 and ",NFMAX
             stop
@@ -862,7 +862,8 @@ C     those which are to be 1.
 
 C  Warnings
 
-      if(nfit(3).lt.0.or.nfit(3).gt.NFMAX.or.nfcalc.lt.0.or.nfcalc.gt.12)
+      if(nfit(3).lt.0.or.nfit(3).gt.NFMAX.or.nfcalc.lt.0.or.
+     +    nfcalc.gt.12)
      +   write(*,'('' WARNING: Fit parameter for F1 out of range'')')
 
       if(nfit(16).lt.0.or.nfit(16).gt.NDMCOFMAX.or.ndmcalc.lt.0

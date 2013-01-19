@@ -148,9 +148,9 @@ c      $Id$
       do i = 1, nfcalc-3
          if(nfit(NPAR11+1+i).gt.0)then   ! if fit, print 
 	    if (i+3.lt.10) then
-              write(71,1035)i+3,f4(i),fit1,ferr(NPAR11+1+i)*(1.d-9)**(i+4)
+            write(71,1035)i+3,f4(i),fit1,ferr(NPAR11+1+i)*(1.d-9)**(i+4)
             else
-              write(71,1036)i+3,f4(i),fit1,ferr(NPAR11+1+i)*(1.d-9)**(i+4)
+            write(71,1036)i+3,f4(i),fit1,ferr(NPAR11+1+i)*(1.d-9)**(i+4)
             endif	
          else 
            if (i+3.lt.10) then
