@@ -21,8 +21,8 @@ C  Allow for more than one orbit:
 C  Note: omdot, pbdot, xdot and edot are only applied to first orbit.
 C IHS 20120606 Add multiple derivatives for e and om
 	torb=0.
-        do 20 i=1,1+nplanets
-        tt0=(ct-t0(i))*86400.d0
+        do 20 i=1+nplanets, 1, -1
+        tt0=(ct-t0(i))*86400.d0 + torb
         if(i.eq.1)then
 C                         fb(1) terms of orbital frequency
            if (nfbj.eq.0) then
