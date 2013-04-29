@@ -501,7 +501,8 @@ for(;;) {
         $mjd[$i], $r1, $r2, $r1*$p*1.e6, $r2*$p*1.e6, $cull;
       }
   
-      substr($a,0,1) = "C" if ($cull); 
+      # Append a C rather than erasing 1st char
+      if ($cull) { $a = "C " . $a; }
   
       if ($dflag || ($tflag && $toff!=0)) { # adjustments to TOA
         $mjdidx = 0;
