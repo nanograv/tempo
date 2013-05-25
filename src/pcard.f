@@ -1,6 +1,7 @@
 c       $Id$
 	subroutine pcard(card,mode,zawgt,deltat,fut,dphase,sigm,offset,
-     +  jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw)
+     +  jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw,
+     +  nfmt)
 
 C  Decodes special cards embedded in the arrival-time file, and takes
 C  appropriate action.
@@ -214,13 +215,17 @@ C  in effect.  So we'll now turn it off:
 	search=.true.
 	go to 121		!Now set trkmax=parm and track=.true.
 
-120	if(card(1:4).ne.'TRAC') go to 180
+120	if(card(1:4).ne.'TRAC') go to 130
 	write(31,1060) N,CARD(1:6),parm
 121	track=.true.
 	trkmax=parm
 	if(trkmax.eq.0.d0) trkmax=9999.d0
 	goto 200
 
+130     if(card(1:6).ne.'FORMAT') go to 180
+	nfmt = 3
+	if(parm.eq.0.d0) nfmt=0
+	goto 200
 
 180	if (card(1:3).ne.'TOA') goto 999
 c       don't do anything -- just skip over this card

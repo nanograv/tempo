@@ -21,7 +21,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	integer ilen
         integer wflag
         integer nread
-	character*160 card,card2,infile
+	character*160 card,card2,infile,aitem
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
         character*20 amjd
 	logical first,offset,jdcatc,last,dithmsg,track,search
@@ -103,6 +103,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	   first = .false.
 	endif
 	lu = 50
+        nfmt = 0
 
 c       convert from mas/year (with cos(dec) term in) to radian/Julian century
 c       in ra (without cos(dec) term), dec and rv.
@@ -169,10 +170,11 @@ C       The main loop starts here!
  1012       format(1x,a78)
             open(lu,file=infile(1:ilen),status='old',err=1013)
             rewind lu
+            nfmt = 0
           else
             call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
      +           jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,
-     +           search, lw)
+     +           search,lw,nfmt)
           endif
           go to 10
           
@@ -182,6 +184,9 @@ C       The main loop starts here!
  50       continue
           if(card(1:35).eq.'                                   ') 
      +         goto 10
+
+c  If nfmt is 3 then we've seen a FORMAT 1 line in this file
+          if(nfmt.eq.3) goto 51
           
 c  default: Princeton format
           nfmt=0
@@ -255,6 +260,34 @@ c    two cases by searching for the "+" or "-" indicative of a pulsar name.
 		goto 56
               endif
             enddo
+
+          else if(nfmt.eq.3) then ! TEMPO2 format
+c First 5 fields are file, freq, TOA, err, site
+c Then everything after that are flags (ignored for now)
+            j1 = 1
+            call citem(card,158,j1,aitem,ilen) ! File, ignore it
+            call citem(card,158,j1,aitem,ilen) ! Freq
+            read (aitem,*) rfrq
+            call citem(card,158,j1,aitem,ilen) ! TOA
+            i1 = index(aitem,'.')
+            read (aitem(1:i1-1),*) nfmjd
+            read (aitem(i1:ilen),*) ffmjd
+            call citem(card,158,j1,aitem,ilen) ! err
+            read (aitem,*) terr
+            call citem(card,158,j1,aitem,ilen) ! site
+            if (ilen.eq.1) then
+              asite=aitem(1:1)
+            else 
+              asite=' '
+              bsite=aitem(1:2)
+	      call upcase(bsite)
+              do iobs=1,36
+                if(bsite.eq.obskey(iobs)(4:5))then
+                  asite=obskey(iobs)(1:1)
+                  goto 56
+                endif
+              enddo
+            endif
           endif
 
  56       if(ffmjd.gt.1.d0) then
@@ -467,10 +500,11 @@ C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
 	  nblk=nblk+1
 	  call pcard(card2,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
      +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
-     +     lw)
+     +     lw,nfmt)
 	  if(nblk.ge.2) call pcard(card2,mode,zawgt,deltat,fmjd,
      +      dphase,sigm,offset,jdcatc,
-     +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw)
+     +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
+     +      lw,nfmt)
 	endif
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd
