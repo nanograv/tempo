@@ -30,6 +30,7 @@ $usage =
   "  -A: \"and\" -a and -b options (default is \"or\").\n".
   "  -pxxx -qyyy: exclude any TOAs between orbital phases xxx and yyy\n".
   "  -c: remove comment lines starting with 'C' in TOA section\n".
+  "  -C: Add a copy of the cull arguments as a comment at start of outfile\n".
   "  -d: convert any 1966 day numbers (day<20000) to MJD\n".
   "  -exxx: remove points for which DMX delta-DM error is greater than xxx\n".
   "  -fxxx: keep only sets of TOAs with multiple freqs within xxx days\n" .
@@ -51,6 +52,7 @@ $usage =
   "  + options -d and -t work only with Princeton-style TOAs\n";
 
 $cflag = 0;
+$Cflag = 0;
 $dflag = 0;
 $eflag = 0;
 $fflag = 0;
@@ -94,6 +96,7 @@ $pha2in = -1;
 
 foreach $par (@ARGV) {
   if ($par=~/^-/) {           # flags
+    push @flags, $par;        # Keep a list of these for reference
     $par = substr($par,1);      #   strip off the leading "-"
     while ($par ne "") {      #   loop through the string
       $f = substr($par,0,1);  #     strip off the current flag
@@ -104,6 +107,8 @@ foreach $par (@ARGV) {
       } elsif ($f eq "b") {#       -b
         $mjdmax = $par;
         last;
+      } elsif ($f eq "C") {#       -C
+        $Cflag = 1;
       } elsif ($f eq "c") {#       -c
         $cflag = 1;
       } elsif ($f eq "d") {#       -d
@@ -306,6 +311,9 @@ if ($hdrflag) {
     last if (uc((split)[0]) eq "TOA");
   }
 }
+
+# Print a copy of the cull arguments as a comment
+if ($Cflag) { print Z "C cull " . join(' ',@flags) . "\n"; }
   
 # now loop through lines, allowing switches into and out of INCLUDE'd files
 
@@ -329,6 +337,8 @@ $toff = 0.;
 $jcounter = 0;
 
 $emax = 1.e99;
+
+$tempo2 = 0;
 
 for(;;) {
 
@@ -406,8 +416,15 @@ for(;;) {
     $emax = (split(' ',$a))[1];
   }
 
+  if ($a1=~/^FORMAT/) {
+    $tempo2 = 1;
+    print "Warning: FORMAT line found, assuming tempo2 format.\n";
+    print "  Note that some features of cull may not work correctly.\n";
+  }
+
   #                      process TOAs
-  if ($a=~/^[0-9a-z@ ]/ && !($a=~/^ *$/) && !$skip) {
+  if (($a=~/^[0-9a-z@ ]/ || ($tempo2 && &t2_istoa($a)))
+          && !($a=~/^ *$/) && !$skip) {
     die "Error: $n TOAs in resid2.tmp, but more in $infile\n" if ($i>$n);
 
     #                    optionally convert Parkes/Jodrell fmt to Princeton fmt
@@ -785,6 +802,21 @@ sub getformat {
   $nfmt;
 }
 
+# t2_istoa: Check whether a line appears to be a tempo2 TOA line
+sub t2_istoa {
+  my @stuff = split(' ',$_[0]);
+
+  # Needs at least 5 fields
+  if (scalar(@stuff) < 5) { return 0; }
+
+  # 2nd thru 4th should all be numeric (freq, mjd, err)
+  if ($stuff[1] !~ /^[0-9.]$/) { return 0; }
+  if ($stuff[2] !~ /^[0-9.]$/) { return 0; }
+  if ($stuff[3] !~ /^[0-9.]$/) { return 0; }
+
+  # Assume that's good enough?
+  return 1;
+}
 
 
 #
