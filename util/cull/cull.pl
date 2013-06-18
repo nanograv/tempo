@@ -442,7 +442,11 @@ for(;;) {
       }
     }
 
-    $err = substr($a,44,9);
+    if ($tempo2) {
+      $err = (split(' ',$a))[3];
+    } else {
+      $err = substr($a,44,9);
+    }
 
     if ($err<$emax) {
 
