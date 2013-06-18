@@ -26,6 +26,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
         character*20 amjd
 	logical first,offset,jdcatc,last,dithmsg,track,search
 	logical memerr
+	logical parsed
 	integer i1, i2
         character*160 infofile
 	include 'acom.h'
@@ -174,7 +175,8 @@ C       The main loop starts here!
           else
             call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
      +           jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,
-     +           search,lw,nfmt)
+     +           search,lw,nfmt,parsed)
+	    if ((.not.parsed).and.(nfmt.eq.3)) go to 50
           endif
           go to 10
           
@@ -500,11 +502,11 @@ C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
 	  nblk=nblk+1
 	  call pcard(card2,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
      +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
-     +     lw,nfmt)
+     +     lw,nfmt,parsed)
 	  if(nblk.ge.2) call pcard(card2,mode,zawgt,deltat,fmjd,
      +      dphase,sigm,offset,jdcatc,
      +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
-     +      lw,nfmt)
+     +      lw,nfmt,parsed)
 	endif
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd

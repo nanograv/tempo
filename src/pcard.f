@@ -1,19 +1,21 @@
 c       $Id$
 	subroutine pcard(card,mode,zawgt,deltat,fut,dphase,sigm,offset,
      +  jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,lw,
-     +  nfmt)
+     +  nfmt,parsed)
 
 C  Decodes special cards embedded in the arrival-time file, and takes
 C  appropriate action.
 
 	implicit REAL*8 (A-H,O-Z)
 	character*(*) CARD
-	logical OFFSET,JDCATC,track,search,lw
+	logical OFFSET,JDCATC,track,search,lw,parsed
 	include 'dim.h'
 	include 'acom.h'
 	include 'dp.h'
 
         integer ii
+
+	parsed=.false.
 
 	if (card(1:2).ne.'C ' .and. card(1:2).ne.'# ') goto 14
 C Don't bother printing it unless this is the first iteration
@@ -232,8 +234,10 @@ c       don't do anything -- just skip over this card
 	goto 200
 		
 
-200	return
+200	parsed=.true.
+	return
 
-999	print*,'*** PCARD: unknown command ',card(1:6)
+999	if (nfmt.eq.3) return
+	print*,'*** PCARD: unknown command ',card(1:6)
 	stop
 	END
