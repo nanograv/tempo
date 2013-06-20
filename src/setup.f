@@ -55,6 +55,11 @@ C  alat = X, along = Y, and elev = Z
           else
             jsite = sitea2n(obskey0)  ! only first char of obskey0 is used by sitea2n
           endif
+          if (siteused(jsite)) then
+            print *,"Error, site ",jsite, "listed more than once in"
+            print *,obsyfile
+            stop
+          endif
           siteused(jsite) = .true.
           obskey(jsite) = obskey0
  40	  format(3f15.0,2x,i1,2x,a12,8x,a5)
