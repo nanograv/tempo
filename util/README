@@ -6,6 +6,7 @@ directories for details about each program.
 
 cull:        filter for removing high residuals, reformatting TOAs, etc.
 extract:     write residual information in ASCII text form
+lk:          ascii residual plots
 obswgt:      calculates weights, rms's and chi^2's for data subsets
 print_resid: write residual information in ASCII text form
 res_avg:     average date-sorted residuals to one point per day
@@ -18,4 +19,5 @@ non_tempo:   scripts not directly related to Tempo but of interest to
              many users of tempo
 non_tempo/mjd:    print an MJD in human readable form 
 non_tempo/aolst:  calculate LST at Arecibo at a given MJD and UT time
+non_tempo/dt:     calculate dispersion delay between two frequencies
             
