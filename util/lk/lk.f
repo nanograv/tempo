@@ -9,7 +9,8 @@
 	data infile/'resid2.tmp'/
 
 	if(iargc().eq.1) call getarg(1,infile)
-	open(32,file=infile,form='unformatted',status='old')
+        if (infile.eq."-h") goto 9998
+	open(32,file=infile,form='unformatted',status='old',err=9997)
 
 1	rewind 32
 	ctmin=1.d30
@@ -77,6 +78,33 @@
 
 100	go to 12
 
+9997    continue
+        print *, "Error: no residual file"
+        print *, "Type 'lk -h' if you need instructions"
+        goto 9999
+
+9998    continue
+        print *, "Usage:"
+        print *, "  lk [residual file | -h]"
+        print *, "  residual file: must be output by tempo"
+        print *, "                 default is resid2.tmp"  
+        print *, "  -h: help message"
+        print *, ""
+        print *, "Typically one runs tempo and then runs lk in the"
+        print *, "  same directory to see the residuals."
+        print *, ""
+        print *, "At the lk 'Enter command' prompt, enter:"
+        print *, "  0: quit"
+        print *, "  1: pre-fit residuals vs date"
+        print *, "  2: post-fit residuals vs date"
+        print *, "  3: pre-fit residuals vs orbital phase"
+        print *, "  4: post-fit residuals vs orbital phase"
+        print *, "  5: pre-fit residuals vs serial number"
+        print *, "  6: post-fit residuals vs serial number"
+        print *, "  7: pre-fit residuals vs day of year"
+        print *, "  8: post-fit residuals vs day of year"
+     
+9999    continue
 	end
 
 	subroutine plt(x,xmin,xmax,y,ymin,ymax,npts,ct,p0)
@@ -123,4 +151,5 @@
      +     ' P0,',f9.3,' us.')
 
 	return
+
 	end
