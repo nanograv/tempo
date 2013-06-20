@@ -15,6 +15,7 @@ c      $Id$
                                ! is obs frame
         logical tdbif99fmt  ! true if tdb file is in format used
                             ! by alan irwin (reference if99)
+        logical siteused      ! flags for which observing codes are used.
 
 	integer parunit, nskip, iboot
         integer infolen
@@ -28,7 +29,8 @@ c      $Id$
         real*8 dmepoch, dmep
 
 	common pdec,pra,ba(3),bc(3),dm,dt,dt2,freq(NPAP1),
-     +    ferr(NPAP1),fmin,hlt(36),hrd(36),wt,x(NPAP1),era,ec,
+     +    ferr(NPAP1),fmin,hlt(36),hrd(36),siteused(36),
+     +    wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),dmepoch,dmep,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,

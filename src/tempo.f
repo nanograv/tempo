@@ -394,10 +394,10 @@ c  Open TDB-TDT clock offset file
 	  	call atimfake(afmjd,nbin,nt,sitelng,ipsr)
 		rewind 50
 		close(2)
-		call setup(version,infile,obsyfile,alng,nsmax,parfile)
+		call setup(version,infile,obsyfile,alng,parfile)
 		call newsrc(nits,jits,nboot)
 		call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
-     +               ddmch(1+ddmchoff),ct2,alng,nsmax,nz,nptsmax,
+     +               ddmch(1+ddmchoff),ct2,alng,nz,nptsmax,
      +               nits,jits,buf(1+bufoff),npmsav(1+npmsavoff),
      +               ksav(1+ksavoff),nbuf,memerr,infofile,lw)
 
@@ -468,7 +468,7 @@ c  Open parameter and residual files
      +       ' Data from ',a, ',   Input parameters from ',a)
 	  endif
 
-	  call setup(version,infile,obsyfile,alng,nsmax,parfile)
+	  call setup(version,infile,obsyfile,alng,parfile)
 
 C         The main loop:
  60       continue
@@ -479,7 +479,7 @@ C         The main loop:
  62       continue  ! re-entry point after re-allocating arrays
           rewind 32
           call arrtim(mode,xmean,sumdt1,sumwt,dnpls(1+dnplsoff),
-     +         ddmch(1+ddmchoff),ct2,alng,nsmax,nz,nptsmax,nits,jits,
+     +         ddmch(1+ddmchoff),ct2,alng,nz,nptsmax,nits,jits,
      +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),nbuf,
      +         memerr,infofile,lw)
 

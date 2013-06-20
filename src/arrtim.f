@@ -1,6 +1,6 @@
 c      $Id$
       subroutine arrtim(mode,xmean,sum,sumwt,dnpls,ddmch,ct2,
-     +     alng,nsmax,nz,nptsmax,nits,jits,
+     +     alng,nz,nptsmax,nits,jits,
      +     buf,npmsav,ksav,nbuf,memerr,infofile,lw)
 
 C  Reads pulse arrival times (at observatory, in UTC) from unit 4. Then
@@ -373,9 +373,12 @@ c   Get here on end-of-all-files
 c   Back to processing of all TOAs
  60	yrs=(fmjd-pepoch)/365.25d0
 
-	if(nsite.gt.nsmax) write(*,1063) n,nsite,nsmax,nfmt,card
-1063	format(i5,' *** Site',i3,' greater than',i3,
-     +    ' read in. ***    nfmt:',i2/1x,a80)
+	if(nsite.ge.1 .and. .not.siteused(nsite)) then
+              write(*,1063) n,nsite,nfmt,card
+1063	      format(i5,' *** Site',i3,' is not defined.'
+     +                ' read in. ***    nfmt:',i2/1x,a80)
+              stop
+        endif
 	if(nsite.gt.0)then
 	  site(1)=hrd(nsite)*dcos(hlt(nsite))*499.004786d0
 	  site(2)=site(1)*dtan(hlt(nsite))
