@@ -4,6 +4,7 @@ c      $Id$
 	implicit real*8 (a-h,o-z)
 	character path*96,obsyfile*80
 	character line*80,item*40
+	character*5 obskey0
 	real*8 maxhadef
 
 	integer sitea2n ! external function
@@ -125,11 +126,27 @@ C Read pulsar list and nspan, ncoeff, maxha and freq overrides
 	close(11)
 
 	open(11,file=obsyfile,status='old')
+	do j = 1, 36
+	   siteused(j) = .false.
+	enddo
+	sitelng = 9999.0
 C  Allow for xyz observatory coordinates  djn 17 aug 92
 	do 330 i=1,36
-	  read(11,1020,end=340) alat, along, icoord
- 1020	  format(2f13.0,21x,i1)
-	  if (i.eq.nsite) then
+	  read(11,1020,end=340) alat,along,elev,icoord,obsnam,obskey0
+ 1020	  format(3f15.0,2x,i1,2x,a12,8x,a5)
+          if (obskey0(1:1).eq.' ') then
+            jsite = j
+          else
+            jsite = sitea2n(obskey0)  ! only first char of obskey0 is used by sitea2n
+          endif
+          if (siteused(jsite)) then
+            print *,"Error, site ",jsite, "listed more than once in"
+            print *,obsyfile
+            stop
+          endif
+          siteused(jsite) = .true.
+          obskey(jsite) = obskey0
+	  if (jsite.eq.nsite) then
 	    if (icoord.eq.0) then
 	      sitelng=ang(1,along)
 	    else
@@ -137,7 +154,7 @@ C  Allow for xyz observatory coordinates  djn 17 aug 92
 	    endif
 	  endif
  330	continue
- 340	if(nsite.ge.i) then
+ 340	if(sitelng.ge.9999.0) then
 	  print *,' Site',nsite,' not found in ',obsyfile
 	  stop
 	end if
