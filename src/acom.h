@@ -16,6 +16,7 @@ c      $Id$
         logical tdbif99fmt  ! true if tdb file is in format used
                             ! by alan irwin (reference if99)
         logical siteused      ! flags for which observing codes are used.
+        logical nofitjump     ! blocks fitting for a given JUMP
 
 	integer parunit, nskip, iboot
         integer infolen
@@ -32,7 +33,8 @@ c      $Id$
      +    ferr(NPAP1),fmin,hlt(36),hrd(36),siteused(36),
      +    wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
-     +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),dmepoch,dmep,
+     +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),nofitjump(NJUMP),
+     +    dmepoch,dmep,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
      +    usedmx1,

@@ -90,6 +90,7 @@ c      $Id$
          xjdoff(1,i)=0.
          xjdoff(2,i)=0.
          dct(i)=0.
+         nofitjump(i) = .false.
       enddo
       
       ngl=0
@@ -818,6 +819,8 @@ C  Glitches
 
        else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
          read(value,*) dct(ikey)
+         read(cfit,*) itmp
+         if (itmp.eq.0) nofitjump(ikey) = .true.
 
        else if(key(1:7).eq.'SOLARN0'.and.(lk.eq.7.or.ikey.eq.0)) then
          read (value,*) solarn0
