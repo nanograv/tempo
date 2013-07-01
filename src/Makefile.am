@@ -9,8 +9,8 @@ tempo_SOURCES = \
         bnryeh.f bnryell1.f bnrymss.f bnrydds.f bootmc.f bt2ell1.f \
         chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
         earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f galco.f \
-        gasdev.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f newbin.f \
-        newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
+        gasdev.f getcmdline.f inpar.f interp.f lmst.f mass2dd.f matinv.f mxprt.f  \
+        newbin.f newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
         setup.f sitea2n.f siten2a.f \
 	sort.f space_motion.f ell12bt.f tdbinit.f tdbinit2.f tdbread.f tempo.f \
@@ -47,6 +47,7 @@ ell12bt.$(OBJEXT): ell12bt.f dim.h orbit.h
 ephinit.$(OBJEXT): ephinit.f ephcom.h
 ephread.$(OBJEXT): ephread.f ephcom.h
 fit.$(OBJEXT): fit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
+getcmdline.$(OBJEXT): getcmdline.f
 inpar.$(OBJEXT): inpar.f acom.h bcom.h dp.h eph.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h
 matinv.$(OBJEXT): matinv.f dim.h
 mxprt.$(OBJEXT): mxprt.f dim.h
