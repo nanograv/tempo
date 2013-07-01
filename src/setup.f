@@ -9,11 +9,13 @@ c       $Id$
 	integer time
 	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*160
 	character*80 infile,obsyfile
+        character*320 tpocmd
         character*5 obskey0
 	data ault/499.004786d0/
 	data obsnum/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
 
-        integer sitea2n ! external function
+        integer sitea2n          ! external function
+        character*320 getcmdline ! external function
 
 	nsec=time()
 	timstr=damoyr(40587+nsec/86400)
@@ -117,6 +119,9 @@ c     +        8.d-9*dcos(6.d0*hlt(jsite)))+elev
           endif
           write(31,62)obsyfile
  62       format('Observatory data from ',a55)
+          tpocmd = getcmdline()
+	  write(31,65) tpocmd(1:len_trim(tpocmd))
+ 65       format ('Tempo command: ',a)
         endif
 
 	return
