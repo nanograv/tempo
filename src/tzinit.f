@@ -129,7 +129,6 @@ C Read pulsar list and nspan, ncoeff, maxha and freq overrides
 	do j = 1, 36
 	   siteused(j) = .false.
 	enddo
-	sitelng = 9999.0
 C  Allow for xyz observatory coordinates  djn 17 aug 92
 	do 330 i=1,36
 	  read(11,1020,end=340) alat,along,elev,icoord,obsnam,obskey0
@@ -154,11 +153,16 @@ C  Allow for xyz observatory coordinates  djn 17 aug 92
 	    endif
 	  endif
  330	continue
- 340	if(sitelng.ge.9999.0) then
-	  print *,' Site',nsite,' not found in ',obsyfile
-	  stop
-	end if
+ 340	continue
 	close(11)
+        if(nsite.le.0) then    ! geocentric, barycentric
+          sitelng = 0.
+        else
+          if (siteused(nsite).eqv..false.) then
+	    print *,' Site',nsite,' not found in ',obsyfile
+	    stop
+          endif
+	endif
 
 	return
 	end
