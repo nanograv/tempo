@@ -33,7 +33,7 @@ void usage() {
             "  -z, --zap        Don't print zero-weighted points\n"
             "  -h, --help       Print this message\n"
             "Calling with no args is equivalent to:\n"
-            "  print_resid -mfreo resid2.tmp\n", 
+            "  print_resid -mfreoI resid2.tmp\n", 
             MAX_OUTS
           );
 }
@@ -150,7 +150,19 @@ int main(int argc, char *argv[]) {
     }
 
     /* Fill default options if none given */
-    if (nout==0) { sprintf(outputs, "mfreo"); nout=5; }
+    if (nout==0) { 
+      /* Check if info.tmp exists */
+      FILE *ftmp = fopen("info.tmp","r");
+      if (ftmp) {
+        sprintf(outputs, "mfreoI"); 
+        nout=6; 
+        do_info=1; 
+        fclose(ftmp);
+      } else {
+        sprintf(outputs, "mfreo"); 
+        nout=5; 
+      }
+    }
 
     /* Use default filename if none given */
     char fname[256];
