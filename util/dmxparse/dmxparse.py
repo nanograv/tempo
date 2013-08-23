@@ -73,6 +73,7 @@ class dmxparse:
                         * self.err[k[i]] * self.err[k[j]]
 
         # Find error in mean DM
+        self.mean = numpy.mean(self.val.values())
         self.mean_err = numpy.sqrt(cc.sum())/float(n)
 
         # Do the correction for varying DM
@@ -106,9 +107,10 @@ if __name__ == '__main__':
         sys.exit(1)
 
     d.fix_errs(c)
+    print "# Mean DMX value = %+.6e" % d.mean
     print "# Uncertainty in average DM = %.5e" % d.mean_err
     print "# Columns: Epoch DMX_value DMX_var_uncertainty DMX_raw_uncertainty DMX_bin"
     for k in sorted(d.val.keys()):
         #print d.epoch[k], d.val[k], d.err[k], d.verr[k], k
         print "%.8f %+.7e %.5e %.5e %s" % (d.epoch[k], 
-                d.val[k], d.verr[k], d.err[k], k)
+                d.val[k]-d.mean, d.verr[k], d.err[k], k)
