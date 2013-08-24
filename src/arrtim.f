@@ -15,13 +15,15 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	include 'dim.h'
 	real*8 xmean(NPA),fctn(NPAP1),dnpls(*),ddmch(*),alng(36)
         real*8 buf(*)
+        real*8 toff
         integer npmsav(*), ksav(*)
 	real*4 gasdev
         integer ZEROWT(2000),idum
 	integer ilen
         integer wflag
         integer nread
-	character*160 card,card2,infile,aitem
+	character*320 card,card2
+        character*160 infile,aitem
 	character asite*1,bsite*2,comment*8,aterr*9,afmjd*15
         character*20 amjd
 	logical first,offset,jdcatc,last,dithmsg,track,search
@@ -29,6 +31,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	logical parsed
 	integer i1, i2
         character*160 infofile
+        character*80 tmp
 	include 'acom.h'
 	include 'bcom.h'
 	include 'dp.h'
@@ -38,6 +41,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	include 'tz.h'
         include 'toa.h'
         integer sitea2n ! external function
+        character*80 getvalue ! external function
 
 	common /CONST/ PI,TWOPI,SECDAY,CONVD,CONVS,AULTSC,VELC,EMRAT,OBLQ,
      +              GAUSS,RSCHW,AULTVL
@@ -159,14 +163,14 @@ C       The main loop starts here!
         else   ! READ TOAS (AND OTHER CARDS) DATA FROM FILE
 
           read(lu,1010,end=40) card
- 1010     format(a160)
+ 1010     format(a320)
           if(card(1:1).lt.'A'.and.card(1:1).ne.'#') go to 50
           if((card(1:1).ge.'a').and.(card(1:1).le.'z')) go to 50
           if(card(1:4).eq.'END ') go to 45
           if(card(1:7).eq.'INCLUDE') then
             lu=lu+1
             j1 = 8
-            call citem(card,158,j1,infile,ilen)
+            call citem(card,320,j1,infile,ilen)
             if (.not.quiet)write(31,1012) card(1:78)
  1012       format(1x,a78)
             open(lu,file=infile(1:ilen),status='old',err=1013)
@@ -267,16 +271,16 @@ c    two cases by searching for the "+" or "-" indicative of a pulsar name.
 c First 5 fields are file, freq, TOA, err, site
 c Then everything after that are flags (ignored for now)
             j1 = 1
-            call citem(card,158,j1,aitem,ilen) ! File, ignore it
-            call citem(card,158,j1,aitem,ilen) ! Freq
+            call citem(card,320,j1,aitem,ilen) ! File, ignore it
+            call citem(card,320,j1,aitem,ilen) ! Freq
             read (aitem,*) rfrq
-            call citem(card,158,j1,aitem,ilen) ! TOA
+            call citem(card,320,j1,aitem,ilen) ! TOA
             i1 = index(aitem,'.')
             read (aitem(1:i1-1),*) nfmjd
             read (aitem(i1:ilen),*) ffmjd
-            call citem(card,158,j1,aitem,ilen) ! err
+            call citem(card,320,j1,aitem,ilen) ! err
             read (aitem,*) terr
-            call citem(card,158,j1,aitem,ilen) ! site
+            call citem(card,320,j1,aitem,ilen) ! site
             if (ilen.eq.1) then
               asite=aitem(1:1)
             else 
@@ -286,9 +290,17 @@ c Then everything after that are flags (ignored for now)
               do iobs=1,36
                 if(bsite.eq.obskey(iobs)(4:5))then
                   asite=obskey(iobs)(1:1)
-                  goto 56
+                  goto 55
                 endif
               enddo
+            endif
+
+ 55         continue
+            call getflags(card,320,j1)
+            tmp = getvalue("to")
+            if (tmp.ne."") then
+              read(tmp,*) toff
+              call mjdadd(nfmjd,ffmjd,toff)
             endif
           endif
 
