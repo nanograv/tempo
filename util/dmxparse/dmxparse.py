@@ -48,19 +48,30 @@ class dmxparse:
         self.val = {}
         self.err = {}
         self.epoch = {}
+        self.r1 = {}
+        self.r2 = {}
+        self.f1 = {}
+        self.f2 = {}
         for l in open(parfile).readlines():
+            if not l.startswith('DMX'): continue
+            fields = l.split()
+            key = fields[0]
+            val = fields[1].replace('D','e')
+            if len(fields)==4: err = fields[3].replace('D','e')
+            pfx=None
+            idx=None
+            (pfx,idx,newkey) = (None,None,None)
+            if '_' in key: 
+                (pfx, idx) = key.split('_')
+                newkey = "DX%03d" % int(idx)
             if l.startswith('DMX_'):
-                # should check for right number of fields, etc
-                (key, val, flag, err) = l.split()
-                (pfx, idx) = key.split('_')
-                newkey = "DX%03d" % int(idx) # convert to matrix.tmp syntax
-                self.val[newkey] = float(val.replace('D','e'))
-                self.err[newkey] = float(err.replace('D','e'))
-            if l.startswith('DMXEP_'):
-                (key, val) = l.split()
-                (pfx, idx) = key.split('_')
-                newkey = "DX%03d" % int(idx) # convert to matrix.tmp syntax
-                self.epoch[newkey] = float(val.replace('D','e'))
+                self.val[newkey] = float(val)
+                self.err[newkey] = float(err)
+            if l.startswith('DMXEP_'): self.epoch[newkey] = float(val)
+            if l.startswith('DMXR1_'): self.r1[newkey] = float(val)
+            if l.startswith('DMXR2_'): self.r2[newkey] = float(val)
+            if l.startswith('DMXF1_'): self.f1[newkey] = float(val)
+            if l.startswith('DMXF2_'): self.f2[newkey] = float(val)
 
     def fix_errs(self,tmp_cov):
         self.verr = {}
@@ -109,8 +120,9 @@ if __name__ == '__main__':
     d.fix_errs(c)
     print "# Mean DMX value = %+.6e" % d.mean
     print "# Uncertainty in average DM = %.5e" % d.mean_err
-    print "# Columns: Epoch DMX_value DMX_var_uncertainty DMX_raw_uncertainty DMX_bin"
+    print "# Columns: DMXEP DMX_value DMX_var_err DMXR1 DMXR2 DMXF1 DMXF2 DMX_bin"
     for k in sorted(d.val.keys()):
         #print d.epoch[k], d.val[k], d.err[k], d.verr[k], k
-        print "%.8f %+.7e %.5e %.5e %s" % (d.epoch[k], 
-                d.val[k]-d.mean, d.verr[k], d.err[k], k)
+        print "%.4f %+.7e %.3e %.4f %.4f %7.2f %7.2f %s" % (d.epoch[k], 
+                d.val[k]-d.mean, d.verr[k], 
+                d.r1[k], d.r2[k], d.f1[k], d.f2[k], k)
