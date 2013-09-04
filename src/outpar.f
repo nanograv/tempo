@@ -243,11 +243,14 @@ c      $Id$
           write (71,1081) i,dmx1(i),nfit(NPAR6+2*i),ferr(NPAR6+2*i)
  1081     format('DMX1_',i4.4,1p,d17.8,i3,d20.8)
           write (71,1082) i,dmxep(i)
- 1082     format('DMXEP_',i4.4,5p,d16.8)
-          write (71,1083) i,dmxr1(i)
- 1083     format('DMXR1_',i4.4,5p,d16.8)
-          write (71,1084) i,dmxr2(i)
- 1084     format('DMXR2_',i4.4,5p,d16.8)
+ 1082     format('DMXEP_',i4.4,f16.5)
+c The following lines round DMXR1 down and DMXR2 up at the 
+c output precision (5 frac digits) so that the ranges will
+c work correctly in tempo2:
+          write (71,1083) i,dint(dmxr1(i)*1.d5)/1.d5
+ 1083     format('DMXR1_',i4.4,f16.5)
+          write (71,1084) i,dint(dmxr2(i)*1.d5+1.0)/1.d5
+ 1084     format('DMXR2_',i4.4,f16.5)
           write (71,1085) i,dmxf1(i)
  1085     format('DMXF1_',i4.4,f16.3)
           write (71,1086) i,dmxf2(i)
