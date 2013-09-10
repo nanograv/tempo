@@ -275,8 +275,15 @@ c work correctly in tempo2:
       enddo
 
       write(71,'(''SOLARN0'',f19.2)')solarn0
-      write(71,'(''EPHEM'',13x,a)')ephfile(nephem)(1:5)
-      write(71,'(''CLK'',15x,a)')clklbl(nclk)
+      write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
+      write(71,'(''CLK'',17x,a)')clklbl(nclk)
+c tempo2-compatibility:
+      write(71,'(''UNITS'',15x,''TDB'')')
+      write(71,'(''TIMEEPH'',13x,''FB90'')')
+      write(71,'(''T2CMETHOD'',11x,''TEMPO'')')
+      write(71,'(''CORRECT_TROPOSPHERE'',1x,''N'')')
+      write(71,'(''PLANET_SHAPIRO'',6x,''N'')')
+      write(71,'(''DILATEFREQ'',10x,''N'')')
       write(71,'(''NTOA'',i22)')ntoa
       write(71,'(''TRES'',f22.2)')tres
       nx = ntzrmjd/10

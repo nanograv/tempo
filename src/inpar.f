@@ -175,7 +175,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*16, value*32, cfit*8, temp*80
+      character line*80, key*32, value*32, cfit*8, temp*80
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -230,8 +230,8 @@ C  The error/comment is ignored by TEMPO
 C  Get key, value and cfit
       jn=1
       call citem(line,ll,jn,key,lk)      
-      if(lk.gt.16)then
-        write(*,'('' Key overflow (16 max): '',a)')key(1:lk)
+      if(lk.gt.32)then
+        write(*,'('' Key overflow (32 max): '',a)')key(1:lk)
         stop
       endif
       if(key(1:1).eq.'#' .or. (key(1:1).eq.'C' .and. lk.eq.1))go to 10
@@ -303,6 +303,13 @@ C  Control parameters
          write(*,'(''Invalid CLK label: '',a)')value(1:5)
          stop
  12      continue
+
+      else if(key(1:5).eq.'UNITS')then
+         call upcase(value)
+         if(value(1:3).ne.'TDB')then
+            write(*,'(''Invalid UNITS: '',a)')value(1:5)
+            stop
+         endif
 
       else if(key(1:4).eq.'EPHE')then
          call upcase(value)
@@ -557,6 +564,10 @@ c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
          if(value(1:2).eq.'BT'.and.value(4:4).eq.'P')
      +      read(value,'(2x,i1)') nplanets
  22      continue
+
+c need to check for this tempo2 keyword here
+      else if(key(1:14).eq.'PLANET_SHAPIRO') then
+	 continue
 
 c next two lines by sets on 29 Aug 05
       else if(key(1:4).eq.'PLAN')then
@@ -833,6 +844,11 @@ c Do nothing parameters
       else if(key(1:4).eq.'NTOA') then
       else if(key(1:5).eq.'DMXF1') then
       else if(key(1:5).eq.'DMXF2') then
+c Some more, these are from tempo2 .. could check the values ... 
+      else if(key(1:7).eq.'TIMEEPH') then
+      else if(key(1:9).eq.'T2CMETHOD') then
+      else if(key(1:19).eq.'CORRECT_TROPOSPHERE') then
+      else if(key(1:10).eq.'DILATEFREQ') then
 
       else if(key(1:3).eq.'TOA') then   ! end of parameter list 
 	goto 900
