@@ -3,7 +3,7 @@ PARDIR     @abs_top_srcdir@/tzpar/
 TZDIR      ./
 OBS_NIST   time.dat
 NIST_UTC   utccorr.tot                     UTC(NIST) to UTC
-NIST_BIPM  bipmnist.08.extrap              UTC(NIST) to TT(BIPM)
+NIST_BIPM  bipmnist.12.extrap              UTC(NIST) to TT(BIPM)
 NIST_PTB   ptbnist.90                      UTC(NIST) to UTC(PTB)
 NIST_AT1   at1nist.90                      UTC(NIST) to AT1
 UT1        ut1.dat                         UT1 - UT
