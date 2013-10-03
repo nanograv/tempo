@@ -86,6 +86,7 @@ c      $Id$
       tzrsite = 0.
 
       nxoff=0
+      nflagjumps=0
       do i=1,NJUMP
          xjdoff(1,i)=0.
          xjdoff(2,i)=0.
@@ -218,6 +219,8 @@ C  The error/comment is ignored by TEMPO
       setfb     = .false.
 
       ll=80
+
+      ijump = 0  ! used for counting tempo2-style jump params
 
       nskip = 0  ! counts parameter lines, which are skipped if TOAs are
 		 !    read from this file
@@ -832,6 +835,32 @@ C  Glitches
          read(value,*) dct(ikey)
          read(cfit,*) itmp
          if (itmp.eq.0) nofitjump(ikey) = .true.
+
+       else if(key(1:4).eq.'JUMP'.and.ikey.eq.-1) then
+	 ijump = ijump+1 ! could check that this does not exceed NJUMP..
+	 nflagjumps = ijump
+c flag-based jump. line should look like:
+c JUMP -flag flag_value jump_value fitflag jump_err
+	 if(value(1:1).eq.'-') then 
+           jumpflag(ijump) = value
+	   jumpflagval(ijump) = temp      ! this was read earlier
+	   call citem(line,ll,jn,temp,lf) ! read jump val
+	   ! If value not specified, default to value=0 and fit=1
+	   if (lf.eq.0) then
+	     dct(ijump) = 0.0
+	     nofitjump(ijump) = .false.
+           else ! Read value and fit flag
+	     read(temp,*) dct(ijump)
+	     temp = '0'                     ! default to no fit
+	     call citem(line,ll,jn,temp,lf) ! read fit flag
+	     read(temp,*) itmp
+	     if (itmp.eq.0) nofitjump(ijump) = .true.
+	   endif
+	   !print *,"t2 jump:",ijump,jumpflag(ijump),jumpflagval(ijump),dct(ijump),.not.nofitjump(ijump)
+         else
+           print *,"Error: only flag-based TEMPO2-style JUMPs are allowed"
+	   stop
+         endif
 
        else if(key(1:7).eq.'SOLARN0'.and.(lk.eq.7.or.ikey.eq.0)) then
          read (value,*) solarn0

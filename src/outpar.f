@@ -681,12 +681,15 @@ c TODO edit this to handle tempo2-style JUMP output also
       fit1='  1'
 
       do i = 1, nxoff
-        if (nofitjump(i)) then 
-          fit1='  0'
+        if (nfit(NPAR2+i).gt.0) then 
+          fit1='  1'
 	else
-	  fit1='  1'
+	  fit1='  0'
         endif
-	if (i.lt.10) then
+        if (i.le.nflagjumps) then
+          write (71,1093) trim(jumpflag(i)),trim(jumpflagval(i)),
+     +      dct(i),fit1,ferr(NPAR2+i)/f0
+        else if (i.lt.10) then
           write (71,1090) i,dct(i),fit1,ferr(NPAR2+i)/f0
 	else if (i.lt.100) then
           write (71,1091) i,dct(i),fit1,ferr(NPAR2+i)/f0
@@ -696,6 +699,7 @@ c TODO edit this to handle tempo2-style JUMP output also
  1090   format('JUMP_',i1,f20.9,a,f20.9)
  1091   format('JUMP_',i2,f19.9,a,f20.9)
  1092   format('JUMP_',i3,f18.9,a,f20.9)
+ 1093   format('JUMP ',a,' ',a,f18.9,a,f18.9)
       enddo
 
       return

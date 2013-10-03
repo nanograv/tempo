@@ -21,6 +21,7 @@ c      $Id$
 	integer parunit, nskip, iboot
         integer infolen
         integer ssdmflag
+        integer nflagjumps  ! number of tempo2-style flag-based jumps
         real*8 phimin
         real*8 PAAscNode    ! position angle of ascending node
         real*8 solarn0      ! solar wind electron density at 1 AU (e-/cc)
@@ -45,7 +46,7 @@ c      $Id$
      +    nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
-     +    parunit,nskip,iboot,ndmcalc,
+     +    parunit,nskip,iboot,ndmcalc,nflagjumps,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,
@@ -55,8 +56,10 @@ c      $Id$
 
 	character psrname*12,obsflag*1,pardir*80,infotxt*160
         character obskey*5
+        character jumpflag*32, jumpflagval*32
 
-        common/acomch/psrname,pardir,obsflag,infotxt,obskey(36) 
+        common/acomch/psrname,pardir,obsflag,infotxt,obskey(36),
+     +    jumpflag(NJUMP), jumpflagval(NJUMP)
 
 
         real*8 array(NPA,NPA) ! moved here from fit.f, djn, 8-Sep-98

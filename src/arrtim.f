@@ -90,7 +90,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	dither=0.
         zawgt=0.
 	mode=0
-	nxoff=0
+	nxoff=nflagjumps
 	n=0
 	sum=0.
 	sumsq=0.
@@ -302,6 +302,32 @@ c Then everything after that are flags (ignored for now)
               read(tmp,*) toff
               call mjdadd(nfmjd,ffmjd,toff)
             endif
+            ! Here we check for jump-related flags and do 
+	    ! the right thing. If this TOA is supposed to be
+	    ! "JUMPed" we need to:
+	    !  - set nfit(npar2+ijump)=1 if the jump is to be fit
+            !  - set x(npar2+ijump)=-1 (partial deriv array)
+	    ! Also if this is the first TOA in this JUMP segment, and
+            ! the jump is to be fit:
+	    !  - increment nparam
+	    !  - set mfit(nparam) = npar2 + ijump
+	    ! These last two might be more naturally done elsewhere if
+	    ! we are ok with empty JUMPs crashing things.. 
+	    ! Note, nxoff should be the total number of jumps including
+	    ! both flag-based and original-style.
+            do i=1,nflagjumps
+              tmp = getvalue(jumpflag(i)(2:32))
+              if (tmp.eq.jumpflagval(i)) then
+                x(NPAR2+i) = -1.0d0
+                if (.not.nofitjump(i)) then
+                  if (nfit(NPAR2+i).eq.0) then ! 1st TOA in JUMP
+                    nparam = nparam + 1
+                    mfit(nparam) = npar2 + i
+                  endif
+                  nfit(NPAR2+i) = 1
+                endif
+              endif
+            enddo
           endif
 
  56       if(ffmjd.gt.1.d0) then
@@ -348,9 +374,12 @@ C  Get clock corrections
 	   call clockcor(fmjd,nsite,n,deltat,clk2,nfmt)
 	endif
 	
-        if(.not.jumpbarycenter.and.nxoff.gt.0
-     +           .and.x(NPAR2+nxoff).ne.0.d0)
-     +    clk2=clk2+dct(nxoff)/86400.d0  
+c Loop and apply all jumps where x(NPAR2+i).ne.0
+        if(.not.jumpbarycenter.and.nxoff.gt.0) then
+	  do i=1,nxoff
+	    if (x(NPAR2+nxoff).ne.0.d0) clk2=clk2+dct(nxoff)/86400.d0
+	  enddo
+        endif
 
 	if(dither.ne.0.d0 .and. (.not.sim)) then
 	  clk2=clk2+dither*gasdev(idum)/86400.d6
@@ -526,8 +555,12 @@ C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
 
 	if(jdcatc) xjdoff(1,nxoff)=fmjd
 	jdcatc=.false.
-	if(jumpbarycenter.and.nxoff.gt.0.and.x(NPAR2+nxoff).ne.0.d0)
-     +    fct=fct+dct(nxoff)/86400.d0
+c Loop and apply all jumps where x(NPAR2+i).ne.0
+        if(jumpbarycenter.and.nxoff.gt.0) then
+	  do i=1,nxoff
+	    if (x(NPAR2+nxoff).ne.0.d0) fct=fct+dct(nxoff)/86400.d0
+	  enddo
+        endif
 	ct=nct+fct
 	cp=p0+p1*(ct-pepoch)*86400.d0
 	if (nsite.ge.0) then
