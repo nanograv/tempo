@@ -336,7 +336,7 @@ C Output binary parameters
 65	  dct(i)=dct(i)+freq(koff+i)*p0
 	  write(31,1061) (dct(i),i=ia,ib)
 70	  continue
-	  if (jumpout) call outjumppar
+	  if (jumpout.or.nflagjumps.gt.0) call outjumppar
 	endif
 	    
 
