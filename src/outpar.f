@@ -661,6 +661,8 @@ c=======================================================================
 
 c=======================================================================
 
+c TODO edit this to handle tempo2-style JUMP output also
+
       subroutine outjumppar
 
       implicit real*8 (A-H,O-Z)
@@ -679,6 +681,11 @@ c=======================================================================
       fit1='  1'
 
       do i = 1, nxoff
+        if (nofitjump(i)) then 
+          fit1='  0'
+	else
+	  fit1='  1'
+        endif
 	if (i.lt.10) then
           write (71,1090) i,dct(i),fit1,ferr(NPAR2+i)/f0
 	else if (i.lt.100) then

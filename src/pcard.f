@@ -170,8 +170,8 @@ C  in effect.  So we'll now turn it off:
 	IF(NXOFF.GE.NJUMP) STOP 'PCARD 55'
 	NXOFF=NXOFF+1
 	JDCATC=.TRUE.
+        X(NPAR2+NXOFF)=-1.D0
         If (.not.nofitjump(nxoff)) then
-  	  X(NPAR2+NXOFF)=-1.D0
 	  NFIT(NPAR2+NXOFF)=1
 	  NPARAM=NPARAM+1
 	  MFIT(NPARAM)=NPAR2+NXOFF
