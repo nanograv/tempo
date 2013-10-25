@@ -4,9 +4,10 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CC
 
 AC_PROG_F77
-if test "$F77" = gfortran; then
-    FFLAGS+=" -ffixed-form -ffixed-line-length-none -std=legacy"
-fi
+case "$F77" in 
+    *gfortran*) FFLAGS+=" -ffixed-form -ffixed-line-length-none -std=legacy"
+     ;;
+esac
 
 AC_C_BIGENDIAN([BIGENDIAN=".true."], [BIGENDIAN=".false."])
 AC_SUBST(BIGENDIAN)
