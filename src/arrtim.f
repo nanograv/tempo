@@ -316,6 +316,7 @@ c Then everything after that are flags (ignored for now)
 	    ! Note, nxoff should be the total number of jumps including
 	    ! both flag-based and original-style.
             do i=1,nflagjumps
+	      x(NPAR2+1) = 0.0d0 ! Default to not applying this jump
               tmp = getvalue(jumpflag(i)(2:32))
               if (tmp.eq.jumpflagval(i)) then
                 x(NPAR2+i) = -1.0d0
