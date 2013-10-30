@@ -68,6 +68,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
         endif
 
 	dphase=0.d0
+        dphaseflag=0.d0
+        dphasetot=0.d0
 	deltat=0.d0
         pha1 = 0.d0
         pha2 = 0.d0
@@ -302,6 +304,11 @@ c Then everything after that are flags (ignored for now)
               read(tmp,*) toff
               call mjdadd(nfmjd,ffmjd,toff)
             endif
+            dphaseflag = 0.0d0
+            tmp = getvalue("padd")
+            if (tmp.ne."") then
+              read(tmp,*) dphaseflag
+            endif
             ! Here we check for jump-related flags and do 
 	    ! the right thing. If this TOA is supposed to be
 	    ! "JUMPed" we need to:
@@ -316,7 +323,7 @@ c Then everything after that are flags (ignored for now)
 	    ! Note, nxoff should be the total number of jumps including
 	    ! both flag-based and original-style.
             do i=1,nflagjumps
-	      x(NPAR2+1) = 0.0d0 ! Default to not applying this jump
+	      x(NPAR2+i) = 0.0d0 ! Default to not applying this jump
               tmp = getvalue(jumpflag(i)(2:32))
               if (tmp.eq.jumpflagval(i)) then
                 x(NPAR2+i) = -1.0d0
@@ -632,7 +639,8 @@ C  Write itoa file correctly, including observatory code.  (VMK, June94)
 1080	  format(a9,i5,a14,f6.2,f11.4,f10.6,2x,a2,2x,a8)
 	endif
 
-	call resid(nct,fct,dn,dphase,dnpls(n),nits,jits)
+        dphasetot = dphase + dphaseflag
+	call resid(nct,fct,dn,dphasetot,dnpls(n),nits,jits)
 
 	if(track.and.n.gt.1) then
 	  dt=dt+ntrk
