@@ -397,7 +397,7 @@ C  Get clock corrections
 c Loop and apply all jumps where x(NPAR2+i).ne.0
         if(.not.jumpbarycenter.and.nxoff.gt.0) then
 	  do i=1,nxoff
-	    if (x(NPAR2+nxoff).ne.0.d0) clk2=clk2+dct(nxoff)/86400.d0
+	    if (x(NPAR2+i).ne.0.d0) clk2=clk2+dct(i)/86400.d0
 	  enddo
         endif
 
@@ -578,7 +578,7 @@ C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
 c Loop and apply all jumps where x(NPAR2+i).ne.0
         if(jumpbarycenter.and.nxoff.gt.0) then
 	  do i=1,nxoff
-	    if (x(NPAR2+nxoff).ne.0.d0) fct=fct+dct(nxoff)/86400.d0
+	    if (x(NPAR2+i).ne.0.d0) fct=fct+dct(i)/86400.d0
 	  enddo
         endif
 	ct=nct+fct
