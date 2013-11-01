@@ -24,10 +24,18 @@ if ($infoflag) {
 
 chomp(@infolist);
 
+
+# These hold info needed to compute the (W)RMS of the averaged residuals
 $r2_tot = 0.0;
 $wr2_tot = 0.0;
 $wt_tot = 0.0;
 $ct_tot = 0.0;
+foreach $i (@infolist) {
+    $r2_grp{$i} = 0.0;
+    $wr2_grp{$i} = 0.0;
+    $wt_grp{$i} = 0.0;
+    $ct_grp{$i} = 0.0;
+}
 
 # Pop off the first residual, then search for any other residuals
 # residuals that are within the desired time- and frequency ranges.
@@ -75,8 +83,14 @@ while ($#mjda>-1) {
     
 }
 
-print sprintf("# WRMS = %.3f ns\n", sqrt($wr2_tot/$wt_tot));
-print sprintf("#  RMS = %.3f ns\n", sqrt($r2_tot/$ct_tot));
+print sprintf("# WRMS = %.3f us\n", sqrt($wr2_tot/$wt_tot));
+print sprintf("#  RMS = %.3f us\n", sqrt($r2_tot/$ct_tot));
+foreach $grp (keys %wr2_grp) {
+    unless ($grp) { next;} # Skip empty group
+    print "#\n";
+    print sprintf("# WRMS($grp) = %.3f us\n", sqrt($wr2_grp{$grp}/$wt_grp{$grp}));
+    print sprintf("#  RMS($grp) = %.3f us\n", sqrt($r2_grp{$grp}/$ct_grp{$grp}));
+}
 
 #-----------------------------------------
 
@@ -225,6 +239,11 @@ sub resavg_calculate_print{
   $r2_tot += $res*$res;
   $wt_tot += (1.0/($err*$err));
   $ct_tot++;
+
+  $wr2_grp{$info} += $res*$res*(1.0/($err*$err));
+  $r2_grp{$info} += $res*$res;
+  $wt_grp{$info} += (1.0/($err*$err));
+  $ct_grp{$info}++;
 
   if ($cflag) {
     $a = $wtsum;
