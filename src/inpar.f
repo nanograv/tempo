@@ -93,6 +93,8 @@ c      $Id$
          dct(i)=0.
          nofitjump(i) = .false.
       enddo
+
+      infoflag = ""
       
       ngl=0
       do i=1,NGLT
@@ -856,11 +858,13 @@ c JUMP -flag flag_value jump_value fitflag jump_err
 	     read(temp,*) itmp
 	     if (itmp.eq.0) nofitjump(ijump) = .true.
 	   endif
-	   !print *,"t2 jump:",ijump,jumpflag(ijump),jumpflagval(ijump),dct(ijump),.not.nofitjump(ijump)
          else
            print *,"Error: only flag-based TEMPO2-style JUMPs are allowed"
 	   stop
          endif
+
+       else if(key(1:4).eq.'INFO') then
+         read (value,*) infoflag
 
        else if(key(1:7).eq.'SOLARN0'.and.(lk.eq.7.or.ikey.eq.0)) then
          read (value,*) solarn0

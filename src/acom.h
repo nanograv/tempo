@@ -57,9 +57,10 @@ c      $Id$
 	character psrname*12,obsflag*1,pardir*80,infotxt*160
         character obskey*5
         character jumpflag*32, jumpflagval*32
+        character infoflag*32
 
         common/acomch/psrname,pardir,obsflag,infotxt,obskey(36),
-     +    jumpflag(NJUMP), jumpflagval(NJUMP)
+     +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag
 
 
         real*8 array(NPA,NPA) ! moved here from fit.f, djn, 8-Sep-98

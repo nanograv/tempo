@@ -295,6 +295,7 @@ c tempo2-compatibility:
       if(nits.gt.0)write(71,'(''NITS'',i22)')nits
       if(iboot.gt.0)write(71,'(''IBOOT'',i21)')iboot
       if(nddm.gt.0)write(71,'(''NDDM'',i22)')nddm
+      if(infoflag.ne."")write(71,'(''INFO'',1x,a)')infoflag
 
       return
       end

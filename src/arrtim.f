@@ -309,6 +309,18 @@ c Then everything after that are flags (ignored for now)
             if (tmp.ne."") then
               read(tmp,*) dphaseflag
             endif
+            if (infoflag.ne."") then
+              tmp = getvalue(infoflag(2:32))
+              if (tmp.ne."") then
+                ! Fill in the INFO stuff
+                infotxt = tmp
+                infolen = index(tmp,' ') - 1
+              else
+                ! Flag not found, set an empty info line
+                infotxt = ""
+                infolen = 0
+              endif
+            endif
             ! Here we check for jump-related flags and do 
 	    ! the right thing. If this TOA is supposed to be
 	    ! "JUMPed" we need to:
