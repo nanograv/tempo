@@ -13,6 +13,7 @@ EMIN    x   Set minimum uncertainty to x
 EQUAD   x   Additional uncertainty in us, added in quadrature
 FMAX    x   Ignore TOAs at frequencies higher than x
 FMIN    x   Ignore TOAs at frequencies lower than x
+FORMAT  x   x=1, parse TOAs in Tempo2 format; x=0, parse standard formats
 INCLUDE x   Insert contents of file x here; may be used recursively
 INFO    x   Write x to info.tmp for subsequent TOAs (until next INFO card)
 JUMP        Beginning or end of a jump segment

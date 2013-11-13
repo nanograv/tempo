@@ -68,4 +68,4 @@ GLF1_n   Permanent glitch n frequency derivative increment (s^-2)
 GLF0D_n  Decaying glitch n frequency increment (s^-1)
 GLTD_n   Decay time constant for glitch n (days)
 JUMP_n   Time offset for segment n defined by "JUMP" TOA command
-
+JUMP -f v Tempo2-style flag-based JUMP syntax (f=flag name, v=flag value)
