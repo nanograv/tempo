@@ -25,6 +25,11 @@ P1       Pulsar period derivative (10^-15).  Alternative for 'F1'
 DM       Dispersion measure (pc cm^-3)
          (if flag 2..9,A, fit n time derivative(s) of DM, n=1..9)	
 DMn      n'th time derivative of dispersion measure; n=1..9
+DMX_n    DM value in n'th DMX segment (pc cm^-3)
+DMX1_n   DM time derivative in n'th DMX segment
+DMXEP_n  Epoch of n'th DMX segment (MJD) (not fit)
+DMXR1_n  Start date of n'th DMX segment (MJD) (not fit)
+DMXR2_n  End date of n'th DMX segment (MJD) (not fit)
 A1_n     Projected pulsar semi-major axis of n'th orbit    (n=1,2,3; default 1)
 E_n      Eccentricity of n'th orbit                        (n=1,2,3; default 1)
 T0_n     Epoch of periastron passage of n'th orbit (MJD)   (n=1,2,3; default 1)
