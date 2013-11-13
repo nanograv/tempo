@@ -16,11 +16,11 @@ cvk     Parameters for finding mass function
 c --- output of Keplerian parameters --- 
 
 	if(nbin.ne.9)then
-	   write(31,'(//5x,''A1 sin(i)'',8x,''E'',10x,''T0(MJD)'',14x,
-     +          ''PB'',9x,''OMEGA''/)')
+	   write(31,'(//5x,''A1 sin(i)'',8x,''E'',10x,''T0(MJD)'',15x,
+     +          ''PB'',11x,''OMEGA''/)')
 	else
 	   write(31,'(//4x,''A1 sin(i)'',4x,''EPS1'',10x,''EPS2'',12x,
-     +         ''PB(days)'',11x,''TASC(MJD)''/)')
+     +         ''PB(days)'',13x,''TASC(MJD)''/)')
 	endif 
 
 	do i=1,1+nplanets
@@ -28,10 +28,10 @@ c --- output of Keplerian parameters ---
  1005	   format('Orbit # ',i2)
 	   if(nbin.ne.9)then
 	      write(31,1006) a1(i),e(i),t0(i),pb(i)/8.64d4,omz(i)
- 1006	      format(f14.9,f14.10,f16.9,f18.12,f11.6)
+ 1006	      format(f14.9,f14.10,f17.10,f20.14,f11.6)
 	   else
 	      write(31,2006) a1(i),eps1,eps2,pb(i)/8.64d4,t0asc
- 2006         format(f14.9,f14.10,f14.10,f18.12,f18.11)
+ 2006         format(f14.9,f14.10,f14.10,f21.14,f18.11)
            endif
 	      
 	   j=0
@@ -141,14 +141,14 @@ c --- output of non-Keplerian parameters, I ---
 
         if(nbin.eq.3.or.nbin.eq.8)then
 	   write(31,10503)
-10503	   format(//'     OMDOT     GAMMA    PBDOT(-12)   sin(i)',
-     +              '       M          m2      DTH(-6)'/)
+10503	   format(//'     OMDOT     GAMMA      PBDOT(-12)   sin(i)',
+     +              '       M          m2       DTH(-6)'/)
            write(31,10523) omdot,gamma,pbdot*e12,si,am,am2,e6*dth
            write(31,10523) freq(14),freq(15),e6*freq(18),freq(20),
      +        freq(21),freq(22),freq(23)*e6
            write(31,10523) ferr(14),ferr(15),e6*ferr(18),ferr(20),
      +        ferr(21),ferr(22),ferr(23)*e6
-10523      format(f11.7,f10.7,f14.6,f11.6,f11.7,2f11.4)
+10523      format(f11.7,f12.9,f14.6,f11.6,f11.7,f12.5,f11.4)
         else if(nbin.eq.4)then
            write(31,10504)
 10504      format(//'    XOMDOT     XPBDOT(-12)     M         m2'/)
@@ -158,14 +158,14 @@ c --- output of non-Keplerian parameters, I ---
 10524	   format(f11.7,f14.6,f11.6,f11.6)
         else if(nbin.eq.7)then
            write(31,10507)
-10507      format(//'     OMDOT     GAMMA      PBDOT(-12)   sin(i)',
+10507      format(//'     OMDOT     GAMMA        PBDOT(-12)   sin(i)',
      +              '       m1         m2     bp   bpp'/)
            write(31,10527) omdot,gamma,pbdot*e12,si,am,am2,bp,bpp
            write(31,10527) freq(14),freq(15),e6*freq(18),freq(20),
      +        freq(21),freq(22)
            write(31,10527) ferr(14),ferr(15),e6*ferr(18),ferr(20),
      +        ferr(21),ferr(22)
-10527      format(f11.7,f10.7,f14.6,f11.6,f11.7,f11.4,f6.2,f5.1)
+10527      format(f11.7,f12.9,f14.6,f11.6,f11.7,f11.4,f6.2,f5.1)
         else if(nbin.eq.9)then
 	   if(nell1.eq.0)then
 	      write(31,10509)
@@ -191,7 +191,7 @@ c --- output of non-Keplerian parameters, I ---
 	   endif
         else if(nbin.eq.13)then !!!!!!!!! new in DDS
            write(31,10522)
-10522      format(//'     OMDOT     GAMMA    PBDOT(-12)    SHAPMAX',
+10522      format(//'     OMDOT     GAMMA      PBDOT(-12)    SHAPMAX',
      +              '       M          m2      DTH(-6)'/)
            write(31,10523) omdot,gamma,pbdot*e12,shapmax,
      +          am,am2,e6*dth
@@ -201,14 +201,14 @@ c --- output of non-Keplerian parameters, I ---
      +        ferr(21),ferr(22),ferr(23)*e6
 	else
            write(31,10501)
-10501      format(//'     OMDOT     GAMMA      PBDOT(-12)   sin(i)',
+10501      format(//'     OMDOT     GAMMA        PBDOT(-12)   sin(i)',
      +              '       m1         m2'/)
            write(31,10521) omdot,gamma,pbdot*e12,si,am,am2
            write(31,10527) freq(14),freq(15),e6*freq(18),freq(20),
      +        freq(21),freq(22)
            write(31,10527) ferr(14),ferr(15),e6*ferr(18),ferr(20),
      +        ferr(21),ferr(22)
-10521      format(f11.7,f10.7,f14.6,f11.6,f11.7,f11.4)
+10521      format(f11.7,f12.9,f14.6,f11.6,f11.7,f11.4)
 	endif       
         
         if(sim) then
