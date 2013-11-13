@@ -24,6 +24,9 @@ EPHEM   Solar system ephemeris
 IBOOT   Bootstrap error analysis, with 2^n iterations
         Allowed values:  integers n
 
+INFO    Use the specified Tempo2-style flag for INFO values.
+        Allowed values:  flag name including leading '-'
+
 NDDM    Model DM as an n-th order polynomial expansion in time
         Allowed values:  integers n
 
