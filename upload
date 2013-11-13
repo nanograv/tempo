@@ -13,5 +13,5 @@ set SFPATH = ${SFUSER},tempo@web.sourceforge.net:htdocs/
 
 echo "Uploading webpages as $SFUSER"
 
-rsync -av -C --exclude=upload --exclude=.cvsignore . $SFPATH/
+rsync -av -C --exclude=upload --exclude=.cvsignore *.html *.txt ref_man_sections $SFPATH/
 
