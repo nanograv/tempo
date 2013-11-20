@@ -105,6 +105,10 @@ c	rewind 32
 
 	do 68 i = 1, nterms
 	  sigmax(i) = array(i,i)
+c If any of the sigmas are zero that probably means something like an 
+c empty JUMP or DMX range.  We might as well catch this here instead
+c of spewing out garbage later.. PBD 2013/11/20
+          if(sigmax(i).eq.0.d0) stop 'fit 68 (unconstrained parameter)'
  68	continue
 
 	free1=fnpts-1
