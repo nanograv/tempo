@@ -93,6 +93,9 @@ C  DJN 18-Aug-92  Allow up to 36 sites
         zawgt=0.
 	mode=0
 	nxoff=nflagjumps
+	do i=1,NJUMP
+	  nfit(NPAR2+i)=0
+	enddo
 	n=0
 	sum=0.
 	sumsq=0.
