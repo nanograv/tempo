@@ -1,10 +1,15 @@
 OBSERVATORY COORDINATE FILE (typically 'obsys.dat')
 
 This file contains geographical locations of observatories.  There is
-one line per observatory.  The information in the first line is used
+one line per observatory.  
+
+Historically, the information in the first line was used
 for TOAs tagged with observatory number 1, the second line for number
 2, and so on.  The tenth line corresponds to observatory 'a', the
-eleventh to 'b', and so on.
+eleventh to 'b', and so on.  This behavior is still invoked
+if column 71 (observatory number) is blanked.  However, an
+observatory number ('1'-'9' or 'a'-'z') in column 71 will now
+override the default assignment (based on position in the file).
 
     Col       Item
    -----     ---------------
