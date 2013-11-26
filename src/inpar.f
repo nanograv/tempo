@@ -319,7 +319,7 @@ C  Control parameters
       else if(key(1:4).eq.'EPHE')then
          call upcase(value)
          do i=1,kephem
-            if(value(1:5).eq.ephfile(i)(1:5)) then
+            if(value(1:ephnamel(i)).eq.ephfile(i)(1:ephnamel(i))) then
 		nephem=i
             	go to 14
 	    endif

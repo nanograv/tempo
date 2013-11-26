@@ -143,10 +143,12 @@ C  99	gro.99			newval
 	logical lw, nostop
         logical memerr
         character*80 infile,ut1file,resfile1,obsyfile,
-     +       resfile2,listfile,path,fname,line,tdbfile,s,hlpfile
+     +       resfile2,listfile,fname,line,tdbfile,s,hlpfile
+        character*80 path
+        character*160 cfgpath
 	character*160 npulsefile, infofile, phisunfile
 	character date*9,date2*9,damoyr*9,label*12,parfile*160
-	integer time, n
+	integer time
         real*8 xmean(NPA),alng(36)
 
         integer sitea2n ! external function
@@ -174,79 +176,15 @@ c  Get command-line arguments
         call tparin(nostop,lw,lpth,nparmax,nptsmax,version,
      +     npulsefile,infile,path,resfile1,hlpfile,parfile)
 
- 	path=path(1:lpth)//'/tempo.cfg'
-	open(2,file=path,status='old',err=4)
-	go to 5
-4	print*,'Cannot open '//path(1:lpth)//'/tempo.cfg'
-	go to 9999
-5	kephem=0
+c  Parse tempo.cfg file
+
+ 	cfgpath=path(1:lpth)//'/tempo.cfg'
+        call cfgin(cfgpath,ut1file,obsyfile,tdbfile)  
+
 	nfl=index(infile,' ')-1
 
         nbuf = nptsmax * (nparmax+8) 
         call tmalloc(nptsmax,nbuf) ! allocate large arrays
-
-	clklbl(0)='UNCORR'
-	do 510 i=1,20
-	  read(2,1000,end=515)line
- 1000     format(a)
-	  j=1
-	  call citem(line,80,j,label,k)
-	  call upcase(label)
-	  call citem(line,80,j,fname,k)
-
-	  if(label(1:8).eq.'OBS_NIST')then
-            clkfile(1)=fname(1:k) ! Obs to UTC(NIST)
-            clklbl(1)='UTC(NIST)'
-	  else if(label(1:8).eq.'NIST_UTC')then
-            clkfile(2)=fname(1:k) ! UTC(NIST) to UTC(BIPM)
-            clklbl(2)='UTC(BIPM)'
-	  else if(label(1:9).eq.'NIST_BIPM')then
-            clkfile(3)=fname(1:k) ! UTC(NIST) to TT(BIPM)
-            clklbl(3)='TT(BIPM)'
-	  else if(label(1:8).eq.'NIST_PTB')then
-            clkfile(4)=fname(1:k) ! UTC(NIST) to UTC(PTB)
-            clklbl(4)='PTB'
-	  else if(label(1:8).eq.'NIST_AT1')then
-            clkfile(5)=fname(1:k) ! UTC(NIST) to AT1
-            clklbl(5)='AT1'
-	  else if(label(1:3).eq.'UT1')then
-            ut1file=fname(1:k)  ! UT1 - UT
-	  else if(label(1:6).eq.'EPHDIR')then
-            ephdir=fname(1:k)   ! BC ephem directory
-	  else if(label(1:6).eq.'CLKDIR')then
-            clkdir=fname(1:k)   ! Clock files directory
-	  else if(label(1:6).eq.'PARDIR')then
-            pardir=fname(1:k)   ! .par files for -z
-	  else if(label(1:6).eq.'TZDIR')then
-            tzdir=fname(1:k)    ! Dir for tz.in
-          else if(label(1:5).eq.'OBSYS')then
-            obsyfile=fname(1:k) ! Observatory parameters
-          else if(label(1:5).eq.'TZTOT')then
-            tztfile=fname(1:k)  ! param file for -z
-	  else if(label(1:7).eq.'TDBFILE')then
-            tdbfile=fname(1:k)
-	  else if(label(1:7).eq.'EPHFILE')then              
-            kephem=kephem+1     ! BC ephemeris names
-            if(kephem.le.NEPHMAX)then
-              ephfile(kephem)=fname(1:k)
-            else
-              go to 513
-            endif
-          else if (label(1:6).eq.'TZSITE') then
-            tzsitedef = fname(1:1)
-          else if (label(1:9).eq.'TDBFMT') then
-            call upcase(fname)
-            if (fname(1:4).eq.'IF99') tdbif99fmt = .true.
-	  else 
-            write(*,'(''Unrecognised label: '',a)')label
-	  endif
- 510	continue
-	go to 515
-
- 513	write(*,'(''Too many EPH files!'')')
-	go to 9999
-
- 515	close(2)
 
         if (tz.and.tzsite.eq.' '.and.tzsitedef.ne.' ') then
           tzsite=tzsitedef

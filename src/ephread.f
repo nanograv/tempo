@@ -7,7 +7,12 @@ c     based on JPL code state.f
 
 c     DJN 29 July 1997
 
-      include 'ephcom.h'
+      implicit real*8 (a-h,o-z) ! added 12-Nov-13, needed for eph.h
+      include 'dim.h'           ! added 12-Nov-13, needed for eph.h
+      include 'eph.h'           ! added 12-Nov-13, needed for bigendian-mess
+
+      include 'ephcom.h' 
+
       save buf
 
 c     input:
@@ -59,7 +64,9 @@ c     of a day.  Note:  assumes jd(1) an integer and 0<=jd(2)<1.
       if (nr.ne.nrl) then
         nrl = nr
         read (iunit, rec=nr) (buf(i),i=1,ncoeff)
-        if(.not.bigendian())call dbyterev(buf,ncoeff) 
+        if(ephbigendian(nephem).and..not.bigendian() .or.
+     +     .not.ephbigendian(nephem).and.bigendian()  )
+     +        call dbyterev(buf,ncoeff) 
       endif
 
       t(1) = ((jda-((nr-3)*ss(3)+ss(1)))+jdb)/ss(3) ! fraction within record

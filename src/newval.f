@@ -26,7 +26,7 @@ c      $Id$
 	if(jits.lt.nits)jits=jits+1
 
         if(posepoch.eq.0.)then
-          write(31,1038) psrname,ephfile(nephem)(1:5),clklbl(nclk),
+          write(31,1038) psrname,ephname(nephem)(1:5),clklbl(nclk),
      +         pepoch
  1038     format(/'PSR ',a12,'  Ephem.: ',a,'  Clock: ',a12,
      +         '  Ref. MJD: ',f12.4)

@@ -212,7 +212,7 @@ c  Open ephemeris file
 	kd=index(ephdir,' ')-1
 	kf=index(ephfile(nephem),' ')-1
 	path=ephdir(1:kd)//ephfile(nephem)(1:kf)
-	call ephinit(44,path)
+	call ephinit(44,path,ephbigendian(nephem))
 
 C  Check to make sure selected parameters are consistent with model
 	if(nbin.eq.0) then

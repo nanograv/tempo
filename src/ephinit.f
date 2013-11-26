@@ -1,5 +1,5 @@
 c      $Id$
-      subroutine ephinit (iunitin, ephfile)
+      subroutine ephinit (iunitin, ephfile, ephbigendian)
 
 c     set up a JPL ephemeris file for reading
 
@@ -18,6 +18,7 @@ c     DJN 29 July 1997
 c     inputs:
       integer iunitin           ! fortran unit number for the file
       character*256 ephfile     ! ephemeris file name
+      logical ephbigendian
       logical bigendian
       integer nrecl
       logical openflag
@@ -69,7 +70,8 @@ c
      +     ((ipt(i,j),i=1,3),j=1,12), numde, (ipt(i,13),i=1,3)
 
       close (iunit)
-      if(.not.bigendian()) then
+      if(ephbigendian.and..not.bigendian() .or.
+     +  .not.ephbigendian.and.bigendian()) then
         call dbyterev(ss,3)
         call byterev(ncon,1)
         call dbyterev(au,1)
