@@ -15,7 +15,7 @@ $usage =
   "Parameters:\n".
   "  infile:  input TOA file\n" .
   "  outfile: output TOA file(*)\n" .
-  "           (*) exception:  when using -o flag, outfile parameter is an extension\n".
+  "           (*) exception:  when using -o or -O flag, outfile parameter is an extension\n".
   "                    added to input file names to create output files names\n".
   "Flags:\n" .
   "  -r: -rx.xxx = maximum residaual as a fraction of pulse period\n" .
@@ -43,6 +43,7 @@ $usage =
   "  -m: monitor progress of program with xxx/xxx display\n".
   "  -n: convert Parkes/Jodrell format TOAs to Princeton format\n".
   "  -o: preserve the INCLUDE file structure, add 'outext' parameter to each file name\n".
+  "  -O: preserve the INCLUDE file structure, substitute 'outext' parameter for each file name extension\n".
   "  -t: incorporate TIME offsets directly into TOAs\n".
   "  -uxxx -vyyy: include only TOAs with frequency between xxx and yyy MHz\n".
   "  -w: remove points with zero weight\n".
@@ -64,6 +65,7 @@ $lflag = 0;
 $mflag = 0;
 $nflag = 0;
 $oflag = 0;
+$Oflag = 0;
 $pflag = 0;  # residual cut defined as fraciton of a pulse period
 $rflag = 0;
 $rnflag = 1;
@@ -142,6 +144,8 @@ foreach $par (@ARGV) {
         $nflag = 1;
       } elsif ($f eq "o") {#       -o
         $oflag = 1;
+      } elsif ($f eq "O") {#       -o
+        $Oflag = 1;
       } elsif ($f eq "r") {#       -r
         $rflag = 1;
         if ($par=~/s$/) {             #   parameter ends in 's'
@@ -202,6 +206,8 @@ foreach $par (@ARGV) {
 
 die $usage if ($#param!=1);
 
+$oOflag = $oflag || $Oflag;
+
 if ($pha1in>=0 && $pha1in<=1 && $pha2in>=0 && $pha2in<=1) {
   if ($pha1in<$pha2in) {
     $pha1 = $pha1in;
@@ -227,7 +233,7 @@ if ($pha1in>=0 && $pha1in<=1 && $pha2in>=0 && $pha2in<=1) {
 
 ($infile,$outfile) = @param;
 
-$outext = $outfile if ($oflag);
+$outext = $outfile if ($oOflag);
 
 # read in the residuals
 open (A,"resid2.tmp") or die "Error opening resid2.tmp";
@@ -296,7 +302,14 @@ open (A,$infile);
 
 # open the output files
 
-$outfile = "$infile.$outext" if ($oflag);
+if ($oflag) {
+  $outfile = "$infile.$outext";
+  print "oflag section set outfile to $outfile\n";
+}
+if ($Oflag) {
+  @infilex = split(/\./,$infile);
+  $outfile = join(".",@infilex[0..$#infilex-1]).".".$outext;
+}
 open (Z,">$outfile");
 open (Y,">e.tmp");
 
@@ -345,10 +358,10 @@ for(;;) {
   printf "\b\b\b\b\b\b\b\b\b\b\b%5d/%5d", $i,$n if ($mflag);
   if (eof($fhinx)) {     # file processing and input section
     close pop @fhin;
-    close pop @fhout if ($oflag);
+    close pop @fhout if ($oOflag);
     last if ($#fhin==-1);
     $fhinx = $fhin[$#fhin];
-    $fhoutx = $fhout[$#fhout] if ($oflag);
+    $fhoutx = $fhout[$#fhout] if ($oOflag);
     next;
   }
   $a = <$fhinx>;
@@ -358,11 +371,17 @@ for(;;) {
     $a1 = uc((split(' ',$a))[0]);
   }
   if ($a1=~/^INCLUDE/) {
-    if ($oflag) {
+    if ($oOflag) {  # print INCLUDE line in new file if preserving INCLUDE structure
       $a2 = $a;
       chomp $a2;
       $a2 =~ s/ *$//;
-      print $fhoutx "$a2.$outext\n";  # print INCLUDE line 
+      if ($oflag) {
+        print $fhoutx "$a2.$outext\n";  
+      }
+      if ($Oflag) {
+        @a2x = split(/\./,$a2);
+        print $fhoutx join(".",@a2x[0..$#a2x-1]).".$outext\n";
+      }
     }
     local *A;
     local $infile;
@@ -370,10 +389,16 @@ for(;;) {
     open (A,$infile);
     $fhin[$#fhin+1] = *A;
     $fhinx = $fhin[$#fhin];
-    if ($oflag) {
+    if ($oOflag) {
       local *Z;
       local $outfile;
-      $outfile = "$infile.$outext";
+      if ($oflag) {
+        $outfile = "$infile.$outext";
+      }
+      if ($Oflag) { 
+        @infilex = split(/\./,$infile);
+        $outfile = join(".",@infilex[0..$#infilex-1]).".".$outext;
+      }
       open (Z,">$outfile");
       $fhout[$#fhout+1] = *Z;
       $fhoutx = $fhout[$#fhout];
