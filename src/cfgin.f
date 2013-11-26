@@ -98,42 +98,6 @@ c     local variables
              ephname(kephem) = ephfile(kephem)(1:5)
              ephnamel(kephem) = 5
            endif
-C           kephem=kephem+1     ! BC ephemeris names
-C           if(kephem.gt.NEPHMAX) goto 992
-C           ephfile(kephem)=fname(1:k)
-C           ! historical default: ephemeris name (e.g. "DE405") is first five chars of file name
-C           ! historical default: ephemeris in bigendian format
-C           ephname(kephem) = ephfile(kephem)(1:5)
-C           ephnamel(kephem) = 5
-C           ephbigendian(kephem) = .true.
-C           call citem(line,160,j,s,k)
-C           if (k.ne.0) then
-C             ephname(kephem) = s(1:k)
-C             ephnamel(kephem) = k
-C             call citem(line,160,j,s,k)
-C             if (k.ne.0) then
-C               call upcase(s)
-C               if (s(1:6).eq.'LITTLE') then
-C                  ephbigendian(kephem) = .false.
-C               else if (s(1:3).ne.'BIG') then
-C                  write (*,402) ephname(kephem)(1:k)
-C                  write (*,403) s(1:k)
-C                  write (*,404)
-C                  write (*,405)
-C  402             format ("Warning: in tempo.cfg, for ephemeris ",A)
-C  403             format (9x,"don't understand parameter ",A)
-C  404             format (9x,"should be 'bigendian' or 'littleendian')
-C  405             format (9x,"assuming big endian')
-C               endif
-C             endif
-C           endif
-          !!!!!!!!
-          print *,""
-          print *,"added ephemeris ",kephem
-          print *,"name length: ",ephnamel(kephem)
-          print *,"name: ",ephname(kephem)(1:ephnamel(kephem))
-          print *,"file: ",ephfile(kephem)
-          print *,"bigendian: ",ephbigendian(kephem)
         else if (label(1:6).eq.'TZSITE') then
           tzsitedef = fname(1:1)
         else if (label(1:9).eq.'TDBFMT') then
