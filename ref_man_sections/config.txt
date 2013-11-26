@@ -20,8 +20,14 @@ UT1         Offsets between UTC and UT1
 
 EPHDIR      Directory containing ephemeris files
 TDBFILE     Offsets between TDB and TT
-EPHFILE     Solar system ephemeris file (from JPL distribution).  There
-            may be up to five EPHFILE entries.
+EPHFILE     Solar system ephemeris file (from JPL distribution).  
+            There may be up to five EPHFILE entries.  
+            Optional flags:
+                --endian=little or --endian=big 
+                       default is big endian
+                --eph=<ephname> where typical <ephname> is DE200, DE405, etc.
+                       default is first five characters of ephemeris name
+                               
 
 PARDIR      Directory containing <psrname>.par files for prediction mode
 TZDIR       Directory containing 'tz.in' control file for prediction mode
