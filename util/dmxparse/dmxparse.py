@@ -57,14 +57,16 @@ class dmxparse:
             fields = l.split()
             key = fields[0]
             val = fields[1].replace('D','e')
-            if len(fields)==4: err = fields[3].replace('D','e')
+            if len(fields)==4: 
+                flag = int(fields[2])
+                err = fields[3].replace('D','e')
             pfx=None
             idx=None
             (pfx,idx,newkey) = (None,None,None)
             if '_' in key: 
                 (pfx, idx) = key.split('_')
                 newkey = "DX%03d" % int(idx)
-            if l.startswith('DMX_'):
+            if l.startswith('DMX_') and flag==1:
                 self.val[newkey] = float(val)
                 self.err[newkey] = float(err)
             if l.startswith('DMXEP_'): self.epoch[newkey] = float(val)
