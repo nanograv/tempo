@@ -8,7 +8,7 @@
 #include <fcntl.h>
 
 /*  FORTRAN:  fd = close(filedes)      */
-close_(filedes)
+int close_(filedes)
 int *filedes;
 {
 return(close(*filedes));
@@ -37,40 +37,40 @@ int isetflag_()
 }
 
 /* FORTRAN:  fd = creat(filnam,mode) */
-creat_(filnam,mode)
+int creat_(filnam,mode)
 char filnam[];
 int *mode;
 {
   return(creat(filnam,*mode));
 }
 /* FORTRAN:  nread = read(fd,buf,n) */
-read_(fd,buf,n)
+int read_(fd,buf,n)
 int *fd,*n;
 char buf[];
 {
   return(read(*fd,buf,*n));
 }
 /* FORTRAN:  nwrt = write(fd,buf,n) */
-write_(fd,buf,n)
+int write_(fd,buf,n)
 int *fd,*n;
 char buf[];
 {
   return(write(*fd,buf,*n));
 }
 /* FORTRAN: ns = lseek(fd,offset,origin) */
-lseek_(fd,offset,origin)
+int lseek_(fd,offset,origin)
 int *fd,*offset,*origin;
 {
   return(lseek(*fd,*offset,*origin));
 }
 /* times(2) */
-times_(buf)
+int times_(buf)
 int buf[];
 {
   return (times(buf));
 }
 /* returns 32 bit random numbers to FORTRAN program */
-iran_(xsubi)
+int iran_(xsubi)
 unsigned short xsubi[];
 {
   return (jrand48(xsubi));
@@ -82,7 +82,7 @@ int *n;
   exit(*n);
 }
 
-cprnt_(string,n)
+void cprnt_(string,n)
 char string[];
 int *n;
 {
@@ -94,7 +94,7 @@ int *n;
   return;
 }
 
-byterev_(i,n)
+void byterev_(i,n)
 int *i,*n;
 {
 int j,k;
@@ -107,7 +107,7 @@ for(j=0;j<*n;j++) {
 }
 }
 
-dbyterev_(i,n)
+void dbyterev_(i,n)
 int *i,*n;
 {
 int j,k,l;
@@ -126,7 +126,7 @@ for(j=0;j<*n;j++) {
 }
 }
 
-wswap_(i,n)
+void wswap_(i,n)
 int *i,*n;
 {
 int j,k;
