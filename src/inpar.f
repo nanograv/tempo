@@ -858,7 +858,7 @@ c JUMP -flag flag_value jump_value fitflag jump_err
 	     if (itmp.eq.0) nofitjump(ijump) = .true.
 	   endif
          else
-           print *,"Error: only flag-based TEMPO2-style JUMPs are allowed"
+           print *,"Error: only flag-based TEMPO2-style JUMPs allowed"
 	   stop
          endif
 
