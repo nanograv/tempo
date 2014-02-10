@@ -189,7 +189,7 @@ C  in effect.  So we'll now turn it off:
 1060	format(i5,1x,a6,f8.2)
 	go to 200
 	
-70	IF(CARD(1:4).NE.'EMIN') go to 75
+70	IF(CARD(1:4).NE.'EMIN'.and.card(1:6).ne.'EFLOOR') go to 75
 	emin = PARM
 	write (31,1060) N, CARD(1:6),emin
 	go to 200
