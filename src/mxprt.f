@@ -4,7 +4,7 @@ c      $Id$
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
 	real*8 a(NPA,NPA),sig(NPA),gcor(NPA)
-	character*5 param(40),paramj
+	character*5 param(47),paramj
 	character*1 agcor,line(NPA)
 	character*11 mark
 	integer*4 mfit(NPAP1)
@@ -15,7 +15,8 @@ c      $Id$
      +       ' Omdt','gamma','   DM','   px',' Pbdt',' PPNg','    s',
      +       '    M','   m2','  dth',' xdot',' edot','   x2','   e2',
      +       '  T02','  Pb2','  Om2','   x3','   e3','  T03','  Pb3',
-     +       '  Om3',' PMRV',' XOmd',' Xpbd',' om2d','  x2d'/
+     +       '  Om3',' PMRV',' XOmd',' Xpbd',' om2d','  x2d',
+     +       '   f3','   f4','   f5','   f6','   f7','   f8','   f9'/
 	data mark/' 123456789*'/
 
 c       Note: indexes in param() now have same numbering as
@@ -110,14 +111,14 @@ c                                                  --DJN 19 Dec 2001
 	  write(paramj,1050) jj-NPAR3-1
  1050	  format(' FB',i2.2)
 	elseif (jj.lt.NPAR5) then
-	  write(paramj,1060) jj-NPAR4+2
+	  write(paramj,1060) jj-NPAR4+1
  1060	  format(' XD',i2.2)
 	elseif (jj.lt.NPAR6) then
 	  if (2*int(jj/2).ne.jj) then
-	    write(paramj,1070) (jj-NPAR4+1)/2
+	    write(paramj,1070) (jj-NPAR5+1)/2
  1070	    format('FJ',i3.3)
 	  else
-	    write(paramj,1080) (jj-NPAR4)/2
+	    write(paramj,1080) (jj-NPAR5)/2
  1080	    format('TJ',i3.3)
 	  endif
 	else if(jj.lt.NPAR7) then
@@ -129,17 +130,20 @@ c                                                  --DJN 19 Dec 2001
  1091	    format('D1',i3.3)
           endif
 	elseif (jj.lt.NPAR8) then
-	  write(paramj,1093) jj-NPAR7+2
- 1093	  format(' XD',i2.2)
+	  write(paramj,1093) jj-NPAR7+1
+ 1093	  format(' ED',i2.2)
 	elseif (jj.lt.NPAR9) then
-	  write(paramj,1095) jj-NPAR8+2
- 1095	  format(' XD',i2.2)
+	  write(paramj,1095) jj-NPAR8+1
+ 1095	  format('OMD',i2.2)
 	elseif (jj.lt.NPAR10) then
 	  write(paramj,1100) jj-NPAR9		!DM polynomial coeffs
  1100	  format('DM',i3.3)
-	else
+	elseif (jj.lt.NPAR11) then              ! FD values
 	  write(paramj,1101) jj-NPAR10
  1101     format('FD',i1)
+	else					! More frequency derivatives
+	  write(paramj,1102) jj-NPAR11+2
+ 1102     format(' f',i1)
 	endif
 
 	write(72) nn,j,paramj,gcor(j),sig(j),
