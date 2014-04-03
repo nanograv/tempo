@@ -33,6 +33,7 @@ c       NBOOTMAX max size of bootstrap Monte Carlo integraions
 c       NCLKMAX  max number of clock correction files (obs to UTC, UTC to xx)
 c       NEPHMAX  max number of ephemerides
 c       NUTMAX   max number of ut1 corrections
+c       NFLAGERR max number of flag-based EFAC/EQUAD
 
 	parameter (NPTSDEF=60000)
 	parameter (NPT=100000)
@@ -44,7 +45,7 @@ c       NUTMAX   max number of ut1 corrections
 	parameter (NEDOTMAX=10)
 	parameter (NOMDOTMAX=10)
         parameter (NFBJMAX=120)
-        parameter (NDMXMAX=240)
+        parameter (NDMXMAX=500)
         parameter (NDMCOFMAX=30)
         parameter (NFDMAX=10)
         parameter (NPAR1=60)
@@ -64,3 +65,4 @@ c       NUTMAX   max number of ut1 corrections
         parameter (NBOOTMAX=1024)
         parameter (NTZMAX=1000,NCLKMAX=20,NEPHMAX=5,NUTMAX=6000)
         parameter (NTZARR=1500)
+        parameter (NFLAGERR=64)

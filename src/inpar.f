@@ -222,7 +222,9 @@ C  The error/comment is ignored by TEMPO
 
       ll=80
 
-      ijump = 0  ! used for counting tempo2-style jump params
+      ijump  = 0  ! used for counting tempo2-style jump params
+      iefac  = 0  ! used for counting tempo2-style efac params
+      iequad = 0  ! used for counting tempo2-style equad params
 
       nskip = 0  ! counts parameter lines, which are skipped if TOAs are
 		 !    read from this file
@@ -860,6 +862,40 @@ c JUMP -flag flag_value jump_value fitflag jump_err
          else
            print *,"Error: only flag-based TEMPO2-style JUMPs allowed"
 	   stop
+         endif
+
+       else if (key(1:6).eq.'T2EFAC') then
+         iefac = iefac+1
+         nflagefac = iefac
+         if (value(1:1).eq.'-') then
+           efacflag(iefac) = value
+           efacflagval(iefac) = temp
+           call citem(line,ll,jn,temp,lf) ! read value from line
+           if (lf.eq.0) then ! no value, default to 1.0 (?)
+             flagefac(iefac) = 1.0
+           else
+             read(temp,*) flagefac(iefac)
+           endif
+         else
+           print *, "Error: specify a flag/value pair for T2EFAC"
+           stop
+         endif
+
+       else if (key(1:7).eq.'T2EQUAD') then
+         iequad = iequad+1
+         nflagequad = iequad
+         if (value(1:1).eq.'-') then
+           equadflag(iequad) = value
+           equadflagval(iequad) = temp
+           call citem(line,ll,jn,temp,lf) ! read value from line
+           if (lf.eq.0) then ! no value, default to 0.0 (?)
+             flagequad(iequad) = 0.0
+           else
+             read(temp,*) flagequad(iequad)
+           endif
+         else
+           print *, "Error: specify a flag/value pair for T2EQUAD"
+           stop
          endif
 
        else if(key(1:4).eq.'INFO') then

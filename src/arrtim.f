@@ -74,8 +74,10 @@ C  DJN 18-Aug-92  Allow up to 36 sites
         pha1 = 0.d0
         pha2 = 0.d0
 	equad  = 0.d0
+	equadsave = 0.d0
 	emin = 0.d0
 	efac = 1.d0
+	efacsave = 1.d0
 	sigm = 0.d0
 	amjd1=1000000.0
 	amjd2=0.
@@ -183,8 +185,8 @@ C       The main loop starts here!
             nfmt = 0
           else
             call pcard(card,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
-     +           jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,
-     +           search,lw,nfmt,parsed)
+     +           jdcatc,pha1,pha2,efacsave,emin,equadsave,jits,lu,track,
+     +           trkmax,search,lw,nfmt,parsed)
 	    if ((.not.parsed).and.(nfmt.eq.3)) go to 50
           endif
           go to 10
@@ -224,6 +226,11 @@ c    two cases by searching for the "+" or "-" indicative of a pulsar name.
             nfmt = 2            ! shouldn't get here....but just in case
           endif
  51       continue
+
+c Apply the default equad and efac settings.  These may be altered
+c by flag-based settings for tempo2 TOAs
+          efac = efacsave
+          equad = equadsave
 
           if(nfmt.eq.0) then				! Princeton format
 
@@ -349,6 +356,29 @@ c Then everything after that are flags (ignored for now)
                   endif
                   nfit(NPAR2+i) = 1
                 endif
+              endif
+            enddo
+	    ! Check for flag-based equad/efac and apply as
+	    ! appropriate.  Currently the following behavior happens:
+            !
+            !   - Flag-based efac/equad values override 'old-style'
+            !   efac/equad
+            !
+            !   - If multiple efac/equad apply to this TOA, the value
+            !   that gets used depends on ordering (so avoid this!).
+            !
+            !   - For TOAs where no matching flags are found, any
+            !   currently-set old-style EFAC/EQUAD apply.
+            do i=1,nflagefac
+              tmp = getvalue(efacflag(i)(2:32))
+              if (tmp.eq.efacflagval(i)) then
+                efac = flagefac(i)
+              endif
+            enddo
+            do i=1,nflagequad
+              tmp = getvalue(equadflag(i)(2:32))
+              if (tmp.eq.equadflagval(i)) then
+                equad = flagequad(i)
               endif
             enddo
           endif
@@ -568,11 +598,11 @@ C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
      +       then
 	  nblk=nblk+1
 	  call pcard(card2,mode,zawgt,deltat,fmjd,dphase,sigm,offset,
-     +     jdcatc,pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
-     +     lw,nfmt,parsed)
+     +     jdcatc,pha1,pha2,efacsave,emin,equadsave,jits,lu,track,trkmax,
+     +     search,lw,nfmt,parsed)
 	  if(nblk.ge.2) call pcard(card2,mode,zawgt,deltat,fmjd,
      +      dphase,sigm,offset,jdcatc,
-     +      pha1,pha2,efac,emin,equad,jits,lu,track,trkmax,search,
+     +      pha1,pha2,efacsave,emin,equadsave,jits,lu,track,trkmax,search,
      +      lw,nfmt,parsed)
 	endif
 
