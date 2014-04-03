@@ -313,6 +313,9 @@ C Output new parameters
 C Output binary parameters
 	if(a1(1).ne.0.0) call newbin(nits,jits)
 
+c Output error params
+	call outerrpar
+
 	if(nxoff.gt.0) then
 	  koff=NPAR2
 	  do 70 k=1,(nxoff+3)/4

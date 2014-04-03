@@ -662,8 +662,6 @@ c=======================================================================
 
 c=======================================================================
 
-c TODO edit this to handle tempo2-style JUMP output also
-
       subroutine outjumppar
 
       implicit real*8 (A-H,O-Z)
@@ -706,4 +704,28 @@ c TODO edit this to handle tempo2-style JUMP output also
       return
       end
 
+c=======================================================================
+     
+      subroutine outerrpar
+
+      implicit real*8 (A-H,O-Z)
+
+      include 'dim.h'     
+      include 'acom.h'
+
+      do i=1,nflagefac
+        write(71,1094) trim(efacflag(i)),trim(efacflagval(i)),
+     +    flagefac(i)
+1094    format('T2EFAC ',a,' ',a,' ',f7.3)
+      enddo
+
+      do i=1,nflagequad
+        write(71,1095) trim(equadflag(i)),trim(equadflagval(i)),
+     +    flagequad(i)
+1095    format('T2EQUAD ',a,' ',a,' ',f7.3)
+      enddo
+
+
+      return
+      end
 

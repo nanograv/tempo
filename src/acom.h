@@ -40,6 +40,7 @@ c      $Id$
      +    dmepoch,dmep,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
+     +    flagefac(NFLAGERR),flagequad(NFLAGERR),
      +    usedmx1,
      +    fdcof(NFDMAX),
      +    pmra,pmdec,pmrv,dt2sec,
@@ -53,8 +54,7 @@ c      $Id$
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,
-     +    tdbif99fmt,
-     +    flagefac(NFLAGERR),flagequad(NFLAGERR)
+     +    tdbif99fmt
 
 
 
