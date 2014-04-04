@@ -178,7 +178,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*32, value*32, cfit*8, temp*80
+      character line*80, key*32, value*32, cfit*8, temp*80, cifit
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -373,7 +373,15 @@ C  Period/Frequency parameters
         if (lk.eq.1) then 
           ifit = 0
         else 
-          read(key(2:lk),*) ifit
+C          read(key(2:lk),*) ifit
+          cifit=key(lk:lk)
+          if(cifit.ge.'A')then
+            call upcase(cifit)
+            ifit = ichar(cifit)-55
+          else
+            read(cifit,*)ifit
+          endif
+C  	  print *,"getting ifit from cifit:",cfit, ifit
         endif
 
         if (ifit.eq.0) then
@@ -385,7 +393,7 @@ C  Period/Frequency parameters
             call upcase(cfit)
             jfit = ichar(cfit(1:1))-55
           else
-C 	    print *,"reading jfit from cfit which is",cfit
+ 	    print *,"reading jfit from cfit which is",cfit
             read(cfit,*) jfit 
           endif
           if (jfit.eq.0) ffit(1) = 0
@@ -956,7 +964,7 @@ C     those which are to be 1.
 C  Warnings
 
       if(nfit(3).lt.0.or.nfit(3).gt.NFMAX.or.nfcalc.lt.0.or.
-     +    nfcalc.gt.12)
+     +    nfcalc.gt.NFMAX)
      +   write(*,'('' WARNING: Fit parameter for F1 out of range'')')
 
       if(nfit(16).lt.0.or.nfit(16).gt.NDMCOFMAX.or.ndmcalc.lt.0
