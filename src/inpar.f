@@ -373,15 +373,13 @@ C  Period/Frequency parameters
         if (lk.eq.1) then 
           ifit = 0
         else 
-C          read(key(2:lk),*) ifit
           cifit=key(lk:lk)
           if(cifit.ge.'A')then
             call upcase(cifit)
             ifit = ichar(cifit)-55
           else
-            read(cifit,*)ifit
+            read(key(2:lk),*) ifit
           endif
-C  	  print *,"getting ifit from cifit:",cfit, ifit
         endif
 
         if (ifit.eq.0) then
