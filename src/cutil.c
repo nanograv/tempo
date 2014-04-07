@@ -7,6 +7,13 @@
 #endif
 #include <fcntl.h>
 
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+typedef int64_t offs_type;
+#else
+typedef long long offs_type;
+#endif
+
 /*  FORTRAN:  fd = close(filedes)      */
 int close_(filedes)
 int *filedes;
@@ -210,9 +217,9 @@ void *addr1[MAXADDR], *addr2[MAXADDR];
 
 
 
-void mallocx_(void *a, int *nelem, int *size, int *idx) {
+void mallocx_(void *a, int *nelem, int *size, offs_type *idx) {
 
-  long n;   /*  use "long" to keep 64-bit alpha happy  */
+  offs_type n;   /* change to 64 bit */
 
   if (naddr==MAXADDR) {
     printf ("Error: can't allocate more than %d arrays\n", MAXADDR); exit (1); }
@@ -231,11 +238,12 @@ void mallocx_(void *a, int *nelem, int *size, int *idx) {
        /* char* cast in next line forces calculation to be done in bytes */
 
                                              /* calculate array offset */
-  n = (long)((char *)addr2[naddr]-(char *)addr1[naddr])/(*size);
-      /* catch cases when n can't be cast to int in 64-bit systems */
-  if (n>2147483647 || n<-2147483647)    
-    { printf ("Error: array address more than 2^31 from original location\n");
-      exit(1); }
+  n = (offs_type)((char *)addr2[naddr]-(char *)addr1[naddr])/(*size);
+  // Don't need this with 64-bit addresses:
+  //    /* catch cases when n can't be cast to int in 64-bit systems */
+  //if (n>2147483647 || n<-2147483647)    
+  //  { printf ("Error: array address more than 2^31 from original location\n");
+  //    exit(1); }
   *idx = n;
 
   naddr++;
@@ -271,11 +279,11 @@ void freexd_(double *a) {
 }
 
 
-void mallocxi_(int *a, int *nelem, int *size, int *idx) {
+void mallocxi_(int *a, int *nelem, int *size, offs_type *idx) {
   mallocx_((void *)a, nelem, size, idx);
 }
 
-void mallocxd_(double *a, int *nelem, int *size, int *idx) {
+void mallocxd_(double *a, int *nelem, int *size, offs_type *idx) {
   mallocx_((void *)a, nelem, size, idx);
 }
 

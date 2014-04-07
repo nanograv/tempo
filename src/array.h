@@ -1,15 +1,15 @@
 c      $Id$
 c
 c  Adjustable arrays:
-	integer dnplsoff
+	integer*8 dnplsoff
 	real*8 dnpls(1)
-        integer ddmchoff
+        integer*8 ddmchoff
         real*8 ddmch(1)
-        integer bufoff
+        integer*8 bufoff
         real*8 buf(1)
-        integer npmsavoff
+        integer*8 npmsavoff
         integer npmsav(1)
-        integer ksavoff
+        integer*8 ksavoff
         integer ksav(1)
 
         common /array/
