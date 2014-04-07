@@ -21,7 +21,7 @@ c PBD 2014/04
 
 c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	real*8 xmean(NPA),fctn(NPAP1)
-	real*8 a(NPAP1),sigmaa(NPAP1),gcor(NPA)
+	real*8 a(NPAP1),atmp(NPAP1),sigmaa(NPAP1),gcor(NPA)
 	logical lw
 	real*8 ddmch(*)
         real*8 buf(*)
@@ -41,6 +41,7 @@ c replacing using the "malloc" routines?
         real*8 VTsvd(NPAP1,NPAP1) ! SVD "V-transpose" result
         real*8 sv(NPAP1) ! The singular values
         real*8 r(NPTSDEF) ! The weighted prefit resids
+        real*8 cts(NPTSDEF) ! copy of the times
         real*8 work(10*NPAP1*NPAP1)
         integer lwork
         integer iwork(10*NPAP1)
@@ -48,8 +49,9 @@ c replacing using the "malloc" routines?
 
 c packed cov matrix, to be malloced
         integer ncovpts  
-        integer*8 dcovoff
+        integer*8 dcovoff, idx
         real*8 dcov(1)
+        real*8 jit_phs
 
 	integer fd
 	integer nwrt
@@ -73,6 +75,7 @@ c Zero out various matrices
 
         do 32 j=1,NPAP1
           a(j)=0.
+          atmp(j)=0.
           sigmaa(j)=0.
           sv(j)=0.
           do 30 k=1,NPAP1
@@ -96,20 +99,42 @@ c using index i+j*(j-1)/2, with i<=j.
           dcov(dcovoff+i)=0.0
         enddo
 
-c Fill in COV matrix from TOA info
-c For now, this is just diagonal using the weights
+c This is the part where we read in the data
+c vmemr call reads info for TOA number i from memory
+c Inputs:
+c   y is the (pre-fit) residual, in pulse phase (turns)
+c   fctn are the fit basis funcs (param derivs) evaluated for this TOA
+c   weight is the TOA's weight (units phase^-2)
+c   terr is the TOA's uncertainty (us, including efac/equad)
+c Computed here:
+c   Adm, design matrix
+c   r, pre-fit resids
+c   dcov, cov matrix (diagonal part only)
+        print *,'  ... fill design matrix'
+	do 67 i=1,npts
+          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
+     +     buf,npmsav,ksav)
+          if(ldesign) write(37) ct, weight, (fctn(j)-xmean(j), j=1,nterms)
+          cts(i) = ct
+          r(i) = y
+          Adm(i,1) = 1d0 ! Constant phase term
+          do 66 j=2,nparam
+            Adm(i,j) = (fctn(j-1)-xmean(j-1))
+ 66       continue
+          dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
+ 67     continue
+
+c Add in extra cov matrix terms
+c Test "jitter"
+        jit_phs = 0.01
         print *,'  ... compute covariance'
         do 51 i=1,npts
-          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
-     +      buf,npmsav,ksav)
-          cti = ct
-C          do 50 j=1,i
-C            call vmemr(j,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
-C     +        buf,npmsav,ksav)
-C            ctj = ct
-C            dcov(dcovoff+j+i*(i-1)/2) = XXX(cti,ctj)
-C 50       continue
-          dcov(dcovoff+i+i*(i-1)/2) = 1.0/weight
+          do 50 j=1,i
+            idx=dcovoff+j+i*(i-1)/2
+            if (abs(cts(i)-cts(j)).lt.1d0/1440.) then
+              dcov(idx) = dcov(idx) + jit_phs**2
+            endif
+ 50       continue
  51     continue
 
 c Notes for GLS:
@@ -122,32 +147,6 @@ c invert triangular matrix: dtrtri() or dtptri() for packed
 
 	if(ldesign) rewind(37)
 	if(ldesign) write(37) npts, nterms
-
-c This is the part where we read in the data
-c vmemr call reads info for TOA number i from memory
-c Inputs:
-c   y is the (pre-fit) residual, in pulse phase (turns)
-c   fctn are the fit basis funcs (param derivs) evaluated for this TOA
-c   weight is the TOA's weight (units phase^-2)
-c   terr is the TOA's uncertainty (us, including efac/equad)
-c Computed here:
-c   Adm, whitened design matrix
-c   r, whitened pre-fit resids
-        print *,'  ... fill design matrix'
-	do 67 i=1,npts
-          call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
-     +     buf,npmsav,ksav)
-	  if(ldesign) write(37) ct, weight, (fctn(j)-xmean(j), j=1,nterms)
-C          wts = sqrt(weight)
-C          r(i) = wts*y
-          r(i) = y
-C          Adm(i,1) = wts ! Constant phase term
-          Adm(i,1) = 1.0 ! Constant phase term
-          do 66 j=2,nparam
-c            Adm(i,j) = wts*(fctn(j-1)-xmean(j-1))
-            Adm(i,j) = (fctn(j-1)-xmean(j-1))
- 66       continue
- 67     continue
 
 c Multiply by inv cov matrix TODO check transpose
         print *,'  ... matrix multiply'
@@ -196,17 +195,19 @@ c          gcor(i)=sqrt(abs(1.d0 - zzz/array(i,i)))
      +     '      FREQ    WGT      NPULSE     R1(P)  R2(',i2,') PH/DT'/)
 	endif
 
+c Compute post-fit resids in "whitened" basis
+c r_post = r_pre - U U^t r_pre
+        call dgemv('T',npts,nparam,1d0,Adm,NPTSDEF,r,1,0d0,atmp,1)
+        call dgemv('N',npts,nparam,-1d0,Adm,NPTSDEF,atmp,1,1d0,r,1)
+        chisq = ddot(npts,r,1,r,1)
+        print *,"GLS chisq=", chisq
+        chisq = 0.0
+
 c Computes the post-fit param values in a
-	do 106 i=1,nparam
-          uty = 0.
-          do 104 j=1,npts 
-            uty = uty + Adm(j,i)*r(j)
- 104      continue
-          uty = uty / sv(i)
-          do 105 k=1,nparam
-            a(k)=a(k)+VTsvd(i,k)*uty
- 105      continue
- 106    continue
+	do i=1,nparam
+          atmp(i) = atmp(i)/sv(i)
+        enddo
+        call dgemv('T',nparam,nparam,1d0,VTsvd,NPAP1,atmp,1,0d0,a,1)
 
 c Note a(1) is the const phase term, aa0 is var name from orig fit.f
         aa0 = a(1)
