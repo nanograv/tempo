@@ -391,7 +391,7 @@ C  Period/Frequency parameters
             call upcase(cfit)
             jfit = ichar(cfit(1:1))-55
           else
- 	    print *,"reading jfit from cfit which is",cfit
+C  	    print *,"reading jfit from cfit which is",cfit
             read(cfit,*) jfit 
           endif
           if (jfit.eq.0) ffit(1) = 0
