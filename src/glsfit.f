@@ -11,6 +11,7 @@ c      $Id$
 	include 'vcom.h'
 	include 'orbit.h'
 	include 'tz.h'
+	include 'dp.h'
 
 c This is a version of the original tempo fit() function, rewritten
 c to use a generalized least squares (GLS) approach, which can use
@@ -51,7 +52,9 @@ c packed cov matrix, to be malloced
         integer ncovpts  
         integer*8 dcovoff, idx
         real*8 dcov(1)
-        real*8 jit_phs
+        real*8 detcov,cmax,cmin
+        real*8 jit_phs,rnamp,rnidx
+        real*8 plnoiselu(10000)
 
 	integer fd
 	integer nwrt
@@ -87,6 +90,7 @@ c Zero out various matrices
  32     continue 
 
         write (*,'(''  glsfit Ntoa='',i6)') npts
+        if (nz.gt.0) print *,"Warning: nz>0 in glsfit"
 
 c Alloc space for COV matrix.  To access array element i
 c use dcov(i+dcovoff) and pass to calls as dcov(1+dcovoff).
@@ -125,25 +129,68 @@ c   dcov, cov matrix (diagonal part only)
  67     continue
 
 c Add in extra cov matrix terms
-c Test "jitter"
-        jit_phs = 0.01
+c Test "jitter" TODO use actual TOA groupings somehow
+        jit_phs = 0.0d0
         print *,'  ... compute covariance'
-        do 51 i=1,npts
-          do 50 j=1,i
+        do i=1,npts
+          do j=1,i
             idx=dcovoff+j+i*(i-1)/2
             if (abs(cts(i)-cts(j)).lt.1d0/1440.) then
               dcov(idx) = dcov(idx) + jit_phs**2
             endif
- 50       continue
- 51     continue
+          enddo
+        enddo
+
+c power-law noise in "GW units"
+        rnamp = 4.0d-16
+        rnidx = -2d0/3d0
+c make a pl noise lookup with 1-day resolution
+c        print *,'span=',finish-start
+        z = plnoise(0d0,rnidx,1d0,rnamp,.true.)
+        do i=1,nint(finish-start)+1
+          plnoiselu(i) = plnoise((i-1)/365.24d0,rnidx,1d0,rnamp,.false.)
+c          print *,"PL",i-1,plnoiselu(i)
+        enddo
+        cmax = dcov(dcovoff+1)
+        cmin = dcov(dcovoff+1)
+        do i=1,npts
+          cp = p0+p1*(cts(i)-peopch)*86400.d0
+          do j=1,i
+            idx=dcovoff+j+i*(i-1)/2
+            dcov(idx) = dcov(idx) + 
+     +        plnoiselu(nint(abs(cts(i)-cts(j)))+1) / cp**2 / 1d12
+            if (dcov(idx).gt.cmax) cmax = dcov(idx)
+            if (dcov(idx).lt.cmin) cmin = dcov(idx)
+          enddo
+        enddo
+c        print *,"dcov(max)=",cmax
+c        print *,"dcov(min)=",cmin
+c        do i=1,10
+c          print *,i,dcov(dcovoff+i)
+c        enddo
 
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
         print *,'  ... Cholesky decomp'
         call dpptrf('U',npts,dcov(1+dcovoff),inforv)
+        !print *,"dpptrf info=",inforv
+        if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
+        detcov=0d0
+        cmax = dcov(dcovoff+1)
+        cmin = dcov(dcovoff+1)
+        do i=1,npts
+        idx = dcovoff+i+i*(i-1)/2
+          detcov = detcov + log(dcov(idx))
+          if (dcov(idx).gt.cmax) cmax = dcov(idx)
+          if (dcov(idx).lt.cmin) cmin = dcov(idx)
+        enddo
+        print *,"log(det(cov))=",detcov
+        !print *,"cmax=",cmax
+        !print *,"cmin=",cmin
 c invert triangular matrix: dtrtri() or dtptri() for packed
         print *,'  ... matrix inverse'
         call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
+        if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
 
 	if(ldesign) rewind(37)
 	if(ldesign) write(37) npts, nterms
@@ -197,6 +244,7 @@ c          gcor(i)=sqrt(abs(1.d0 - zzz/array(i,i)))
 
 c Compute post-fit resids in "whitened" basis
 c r_post = r_pre - U U^t r_pre
+c TODO make tempo report this as "the" chi2?
         call dgemv('T',npts,nparam,1d0,Adm,NPTSDEF,r,1,0d0,atmp,1)
         call dgemv('N',npts,nparam,-1d0,Adm,NPTSDEF,atmp,1,1d0,r,1)
         chisq = ddot(npts,r,1,r,1)
