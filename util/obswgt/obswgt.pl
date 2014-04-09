@@ -58,16 +58,24 @@ foreach $par (@ARGV) {
 die $useage if ($#param>-1);
 ($npts) = @param if ($#param==0);
 
+$mtxtime = (stat("matrix.tmp"))[9];
+$tlistime = (stat("tempo.lis"))[9];
 
-open(C,"matrix.tmp");
-if(read(C,$buf,8)) {
-  $nparam = (unpack("x4i1",$buf))[0];
-} else {
-  print "Warning: can't read matrix.tmp;  chi^2 values will not\n";
-  print "  reflect true number of degrees of freedom\n";
-  $nparam = 0;
+if($mtxtime =~ $tlistime) {
+  open(C,"matrix.tmp");
+  if(read(C,$buf,8)) {
+    $nparam = (unpack("x4i1",$buf))[0];
+  } else {
+    print "Warning: can't read matrix.tmp;  chi^2 values will not\n";
+    print "  reflect true number of degrees of freedom\n";
+    $nparam = 0;
+  }
+  close C;
 }
-close C;
+else {
+  print "Matrix.tmp was not generated with tempo.lis;\n";
+  print "assuming only 1 degree of freedom.";
+}
 $nparam++;  # accounts for fit for phase
 
 open(D,"pwd|");
