@@ -63,3 +63,37 @@ c TODO replace alpha with "timing" spec idx?
 
         return
         end
+
+c ===================================================================
+
+	real*8 function plnoise_interp(dt,alpha,f0,amp,init)
+
+        real*8 plnoise
+
+        real*8 dt,alpha,f0,amp
+        logical init
+
+        integer idx0
+        real*8 frac
+
+        parameter(NPTS=10000) ! max lag in days
+        real*8 lu(NPTS)
+
+        save lu
+
+        if (init) then
+          lu(1) = plnoise(0d0,alpha,f0,amp,.true.)
+          do i=1,NPTS
+            lu(i+1) = plnoise(i/365.24d0,alpha,f0,amp,.false.)
+          enddo
+        endif
+
+c Assume dt in days.. should really make these all consistent...
+        idx0 = floor(abs(dt))
+        frac = abs(dt) - idx0
+        plnoise_interp = (1d0 - frac)*lu(idx0+1) + frac*lu(idx0+2)
+
+        return
+        end
+
+
