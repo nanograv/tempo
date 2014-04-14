@@ -49,22 +49,29 @@ c replacing using the "malloc" routines?
         integer inforv
 
 c packed cov matrix, to be malloced
+        logical havecov
+        data havecov/.false./
         integer ncovpts  
         integer*8 dcovoff, idx
         real*8 dcov(1)
         real*8 detcov,cmax,cmin
         real*8 jit_phs,rnamp,rnidx
-        real*8 plnoiselu(10000)
+
+        real*8 rmean
 
 	integer fd
 	integer nwrt
 	integer flags, filemode  
  	integer open, close, write
 
+c save the cov matrix stuff so we can iterate faster
+        save havecov, ncovpts, dcovoff, dcov, detcov
+
         lwork = 10*NPAP1*NPAP1
 	mprt=10**nprnt
 	sigma=0.
 	chisq=0.
+        rmean=0.
 
 c nparam is total number of fit params (including mean)
 c Zero out various matrices
@@ -96,12 +103,14 @@ c Alloc space for COV matrix.  To access array element i
 c use dcov(i+dcovoff) and pass to calls as dcov(1+dcovoff).
 c Packed upper triangular storage means element (i,j) is accessed
 c using index i+j*(j-1)/2, with i<=j.
-        print *,'  ... allocate matrices'
-        ncovpts = npts*(npts-1)/2 + npts
-        call mallocxd(dcov,ncovpts,8,dcovoff)
-        do i=1,ncovpts 
-          dcov(dcovoff+i)=0.0
-        enddo
+        if (.not. havecov) then
+          print *,'  ... allocate matrices'
+          ncovpts = npts*(npts-1)/2 + npts
+          call mallocxd(dcov,ncovpts,8,dcovoff)
+          do i=1,ncovpts 
+            dcov(dcovoff+i)=0.0
+          enddo
+        endif
 
 c This is the part where we read in the data
 c vmemr call reads info for TOA number i from memory
@@ -110,6 +119,8 @@ c   y is the (pre-fit) residual, in pulse phase (turns)
 c   fctn are the fit basis funcs (param derivs) evaluated for this TOA
 c   weight is the TOA's weight (units phase^-2)
 c   terr is the TOA's uncertainty (us, including efac/equad)
+c   ct is the infinite freq barycentric time (MJD, double)
+c   fmjd is the site time (MJD, double)
 c Computed here:
 c   Adm, design matrix
 c   r, pre-fit resids
@@ -119,78 +130,87 @@ c   dcov, cov matrix (diagonal part only)
           call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
      +     buf,npmsav,ksav)
           if(ldesign) write(37) ct, weight, (fctn(j)-xmean(j), j=1,nterms)
-          cts(i) = ct
+          !cts(i) = ct
+          cts(i) = fmjd
           r(i) = y
           Adm(i,1) = 1d0 ! Constant phase term
           do 66 j=2,nparam
             Adm(i,j) = (fctn(j-1)-xmean(j-1))
  66       continue
-          dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
+          if (.not.havecov) dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
  67     continue
 
+        if (.not.havecov) then
 c Add in extra cov matrix terms
 c Test "jitter" TODO use actual TOA groupings somehow
-        jit_phs = 0.0d0
-        print *,'  ... compute covariance'
-        do i=1,npts
-          do j=1,i
-            idx=dcovoff+j+i*(i-1)/2
-            if (abs(cts(i)-cts(j)).lt.1d0/1440.) then
-              dcov(idx) = dcov(idx) + jit_phs**2
-            endif
+          jit_phs = 0.0d0
+          print *,'  ... compute covariance'
+          do i=1,npts
+            do j=1,i
+              idx=dcovoff+j+i*(i-1)/2
+              if (abs(cts(i)-cts(j)).lt.1d0/1440.) then
+                dcov(idx) = dcov(idx) + jit_phs**2
+              endif
+            enddo
           enddo
-        enddo
 
 c power-law noise in "GW units"
-        rnamp = 4.0d-16
-        rnidx = -2d0/3d0
+          rnamp = 1.0d-14
+          rnidx = -2d0/3d0
 c make a pl noise lookup with 1-day resolution
 c        print *,'span=',finish-start
-        z = plnoise(0d0,rnidx,1d0,rnamp,.true.)
-        do i=1,nint(finish-start)+1
-          plnoiselu(i) = plnoise((i-1)/365.24d0,rnidx,1d0,rnamp,.false.)
-c          print *,"PL",i-1,plnoiselu(i)
-        enddo
-        cmax = dcov(dcovoff+1)
-        cmin = dcov(dcovoff+1)
-        do i=1,npts
-          cp = p0+p1*(cts(i)-peopch)*86400.d0
-          do j=1,i
-            idx=dcovoff+j+i*(i-1)/2
-            dcov(idx) = dcov(idx) + 
-     +        plnoiselu(nint(abs(cts(i)-cts(j)))+1) / cp**2 / 1d12
-            if (dcov(idx).gt.cmax) cmax = dcov(idx)
-            if (dcov(idx).lt.cmin) cmin = dcov(idx)
+          z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
+          cmax = dcov(dcovoff+1)
+          cmin = dcov(dcovoff+1)
+          do i=1,npts
+            cp = p0+p1*(cts(i)-peopch)*86400.d0
+            do j=1,i
+              idx=dcovoff+j+i*(i-1)/2
+              dcov(idx) = dcov(idx) 
+     +          + plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
+     +          / cp**2 / 1d12
+              if (dcov(idx).gt.cmax) cmax = dcov(idx)
+              if (dcov(idx).lt.cmin) cmin = dcov(idx)
+            enddo
           enddo
-        enddo
-c        print *,"dcov(max)=",cmax
-c        print *,"dcov(min)=",cmin
-c        do i=1,10
-c          print *,i,dcov(dcovoff+i)
-c        enddo
+c          print *,"dcov(max)=",cmax
+c          print *,"dcov(min)=",cmin
+c          do i=1,10
+c            print *,i,dcov(dcovoff+i)
+c          enddo
 
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
-        print *,'  ... Cholesky decomp'
-        call dpptrf('U',npts,dcov(1+dcovoff),inforv)
-        !print *,"dpptrf info=",inforv
-        if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
-        detcov=0d0
-        cmax = dcov(dcovoff+1)
-        cmin = dcov(dcovoff+1)
-        do i=1,npts
-        idx = dcovoff+i+i*(i-1)/2
-          detcov = detcov + log(dcov(idx))
-          if (dcov(idx).gt.cmax) cmax = dcov(idx)
-          if (dcov(idx).lt.cmin) cmin = dcov(idx)
-        enddo
-        print *,"log(det(cov))=",detcov
-        !print *,"cmax=",cmax
-        !print *,"cmin=",cmin
+c LDLT factorize: dsytrf() or dsptrf()
+          print *,'  ... Cholesky decomp'
+          call dpptrf('U',npts,dcov(1+dcovoff),inforv)
+          !print *,"dpptrf info=",inforv
+          if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
+          detcov=0d0
+          cmax = dcov(dcovoff+1)
+          cmin = dcov(dcovoff+1)
+          do i=1,npts
+            idx = dcovoff+i+i*(i-1)/2
+            detcov = detcov + log(dcov(idx))
+            if (dcov(idx).gt.cmax) cmax = dcov(idx)
+            if (dcov(idx).lt.cmin) cmin = dcov(idx)
+          enddo
+          print *,"      log(det(cov))=",detcov
+          !print *,"cmax=",cmax
+          !print *,"cmin=",cmin
 c invert triangular matrix: dtrtri() or dtptri() for packed
-        print *,'  ... matrix inverse'
-        call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
-        if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
+          print *,'  ... matrix inverse'
+          call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
+          if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
+
+          havecov = .true.
+        else
+          print *,'  ... using cached cov values'
+        endif ! not havecov
+
+c        do i=1,10
+c          print *,i,dcov(dcovoff+i)
+c        enddo
 
 	if(ldesign) rewind(37)
 	if(ldesign) write(37) npts, nterms
@@ -325,6 +345,7 @@ C Correct tz ref TOA
           if (lw) nwrt = write(fd,resn,80)
           wmax=max(wmax,weight)
           chisq=chisq+weight*dt2**2
+          rmean=rmean+weight*dt2
  108    continue
 	if (lw) nwrt = close(fd)
 
@@ -332,7 +353,8 @@ C Correct tz ref TOA
 	chisqr=chisq*wmean/freen
 	if(mode.eq.0) varnce=chisqr
 	if(mode.ge.1) varnce=1./wmean
-	varfit=chisq/fnpts
+        rmean=rmean/fnpts
+	varfit=chisq/fnpts - rmean*rmean
 	if(mode.eq.0) chisqr=0.
 
 	do 133 j=1,nterms
