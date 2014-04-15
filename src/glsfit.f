@@ -58,7 +58,7 @@ c packed cov matrix, to be malloced
         real*8 detcov,cmax,cmin
         real*8 jit_phs,rnamp,rnidx
 
-        real*8 rmean
+        real*8 rmean, r2mean
 
 	integer fd
 	integer nwrt
@@ -73,6 +73,7 @@ c save the cov matrix stuff so we can iterate faster
 	sigma=0.
 	chisq=0.
         rmean=0.
+        r2mean=0.
 
 c nparam is total number of fit params (including mean)
 c Zero out various matrices
@@ -289,7 +290,6 @@ c TODO make tempo report this as "the" chi2?
         call dgemv('N',npts,nparam,-1d0,Adm,NPTSDEF,atmp,1,1d0,r,1)
         chisq = ddot(npts,r,1,r,1)
         print *,"GLS chisq=", chisq
-        chisq = 0.0
 
 c Computes the post-fit param values in a
 	do i=1,nparam
@@ -365,16 +365,18 @@ C Correct tz ref TOA
 	  resr(9) = ddmch(i)
           if (lw) nwrt = write(fd,resn,80)
           wmax=max(wmax,weight)
-          chisq=chisq+weight*dt2**2
+          r2mean=r2mean+weight*dt2**2
           rmean=rmean+weight*dt2
  108    continue
 	if (lw) nwrt = close(fd)
 
 	freen=fnpts-nterms-1
-	chisqr=chisq*wmean/freen
+	!chisqr=r2mean*wmean/freen ! "old" chi2
+        chisqr=chisq/freen ! GLS chi2
         rmean=rmean/fnpts
-	varfit=chisq/fnpts - rmean*rmean
-	if(mode.eq.0) chisqr=0.
+        r2mean=r2mean/fnpts
+	varfit=r2mean - rmean*rmean
+        !if(mode.eq.0) chisqr=0. ! don't think mode=0 makes sense here
 
 	do 133 j=1,nterms
           sigmaa(j+1)=dsqrt(array(j,j))
