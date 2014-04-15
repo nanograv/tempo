@@ -23,6 +23,7 @@ c PBD 2014/04
 c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	real*8 xmean(NPA),fctn(NPAP1)
 	real*8 a(NPAP1),atmp(NPAP1),sigmaa(NPAP1),gcor(NPA)
+        real*8 mcov(NPAP1)
 	logical lw
 	real*8 ddmch(*)
         real*8 buf(*)
@@ -88,6 +89,7 @@ c Zero out various matrices
           atmp(j)=0.
           sigmaa(j)=0.
           sv(j)=0.
+          mcov(j)=0.
           do 30 k=1,NPAP1
             VTsvd(k,j)=0.
  30       continue
@@ -155,10 +157,12 @@ c Test "jitter" TODO use actual TOA groupings somehow
           enddo
 
 c power-law noise in "GW units"
-          rnamp = 1.0d-14
-          rnidx = -2d0/3d0
-c make a pl noise lookup with 1-day resolution
-c        print *,'span=',finish-start
+          !rnamp = 1.0d-14
+          !rnidx = -2d0/3d0
+c in "timing power" units (us/sqrt(yr^-1))
+          rnamp = 0.028997
+          rnidx = -13d0/3d0
+C call once to initialize plnoise values:
           z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
           cmax = dcov(dcovoff+1)
           cmin = dcov(dcovoff+1)
@@ -181,7 +185,6 @@ c          enddo
 
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
-c LDLT factorize: dsytrf() or dsptrf()
           print *,'  ... Cholesky decomp'
           call dpptrf('U',npts,dcov(1+dcovoff),inforv)
           !print *,"dpptrf info=",inforv
@@ -198,6 +201,7 @@ c LDLT factorize: dsytrf() or dsptrf()
           print *,"      log(det(cov))=",detcov
           !print *,"cmax=",cmax
           !print *,"cmin=",cmin
+
 c invert triangular matrix: dtrtri() or dtptri() for packed
           print *,'  ... matrix inverse'
           call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
@@ -215,12 +219,23 @@ c        enddo
 	if(ldesign) rewind(37)
 	if(ldesign) write(37) npts, nterms
 
-c Multiply by inv cov matrix TODO check transpose
+c Multiply by inv cov matrix
         print *,'  ... matrix multiply'
         call dtpmv('U','T','N',npts,dcov(1+dcovoff),r,1)
         do 68 i=1,nparam
           call dtpmv('U','T','N',npts,dcov(1+dcovoff),Adm(1,i),1)
  68     continue
+
+c remove cov with mean from other params
+c Not sure how necessary this is since functions were already
+c mean-subtracted (unweighted)..
+        do j=1,nparam
+          mcov(j) = ddot(npts,Adm(1,1),1,Adm(1,j),1)
+          if (j.gt.1) then
+            mcov(j) = mcov(j)/mcov(1)
+            call daxpy(npts,-mcov(j),Adm(1,1),1,Adm(1,j),1)
+          endif
+        enddo
 
 c Call SVD routine.  On output, Adm will be replaced by "U".
         print *,'  ... SVD'
@@ -232,15 +247,20 @@ c TODO could test for low SV's here
      +    log10(sv(1)) - log10(sv(nparam))
 
 c Fill in "array" param cov matrix values
-        do 72 j=1,nterms
-          do 71 k=1,nterms
+        do j=1,nterms
+          do k=1,nterms
             array(j,k) = 0.0
-            do 70 i=1,nparam
+            do i=1,nparam
               array(j,k)=array(j,k)+VTsvd(i,j+1)*VTsvd(i,k+1)/sv(i)/sv(i)
- 70         continue
- 71       continue
- 72     continue
+          enddo
+        enddo
+       enddo
 
+c uncertainty on mean
+       mcov(1) = 0.0
+       do i=1,nparam
+         mcov(1) = mcov(1) + VTsvd(i,1)*VTsvd(i,1)/sv(i)/sv(i)
+       enddo
 
 c Need to keep "gcor" results for output?
 c what is the reference for this formula??
@@ -296,7 +316,8 @@ c them to resid2.tmp and tempo.lis
           dt2=y-aa0
           weight=weight/wmean
           do 107 j=1,nterms
-            dt2=dt2-a(j+1)*(fctn(j)-xmean(j)) ! j+1 due to a(1)==aa0
+c j+1 here due to a(1)==aa0
+            dt2=dt2-a(j+1)*(fctn(j)-xmean(j)-mcov(j+1))
  107      continue
           nct=ct
           mark=char(mod(nct,26)+65)
@@ -351,8 +372,6 @@ C Correct tz ref TOA
 
 	freen=fnpts-nterms-1
 	chisqr=chisq*wmean/freen
-	if(mode.eq.0) varnce=chisqr
-	if(mode.ge.1) varnce=1./wmean
         rmean=rmean/fnpts
 	varfit=chisq/fnpts - rmean*rmean
 	if(mode.eq.0) chisqr=0.
@@ -361,16 +380,7 @@ C Correct tz ref TOA
           sigmaa(j+1)=dsqrt(array(j,j))
  133    continue
 
-c TODO fix sigma0 calculation? does it matter?
-	sigma0=varnce/fnpts
-	do 145 j=1,nterms
-          do 144 k=1,nterms
-c            sigma0=sigma0+xmean(j)*xmean(k)*array(j,k) 
-            sigma0=sigma0
- 144      continue
- 145    continue
-
-	sigmaa(1)=dsqrt(sigma0)
+	sigmaa(1)=dsqrt(mcov(1))
 
 	do 146 j=1,NPAP1
           freq(j)=0.
