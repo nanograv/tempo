@@ -1,5 +1,7 @@
 AC_INIT([tempo], [12.000])
+AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+
 
 AC_PROG_CC
 
@@ -18,6 +20,9 @@ AC_C_BIGENDIAN([BIGENDIAN=".true."], [BIGENDIAN=".false."])
 AC_SUBST(BIGENDIAN)
 
 AC_CHECK_HEADERS([malloc.h])
+
+AX_LAPACK
+AM_CONDITIONAL([HAVE_LAPACK],[test x"$ax_lapack_ok" = xyes])
 
 AC_CONFIG_FILES([
 	Makefile
