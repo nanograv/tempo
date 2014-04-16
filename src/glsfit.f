@@ -56,7 +56,6 @@ c packed cov matrix, to be malloced
         integer*8 dcovoff, idx
         real*8 dcov(1)
         real*8 detcov,cmax,cmin
-        real*8 jit_phs,rnamp,rnidx
 
         real*8 rmean, r2mean
 
@@ -144,25 +143,24 @@ c   dcov, cov matrix (diagonal part only)
  67     continue
 
         if (.not.havecov) then
+
 c Add in extra cov matrix terms
 c Test "jitter" TODO use actual TOA groupings somehow
-          jit_phs = 0.0d0
+          if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
           print *,'  ... compute covariance'
           do i=1,npts
             do j=1,i
               idx=dcovoff+j+i*(i-1)/2
-              if (abs(cts(i)-cts(j)).lt.1d0/1440.) then
-                dcov(idx) = dcov(idx) + jit_phs**2
+              if (abs(cts(i)-cts(j)).lt.tcorr) then
+                dcov(idx) = dcov(idx) + pcorr**2
               endif
             enddo
           enddo
 
-c power-law noise in "GW units"
-          !rnamp = 1.0d-14
-          !rnidx = -2d0/3d0
+c Power-law red noise:
 c in "timing power" units (us/sqrt(yr^-1))
-          rnamp = 0.028997
-          rnidx = -13d0/3d0
+          !rnamp = 0.028997
+          !rnidx = -13d0/3d0
 C call once to initialize plnoise values:
           z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
           cmax = dcov(dcovoff+1)
