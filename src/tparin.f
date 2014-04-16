@@ -41,6 +41,7 @@ c      logical npulsein
 c      logical npulseout
 c      logical oldpar
 c      logical psrframe
+c      logical useglsfit
  
 
 c     variables used internally in this routine:
@@ -80,6 +81,7 @@ c     default values of parameters
       quiet = .false.
       polystdout = .false.
       jumpbarycenter = .false.
+      useglsfit = .false.
       nparmax = NPARDEF
       nptsmax = NPTSDEF
       parfile = 'def'
@@ -130,6 +132,8 @@ c     default values of parameters
               obsflag = 'P'
               if (s(i+1:i+1).ne.' ') obsflag = s(i+1:i+1)
               i = 9999
+            else if (s(i:i).eq.'G') then
+              useglsfit = .true.
             else if (s(i:i).eq.'h') then
               goto 9999         ! error/help
             else if (s(i:i).eq.'j') then

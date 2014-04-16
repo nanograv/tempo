@@ -443,10 +443,20 @@ C         The main loop:
           endif
 
 	  wmax=0.0
-          call fit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,
-     +         lw,ddmch(1+ddmchoff),
-     +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),
-     +	       resfile2)
+
+          if (useglsfit) then
+            print *,""
+            print *,'Using GLS fit (this may take a while)'
+            call glsfit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,
+     +           lw,ddmch(1+ddmchoff),
+     +           buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),
+     +	         resfile2)
+          else
+            call fit(n,mode,chisqr,varfit,xmean,sumdt1,sumwt,nz,wmax,
+     +           lw,ddmch(1+ddmchoff),
+     +           buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),
+     +	         resfile2)
+          endif
 
           asig=sqrt(varfit)
 	  if(nboot.gt.0)
