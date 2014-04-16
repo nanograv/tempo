@@ -17,6 +17,7 @@ c      $Id$
                             ! by alan irwin (reference if99)
         logical siteused      ! flags for which observing codes are used.
         logical nofitjump     ! blocks fitting for a given JUMP
+        logical useglsfit     ! use generalized-least-squares fit
 
 	integer parunit, nskip, iboot
         integer infolen
@@ -43,6 +44,8 @@ c      $Id$
      +    flagefac(NFLAGERR),flagequad(NFLAGERR),
      +    usedmx1,
      +    fdcof(NFDMAX),
+     +    rnamp,rnidx,
+     +    pcorr,tcorr,
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
      +    PAAscNode,solarn0,solarn01,fixeddist,
@@ -53,7 +56,7 @@ c      $Id$
      +    nflagefac,nflagequad,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
-     +    useannorb,usefixeddist,jumpbarycenter,
+     +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
      +    tdbif99fmt
 
 

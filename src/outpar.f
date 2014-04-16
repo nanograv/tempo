@@ -274,6 +274,17 @@ c work correctly in tempo2:
 	endif
       enddo
 
+      if (useglsfit) then
+        if (rnidx.ne.0) then
+          write(71,'(''RNAMP'',d20.5)') rnamp
+          write(71,'(''RNIDX'',f20.5)') rnidx
+        endif
+        if (pcorr.gt.0) then
+          write(71,'(''PCORR'',f20.7)') pcorr
+          write(71,'(''TCORR'',d20.7)') tcorr
+        endif
+      endif
+
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
       write(71,'(''CLK'',17x,a)')clklbl(nclk)

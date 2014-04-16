@@ -80,6 +80,11 @@ c      $Id$
       dmvar1 = 0.
       dmvar2 = 999999.
 
+      rnamp = 0.
+      rnidx = 0.
+      pcorr = 0.
+      tcorr = 0.
+
       ntzrmjd = 0.
       ftzrmjd = 0.
       tzrfrq = 0.
@@ -911,6 +916,16 @@ c JUMP -flag flag_value jump_value fitflag jump_err
          read (value,*) solarn0
        else if(key(1:7).eq.'SOLARN0'.and.ikey.eq.1) then
          read (value,*) solarn01
+
+c Red-noise params for GLS (Cholesky) fit
+       else if (key(1:5).eq.'RNAMP') then
+         read (value,*) rnamp
+       else if (key(1:5).eq.'RNIDX') then
+         read (value,*) rnidx
+       else if (key(1:5).eq.'PCORR') then
+         read (value,*) pcorr
+       else if (key(1:5).eq.'TCORR') then
+         read (value,*) tcorr
 
 c Do nothing parameters
       else if(key(1:4).eq.'HEAD') then
