@@ -1,5 +1,5 @@
 #! /bin/csh
-# Uploads documentation to Sourceforge.  Gets username from CVS root.
+# Uploads documentation to Sourceforge.  Gets username from git.
 
 # Check that we're running from right dir
 set ldir = `pwd | awk -F/ '{print $NF}'`
@@ -8,7 +8,9 @@ if ($ldir != "doc") then
   exit
 endif
 
-set SFUSER = `awk -F@ '{print $1}' CVS/Root`
+set server = `git config --get remote.origin.url`
+
+set SFUSER = `echo $server | awk -F// '{print $2}' | awk -F@ '{print $1}'`
 set SFPATH = ${SFUSER},tempo@web.sourceforge.net:htdocs/
 
 echo "Uploading webpages as $SFUSER"
