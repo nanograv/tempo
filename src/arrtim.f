@@ -319,6 +319,12 @@ c Then everything after that are flags (ignored for now)
             if (tmp.ne."") then
               read(tmp,*) dphaseflag
             endif
+            tmp = getvalue("info")
+            if (tmp.ne."") then
+              ! Fill in the INFO stuff -- tempo2 flag case
+              infotxt = tmp
+              infolen = index(tmp,' ') - 1
+            endif
             if (infoflag.ne."") then
               tmp = getvalue(infoflag(2:32))
               if (tmp.ne."") then
