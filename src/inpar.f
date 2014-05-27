@@ -230,6 +230,7 @@ C  The error/comment is ignored by TEMPO
       ijump  = 0  ! used for counting tempo2-style jump params
       iefac  = 0  ! used for counting tempo2-style efac params
       iequad = 0  ! used for counting tempo2-style equad params
+      iecorr = 0  ! used for counting ecorr params
 
       nskip = 0  ! counts parameter lines, which are skipped if TOAs are
 		 !    read from this file
@@ -906,6 +907,23 @@ c JUMP -flag flag_value jump_value fitflag jump_err
            endif
          else
            print *, "Error: specify a flag/value pair for T2EQUAD"
+           stop
+         endif
+
+       else if (key(1:7).eq.'ECORR') then
+         iecorr = iecorr+1
+         nflagecorr = iecorr
+         if (value(1:1).eq.'-') then
+           ecorrflag(iecorr) = value
+           ecorrflagval(iecorr) = temp
+           call citem(line,ll,jn,temp,lf) ! read value from line
+           if (lf.eq.0) then ! no value, default to 0.0 (?)
+             flagecorr(iecorr) = 0.0
+           else
+             read(temp,*) flagecorr(iecorr)
+           endif
+         else
+           print *, "Error: specify a flag/value pair for ECORR"
            stop
          endif
 

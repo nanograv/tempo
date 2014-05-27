@@ -25,6 +25,7 @@ c      $Id$
         integer nflagjumps  ! number of tempo2-style flag-based jumps
         integer nflagefac   ! number of tempo2-style flag-based EFAC
         integer nflagequad  ! number of tempo2-style flag-based EQUAD
+        integer nflagecorr  ! number of flag-based ecorr/jitter terms
         real*8 phimin
         real*8 PAAscNode    ! position angle of ascending node
         real*8 solarn0      ! solar wind electron density at 1 AU (e-/cc)
@@ -41,7 +42,7 @@ c      $Id$
      +    dmepoch,dmep,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
-     +    flagefac(NFLAGERR),flagequad(NFLAGERR),
+     +    flagefac(NFLAGERR),flagequad(NFLAGERR),flagecorr(NFLAGERR),
      +    usedmx1,
      +    fdcof(NFDMAX),
      +    rnamp,rnidx,
@@ -53,7 +54,7 @@ c      $Id$
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,ndmcalc,nflagjumps,
-     +    nflagefac,nflagequad,
+     +    nflagefac,nflagequad,nflagecorr,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
@@ -67,11 +68,13 @@ c      $Id$
         character infoflag*32
         character efacflag*32, efacflagval*32
         character equadflag*32, equadflagval*32
+        character ecorrflag*32, ecorrflagval*32
 
         common/acomch/psrname,pardir,obsflag,infotxt,obskey(36),
      +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag,
      +    efacflag(NFLAGERR),efacflagval(NFLAGERR),
-     +    equadflag(NFLAGERR),equadflagval(NFLAGERR)
+     +    equadflag(NFLAGERR),equadflagval(NFLAGERR),
+     +    ecorrflag(NFLAGERR),ecorrflagval(NFLAGERR)
 
 
         real*8 array(NPA,NPA) ! moved here from fit.f, djn, 8-Sep-98
