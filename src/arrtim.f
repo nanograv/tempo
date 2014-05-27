@@ -32,6 +32,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	integer i1, i2
         character*160 infofile
         character*80 tmp
+        character*320 rawflags
 	include 'acom.h'
 	include 'bcom.h'
 	include 'dp.h'
@@ -231,6 +232,8 @@ c Apply the default equad and efac settings.  These may be altered
 c by flag-based settings for tempo2 TOAs
           efac = efacsave
           equad = equadsave
+c blank out temp flag variable
+          rawflags = ''
 
           if(nfmt.eq.0) then				! Princeton format
 
@@ -308,6 +311,7 @@ c Then everything after that are flags (ignored for now)
             endif
 
  55         continue
+            rawflags = card(j1:320)
             call getflags(card,320,j1)
             tmp = getvalue("to")
             if (tmp.ne."") then
@@ -784,6 +788,9 @@ C TODO allow arb reference freq instead of 1 GHz?
 	    x(NPAR10+i) = f0*fac**i
 899       continue
 	endif
+
+C Save the TOA flags for use elsewhere
+        stflags(n) = rawflags
 
 	x(17)=f0*dtdpx
 	x(36)=f0*dtdpmrv

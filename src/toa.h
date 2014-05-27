@@ -23,6 +23,8 @@ c   are not needed in tz mode
         real*8 stfrq(NPTSDEF)   ! observing frequency, MHz
         real*8 sterr(NPTSDEF)   ! error in microseconds
         real*8 stddm(NPTSDEF)   ! dm correction
+
+        character*320 stflags(NPTSDEF) ! TOA flags
         
         common /sttoa/ stfmjd, stfrq, sterr, stddm, stnmjd,
-     +       stnsite, stntoa, stflag
+     +       stnsite, stntoa, stflag, stflags
