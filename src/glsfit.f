@@ -12,6 +12,7 @@ c      $Id$
 	include 'orbit.h'
 	include 'tz.h'
 	include 'dp.h'
+        include 'toa.h'
 
 c This is a version of the original tempo fit() function, rewritten
 c to use a generalized least squares (GLS) approach, which can use
@@ -44,6 +45,7 @@ c replacing using the "malloc" routines?
         real*8 sv(NPAP1) ! The singular values
         real*8 r(NPTSDEF) ! The weighted prefit resids
         real*8 cts(NPTSDEF) ! copy of the times
+        real*8 ecorr(NPTSDEF) ! ECORR values per-TOA
         real*8 work(10*NPAP1*NPAP1)
         integer lwork
         integer iwork(10*NPAP1)
@@ -58,6 +60,9 @@ c packed cov matrix, to be malloced
         real*8 detcov,cmax,cmin
 
         real*8 rmean, r2mean
+
+        character*80 getvalue ! need to declare ext function..
+        character*80 flagtmp
 
 	integer fd
 	integer nwrt
@@ -145,14 +150,17 @@ c   dcov, cov matrix (diagonal part only)
         if (.not.havecov) then
 
 c Add in extra cov matrix terms
-c Test "jitter" TODO use actual TOA groupings somehow
+c Use flag-based ECORR ("jitter") values
+C This should probably be a subroutine?
           if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
-          print *,'  ... compute covariance'
+          print *,'  ... compute covariance (ecorr)'
           do i=1,npts
+            cp = p0+p1*(cts(i)-peopch)*86400.d0
+            ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
             do j=1,i
               idx=dcovoff+j+i*(i-1)/2
               if (abs(cts(i)-cts(j)).lt.tcorr) then
-                dcov(idx) = dcov(idx) + pcorr**2
+                dcov(idx) = dcov(idx) + ecorr(i)*ecorr(j)
               endif
             enddo
           enddo
@@ -162,6 +170,7 @@ c in "timing power" units (us/sqrt(yr^-1))
           !rnamp = 0.028997
           !rnidx = -13d0/3d0
 C call once to initialize plnoise values:
+          print *,'  ... compute covariance (rn)'
           z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
           cmax = dcov(dcovoff+1)
           cmin = dcov(dcovoff+1)
@@ -394,3 +403,30 @@ C Correct tz ref TOA
 
 	return
 	end
+
+c ===========================================================
+
+        real*8 function getecorr(rawflags)
+
+	implicit real*8 (a-h,o-z)
+        include 'dim.h'
+        include 'acom.h'
+
+        character*80 rawflags
+        character*80 tmp
+        character*80 getvalue
+
+        getecorr = 0d0
+
+        j1 = 1
+        call getflags(rawflags,320,j1)
+        do i=1,nflagecorr
+          tmp = getvalue(ecorrflag(i)(2:32))
+          if (tmp.eq.ecorrflagval(i)) then
+            getecorr = flagecorr(i)
+          endif
+        enddo
+
+        return
+        end
+
