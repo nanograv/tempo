@@ -736,6 +736,15 @@ c=======================================================================
 1095    format('T2EQUAD ',a,' ',a,' ',f7.3)
       enddo
 
+      if (useglsfit) then
+        do i=1,nflagecorr
+          write(71,1096) trim(ecorrflag(i)),trim(ecorrflagval(i)),
+     +      flagecorr(i)
+1096      format('ECORR ',a,' ',a,' ',f7.3)
+        enddo
+      endif
+
+
 
       return
       end
