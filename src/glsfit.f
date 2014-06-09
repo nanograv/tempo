@@ -152,44 +152,48 @@ c   dcov, cov matrix (diagonal part only)
 c Add in extra cov matrix terms
 c Use flag-based ECORR ("jitter") values
 C This should probably be a subroutine?
-          if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
-          print *,'  ... compute covariance (ecorr)'
-          do i=1,npts
-            cp = p0+p1*(cts(i)-peopch)*86400.d0
-            ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
-            do j=1,i
-              idx=dcovoff+j+i*(i-1)/2
-              if (abs(cts(i)-cts(j)).lt.tcorr) then
-                dcov(idx) = dcov(idx) + ecorr(i)*ecorr(j)
-              endif
+          if (nflagecorr.gt.0) then
+            if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
+            print *,'  ... compute covariance (ecorr)'
+            do i=1,npts
+              cp = p0+p1*(cts(i)-peopch)*86400.d0
+              ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
+              do j=1,i
+                idx=dcovoff+j+i*(i-1)/2
+                if (abs(cts(i)-cts(j)).lt.tcorr) then
+                  dcov(idx) = dcov(idx) + ecorr(i)*ecorr(j)
+                endif
+              enddo
             enddo
-          enddo
+          endif
 
 c Power-law red noise:
 c in "timing power" units (us/sqrt(yr^-1))
           !rnamp = 0.028997
           !rnidx = -13d0/3d0
+          if (rnamp.gt.0) then
 C call once to initialize plnoise values:
-          print *,'  ... compute covariance (rn)'
-          z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
-          cmax = dcov(dcovoff+1)
-          cmin = dcov(dcovoff+1)
-          do i=1,npts
-            cp = p0+p1*(cts(i)-peopch)*86400.d0
-            do j=1,i
-              idx=dcovoff+j+i*(i-1)/2
-              dcov(idx) = dcov(idx) 
-     +          + plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
-     +          / cp**2 / 1d12
-              if (dcov(idx).gt.cmax) cmax = dcov(idx)
-              if (dcov(idx).lt.cmin) cmin = dcov(idx)
+            print *,'  ... compute covariance (rn)'
+            z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
+            cmax = dcov(dcovoff+1)
+            cmin = dcov(dcovoff+1)
+            do i=1,npts
+              cp = p0+p1*(cts(i)-peopch)*86400.d0
+              do j=1,i
+                idx=dcovoff+j+i*(i-1)/2
+                dcov(idx) = dcov(idx) 
+     +            + plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
+     +            / cp**2 / 1d12
+                if (dcov(idx).gt.cmax) cmax = dcov(idx)
+                if (dcov(idx).lt.cmin) cmin = dcov(idx)
+              enddo
             enddo
-          enddo
 c          print *,"dcov(max)=",cmax
 c          print *,"dcov(min)=",cmin
 c          do i=1,10
 c            print *,i,dcov(dcovoff+i)
 c          enddo
+          endif
 
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
