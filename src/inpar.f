@@ -82,7 +82,6 @@ c      $Id$
 
       rnamp = 0.
       rnidx = 0.
-      pcorr = 0.
       tcorr = 0.
 
       ntzrmjd = 0.
@@ -940,8 +939,6 @@ c Red-noise params for GLS (Cholesky) fit
          read (value,*) rnamp
        else if (key(1:5).eq.'RNIDX') then
          read (value,*) rnidx
-       else if (key(1:5).eq.'PCORR') then
-         read (value,*) pcorr
        else if (key(1:5).eq.'TCORR') then
          read (value,*) tcorr
 

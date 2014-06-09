@@ -46,7 +46,7 @@ c      $Id$
      +    usedmx1,
      +    fdcof(NFDMAX),
      +    rnamp,rnidx,
-     +    pcorr,tcorr,
+     +    tcorr,
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
      +    PAAscNode,solarn0,solarn01,fixeddist,
