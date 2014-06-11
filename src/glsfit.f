@@ -54,6 +54,8 @@ c replacing using the "malloc" routines?
 c packed cov matrix, to be malloced
         logical havecov
         data havecov/.false./
+        logical diagcov
+        data diagcov/.true./
         integer ncovpts  
         integer*8 dcovoff, idx
         real*8 dcov(1)
@@ -155,6 +157,7 @@ C This should probably be a subroutine?
           if (nflagecorr.gt.0) then
             if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
             print *,'  ... compute covariance (ecorr)'
+            diagcov = .false.
             do i=1,npts
               cp = p0+p1*(cts(i)-peopch)*86400.d0
               ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
@@ -177,6 +180,7 @@ C call once to initialize plnoise values:
             z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
             cmax = dcov(dcovoff+1)
             cmin = dcov(dcovoff+1)
+            diagcov = .false.
             do i=1,npts
               cp = p0+p1*(cts(i)-peopch)*86400.d0
               do j=1,i
@@ -195,29 +199,43 @@ c            print *,i,dcov(dcovoff+i)
 c          enddo
           endif
 
+          if (diagcov) then
+C if cov matrix is diagonal just do it the easy way 
+
+            print *,'  ... invert diagonal matrix'
+            do i=1,npts
+              idx=dcovoff+i+i*(i-1)/2
+              dcov(idx) = 1.0/sqrt(dcov(idx))
+            enddo
+
+          else
+C Non-diagonal cov, do the full cholesky thing
+
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
-          print *,'  ... Cholesky decomp'
-          call dpptrf('U',npts,dcov(1+dcovoff),inforv)
-          !print *,"dpptrf info=",inforv
-          if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
-          detcov=0d0
-          cmax = dcov(dcovoff+1)
-          cmin = dcov(dcovoff+1)
-          do i=1,npts
-            idx = dcovoff+i+i*(i-1)/2
-            detcov = detcov + log(dcov(idx))
-            if (dcov(idx).gt.cmax) cmax = dcov(idx)
-            if (dcov(idx).lt.cmin) cmin = dcov(idx)
-          enddo
-          print *,"      log(det(cov))=",detcov
-          !print *,"cmax=",cmax
-          !print *,"cmin=",cmin
+            print *,'  ... Cholesky decomp'
+            call dpptrf('U',npts,dcov(1+dcovoff),inforv)
+            !print *,"dpptrf info=",inforv
+            if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
+            detcov=0d0
+            cmax = dcov(dcovoff+1)
+            cmin = dcov(dcovoff+1)
+            do i=1,npts
+              idx = dcovoff+i+i*(i-1)/2
+              detcov = detcov + log(dcov(idx))
+              if (dcov(idx).gt.cmax) cmax = dcov(idx)
+              if (dcov(idx).lt.cmin) cmin = dcov(idx)
+            enddo
+            print *,"      log(det(cov))=",detcov
+            !print *,"cmax=",cmax
+            !print *,"cmin=",cmin
 
 c invert triangular matrix: dtrtri() or dtptri() for packed
-          print *,'  ... matrix inverse'
-          call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
-          if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
+            print *,'  ... matrix inverse'
+            call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
+            if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
+
+          endif
 
           havecov = .true.
         else
