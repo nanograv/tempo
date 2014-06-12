@@ -240,7 +240,8 @@ c      $Id$
         do i = 1, ndmx
           write (71,1080) i,dmx(i),nfit(NPAR6+2*i-1),ferr(NPAR6+2*i-1)
  1080     format('DMX_',i4.4,1p,d18.8,i3,d20.8)
-          write (71,1081) i,dmx1(i),nfit(NPAR6+2*i),ferr(NPAR6+2*i)
+          if (dmx1(i).ne.0 .or. nfit(NPAR6+2*i).ne.0) 
+     +      write (71,1081) i,dmx1(i),nfit(NPAR6+2*i),ferr(NPAR6+2*i)
  1081     format('DMX1_',i4.4,1p,d17.8,i3,d20.8)
           write (71,1082) i,dmxep(i)
  1082     format('DMXEP_',i4.4,f16.5)
