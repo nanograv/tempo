@@ -236,7 +236,7 @@ c      $Id$
 
       if (usedmx) then
         write (71,1079),dmxt
- 1079   format ('DMX',d22.8)
+ 1079   format ('DMX',f23.6)
         do i = 1, ndmx
           write (71,1080) i,dmx(i),nfit(NPAR6+2*i-1),ferr(NPAR6+2*i-1)
  1080     format('DMX_',i4.4,1p,d18.8,i3,d20.8)
