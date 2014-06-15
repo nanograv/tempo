@@ -40,12 +40,15 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 
 c Just define some huge matrices here for now.  Once it's working, try
 c replacing using the "malloc" routines?
-        real*8 Adm(NPTSDEF,NPAP1) ! weighted fit design matrix
+        real*8 Adm(2*NPTSDEF,NPAP1) ! weighted fit design matrix
+                                    ! factor of 2 for TOA+DM
         real*8 VTsvd(NPAP1,NPAP1) ! SVD "V-transpose" result
         real*8 sv(NPAP1) ! The singular values
         real*8 r(NPTSDEF) ! The weighted prefit resids
         real*8 cts(NPTSDEF) ! copy of the times
         real*8 ecorr(NPTSDEF) ! ECORR values per-TOA
+        real*8 dmval(NPTSDEF) ! input DM values per-TOA
+        real*8 dmerr(NPTSDEF) ! input DM uncertainties per-TOA
         real*8 work(10*NPAP1*NPAP1)
         integer lwork
         integer iwork(10*NPAP1)
@@ -100,7 +103,7 @@ c Zero out various matrices
           do 30 k=1,NPAP1
             VTsvd(k,j)=0.
  30       continue
-          do 31 k=1,NPTSDEF
+          do 31 k=1,2*NPTSDEF
             Adm(k,j)=0.
  31       continue
  32     continue 
@@ -146,6 +149,7 @@ c   dcov, cov matrix (diagonal part only)
           do 66 j=2,nparam
             Adm(i,j) = (fctn(j-1)-xmean(j-1))
  66       continue
+          ! TODO check for DMX's, use to fill DM part of Adm
           if (.not.havecov) dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
  67     continue
 
@@ -256,6 +260,9 @@ c Multiply by inv cov matrix
           call dtpmv('U','T','N',npts,dcov(1+dcovoff),Adm(1,i),1)
  68     continue
 
+c TODO scale DM part of Adm by inv DM uncertainties (only
+c allow diagonal DM cov matrix for now)
+
 c remove cov with mean from other params
 c Not sure how necessary this is since functions were already
 c mean-subtracted (unweighted)..
@@ -268,6 +275,7 @@ c mean-subtracted (unweighted)..
         enddo
 
 c Call SVD routine.  On output, Adm will be replaced by "U".
+        ! TODO make dims for for DM part
         print *,'  ... SVD'
         call dgesdd('O',npts,nparam,Adm,NPTSDEF,sv,
      +    Adm,NPTSDEF,VTsvd,NPAP1,work,lwork,iwork,inforv)
@@ -315,6 +323,7 @@ c          gcor(i)=sqrt(abs(1.d0 - zzz/array(i,i)))
 c Compute post-fit resids in "whitened" basis
 c r_post = r_pre - U U^t r_pre
 c TODO make tempo report this as "the" chi2?
+c TODO make this use the DM data
         call dgemv('T',npts,nparam,1d0,Adm,NPTSDEF,r,1,0d0,atmp,1)
         call dgemv('N',npts,nparam,-1d0,Adm,NPTSDEF,atmp,1,1d0,r,1)
         chisq = ddot(npts,r,1,r,1)
@@ -399,7 +408,7 @@ C Correct tz ref TOA
  108    continue
 	if (lw) nwrt = close(fd)
 
-	freen=fnpts-nterms-1
+	freen=fnpts-nterms-1 ! TODO fix for DMs
 	!chisqr=r2mean*wmean/freen ! "old" chi2
         chisqr=chisq/freen ! GLS chi2
         rmean=rmean/fnpts
