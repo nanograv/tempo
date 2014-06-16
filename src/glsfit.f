@@ -47,12 +47,21 @@ c replacing using the "malloc" routines?
         real*8 r(NPTSDEF) ! The weighted prefit resids
         real*8 cts(NPTSDEF) ! copy of the times
         real*8 ecorr(NPTSDEF) ! ECORR values per-TOA
-        real*8 dmval(NPTSDEF) ! input DM values per-TOA
-        real*8 dmerr(NPTSDEF) ! input DM uncertainties per-TOA
         real*8 work(10*NPAP1*NPAP1)
         integer lwork
         integer iwork(10*NPAP1)
         integer inforv
+
+c DM-data-related stuff
+c Currently requires:
+c   1. DM cov matrix is diagonal.
+c   2. DM and TOAs are not covariant.
+c   3. Only DMX (no DMX1 or DMnn) is fit.
+        logical usedmdata      ! True to use "DM data" fit
+        real*8 dmval(NPTSDEF)  ! input DM values per-TOA
+        real*8 dmerr(NPTSDEF)  ! input DM uncertainties per-TOA
+        real*8 dmwt
+        integer ndmparam       ! number of DM fit params
 
 c packed cov matrix, to be malloced
         logical havecov
@@ -83,6 +92,9 @@ c save the cov matrix stuff so we can iterate faster
 	chisq=0.
         rmean=0.
         r2mean=0.
+        ndmparam=0
+
+        usedmdata = .true. ! TODO make this a parfile setting... 
 
 c nparam is total number of fit params (including mean)
 c Zero out various matrices
@@ -148,10 +160,40 @@ c   dcov, cov matrix (diagonal part only)
           Adm(i,1) = 1d0 ! Constant phase term
           do 66 j=2,nparam
             Adm(i,j) = (fctn(j-1)-xmean(j-1))
+            if (mfit(j).gt.NPAR6 .and. mfit(j).le.NPAR7) then
+              ! This is a DMX param, fill in the "extra" DM part of
+              ! Adm.  
+              !  TODO:
+              !    - This assumes(!) only DMXs (no DMX1s) are set.
+              !    - Extend to deal with DM polynomials.
+              Adm(i+npts,j) = 1.0
+              ndmparam = ndmparam + 1
+            endif
  66       continue
-          ! TODO check for DMX's, use to fill DM part of Adm
           if (.not.havecov) dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
  67     continue
+
+C Read in DM's and DM errors
+c TODO For consistency this should probably get the "residual DM"
+c after applying the current DM value for this TOA.
+        if (usedmdata) then
+          do i=1,npts
+            j1=1
+            call getflags(stflags(i),320,j1)
+            dmval(i) = 0.0
+            flagtmp = getvalue("dm")
+            if (flagtmp.ne."") then
+              read(flagtmp,*) dmval(i)
+            endif
+            ! TODO deal with dm offsets (-dmo flag)
+            dmerr(i) = 0.0
+            flagtmp = getvalue("dme")
+            if (flagtmp.ne."") then
+              read(flagtmp,*) dmerr(i)
+            endif
+            ! TODO maybe catch the case of -dme but no -dm?
+          enddo
+        endif
 
         if (.not.havecov) then
 
@@ -260,8 +302,18 @@ c Multiply by inv cov matrix
           call dtpmv('U','T','N',npts,dcov(1+dcovoff),Adm(1,i),1)
  68     continue
 
-c TODO scale DM part of Adm by inv DM uncertainties (only
+c Scale DM and DM part of Adm by inv DM uncertainties (only
 c allow diagonal DM cov matrix for now)
+        if (usedmdata) then
+          do i=1,npts
+            dmwt = 0.0
+            if (dmerr(i).gt.0.0) dmwt=1.0/dmerr(i)
+            dmval(i) = dmval(i)*dmwt
+            do j=1,nparam
+              Adm(i+npts,j) = Adm(i+npts,j)*dmwt
+            enddo
+          enddo
+        endif
 
 c remove cov with mean from other params
 c Not sure how necessary this is since functions were already
@@ -275,10 +327,14 @@ c mean-subtracted (unweighted)..
         enddo
 
 c Call SVD routine.  On output, Adm will be replaced by "U".
-        ! TODO make dims for for DM part
         print *,'  ... SVD'
-        call dgesdd('O',npts,nparam,Adm,NPTSDEF,sv,
-     +    Adm,NPTSDEF,VTsvd,NPAP1,work,lwork,iwork,inforv)
+        if (usedmdata) then
+          call dgesdd('O',2*npts,nparam,Adm,2*NPTSDEF,sv,
+     +      Adm,NPTSDEF,VTsvd,NPAP1,work,lwork,iwork,inforv)
+        else
+          call dgesdd('O',npts,nparam,Adm,2*NPTSDEF,sv,
+     +      Adm,NPTSDEF,VTsvd,NPAP1,work,lwork,iwork,inforv)
+        endif
 
 c TODO could test for low SV's here
         write(*,'(''      log10(cond number) = '',f5.2)')
@@ -324,9 +380,13 @@ c Compute post-fit resids in "whitened" basis
 c r_post = r_pre - U U^t r_pre
 c TODO make tempo report this as "the" chi2?
 c TODO make this use the DM data
-        call dgemv('T',npts,nparam,1d0,Adm,NPTSDEF,r,1,0d0,atmp,1)
-        call dgemv('N',npts,nparam,-1d0,Adm,NPTSDEF,atmp,1,1d0,r,1)
-        chisq = ddot(npts,r,1,r,1)
+        if (usedmdata) then
+          ! TODO fill me in!
+        else
+          call dgemv('T',npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
+          call dgemv('N',npts,nparam,-1d0,Adm,2*NPTSDEF,atmp,1,1d0,r,1)
+          chisq = ddot(npts,r,1,r,1)
+        endif
         print *,"GLS chisq=", chisq
 
 c Computes the post-fit param values in a
