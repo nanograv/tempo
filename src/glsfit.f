@@ -88,11 +88,14 @@ c save the cov matrix stuff so we can iterate faster
 	mprt=10**nprnt
 	sigma=0.
 	chisq=0.
+        dm_chisq=0.
+        toa_chisq=0.
         rmean=0.
         r2mean=0.
         ndmparam=0
 
         usedmdata = .true. ! TODO make this a parfile setting... 
+        !usedmdata = .false. ! TODO make this a parfile setting... 
 
 c nparam is total number of fit params (including mean)
 c Zero out various matrices
@@ -285,6 +288,7 @@ c allow diagonal DM cov matrix for now)
             dmwt = 0.0
             if (dmerr(i).gt.0.0) dmwt=1.0/dmerr(i)
             r(i+npts) = dmres(i)*dmwt
+            !print *,i,dmres(i),dmerr(i)
             do j=1,nparam
               Adm(i+npts,j) = Adm(i+npts,j)*dmwt
             enddo
@@ -358,6 +362,11 @@ c TODO make tempo report this as "the" chi2?
         if (usedmdata) then
           call dgemv('T',2*npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
           call dgemv('N',2*npts,nparam,-1d0,Adm,2*NPTSDEF,atmp,1,1d0,r,1)
+          toa_chisq = ddot(npts,r,1,r,1)
+          dm_chisq = ddot(npts,r(npts+1),1,r(npts+1),1)
+          print *,"TOA chisq=", toa_chisq
+          print *,"DM chisq=", dm_chisq
+          print *,"Ndof=",2*npts-nparam
           chisq = ddot(2*npts,r,1,r,1)
         else
           call dgemv('T',npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
