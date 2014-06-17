@@ -31,4 +31,4 @@ c For "DM data" mode:
         real*8 dmerr(NPTSDEF)  ! input DM uncertainties per-TOA
         
         common /sttoa/ stfmjd, stfrq, sterr, stddm, stnmjd,
-     +       stnsite, stntoa, stflag, stflags, dmresm dmerr
+     +       stnsite, stntoa, stflag, stflags, dmres, dmerr
