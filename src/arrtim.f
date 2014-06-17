@@ -326,12 +326,12 @@ c Then everything after that are flags (ignored for now)
               read(tmp,*) dphaseflag
             endif
             dmobs = 0.0d0
-            tmp = getvalue("dm") ! TODO rename this flag?
+            tmp = getvalue("pp_dm")
             if (tmp.ne."") then
               read(tmp,*) dmobs
             endif
             dmobserr = 0.0d0
-            tmp = getvalue("dme") ! TODO rename this flag?
+            tmp = getvalue("pp_dme")
             if (tmp.ne."") then
               read(tmp,*) dmobserr
             endif
