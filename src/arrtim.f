@@ -95,6 +95,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	dither=0.
         zawgt=0.
 	mode=0
+        dmobs=0.
+        dmobserr=0.
 	nxoff=nflagjumps
 	do i=1,NJUMP
 	  nfit(NPAR2+i)=0
@@ -322,6 +324,16 @@ c Then everything after that are flags (ignored for now)
             tmp = getvalue("padd")
             if (tmp.ne."") then
               read(tmp,*) dphaseflag
+            endif
+            dmobs = 0.0d0
+            tmp = getvalue("dm") ! TODO rename this flag?
+            if (tmp.ne."") then
+              read(tmp,*) dmobs
+            endif
+            dmobserr = 0.0d0
+            tmp = getvalue("dme") ! TODO rename this flag?
+            if (tmp.ne."") then
+              read(tmp,*) dmobserr
             endif
             tmp = getvalue("info")
             if (tmp.ne."") then
@@ -791,6 +803,15 @@ C TODO allow arb reference freq instead of 1 GHz?
 
 C Save the TOA flags for use elsewhere
         stflags(n) = rawflags
+
+C Save the DM "residual" and error (could make this part of vmemrw stuff?)
+        if (dmobserr.gt.0.d0) then
+          dmres(n) = dmobs - dmtot
+          dmerr(n) = dmobserr
+        else
+          dmres(n) = 0.0
+          dmerr(n) = 0.0
+        endif
 
 	x(17)=f0*dtdpx
 	x(36)=f0*dtdpmrv

@@ -44,7 +44,7 @@ c replacing using the "malloc" routines?
                                     ! factor of 2 for TOA+DM
         real*8 VTsvd(NPAP1,NPAP1) ! SVD "V-transpose" result
         real*8 sv(NPAP1) ! The singular values
-        real*8 r(NPTSDEF) ! The weighted prefit resids
+        real*8 r(2*NPTSDEF) ! The weighted prefit TOA+DM resids
         real*8 cts(NPTSDEF) ! copy of the times
         real*8 ecorr(NPTSDEF) ! ECORR values per-TOA
         real*8 work(10*NPAP1*NPAP1)
@@ -58,8 +58,6 @@ c   1. DM cov matrix is diagonal.
 c   2. DM and TOAs are not covariant.
 c   3. Only DMX (no DMX1 or DMnn) is fit.
         logical usedmdata      ! True to use "DM data" fit
-        real*8 dmval(NPTSDEF)  ! input DM values per-TOA
-        real*8 dmerr(NPTSDEF)  ! input DM uncertainties per-TOA
         real*8 dmwt
         integer ndmparam       ! number of DM fit params
 
@@ -172,28 +170,6 @@ c   dcov, cov matrix (diagonal part only)
  66       continue
           if (.not.havecov) dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
  67     continue
-
-C Read in DM's and DM errors
-c TODO For consistency this should probably get the "residual DM"
-c after applying the current DM value for this TOA.
-        if (usedmdata) then
-          do i=1,npts
-            j1=1
-            call getflags(stflags(i),320,j1)
-            dmval(i) = 0.0
-            flagtmp = getvalue("dm")
-            if (flagtmp.ne."") then
-              read(flagtmp,*) dmval(i)
-            endif
-            ! TODO deal with dm offsets (-dmo flag)
-            dmerr(i) = 0.0
-            flagtmp = getvalue("dme")
-            if (flagtmp.ne."") then
-              read(flagtmp,*) dmerr(i)
-            endif
-            ! TODO maybe catch the case of -dme but no -dm?
-          enddo
-        endif
 
         if (.not.havecov) then
 
@@ -308,7 +284,7 @@ c allow diagonal DM cov matrix for now)
           do i=1,npts
             dmwt = 0.0
             if (dmerr(i).gt.0.0) dmwt=1.0/dmerr(i)
-            dmval(i) = dmval(i)*dmwt
+            r(i+npts) = dmres(i)*dmwt
             do j=1,nparam
               Adm(i+npts,j) = Adm(i+npts,j)*dmwt
             enddo
@@ -379,9 +355,10 @@ c          gcor(i)=sqrt(abs(1.d0 - zzz/array(i,i)))
 c Compute post-fit resids in "whitened" basis
 c r_post = r_pre - U U^t r_pre
 c TODO make tempo report this as "the" chi2?
-c TODO make this use the DM data
         if (usedmdata) then
-          ! TODO fill me in!
+          call dgemv('T',2*npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
+          call dgemv('N',2*npts,nparam,-1d0,Adm,2*NPTSDEF,atmp,1,1d0,r,1)
+          chisq = ddot(2*npts,r,1,r,1)
         else
           call dgemv('T',npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
           call dgemv('N',npts,nparam,-1d0,Adm,2*NPTSDEF,atmp,1,1d0,r,1)

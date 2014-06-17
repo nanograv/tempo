@@ -25,6 +25,10 @@ c   are not needed in tz mode
         real*8 stddm(NPTSDEF)   ! dm correction
 
         character*320 stflags(NPTSDEF) ! TOA flags
+
+c For "DM data" mode:
+        real*8 dmres(NPTSDEF)  ! Current DM "residuals"
+        real*8 dmerr(NPTSDEF)  ! input DM uncertainties per-TOA
         
         common /sttoa/ stfmjd, stfrq, sterr, stddm, stnmjd,
-     +       stnsite, stntoa, stflag, stflags
+     +       stnsite, stntoa, stflag, stflags, dmresm dmerr
