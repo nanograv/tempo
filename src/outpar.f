@@ -233,7 +233,6 @@ c      $Id$
          enddo
       endif
 
-
       if (usedmx) then
         write (71,1079),dmxt
  1079   format ('DMX',f23.6)
@@ -303,6 +302,7 @@ c tempo2-compatibility:
       if(nits.gt.0)write(71,'(''NITS'',i22)')nits
       if(iboot.gt.0)write(71,'(''IBOOT'',i21)')iboot
       if(nddm.gt.0)write(71,'(''NDDM'',i22)')nddm
+      if(usedmdata)write(71,'(''DMDATA'',i20)')1
       if(infoflag.ne."")write(71,'(''INFO'',1x,a)')infoflag
 
       return

@@ -57,7 +57,6 @@ c Currently requires:
 c   1. DM cov matrix is diagonal.
 c   2. DM and TOAs are not covariant.
 c   3. Only DMX (no DMX1 or DMnn) is fit.
-        logical usedmdata      ! True to use "DM data" fit
         real*8 dmwt
         integer ndmparam       ! number of DM fit params
 
@@ -93,9 +92,6 @@ c save the cov matrix stuff so we can iterate faster
         rmean=0.
         r2mean=0.
         ndmparam=0
-
-        usedmdata = .true. ! TODO make this a parfile setting... 
-        !usedmdata = .false. ! TODO make this a parfile setting... 
 
 c nparam is total number of fit params (including mean)
 c Zero out various matrices
@@ -284,6 +280,7 @@ c Multiply by inv cov matrix
 c Scale DM and DM part of Adm by inv DM uncertainties (only
 c allow diagonal DM cov matrix for now)
         if (usedmdata) then
+          print *,'  ... using DM data points'
           do i=1,npts
             dmwt = 0.0
             if (dmerr(i).gt.0.0) dmwt=1.0/dmerr(i)

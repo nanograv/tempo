@@ -18,6 +18,7 @@ c      $Id$
         logical siteused      ! flags for which observing codes are used.
         logical nofitjump     ! blocks fitting for a given JUMP
         logical useglsfit     ! use generalized-least-squares fit
+        logical usedmdata     ! use input DM measurements as "data"
 
 	integer parunit, nskip, iboot
         integer infolen
@@ -58,6 +59,7 @@ c      $Id$
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
+     +    usedmdata,
      +    tdbif99fmt
 
 
