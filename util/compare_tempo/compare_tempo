@@ -159,8 +159,18 @@ while ($idxa<=$#a && $idxb<=$#b) {
   substr($out,55,length($b[$idxb])) = $b[$idxb];
   $a[$idxa] =~ s/D/E/g;
   $b[$idxb] =~ s/D/E/g;
-  ($atmp1,$aflag,$aerr) = (split(" ",$a[$idxa]))[1,2,3];
-  ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[1,2,3];
+  @tmp = split(" ",$a[$idxa]);
+  if ($tmp[0] eq "JUMP" && $tmp[1]=~/^/)  {
+    ($atmp1,$aflag,$aerr) = @tmp[3,4,5];
+  } else {
+    ($atmp1,$aflag,$aerr) = @tmp[1,2,3];
+  }
+  @tmp = split(" ",$b[$idxb]);
+  if ($tmp[0] eq "JUMP" && $tmp[1]=~/^/)  {
+    ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[3,4,5];
+  } else {
+    ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[1,2,3];
+  }
 
   if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
     @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
