@@ -20,6 +20,7 @@ REF_MAN_SECTIONS = description.txt \
 			clock.txt \
 			ephem.txt \
 			tdb-tt.txt \
+			ecliptic.txt \
 			obsys.txt \
 			tz.txt \
 			tz-in.txt \
