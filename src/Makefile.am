@@ -9,7 +9,7 @@ tempo_SOURCES = \
         bnryeh.f bnryell1.f bnrymss.f bnrydds.f bootmc.f bt2ell1.f \
         cfgin.f chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
         earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f galco.f \
-        gasdev.f getcmdline.f getflags.f getvalue.f \
+        gasdev.f getcmdline.f getecliptic.f getflags.f getvalue.f \
         inpar.f interp.f lmst.f mass2dd.f matinv.f mjdadd.f mxprt.f  \
         newbin.f newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
@@ -58,11 +58,13 @@ cutil.$(OBJEXT): cutil.c
 ell12bt.$(OBJEXT): ell12bt.f dim.h orbit.h
 ephinit.$(OBJEXT): ephinit.f ephcom.h
 ephread.$(OBJEXT): ephread.f ephcom.h
+equ2ecl.$(ObJEXT): equ2ecl.f dim.h acom.h
 fit.$(OBJEXT): fit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
 getcmdline.$(OBJEXT): getcmdline.f
+getecliptic.$(OBJEXT): getecliptic.f dim.h acom.h eph.h
 getflags.$(OBJEXT): getflags.f flagcom.h
 getvalue.$(OBJEXT): getvalue.f flagcom.h
-inpar.$(OBJEXT): inpar.f acom.h bcom.h dp.h eph.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h
+inpar.$(OBJEXT): inpar.f acom.h bcom.h dp.h eph.h trnsfr.h orbit.h clocks.h dim.h glitch.h tz.h 
 matinv.$(OBJEXT): matinv.f dim.h
 mjdadd.$(OBJEXT): mjdadd.f
 mxprt.$(OBJEXT): mxprt.f dim.h

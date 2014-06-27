@@ -283,6 +283,9 @@ c work correctly in tempo2:
 
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
+      if (eclcon.ne."DEFAULT") then
+        write(71,'(''ECL'',17x,a)')eclcon(1:index(eclcon," ")-1)
+      endif
       write(71,'(''CLK'',17x,a)')clklbl(nclk)
 c tempo2-compatibility:
       write(71,'(''UNITS'',15x,''TDB'')')

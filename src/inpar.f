@@ -228,6 +228,8 @@ C  The error/comment is ignored by TEMPO
 
       ll=80
 
+      eclcon = "DEFAULT"
+
       ijump  = 0  ! used for counting tempo2-style jump params
       iefac  = 0  ! used for counting tempo2-style efac params
       iequad = 0  ! used for counting tempo2-style equad params
@@ -948,6 +950,11 @@ c Red-noise params for GLS (Cholesky) fit
        else if (key(1:5).eq.'TCORR') then
          read (value,*) tcorr
 
+c Choosing which convention (value) to use for obliquity of the eclptic:
+       else if (key(1:3).eq.'ECL') then
+         call upcase(value)
+         read (value,*) eclcon
+
 c Do nothing parameters
       else if(key(1:4).eq.'HEAD') then
       else if(key(1:4).eq.'TRES') then
@@ -1082,6 +1089,8 @@ c     binary frequencies, make the conversion
           nfit(18) = 0
         endif
       endif
+
+      call getecliptic
 
 
       if(nbin.eq.0.and.(nfit(9).ne.0.or.nfit(10).ne.0.or.nfit(11).ne.0
