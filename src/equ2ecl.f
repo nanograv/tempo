@@ -27,8 +27,8 @@ c     n.b. r(1) remains unchanged
       tmpy = r(2)
       tmpz = r(3)
 
-      r(2) = ce*tmpy + se*tmpz
-      r(3) = -se*tmpy + ce*tmpz 
+      r(2) = ceecl*tmpy + seecl*tmpz
+      r(3) = -seecl*tmpy + ceecl*tmpz 
 
       return
       end

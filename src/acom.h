@@ -35,7 +35,7 @@ c      $Id$
                             !    for ann-orb px
         real*8 dmepoch, dmep
 
-        real*8 ce, se       ! cosine and sine of obliquity of the ecliptic
+        real*8 ceecl, seecl ! cosine and sine of obliquity of the ecliptic
 
 	common pdec,pra,ba(3),bc(3),dm,dt,dt2,freq(NPAP1),
      +    ferr(NPAP1),fmin,hlt(36),hrd(36),siteused(36),
@@ -53,7 +53,7 @@ c      $Id$
      +    pmra,pmdec,pmrv,dt2sec,
      +    t0geo,gain,tres,
      +    PAAscNode,solarn0,solarn01,fixeddist,
-     +    ce, se,
+     +    ceecl, seecl,
      +    nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,

@@ -43,8 +43,8 @@ c     2*pi/(360*3600)
           endif
 
           read (s2,*) ecl
-          ce = cos(FAC*ecl)
-          se = sin(FAC*ecl)
+          ceecl = cos(FAC*ecl)
+          seecl = sin(FAC*ecl)
 
           goto 9000
 
