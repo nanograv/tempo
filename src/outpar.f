@@ -29,14 +29,14 @@ c      $Id$
          else
             write(71,1011)c1*pra
          endif
- 1011    format('LAMBDA',f20.13,a,f20.8)
+ 1011    format('LAMBDA',f20.13,a,f20.13)
          
          if(nfit(5).gt.0)then
             write(71,1012)c1*pdec,fit1,ferr(5)
          else
             write(71,1012)c1*pdec
          endif
- 1012    format('BETA',f22.13,a,f20.8)
+ 1012    format('BETA',f22.13,a,f20.13)
          
          if(pmra.ne.0.)then
             if(nfit(8).gt.0)then
