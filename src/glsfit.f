@@ -40,8 +40,8 @@ c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 
 c Just define some huge matrices here for now.  Once it's working, try
 c replacing using the "malloc" routines?
-        real*8 Adm(2*NPTSDEF,NPAP1) ! weighted fit design matrix
-                                    ! factor of 2 for TOA+DM
+c        real*8 Adm(2*NPTSDEF,NPAP1) ! weighted fit design matrix
+c                                    ! factor of 2 for TOA+DM
         real*8 VTsvd(NPAP1,NPAP1) ! SVD "V-transpose" result
         real*8 sv(NPAP1) ! The singular values
         real*8 r(2*NPTSDEF) ! The weighted prefit TOA+DM resids
@@ -51,6 +51,13 @@ c replacing using the "malloc" routines?
         integer lwork
         integer iwork(10*NPAP1)
         integer inforv
+
+c Design matrix to be allocated. Sizes:
+c   Ntoa * Nparam normally
+c   2 * Ntoa * Nparam if DMDATA
+        real*8 Adm(1)
+        integer Admrows
+        integer*8 Admoff
 
 c DM-data-related stuff
 c Currently requires:
@@ -103,6 +110,19 @@ c Zero out various matrices
  28       continue
  29     continue
 
+c Allocate design matrix
+c TODO what about iterations...
+c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
+        if (usedmdata) then
+          Admrows = npts
+        else 
+          Admrows = 2*npts
+        endif
+        call mallocxd(Adm,Admrows*nparam,8,Admoff)
+        do i=1,Admrows*nparam
+          Adm(Admoff+i) = 0.
+        enddo
+
         do 32 j=1,NPAP1
           a(j)=0.
           atmp(j)=0.
@@ -112,9 +132,6 @@ c Zero out various matrices
           do 30 k=1,NPAP1
             VTsvd(k,j)=0.
  30       continue
-          do 31 k=1,2*NPTSDEF
-            Adm(k,j)=0.
- 31       continue
  32     continue 
 
         write (*,'(''  glsfit Ntoa='',i6)') npts
@@ -154,9 +171,9 @@ c   dcov, cov matrix (diagonal part only)
           !cts(i) = ct
           cts(i) = fmjd
           r(i) = y
-          Adm(i,1) = 1d0 ! Constant phase term
+          Adm(Admoff+i) = 1d0 ! Constant phase term
           do 66 j=2,nparam
-            Adm(i,j) = (fctn(j-1)-xmean(j-1))
+            Adm(Admoff+i+(j-1)*Admrows) = (fctn(j-1)-xmean(j-1))
             if (mfit(j).eq.16 .or. 
      +        (mfit(j).gt.NPAR6 .and. mfit(j).le.NPAR7)) then
               ! This is a DM/DMX param, fill in the "extra" DM part of
@@ -164,7 +181,7 @@ c   dcov, cov matrix (diagonal part only)
               !  TODO:
               !    - This assumes(!) only DMXs (no DMX1s) are set.
               !    - Extend to deal with DM polynomials.
-              Adm(i+npts,j) = 1.0
+              Adm(Admoff+i+npts+(j-1)*Admrows) = 1.0
               ndmparam = ndmparam + 1
             endif
  66       continue
@@ -275,7 +292,8 @@ c Multiply by inv cov matrix
         print *,'  ... matrix multiply'
         call dtpmv('U','T','N',npts,dcov(1+dcovoff),r,1)
         do 68 i=1,nparam
-          call dtpmv('U','T','N',npts,dcov(1+dcovoff),Adm(1,i),1)
+          call dtpmv('U','T','N',npts,dcov(1+dcovoff),
+     +      Adm(Admoff+1+(i-1)*Admrows),1)
  68     continue
 
 c Scale DM and DM part of Adm by inv DM uncertainties (only
@@ -288,7 +306,8 @@ c allow diagonal DM cov matrix for now)
             r(i+npts) = dmres(i)*dmwt
             !print *,i,dmres(i),dmerr(i)
             do j=1,nparam
-              Adm(i+npts,j) = Adm(i+npts,j)*dmwt
+              Adm(Admoff+i+npts+(j-1)*Admrows) = 
+     +          Adm(Admoff+i+npts+(j-1)*Admrows)*dmwt
             enddo
           enddo
         endif
@@ -297,22 +316,19 @@ c remove cov with mean from other params
 c Not sure how necessary this is since functions were already
 c mean-subtracted (unweighted)..
         do j=1,nparam
-          mcov(j) = ddot(npts,Adm(1,1),1,Adm(1,j),1)
+          mcov(j) = ddot(npts,Adm(Admoff+1),1,
+     +                     Adm(Admoff+1+(j-1)*Admrows),1)
           if (j.gt.1) then
             mcov(j) = mcov(j)/mcov(1)
-            call daxpy(npts,-mcov(j),Adm(1,1),1,Adm(1,j),1)
+            call daxpy(npts,-mcov(j),Adm(Admoff+1),1,
+     +                    Adm(Admoff+1+(j-1)*Admrows),1)
           endif
         enddo
 
 c Call SVD routine.  On output, Adm will be replaced by "U".
         print *,'  ... SVD'
-        if (usedmdata) then
-          call dgesdd('O',2*npts,nparam,Adm,2*NPTSDEF,sv,
-     +      Adm,NPTSDEF,VTsvd,NPAP1,work,lwork,iwork,inforv)
-        else
-          call dgesdd('O',npts,nparam,Adm,2*NPTSDEF,sv,
-     +      Adm,NPTSDEF,VTsvd,NPAP1,work,lwork,iwork,inforv)
-        endif
+        call dgesdd('O',Admrows,nparam,Adm(Admoff+1),Admrows,sv,
+     +    Adm(Admoff+1),Admrows,VTsvd,NPAP1,work,lwork,iwork,inforv)
 
 c TODO could test for low SV's here
         write(*,'(''      log10(cond number) = '',f5.2)')
@@ -357,9 +373,11 @@ c          gcor(i)=sqrt(abs(1.d0 - zzz/array(i,i)))
 c Compute post-fit resids in "whitened" basis
 c r_post = r_pre - U U^t r_pre
 c TODO make tempo report this as "the" chi2?
+        call dgemv('T',Admrows,nparam,1d0,Adm(Admoff+1),
+     +              Admrows,r,1,0d0,atmp,1)
+        call dgemv('N',Admrows,nparam,-1d0,Adm(Admoff+1),
+     +              Admrows,atmp,1,1d0,r,1)
         if (usedmdata) then
-          call dgemv('T',2*npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
-          call dgemv('N',2*npts,nparam,-1d0,Adm,2*NPTSDEF,atmp,1,1d0,r,1)
           toa_chisq = ddot(npts,r,1,r,1)
           dm_chisq = ddot(npts,r(npts+1),1,r(npts+1),1)
           print *,"TOA chisq=", toa_chisq
@@ -367,8 +385,6 @@ c TODO make tempo report this as "the" chi2?
           print *,"Ndof=",2*npts-nparam
           chisq = ddot(2*npts,r,1,r,1)
         else
-          call dgemv('T',npts,nparam,1d0,Adm,2*NPTSDEF,r,1,0d0,atmp,1)
-          call dgemv('N',npts,nparam,-1d0,Adm,2*NPTSDEF,atmp,1,1d0,r,1)
           chisq = ddot(npts,r,1,r,1)
         endif
         print *,"GLS chisq=", chisq
