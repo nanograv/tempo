@@ -174,8 +174,8 @@ c   dcov, cov matrix (diagonal part only)
           Adm(Admoff+i) = 1d0 ! Constant phase term
           do 66 j=2,nparam
             Adm(Admoff+i+(j-1)*Admrows) = (fctn(j-1)-xmean(j-1))
-            if (mfit(j).eq.16 .or. 
-     +        (mfit(j).gt.NPAR6 .and. mfit(j).le.NPAR7)) then
+            if (usedmdata .and. (mfit(j).eq.16 .or. 
+     +        (mfit(j).gt.NPAR6 .and. mfit(j).le.NPAR7))) then
               ! This is a DM/DMX param, fill in the "extra" DM part of
               ! Adm.  
               !  TODO:
