@@ -16,7 +16,7 @@ c     2*pi/(360*3600)
       real*8 ecl
 
       l = index(eclcon,' ')-1
-      call upcase(l)
+      call upcase(eclcon)
 
       k = index(ephdir,' ')-1
       open (2,file=ephdir(1:k)//'ecliptic.dat')
