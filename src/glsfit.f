@@ -68,6 +68,7 @@ c   3. Only DMX (no DMX1 or DMnn) is fit.
         integer ndmparam       ! number of DM fit params
 
 c packed cov matrix, to be malloced
+        logical readcov
         logical havecov
         data havecov/.false./
         logical diagcov
@@ -90,6 +91,7 @@ c packed cov matrix, to be malloced
 c save the cov matrix stuff so we can iterate faster
         save havecov, ncovpts, dcovoff, dcov, detcov
 
+        readcov = .false.
         lwork = 10*NPAP1*NPAP1
 	mprt=10**nprnt
 	sigma=0.
@@ -164,6 +166,8 @@ c   Adm, design matrix
 c   r, pre-fit resids
 c   dcov, cov matrix (diagonal part only)
         print *,'  ... fill design matrix'
+	if(ldesign) rewind(37)
+	if(ldesign) write(37) npts, nterms
 	do 67 i=1,npts
           call vmemr(i,fctn,ct,y,weight,dn,terr,frq,fmjd,rfrq,nterms,
      +     buf,npmsav,ksav)
@@ -190,91 +194,115 @@ c   dcov, cov matrix (diagonal part only)
 
         if (.not.havecov) then
 
+c read inverted cov matrix from disk here if option selected
+          if (readcov) then
+
+            print *,'  ... read cov matrix from disk'
+	    open(39,file='datacov.tmp',form='unformatted',
+     +            status='unknown')
+	    read(39) (dcov(dcovoff+i), i=1,ncovpts)
+	    close(39)
+
+          else
+
 c Add in extra cov matrix terms
 c Use flag-based ECORR ("jitter") values
 C This should probably be a subroutine?
-          if (nflagecorr.gt.0) then
-            if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
-            print *,'  ... compute covariance (ecorr)'
-            diagcov = .false.
-            do i=1,npts
-              cp = p0+p1*(cts(i)-peopch)*86400.d0
-              ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
-              do j=1,i
-                idx=dcovoff+j+i*(i-1)/2
-                if (abs(cts(i)-cts(j)).lt.tcorr) then
-                  dcov(idx) = dcov(idx) + ecorr(i)*ecorr(j)
-                endif
+            if (nflagecorr.gt.0) then
+              if (tcorr.eq.0.0) tcorr = 2d0*p0/86400d0
+              print *,'  ... compute covariance (ecorr)'
+              diagcov = .false.
+              do i=1,npts
+                cp = p0+p1*(cts(i)-peopch)*86400.d0
+                ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
+                do j=1,i
+                  idx=dcovoff+j+i*(i-1)/2
+                  if (abs(cts(i)-cts(j)).lt.tcorr) then
+                    dcov(idx) = dcov(idx) + ecorr(i)*ecorr(j)
+                  endif
+                enddo
               enddo
-            enddo
-          endif
+            endif
 
 c Power-law red noise:
 c in "timing power" units (us/sqrt(yr^-1))
-          !rnamp = 0.028997
-          !rnidx = -13d0/3d0
-          if (rnamp.gt.0) then
+            !rnamp = 0.028997
+            !rnidx = -13d0/3d0
+            if (rnamp.gt.0) then
 C call once to initialize plnoise values:
-            print *,'  ... compute covariance (rn)'
-            z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
-            cmax = dcov(dcovoff+1)
-            cmin = dcov(dcovoff+1)
-            diagcov = .false.
-            do i=1,npts
-              cp = p0+p1*(cts(i)-peopch)*86400.d0
-              do j=1,i
-                idx=dcovoff+j+i*(i-1)/2
-                dcov(idx) = dcov(idx) 
-     +            + plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
-     +            / cp**2 / 1d12
-                if (dcov(idx).gt.cmax) cmax = dcov(idx)
-                if (dcov(idx).lt.cmin) cmin = dcov(idx)
+              print *,'  ... compute covariance (rn)'
+              z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
+              cmax = dcov(dcovoff+1)
+              cmin = dcov(dcovoff+1)
+              diagcov = .false.
+              do i=1,npts
+                cp = p0+p1*(cts(i)-peopch)*86400.d0
+                do j=1,i
+                  idx=dcovoff+j+i*(i-1)/2
+                  dcov(idx) = dcov(idx) 
+     +              + plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
+     +              / cp**2 / 1d12
+                  if (dcov(idx).gt.cmax) cmax = dcov(idx)
+                  if (dcov(idx).lt.cmin) cmin = dcov(idx)
+                enddo
               enddo
-            enddo
-c          print *,"dcov(max)=",cmax
-c          print *,"dcov(min)=",cmin
-c          do i=1,10
-c            print *,i,dcov(dcovoff+i)
-c          enddo
-          endif
+c            print *,"dcov(max)=",cmax
+c            print *,"dcov(min)=",cmin
+c            do i=1,10
+c              print *,i,dcov(dcovoff+i)
+c            enddo
+            endif
 
-          if (diagcov) then
+            if (diagcov) then
 C if cov matrix is diagonal just do it the easy way 
 
-            print *,'  ... invert diagonal matrix'
-            do i=1,npts
-              idx=dcovoff+i+i*(i-1)/2
-              dcov(idx) = 1.0/sqrt(dcov(idx))
-            enddo
+              print *,'  ... invert diagonal matrix'
+              do i=1,npts
+                idx=dcovoff+i+i*(i-1)/2
+                dcov(idx) = 1.0/sqrt(dcov(idx))
+              enddo
 
-          else
+            else
 C Non-diagonal cov, do the full cholesky thing
 
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
-            print *,'  ... Cholesky decomp'
-            call dpptrf('U',npts,dcov(1+dcovoff),inforv)
-            !print *,"dpptrf info=",inforv
-            if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
-            detcov=0d0
-            cmax = dcov(dcovoff+1)
-            cmin = dcov(dcovoff+1)
-            do i=1,npts
-              idx = dcovoff+i+i*(i-1)/2
-              detcov = detcov + log(dcov(idx))
-              if (dcov(idx).gt.cmax) cmax = dcov(idx)
-              if (dcov(idx).lt.cmin) cmin = dcov(idx)
-            enddo
-            print *,"      log(det(cov))=",detcov
-            !print *,"cmax=",cmax
-            !print *,"cmin=",cmin
+              print *,'  ... Cholesky decomp'
+              call dpptrf('U',npts,dcov(1+dcovoff),inforv)
+              !print *,"dpptrf info=",inforv
+              if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
+              detcov=0d0
+              cmax = dcov(dcovoff+1)
+              cmin = dcov(dcovoff+1)
+              do i=1,npts
+                idx = dcovoff+i+i*(i-1)/2
+                detcov = detcov + log(dcov(idx))
+                if (dcov(idx).gt.cmax) cmax = dcov(idx)
+                if (dcov(idx).lt.cmin) cmin = dcov(idx)
+              enddo
+              print *,"      log(det(cov))=",detcov
+              !print *,"cmax=",cmax
+              !print *,"cmin=",cmin
 
 c invert triangular matrix: dtrtri() or dtptri() for packed
-            print *,'  ... matrix inverse'
-            call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
-            if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
+              print *,'  ... matrix inverse'
+              call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
+              if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
 
-          endif
+            endif
+
+c write inverted/cholesky'd matrix to disk here 
+c TODO make this optional
+            if (ldcov) then
+              print *,'  ... write matrix to disk'
+              open(39,file='datacov.tmp',form='unformatted',
+     +              status='unknown')
+              rewind(39)
+              write(39) (dcov(dcovoff+i), i=1,ncovpts)
+              close(39)
+            endif
+
+          endif ! readcov
 
           havecov = .true.
         else
@@ -284,9 +312,6 @@ c invert triangular matrix: dtrtri() or dtptri() for packed
 c        do i=1,10
 c          print *,i,dcov(dcovoff+i)
 c        enddo
-
-	if(ldesign) rewind(37)
-	if(ldesign) write(37) npts, nterms
 
 c Multiply by inv cov matrix
         print *,'  ... matrix multiply'

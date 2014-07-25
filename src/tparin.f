@@ -66,6 +66,7 @@ c     default values of parameters
       jumpout = .false.
       lresid1 = .false.
       ldesign = .false.
+      ldcov = .false.
       nostop = .false.
       npulsein = .false.
       npulseout = .false.
@@ -115,6 +116,8 @@ c     default values of parameters
               nonewdmx = .true.
             else if (s(i:i).eq.'c') then
               nostop = .true.
+            else if (s(i:i).eq.'C') then
+              ldcov = .true.
             else if (s(i:i).eq.'d') then
               path = getparm(s,i,ii,iarg,narg)
               if (path.eq.'') goto 9999 ! error
