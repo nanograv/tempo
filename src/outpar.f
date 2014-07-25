@@ -274,13 +274,6 @@ c work correctly in tempo2:
 	endif
       enddo
 
-      if (useglsfit) then
-        if (rnidx.ne.0) then
-          write(71,'(''RNAMP'',d20.5)') rnamp
-          write(71,'(''RNIDX'',f20.5)') rnidx
-        endif
-      endif
-
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
       if (eclcon.ne."DEFAULT") then
@@ -724,6 +717,26 @@ c=======================================================================
       include 'dim.h'     
       include 'acom.h'
 
+      if (useglsfit.and.dcovfile.ne."") then
+        write(71,'(''DCOVFILE'',12x,a)')
+     +          dcovfile(1:index(dcovfile," ")-1)
+        write(71,'(a)') "# NOTE: TOA uncertainties and covariances were"
+        write(71,'(a)') "# read from the DCOVFILE entry listed above.  The"
+        write(71,'(a)') "# following noise parameters were present in"
+        write(71,'(a)') "# the input par file, but were ignored in this"
+        write(71,'(a)') "# fit.  They are given here for reference but"
+        write(71,'(a)') "# may not be consistent with the DCOVFILE"
+        write(71,'(a)') "# contents!"
+        write(71,'(a)') "# ------- begin noise params -------"
+      endif
+
+      if (useglsfit) then
+        if (rnidx.ne.0) then
+          write(71,'(''RNAMP'',d20.5)') rnamp
+          write(71,'(''RNIDX'',f20.5)') rnidx
+        endif
+      endif
+
       do i=1,nflagefac
         write(71,1094) trim(efacflag(i)),trim(efacflagval(i)),
      +    flagefac(i)
@@ -744,7 +757,9 @@ c=======================================================================
         enddo
       endif
 
-
+      if (useglsfit.and.dcovfile.ne."") then
+        write(71,'(a)') "# -------- end noise params -------"
+      endif
 
       return
       end

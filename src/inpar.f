@@ -83,6 +83,7 @@ c      $Id$
       rnamp = 0.
       rnidx = 0.
       tcorr = 0.
+      dcovfile = ""
 
       ntzrmjd = 0.
       ftzrmjd = 0.
@@ -949,6 +950,10 @@ c Red-noise params for GLS (Cholesky) fit
          read (value,*) rnidx
        else if (key(1:5).eq.'TCORR') then
          read (value,*) tcorr
+
+c GLS covariance matrix is contained in the given file
+       else if (key(1:8).eq.'DCOVFILE') then
+          read (value,*) dcovfile
 
 c Choosing which convention (value) to use for obliquity of the eclptic:
        else if (key(1:3).eq.'ECL') then

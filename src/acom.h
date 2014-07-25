@@ -75,9 +75,10 @@ c      $Id$
         character equadflag*32, equadflagval*32
         character ecorrflag*32, ecorrflagval*32
         character eclcon*80
+        character dcovfile*80
 
         common/acomch/psrname,pardir,obsflag,infotxt,obskey(36),
-     +    eclcon,
+     +    eclcon,dcovfile,
      +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag,
      +    efacflag(NFLAGERR),efacflagval(NFLAGERR),
      +    equadflag(NFLAGERR),equadflagval(NFLAGERR),

@@ -68,7 +68,6 @@ c   3. Only DMX (no DMX1 or DMnn) is fit.
         integer ndmparam       ! number of DM fit params
 
 c packed cov matrix, to be malloced
-        logical readcov
         logical havecov
         data havecov/.false./
         logical diagcov
@@ -91,7 +90,6 @@ c packed cov matrix, to be malloced
 c save the cov matrix stuff so we can iterate faster
         save havecov, ncovpts, dcovoff, dcov, detcov
 
-        readcov = .false.
         lwork = 10*NPAP1*NPAP1
 	mprt=10**nprnt
 	sigma=0.
@@ -195,10 +193,11 @@ c   dcov, cov matrix (diagonal part only)
         if (.not.havecov) then
 
 c read inverted cov matrix from disk here if option selected
-          if (readcov) then
+c TODO some kind of check that the file works would be nice... 
+          if (dcovfile.ne."") then
 
             print *,'  ... read cov matrix from disk'
-	    open(39,file='datacov.tmp',form='unformatted',
+	    open(39,file=dcovfile,form='unformatted',
      +            status='unknown')
 	    read(39) (dcov(dcovoff+i), i=1,ncovpts)
 	    close(39)
