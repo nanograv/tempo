@@ -17,11 +17,6 @@ c     DJN  12 August 1998   added byte-swapping for little endian systems
 
       integer NN, NRECL
       parameter (NN=20)         ! #coeffs calculated (not all are retained)
-      parameter (NRECL=4)       ! "record length" of 4 bytes in a 
-                                ! direct access file.  
-                                ! Solaris, Linux: NRECL=4
-                                ! Vax, OSF/1:  NRECL=1
-
 
 
       real*8 c(NN), f(NN), jd
@@ -44,6 +39,14 @@ c     DJN  12 August 1998   added byte-swapping for little endian systems
       integer tmp3, tmp4
 
       integer iargc              ! built-in function
+
+c     the definition of "recl" in file open statements in system-dependent
+c     nrecl=4 if recl is in bytes (sun compiler; gcc compiler)
+c     nrecl=1 if recl is in 4-byte words (vax compiler; intel compiler)
+c     the following (fortran90) should work on all modern systems
+      real*4 tmp
+      INQUIRE (IOLENGTH=nrecl) tmp
+
 
 
       if (iargc().eq.3) then
@@ -75,7 +78,7 @@ c       neaten them up a bit
       d2 = d1 + dint((d2-d1)/dt)*dt
 
       open (8,file=outfile,access='DIRECT',
-     +     status='NEW',recl=2*NCF*NRECL)
+     +     status='NEW',recl=2*NCF*nrecl)
 
       if (bigendian()) then
         write (8,rec=1) d1, d2, dt, ncf, (0,i=7,2*NCF) ! pad out to full recl
