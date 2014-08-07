@@ -24,10 +24,12 @@ c     inputs:
 
       logical bigendian         ! external routine
 
-                                ! different systems use different definitions
-                                ! of "recl" in the open statements below
-      nrecl = 4                 ! nrecl=4 if recl is in bytes (sun)
-                                ! nrecl=1 if recl is in 4-byte words (vax)
+c     the definition of "recl" in file open statements in system-dependent
+c     nrecl=4 if recl is in bytes (sun compiler; gcc compiler)
+c     nrecl=1 if recl is in 4-byte words (vax compiler; intel compiler)
+c     the following (fortran90) should work on all modern systems
+      real*4 tmp
+      INQUIRE (IOLENGTH=nrecl) tmp
 
       tdbnrl = -1               ! initialize last-record-read variable
 

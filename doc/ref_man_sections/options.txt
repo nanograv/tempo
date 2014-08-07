@@ -1,13 +1,17 @@
-SYNOPSIS
+SYNOPSIS (MORE DETAIL GIVEN BELOW)
 
-tempo [options] [filename]
 
+Usage: tempo [options] [filename]
 
 options:
+  -a            Write Earth-Sun-Pulsar angle for each TOA to file phisun.tmp
+  -b            Give zero weight to any TOA not in an existing DMX range
   -c            Do all requested iterations, even if apparently converged
   -d<path>      Path to 'tempo.cfg', default: environment variable 'TEMPO'
+  -D            Write design matrix to design.tmp (unformatted)
   -f<par>       Over-rides the default parameter file name with <par>
   -g[O]         GRO mode; 'O' is single-letter observatory code
+  -G            Generalized least squares fit 
   -h            Help (prints this message)
   -j            Output JUMP values in xxx.par file
   -J            Apply JUMPs after barycenter correction (normally done before)
@@ -17,15 +21,28 @@ options:
   -ni<file>     Get absolute pulse numbers from file
   -o            'Old-style' parameters at head of <fname>
   -p            Parameters corrected for pulsar space motion
-  -r            Save the partial-derivatives file, resid1.tmp
+  -r            Save the partial-derivatives file, resid1.tmp 
   -s0           No solar system DM corrections (no value other than '0' allowed)
   -v            Print out version number
   -w            less output to tempo.lis; no resid2.tmp
   -x            Make an export file in ITOA format
-  -z            Compute polonomial coefficients for predictions
+  -z	        Compute polynomial coefficients for predictions 
   -Z<par>=<val> New method for specifying polynomial coefficient calculations
-
-
+                Any -Z parameter invokes this mode and minimizes tempo output
+                -Z parameters are:
+                Parameter: Default:      Description:
+                PSR                      Pulsar name (same as PULSAR)
+                PULSAR                   Pulsar name (same as PSR)
+                OBS                      Observatory (same as SITE)
+                SITE                     Observatory (same as OBS)
+                OUT        polyco.dat    Output file name
+                START      current time  Start time for polyco block
+                NCOEFF     15            Number of coefficients
+                FREQ       1420          Radio frequency of observation
+                SPAN       60            Time span in seconds for polyco block
+                                           (xxxH or xxxM for hours or minutes)
+                TOBS       1             Observing time in hours
+                                           (xxxM or xxxS for minutes or seconds)
 
 
 ENVIRONMENT
@@ -36,12 +53,24 @@ overrides the environment variable.
 
 OPTIONS
 
+-a
+   output Earth-sun-Pulsar angle for each TOA 
+   this is written to file phisun.tmp
+   this can be useful to find points with excess dispersion due to line-of-sight
+      being close to the sun.
+
+-b
+   give zero weight to any TOA not in an existing DMX range
+
 -c 
    do all requested iterations (NITER), even if apparently converged
    (possibly useful when exploring unusually-shaped chi^2 space)
 
 -d <path> 
    override environment variable 'TEMPO' with <path>. Path may be '.'. 
+
+-D
+   write design matrix to design.tmp
 
 -f <par>
    override default name for free-format input parameter file (see INPUT
@@ -54,6 +83,11 @@ OPTIONS
    is P (for Princeton). If PEPOCH is not at the centre of the data span,
    adjusted parameters are written to gro.99.
 
+-G
+   generalized least squares fit
+   useful for data set with point that have correlated uncertainties (e.g., TOAs taken
+     simultaneously at different frequencies but affected by the same jitter noise)
+
 -h
    Print help message
 
@@ -61,7 +95,7 @@ OPTIONS
    Write offset values ("JUMP_1", etc.) to parameter file.
 
 -J
-   Apply offset values (JUMPs) after barycenter corection.  Use this
+   Apply offset values (JUMPs) after barycenter correction.  Use this
    option if JUMPs are due to time offsets in the pulsar behavior
    rather than time offsets due to observatory and data processing issues
 
@@ -107,7 +141,7 @@ OPTIONS
    New method for specifying polynomial coefficient calculations
    Any -Z parameter invokes this mode and minimizes tempo output ("quiet mode")
      -Z parameters are:
-        Parmater:  Default:      Description:
+        Parameter: Default:      Description:
         PSR                      Pulsar name (same as PULSAR)
         PULSAR                   Pulsar name (same as PSR)
         OBS                      Observatory (same as SITE)
