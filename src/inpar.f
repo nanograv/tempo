@@ -185,7 +185,7 @@ C  The error/comment is ignored by TEMPO
       include 'eph.h'
       include 'glitch.h'
 
-      character line*80, key*32, value*32, cfit*8, temp*80, cifit
+      character line*80, key*32, value*64, cfit*8, temp*80, cifit
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -254,8 +254,8 @@ C  Get key, value and cfit
       if(key(1:1).eq.'#' .or. (key(1:1).eq.'C' .and. lk.eq.1))go to 10
       call upcase(key)
       call citem(line,ll,jn,value,lv)
-      if(lv.gt.32)then
-         write(*,'('' Value overflow (32 max): '',a)')value(1:lv)
+      if(lv.gt.64)then
+         write(*,'('' Value overflow (64 max): '',a)')value(1:lv)
          stop
       endif
       call citem(line,ll,jn,temp,lf)
@@ -350,7 +350,7 @@ C  Control parameters
            ftzrmjd = 0
          else
            read(value(1:itmp-1),*)ntzrmjd
-           read(value(itmp:32),*)ftzrmjd
+           read(value(itmp:64),*)ftzrmjd
          endif
          if (ntzrmjd.lt.30000) ntzrmjd = ntzrmjd + 39126  ! convert fut to mjd
 
