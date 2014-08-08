@@ -802,16 +802,20 @@ C TODO allow arb reference freq instead of 1 GHz?
 	endif
 
 C Save the TOA flags for use elsewhere
-        stflags(n) = rawflags
+C The NPTSDEF check could be removed if this array were to be 
+C dynamically allocated.
+	if (n.lt.NPTSDEF) stflags(n) = rawflags
 
 C Save the DM "residual" and error (could make this part of vmemrw stuff?)
-        if (dmobserr.gt.0.d0) then
-          dmres(n) = dmobs - dmtot
-          dmerr(n) = dmobserr
-        else
-          dmres(n) = 0.0
-          dmerr(n) = 0.0
-        endif
+	if (usedmdata) then
+          if (dmobserr.gt.0.d0) then
+            dmres(n) = dmobs - dmtot
+            dmerr(n) = dmobserr
+          else
+            dmres(n) = 0.0
+            dmerr(n) = 0.0
+          endif
+	endif
 
 	x(17)=f0*dtdpx
 	x(36)=f0*dtdpmrv
