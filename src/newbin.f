@@ -305,6 +305,7 @@ C IHS based on 060317 comment: omd should be set after the call to mass2dd
 	   call mass2dd(am,am2,a1(1),e(1),twopi/(pb(1)*86400.d0),
      +      arr,ar,xk,si,gamma,pbdot)
 	   omd=360.d0*365.25d0*xk/pb(1)
+ 	   omdot = omd
 	   write(31,10511)
 	   write(31,10512) omd
 	   write(31,10513) gamma

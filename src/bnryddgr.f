@@ -48,8 +48,8 @@ c  Compute eccentric anomaly u by iterating Kepler's equation.
 	if(orbits.lt.0.d0) norbits=norbits-1
 	phase=twopi*(orbits-norbits)
 	u=phase+ecc*dsin(phase)*(1+ecc*dcos(phase))
-	fac=1/(1-ecc*dcos(u))
-10	du=fac*(phase-(u-ecc*dsin(u)))
+10	fac=1/(1-ecc*dcos(u))
+	du=fac*(phase-(u-ecc*dsin(u)))
 	u=u+du
 	if(dabs(du).gt.1.d-14) go to 10
 
