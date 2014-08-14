@@ -565,7 +565,7 @@ c=======================================================================
  1042 format('EDOT',z1,1p,d21.12,a,d20.12)
       
       do i = 2, NOMDOTMAX
-        if (omdot2(i).ne.0.or.ferr(NPAR9+(i-1)).ne.0) then
+        if (omdot2(i).ne.0.or.ferr(NPAR8+(i-1)).ne.0) then
           if(nfit(NPAR8+(i-1)).gt.0)then
             write(71,1041)i,omdot2(i),fit1,ferr(NPAR8+(i-1))
           else
