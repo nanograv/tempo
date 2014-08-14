@@ -1,7 +1,7 @@
 bin_PROGRAMS = tempo
 
 EXTRA_PROGRAMS = matrix tdbgen
-CLEANFILES = $(EXTRA_PROGRAMS)
+CLEANFILES = $(EXTRA_PROGRAMS) version.h
 
 tempo_SOURCES = \
         a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
