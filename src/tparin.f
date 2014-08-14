@@ -12,6 +12,7 @@ c     parses tempo command-line parameters and sets variables appropriately
       include 'acom.h'
       include 'vcom.h'
       include 'tz.h'
+      include 'version.h'
 
 c     following variables are set in this routine:
 
@@ -171,8 +172,8 @@ c     default values of parameters
               s2 = getparm(s,i,ii,iarg,narg)
               read (s2,*) ssdmflag
             else if (s(i:i).eq.'v') then
-              write(*,1001) version
- 1001         format (' Tempo v ',f6.3)
+              write(*,1001) version,trim(VERSIONID)
+ 1001         format (' Tempo v ',f6.3,' (',a,')')
               stop
             else if (s(i:i).eq.'w') then
               lw = .false.

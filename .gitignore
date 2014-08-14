@@ -27,5 +27,6 @@ util/print_resid/Makefile
 tempo.cfg
 src/tempo
 src/config.h
+src/version.h
 
 util/print_resid/print_resid

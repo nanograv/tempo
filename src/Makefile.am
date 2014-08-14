@@ -35,6 +35,9 @@ matrix_SOURCES = matrix.f
 
 tdbgen_SOURCES = tdbgen.f tdb1ns.f bigendian.f cutil.c
 
+version.h: get_version_id.sh $(tempo_SOURCES)
+	./get_version_id.sh
+
 # dependencies of Tempo subroutines
 
 arrtim.$(OBJEXT): arrtim.f acom.h orbit.h dp.h bcom.h trnsfr.h clocks.h dim.h glitch.h tz.h
@@ -81,7 +84,7 @@ tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h
 tempo.$(OBJEXT): tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h toa.h
 timcalc.$(OBJEXT): timcalc.f acom.h dim.h dp.h trnsfr.h
 tmalloc.$(OBJEXT): array.h
-tparin.$(OBJEXT): tparin.f acom.h dim.h vcom.h tz.h
+tparin.$(OBJEXT): tparin.f acom.h dim.h vcom.h tz.h version.h
 tpohdr.$(OBJEXT): tpohdr.f dim.h tz.h
 tzfit.$(OBJEXT): tzfit.f dim.h acom.h trnsfr.h tz.h
 tzinit.$(OBJEXT): tzinit.f dim.h acom.h tz.h
