@@ -6,6 +6,7 @@ c       $Id$
 	real*8 alng(36)
 	include 'dim.h'
 	include 'acom.h'
+        include 'version.h'
 	integer time
 	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*160
 	character*80 infile,obsyfile
@@ -27,12 +28,15 @@ c       $Id$
  1000	format(2x,i2.2,':',i2.2,':',i2.2,' UTC')
 
 	if (.not.quiet)
-     +       write(31,30) version,timstr(1:23)
+     +       write(31,30) version,
+     +       VERSIONID(1:10),VERSIONID(12:18),
+     +       timstr(1:23)
 30	format(55(1h*)/1h*,53x,1h*/
-     +    '*',17x,'TEMPO version',f7.3,16x,1h*/1h*,53x,1h*/,
+     +    '*',17x,'TEMPO version',f7.3,16x,1h*/
      +    1h*,11x,'Analysis of pulsar timing data',12x,1h*/
-     +    1h*,53x,1h*/
-     +    1h*,14x,a24,15x,1h*/
+     +    1h*,9x'TEMPO git version date:  'a10,9x,1h*/,
+     +    1h*,9x'TEMPO git version id:    'a7,12x,1h*/,
+     +    1h*,9x,'Run time: 'a24,10x,1h*/
      +    1h*,53x,1h*/55(1h*)///
      +    20x,'Observatory Coordinates'//
      +    5x,'Observatory     Geodetic lat   Geodetic long   Elevation'/
