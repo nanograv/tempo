@@ -9,7 +9,8 @@ c       $Id$
         include 'version.h'
 	integer time
 	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*160
-	character*80 infile,obsyfile
+	character*320 infile
+        character*80 obsyfile
         character*320 tpocmd
         character*5 obskey0
 	data ault/499.004786d0/

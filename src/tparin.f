@@ -22,7 +22,7 @@ c     following variables are set in this routine:
       integer nparmax, nptsmax
       real*8 version
       character*160 npulsefile
-      character*80 infile
+      character*320 infile
       character*80 path
       character*80 resfile1
       character*80 hlpfile
