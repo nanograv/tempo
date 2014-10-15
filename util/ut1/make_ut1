@@ -21,7 +21,7 @@ while (<IN>) {
 print 
   "IH79 TAI-UT1: All data from IERS EOP C04\n";
 print 
-  "(A3,2X,I5,6(I7,1X),20X,I2)       2 2440219 2460000  6  5           1.E-4\n";
+  "(A3,2X,I5,6(I7,1X),2X,I2)       2 2440219 2460000  6  5           1.E-4\n";
 
 # Format in ut1.dat style, print out.
 $mjd0 = 40219; 
@@ -29,13 +29,23 @@ $pos = 0;
 for ($i=$mjd0; $i<$mjdmax; $i+=30) {
 
     $line = sprintf("%10d",$i);
+    $nval = 6;
 
     for ($j=0; $j<30; $j+=5) {
         $mjd = $i+$j;
-        if ($mjd>$mjdmax) { $d=0; } else { $d=$ut1{$mjd}; }
-        $line .= sprintf("%7d ", $d);
+        if ($mjd<=$mjdmax) { 
+            $d=$ut1{$mjd}; 
+            $line .= sprintf("%7d ", $d);
+        } else {
+            $line .= "        ";
+            $nval--;
+        }
     }
     chop $line;
+
+    if ($nval<6) {
+        $line .= sprintf("  %02d", $nval);
+    }
 
     # At end of line, print
     print $line . "\n"; 
