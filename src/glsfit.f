@@ -114,9 +114,9 @@ c Allocate design matrix
 c TODO what about iterations...
 c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
         if (usedmdata) then
-          Admrows = npts
-        else 
           Admrows = 2*npts
+        else 
+          Admrows = npts
         endif
         call mallocxd(Adm,Admrows*nparam,8,Admoff)
         do i=1,Admrows*nparam
