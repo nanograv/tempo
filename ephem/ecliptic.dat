@@ -20,12 +20,17 @@ IAU1976 84381.448
 #   radar ranging.  It was adopted bt the IERS.  This was the value originally
 #   progrmamed into tempo (in  January 1998, according to the repositlry log).
 #   and superceded by the IAU2005 value in June 2014.
+# This was the "historic" value used in tempo prior to ~June 2014.  This 
+#   value is used by tempo2 when running in "tempo1 emulation mode" (-tempo1
+#   cmd line, or EPHVER 2 in parfile).
 IERS1992 84381.412
 DE403    84381.412
 
 # IERS2003 value
 # References:
 #   IERS technical note 32 (IERS conventions, dated 2003), page 19
+# Note, this is the default value used by tempo2 (all versions through 
+#   at least tempo2.h v1.102, 2014/10/28).
 IERS2003 84381.4059     
 
 #       the following are equivalent: 
