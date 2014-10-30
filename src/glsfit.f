@@ -88,7 +88,7 @@ c packed cov matrix, to be malloced
  	integer open, close, write
 
 c save the cov matrix stuff so we can iterate faster
-        save havecov, ncovpts, dcovoff, dcov, detcov
+        save havecov, ncovpts, dcovoff, dcov, detcov, Adm, Admoff
 
         lwork = 10*NPAP1*NPAP1
 	mprt=10**nprnt
@@ -118,7 +118,7 @@ c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
         else 
           Admrows = npts
         endif
-        call mallocxd(Adm,Admrows*nparam,8,Admoff)
+        if (.not. havecov) call mallocxd(Adm,Admrows*nparam,8,Admoff)
         do i=1,Admrows*nparam
           Adm(Admoff+i) = 0.
         enddo
