@@ -2,7 +2,8 @@ c      $Id$
 	subroutine tzinit(obsyfile,sitelng,num)
 
 	implicit real*8 (a-h,o-z)
-	character path*96,obsyfile*80
+	character path*96
+        character *(*) obsyfile
 	character line*80,item*40
 	character*5 obskey0
 	real*8 maxhadef

@@ -19,8 +19,8 @@ c     output parameters
       character*(*) ut1file, obsyfile, tdbfile
 
 c     local variables
-      character*160 line, label, fname, s
-      character*160 key, val
+      character*640 line, label, fname, s
+      character*640 key, val
       integer vall, err
       integer i, j, k
 
@@ -34,9 +34,9 @@ c     local variables
         read(2,1000,end=511)line
  1000   format(a)
         j=1
-        call citem(line,160,j,label,k)
+        call citem(line,640,j,label,k)
         call upcase(label)
-        call citem(line,160,j,fname,k)
+        call citem(line,640,j,fname,k)
 
         if(label(1:8).eq.'OBS_NIST')then
           clkfile(1)=fname(1:k) ! Obs to UTC(NIST)
@@ -90,7 +90,7 @@ c     local variables
              else
                ephfile(kephem) = fname(1:k)
              endif
-             call citem(line,160,j,fname,k)
+             call citem(line,640,j,fname,k)
            enddo
            if (ephnamel(kephem).eq.0) then
              ! historical default: ephemeris name (e.g. "DE405") is first five chars of file name
