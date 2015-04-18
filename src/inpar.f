@@ -603,7 +603,8 @@ c next two lines by sets on 29 Aug 05
          read(value,*)a1(1)
          read(cfit,*)nfit(9)
 
-      else if(key(1:3).eq.'E_1 '.or.(key(1:1).eq.'E'.and.lk.eq.1))then
+      else if(key(1:3).eq.'E_1 '.or.(key(1:1).eq.'E'.and.lk.eq.1)
+     +        .or. (key(1:3).eq.'ECC'.and.lk.eq.3)) then
          read(value,*)e(1)
          read(cfit,*)nfit(10)
 
