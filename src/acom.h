@@ -42,7 +42,7 @@ c      $Id$
      +    wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),nofitjump(NJUMP),
-     +    dmepoch,dmep,
+     +    dmepoch,dmep,dmefac,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
      +    flagefac(NFLAGERR),flagequad(NFLAGERR),flagecorr(NFLAGERR),

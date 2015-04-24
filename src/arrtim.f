@@ -810,7 +810,7 @@ C Save the DM "residual" and error (could make this part of vmemrw stuff?)
 	if (usedmdata) then
           if (dmobserr.gt.0.d0) then
             dmres(n) = dmobs - dmtot
-            dmerr(n) = dmobserr
+            dmerr(n) = dmobserr*dmefac
           else
             dmres(n) = 0.0
             dmerr(n) = 0.0

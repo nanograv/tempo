@@ -150,6 +150,7 @@ c      $Id$
       dmxt = 0
       
       usedmdata = .false.
+      dmefac = 1.0
 
       eclcoord = .false.
 
@@ -309,6 +310,9 @@ C  Control parameters
       else if(key(1:6).eq.'DMDATA')then
          read(value,*)itmp
          if(itmp.gt.0)usedmdata=.true.
+
+      else if(key(1:6).eq.'DMEFAC')then
+         read(value,*)dmefac
 
       else if(key(1:4).eq.'COOR')then
          if(value(1:5).eq.'B1950')ncoord=0

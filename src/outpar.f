@@ -299,6 +299,7 @@ c tempo2-compatibility:
       if(iboot.gt.0)write(71,'(''IBOOT'',i21)')iboot
       if(nddm.gt.0)write(71,'(''NDDM'',i22)')nddm
       if(usedmdata)write(71,'(''DMDATA'',i20)')1
+      if(dmefac.ne.1.0)write(71,'(''DMEFAC'',f20.4)')dmefac
       if(infoflag.ne."")write(71,'(''INFO'',1x,a)')infoflag
 
       return
