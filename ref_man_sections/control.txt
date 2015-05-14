@@ -27,8 +27,8 @@ IBOOT   Bootstrap error analysis, with 2^n iterations
 INFO    Use the specified Tempo2-style flag for INFO values.
         Allowed values:  flag name including leading '-'
 
-NDDM    Model DM as an n-th order polynomial expansion in time
-        Allowed values:  integers n
+NDDM    Use delta-DM values spedivied on TOA lines (added to .par DM value).
+        Allowed value:  integer 1
 
 NITS    Iterate solution n times, or fewer if it converges.
         Allowed values:  integers n
