@@ -747,14 +747,14 @@ c=======================================================================
       do i=1,nflagequad
         write(71,1095) trim(equadflag(i)),trim(equadflagval(i)),
      +    flagequad(i)
-1095    format('T2EQUAD ',a,' ',a,' ',f7.3)
+1095    format('T2EQUAD ',a,' ',a,' ',f9.5)
       enddo
 
       if (useglsfit) then
         do i=1,nflagecorr
           write(71,1096) trim(ecorrflag(i)),trim(ecorrflagval(i)),
      +      flagecorr(i)
-1096      format('ECORR ',a,' ',a,' ',f7.3)
+1096      format('ECORR ',a,' ',a,' ',f9.5)
         enddo
       endif
 
