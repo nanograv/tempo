@@ -24,7 +24,7 @@ c   are not needed in tz mode
         real*8 sterr(NPTSDEF)   ! error in microseconds
         real*8 stddm(NPTSDEF)   ! dm correction
 
-        character*320 stflags(NPTSDEF) ! TOA flags
+        character*640 stflags(NPTSDEF) ! TOA flags
 
 c For "DM data" mode:
         real*8 dmres(NPTSDEF)  ! Current DM "residuals"

@@ -143,7 +143,7 @@ C  99	gro.99			newval
 
 	logical lw, nostop
         logical memerr
-	character*320 infile
+	character*640 infile
         character*80 ut1file,resfile1,
      +       resfile2,listfile,fname,line,tdbfile,s,hlpfile
         character*640 obsyfile

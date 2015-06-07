@@ -3,9 +3,9 @@ c      $Id$
 
       implicit none
 
-      character*320 s
+      character*640 s
       integer ll, j1
-      character*320 s1, s2
+      character*640 s1, s2
       integer s1len, s2len
       integer j1x
 

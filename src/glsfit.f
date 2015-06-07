@@ -534,7 +534,7 @@ c ===========================================================
         getecorr = 0d0
 
         j1 = 1
-        call getflags(rawflags,320,j1)
+        call getflags(rawflags,640,j1)
         do i=1,nflagecorr
           tmp = getvalue(ecorrflag(i)(2:32))
           if (tmp.eq.ecorrflagval(i)) then

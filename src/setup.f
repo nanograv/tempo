@@ -9,15 +9,15 @@ c       $Id$
         include 'version.h'
 	integer time
 	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*160
-	character*320 infile
+	character*640 infile
         character*(*) obsyfile
-        character*320 tpocmd
+        character*640 tpocmd
         character*5 obskey0
 	data ault/499.004786d0/
 	data obsnum/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
 
         integer sitea2n          ! external function
-        character*320 getcmdline ! external function
+        character*640 getcmdline ! external function
 
 	nsec=time()
 	timstr=damoyr(40587+nsec/86400)
