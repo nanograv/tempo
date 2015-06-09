@@ -1,6 +1,3 @@
-c      $Id$
-C	@(#)atimfake.f	9.19 2/3/94
-
 	subroutine atimfake(afmjd,nbin,nt,alng,ipsr)
 	implicit real*8 (a-h,o-z)
 	parameter (nn=31,pi=3.141592653589793d0)
@@ -40,8 +37,6 @@ c          parse TOA into int+fracion (code from arrtim.f; see notes there)
            read (amjd(i1:i2),*) ftzrmjd
            if (ntzrmjd.lt.30000) ntzrmjd=ntzrmjd+39126   !convert to MJD
 
-
-
 	endif
 
 c       store reference TOA line
@@ -63,6 +58,10 @@ c       store reference TOA line
           fmjd1 = afmjd + nspan/2880.
           nmjd1 = int(fmjd1)
           fmjd1 = fmjd1 - nmjd1
+          ! Round fmjd1 to nearest second.  Not really necessary, but it will bring
+          ! hhmmss and mjd dates in polyco.dat into closer agreement if tz start
+          ! time is not an integer second.
+          fmjd1 = int(fmjd1*86400+0.5)/86400. 
           nsets = (maxha*60+(nspan-1))/nspan  ! the "nspan-1" forces rounding up
         else 
           hlst=24.d0*dmod(1.002737909d0*afmjd+0.154374d0 -
@@ -118,7 +117,6 @@ c       store reference TOA line
             stddm(stntoa) = 0.            
  40       continue
  50	continue
-
 
 	nt=i
 	return
