@@ -837,11 +837,10 @@ sub t2_istoa {
 
   # Needs at least 5 fields
   if (scalar(@stuff) < 5) { return 0; }
-
   # 2nd thru 4th should all be numeric (freq, mjd, err)
-  if ($stuff[1] !~ /^[0-9.]$/) { return 0; }
-  if ($stuff[2] !~ /^[0-9.]$/) { return 0; }
-  if ($stuff[3] !~ /^[0-9.]$/) { return 0; }
+  if ($stuff[1] !~ /^[0-9.]*$/) { return 0; }
+  if ($stuff[2] !~ /^[0-9.]*$/) { return 0; }
+  if ($stuff[3] !~ /^[0-9.]*$/) { return 0; }
 
   # Assume that's good enough?
   return 1;
