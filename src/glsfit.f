@@ -100,6 +100,9 @@ c save the cov matrix stuff so we can iterate faster
         r2mean=0.
         ndmparam=0
 
+c GLS mode does not work if MODE 0 is specified
+        if (mode.eq.0) stop "glsfit: MODE 0 is not allowed"
+
 c nparam is total number of fit params (including mean)
 c Zero out various matrices
 	nterms=nparam-1
