@@ -61,7 +61,7 @@ c       store reference TOA line
           ! Round fmjd1 to nearest second.  Not really necessary, but it will bring
           ! hhmmss and mjd dates in polyco.dat into closer agreement if tz start
           ! time is not an integer second.
-          fmjd1 = int(fmjd1*86400+0.5)/86400. 
+          fmjd1 = int(fmjd1*86400+0.5)/86400.d0
           nsets = (maxha*60+(nspan-1))/nspan  ! the "nspan-1" forces rounding up
         else 
           hlst=24.d0*dmod(1.002737909d0*afmjd+0.154374d0 -
