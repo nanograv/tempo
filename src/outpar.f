@@ -291,6 +291,14 @@ c tempo2-compatibility:
       write(71,'(''TRES'',f22.2)')tres
       nx = ntzrmjd/10
       fx = (ntzrmjd-10*nx)+ftzrmjd
+      if (fx.lt.0.d0) then
+        fx = fx + 10.d0
+        nx = nx - 10
+      endif
+      if (fx.ge.10.d0) then
+        fx = fx - 10.d0
+        nx = nx + 10
+      endif
       write(71,'(''TZRMJD '',i5,f16.14)')nx,fx
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
       write(71,'(''TZRSITE '',17x,a)')tzrsite
