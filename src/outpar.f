@@ -21,7 +21,7 @@ c      $Id$
       cc=1.d-9*c*365.25*8.64d7
       fit1='  1'
 
-      write(71,'(''PSR              '',a)')psrname
+      write(71,'(''PSR              '',a)')psrname(1:index(psrname," ")-1)
 
       if(eclcoord)then
          if(nfit(6).gt.0)then
@@ -291,6 +291,14 @@ c tempo2-compatibility:
       write(71,'(''TRES'',f22.2)')tres
       nx = ntzrmjd/10
       fx = (ntzrmjd-10*nx)+ftzrmjd
+      if (fx.lt.0.d0) then
+        fx = fx + 10.d0
+        nx = nx - 10
+      endif
+      if (fx.ge.10.d0) then
+        fx = fx - 10.d0
+        nx = nx + 10
+      endif
       write(71,'(''TZRMJD '',i5,f16.14)')nx,fx
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
       write(71,'(''TZRSITE '',17x,a)')tzrsite

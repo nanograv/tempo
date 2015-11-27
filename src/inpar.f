@@ -443,7 +443,7 @@ C  	    print *,"reading jfit from cfit which is",cfit
 C  Position parameters
 
       else if(key(1:3).eq.'PSR')then
-         psrname=value(1:12)
+         psrname=value
 
       else if(key(1:3).eq.'DEC')then
          call decolon(value)

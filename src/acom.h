@@ -67,7 +67,7 @@ c      $Id$
 
 
 
-	character psrname*12,obsflag*1,pardir*80,infotxt*160
+	character psrname*64,obsflag*1,pardir*80,infotxt*160
         character obskey*5
         character jumpflag*32, jumpflagval*32
         character infoflag*32

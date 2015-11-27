@@ -429,10 +429,14 @@ C Arrival time
         endif
 
 C Store toa for tz reference phase
+C Include any TIME offset (deltat)
+C It is OK if ftzrmjd is a little outside the range [0,1],
+C this will be accounted for when the final value is calcualted
+C and printed out.
 	if(ntzref.eq.0.and.fmjd.gt.pepoch.and..not.tz)then
 	   ntzref=n
 	   ntzrmjd=nfmjd
-	   ftzrmjd=ffmjd
+	   ftzrmjd=ffmjd + deltat/86400.d0
 	   tzrsite=asite
 	   tzrfrq=rfrq
 	endif

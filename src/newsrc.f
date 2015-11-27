@@ -379,8 +379,8 @@ c  Beginning of iteration loop
           write(31,1039) bmodel(nbin),nbin,nddm
  1039     format('Binary model: ',a,' nbin: ',i2,'   nddm:',i2)
           if(psrframe)write(31,'(''Parameters in pulsar frame'')')
-          write (31,1040) psrname
- 1040     format (/'Assumed parameters -- PSR ',a12/)
+          write (31,1040) psrname(1:index(psrname," ")-1)
+ 1040     format (/'Assumed parameters -- PSR ',a/)
         ENDIF
 
 	if (eclcoord) then
