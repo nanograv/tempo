@@ -360,6 +360,7 @@ c --- Output of non-Keplerian parameters, II ---
 	   
 	if(     xdot.eq.0.0  .and.edot.eq.0.0
      +     .and.om2dot.eq.0.0.and.x2dot.eq.0.0
+     +     .and.shaphof.eq.0.0
      +     .and.ferr(24).eq.0.and.ferr(25).eq.0
      +     .and.ferr(39).eq.0.and.ferr(40).eq.0)
      +     goto 100
@@ -385,8 +386,12 @@ c  update parameters
 
 	xdot   = xdot   + freq(24)
 	edot   = edot   + freq(25)
-	om2dot = om2dot + freq(39)
-	x2dot  = x2dot  + freq(40)
+        if(nbin.ne.13)then
+           om2dot = om2dot + freq(39)
+           x2dot  = x2dot  + freq(40)
+        else ! NW: higher order Shapiro in DDS
+           shaphof = shaphof + freq(39)
+        endif
 
 c  print updated parameters
 

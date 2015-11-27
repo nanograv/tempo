@@ -498,6 +498,23 @@ c=======================================================================
       endif
  1099 format('SHAPMAX',f19.6,a,f20.6)
 
+c --> NW: higher order Shapiro
+      if(nshapho.eq.1.)then
+
+         if(nfit(39).gt.0)then
+                write(71,1199) shaphof,fit1,ferr(39)
+             else
+                write(71,1199) shaphof
+             endif
+
+             if(cotchi0.ne.0.)then
+            write(71,1399) cotchi0
+         endif
+
+      endif
+ 1199 format('SHAPHOF',f19.6,a,f20.6)
+ 1399 format('COTCHI0',f19.6)
+
       if(am.ne.0.)then
          if(nfit(21).gt.0)then
             write(71,1021)am,fit1,ferr(21)
@@ -518,7 +535,7 @@ c=======================================================================
 
       if(dth.ne.0.)then
          if(nfit(23).gt.0)then
-            write(71,1023)dth*1.d6,fit1,ferr(23)
+            write(71,1023)dth*1.d6,fit1,ferr(23)*1.d6
          else
             write(71,1023)dth*1.d6
          endif
