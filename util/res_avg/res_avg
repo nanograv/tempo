@@ -12,7 +12,7 @@ use Math::Trig;
 # of the phases and the sum of the cosines of the phases are both accumulated, then an arctan of
 # the sum is taken to recover the average angle.
 
-($dt, $df, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile) = &resavg_arg_parse(@ARGV);
+($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
 
@@ -49,8 +49,18 @@ while ($#mjda>-1) {
   # start with the first residual
   $mjdmin= $mjda[0];
   $mjdmax= $mjda[0];
-  $freqmin = $freqa[0];
-  $freqmax = $freqa[0];
+  if ($bflag) {
+    for $i (0..$#blist-1) {
+      if ($freqa[0]>=$blist[$i] && $freqa[0]<$blist[$i+1]) {
+        $freqmin = $blist[$i];
+        $freqmax = $blist[$i+1];
+        last;
+      }
+    }
+  } else {
+    $freqmin = $freqa[0];
+    $freqmax = $freqa[0];
+  }
   $info = $infolist[0];
   &resavg_use_residual(0);
 
@@ -64,7 +74,9 @@ while ($#mjda>-1) {
           $mjda[$i] <= $mjdmin+$dt &&
           $infolist[$i] eq $info &&
         ( !$dfflag  ||  $freqa[$i] >= (1.-$df)*$freqmax ) &&
-        ( !$dfflag  ||  $freqa[$i] <= (1.+$df)*$freqmin ) ) {
+        ( !$dfflag  ||  $freqa[$i] <= (1.+$df)*$freqmin ) &&
+        ( !$bflag   ||  $freqa[$i] >= $freqmin && $freqa[$i] < $freqmax ) 
+       ) {
       # process the residual
       &resavg_use_residual($i);
       # expand time or frequency range to include this residual
@@ -124,6 +136,7 @@ sub resavg_arg_parse{
   "  for one TOA per widely separated narrow band: print_resid | res_avg -f0.25\n".
   "\n".
   "Flags:\n".
+  "  -bxxx,yyy,zzz,.... divide residuals into bands 0<f<xxx, xxx<f<yyy, etc.\n".
   "  -c:    calculate weighted avg residual from fit of resid and dm at each epoch\n".
   "         (experimental!  use with care!)\n".
   "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, over which residuals\n".
@@ -145,6 +158,9 @@ sub resavg_arg_parse{
   
   my($dt) = 1;     # max time from first to last TOA in a single average (units=days)
   
+  my($bflag) = 0;  # flag to use a series of discrete frequency bands
+  my($blist) = (); # list of frequencies at boundaries of frequency bands
+
   my($dfflag) = 0; # flag to produce separate averages for separate frequency ranges
   my($df) = 0.25;  # max fracional frequency difference (f-f0)/f0 in a single average
 
@@ -161,7 +177,13 @@ sub resavg_arg_parse{
       while ($par ne "") {      #   loop through the string
         $f = substr($par,0,1);  #     strip off the current flag
         $par = substr($par,1);    #     process flags:
-        if ($f eq "c")      {#       -c
+        if ($f eq "b")      {#       - 
+          $bflag = 1;
+          @blist = split(",",$par);
+          push @blist, "9.e30";  # a big frequency
+          unshift @blist, "0.";
+          last;
+        } elsif ($f eq "c")      {#       -c
           $cflag = 1;
         } elsif ($f eq "f") {#       -f
           $dfflag = 1;
@@ -197,7 +219,7 @@ sub resavg_arg_parse{
     die $usage;
   }
 
-return $dt, $df, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile;
+return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile;
 }
 
 #-----------------------------------------
