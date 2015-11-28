@@ -62,6 +62,8 @@ c      $Id$
       pbdot=0.
       si=0.
       shapmax=0. !!!! NEW in DDS
+      shaphof=0.  ! NW: higher order Shapiro in DDS - scale factor
+      cotchi0=0.  ! NW: higher order Shapiro in DDS - latitudinal time delay (RL06)
       am=0.
       am2=0.
       dr=0.
@@ -139,6 +141,7 @@ c      $Id$
       nits=1
       ncoord=1
       nell1=0
+      nshapho=0 ! NW: higher order Shapiro in DDS - flag to switch on higher oder corrections
 
       usestart = .false.
       usefinish = .false.
@@ -793,6 +796,16 @@ c next two lines by sets on 29 Aug 05
       else if(key(1:7).eq.'SHAPMAX')then
          read(value,*) shapmax
          read(cfit,*)nfit(20)
+
+      else if(key(1:7).eq.'SHAPHOF')then ! NW: higher order Shapiro - scale factor
+         read(value,*) shaphof
+         read(cfit,*)nfit(39)
+         nshapho=1
+
+      else if(key(1:7).eq.'COTCHI0')then ! NW: higher order Shapiro - latitudinal bending delay
+         read(value,*) cotchi0
+         nshapho=1
+
 
 C  Fixed binary parameters
 

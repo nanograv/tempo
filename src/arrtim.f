@@ -847,7 +847,7 @@ C Save the DM "residual" and error (could make this part of vmemrw stuff?)
 	if(mod(n,modscrn).eq.1.and..not.quiet) 
      +        write(*,1100)n,fmjd,dt,1d6*dt*p0,
      +    jits+1
-1100	format(i6,f15.8,f11.6,f15.3,11x,i2)
+1100	format(i7,f15.8,f11.6,f15.3,11x,i2)
 
         fmjdlast = fmjd
 
