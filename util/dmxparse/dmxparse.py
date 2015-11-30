@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import sys, struct, math, numpy
+import argparse, sys, struct, math, numpy
 
 class tempo_cov:
 
@@ -95,18 +95,29 @@ class dmxparse:
         for i in range(n):
             self.verr[k[i]] = math.sqrt(cc[i,i])
 
+def get_base_dm(parfile):
+    dm = 0.
+    for l in open(parfile).readlines():
+        if not l.startswith('DM '): continue
+        dm = float(l.split()[1])
+    return dm
+    
 
 if __name__ == '__main__':
 
-    if len(sys.argv)<2:
-        print >>sys.stderr, "Usage: dmxparse.py par_file (cov_matrix_file)"
-        print >>sys.stderr, ""
-        print >>sys.stderr, "Note, if matrix file name is not given, 'matrix.tmp' is assumed."
-        sys.exit(0)
+    parser = argparse.ArgumentParser(description="Parse DMX values from tempo .par file.\nSubtract mean DM value (default, may be over-ridden by flags.")
+    parser.add_argument('parfile',    metavar='par_file', help="Parameter file (output from tempo)")
+    parser.add_argument('matrixfile', metavar='cov_matrix_file',nargs="?",default="matrix.tmp",help="Covariance file (output from tempo)")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-d','--dmfull',      action="store_true", help="Report full DM value at each epoch (no offset)")
+    group.add_argument('-o','--originaldmx', action="store_true", help="Report original DMX values (no mean subtracttion)")
 
-    parfile = sys.argv[1]
-    if len(sys.argv)>2: matrixfile = sys.argv[2]
-    else: matrixfile = 'matrix.tmp'
+    args = parser.parse_args()
+
+    dmfull = args.dmfull
+    originaldmx = args.originaldmx
+    parfile = args.parfile
+    matrixfile = args.matrixfile
 
     d = dmxparse(parfile)
     c = tempo_cov(matrixfile)
@@ -123,8 +134,13 @@ if __name__ == '__main__':
     print "# Mean DMX value = %+.6e" % d.mean
     print "# Uncertainty in average DM = %.5e" % d.mean_err
     print "# Columns: DMXEP DMX_value DMX_var_err DMXR1 DMXR2 DMXF1 DMXF2 DMX_bin"
+    doffset = 0.
+    if dmfull: 
+        doffset = get_base_dm(parfile)
+    elif not originaldmx:
+        doffset = -d.mean
     for k in sorted(d.val.keys()):
         #print d.epoch[k], d.val[k], d.err[k], d.verr[k], k
         print "%.4f %+.7e %.3e %.4f %.4f %7.2f %7.2f %s" % (d.epoch[k], 
-                d.val[k]-d.mean, d.verr[k], 
+                d.val[k]+doffset, d.verr[k], 
                 d.r1[k], d.r2[k], d.f1[k], d.f2[k], k)
