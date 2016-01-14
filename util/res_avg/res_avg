@@ -12,7 +12,7 @@ use Math::Trig;
 # of the phases and the sum of the cosines of the phases are both accumulated, then an arctan of
 # the sum is taken to recover the average angle.
 
-($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile) = &resavg_arg_parse(@ARGV);
+($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile, $countmin) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
 
@@ -91,7 +91,9 @@ while ($#mjda>-1) {
   }
 
   # process this batch of residuals (write out the averages, etc.)
-  &resavg_calculate_print;
+  if ($count>=$countmin) {
+    &resavg_calculate_print;
+  }
     
 }
 
@@ -144,6 +146,7 @@ sub resavg_arg_parse{
   "  -ixxx: read info.tmp-style file xxx and only average whose entries match\n".
   "         are averaged [default: not used]\n".
   "  -h   : help message\n".
+  "  -nxxx: minimum number of residuals to average [default: 1]\n".
   "  -txxx: maximum time (in days) over which residuals are averaged, [default: 1]\n".
   "  -u   : unweighted averages\n".
   "  -z   : ignore input residuals with zero error\n".
@@ -170,6 +173,7 @@ sub resavg_arg_parse{
   my($infofile) = "";
   my($sflag) = 0;  # input residuals in sec (tempo2) not microsec (tempo)
   my($zflag) = 0;  # ignore zero-error points
+  my($countmin) = 1; # minimum number of residuals to average
   
   foreach $par (@_) {
     if ($par=~/^-/) {           # flags
@@ -195,6 +199,9 @@ sub resavg_arg_parse{
           $infoflag = 1;
           $infofile = $par;
           last;
+        } elsif ($f eq "n") {#       -n
+          $countmin = $par;
+          last;
         } elsif ($f eq "s") {#       -s
           $sflag = 1;
         } elsif ($f eq "t") {#       -t
@@ -219,7 +226,7 @@ sub resavg_arg_parse{
     die $usage;
   }
 
-return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile;
+return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile, $countmin;
 }
 
 #-----------------------------------------
