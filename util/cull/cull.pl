@@ -96,6 +96,10 @@ $mjdand = 0;
 $pha1in = -1;
 $pha2in = -1;
 
+$freqmin = 0.;
+$freqmax = 1.e20;   # a big number
+
+
 foreach $par (@ARGV) {
   if ($par=~/^-/) {           # flags
     push @flags, $par;        # Keep a list of these for reference
@@ -445,6 +449,7 @@ for(;;) {
     $tempo2 = 1;
     print "Warning: FORMAT line found, assuming tempo2 format.\n";
     print "  Note that some features of cull may not work correctly.\n";
+    print "  But actually they usually do, so don't worry too much.\n";
   }
 
   #                      process TOAs
@@ -505,7 +510,7 @@ for(;;) {
         substr($a,0,1) = "C";
         $cull = 1;
       }
-      if ($uflag>0 && $freq[$i]<$freqmin || 
+      if ($vflag>0 && $freq[$i]<$freqmin || 
           $vflag>0 && $freq[$i]>$freqmax )        {
         substr($a,0,1) = "C";
         $cull = 1;
