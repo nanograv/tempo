@@ -70,10 +70,10 @@ ftmp.write("PEPOCH   %20.10f\n" % newepoch)
 ftmp.write("F0       %20.15e 1\n" % newf0)
 if uset0:
   newt0 = t0 + pb*int((newepoch-t0)/pb+0.5)
-  ftmp.write("T0     %20.15e\n 1" % newt0)
+  ftmp.write("T0     %20.15e 1\n" % newt0)
 if usetasc:
   newtasc = tasc + pb*int((newepoch-tasc)/pb+0.5)
-  ftmp.write("TASC   %20.15e\n 1" % newt0)
+  ftmp.write("TASC   %20.15e 1\n" % newt0)
 ftmp.close()
 
 
