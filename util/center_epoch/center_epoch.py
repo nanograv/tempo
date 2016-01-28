@@ -73,7 +73,7 @@ if uset0:
   ftmp.write("T0     %20.15e 1\n" % newt0)
 if usetasc:
   newtasc = tasc + pb*int((newepoch-tasc)/pb+0.5)
-  ftmp.write("TASC   %20.15e 1\n" % newt0)
+  ftmp.write("TASC   %20.15e 1\n" % newtasc)
 ftmp.close()
 
 
