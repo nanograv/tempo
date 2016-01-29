@@ -54,6 +54,9 @@ c      $Id$
          pb(i)=0.
          omz(i)=0.
       enddo
+      okom=0.
+      okin=0.
+      k96=.false.
       t0asc=0.
       eps1=0.
       eps2=0.
@@ -769,6 +772,17 @@ c next two lines by sets on 29 Aug 05
          read(cfit,*)nfit(40)
          set2dot=.true.
 
+      else if(key(1:3).eq.'KOM')then
+         read(value,*)okom
+         read(cfit,*)nfit(52)
+
+      else if(key(1:3).eq.'KIN')then
+         read(value,*)okin
+         read(cfit,*)nfit(53)
+
+      else if(key(1:3).eq.'K96')then
+         k96=.true.
+
       else if(key(1:4).eq.'EPS1'.and.lk.eq.4)then
          read(value,*)eps1
          read(cfit,*)nfit(10)
@@ -805,7 +819,6 @@ c next two lines by sets on 29 Aug 05
       else if(key(1:7).eq.'COTCHI0')then ! NW: higher order Shapiro - latitudinal bending delay
          read(value,*) cotchi0
          nshapho=1
-
 
 C  Fixed binary parameters
 
@@ -1167,6 +1180,26 @@ c     binary frequencies, make the conversion
      +        '' use T0=TASC !!!'')')
          t0(1)=t0asc
          t0asc=0.         
+      endif
+
+      if (nbin.eq.14) then
+         if (okin.le.0..or.okin.ge.180.) then
+            write(*,*) ' ERROR: Binary model DDK invalid KIN', okin
+            stop
+         endif
+         if (px.eq.0. .and..not.usefixeddist) then
+            write(*,'('' ERROR: Binary model DDK requires non-zero'',
+     +           '' initial estimate of parallax'')')
+            stop
+         endif
+         if (si.ne.0) then
+            write(*,'('' WARNING: Binary model DDK ignores SINI'')')
+         endif
+
+         okin = okin * 3.1415926535897932385d0 / 180.0d0
+         okom = okom * 3.1415926535897932385d0 / 180.0d0
+         si = 0.
+
       endif
 
       if(tz.and.(ntzrmjd.eq.0)) 

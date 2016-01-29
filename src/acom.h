@@ -8,6 +8,7 @@ c      $Id$
         logical tz
         logical autotz
         logical useannorb   ! flag to use annual-orbital parallax
+        logical k96         ! flag to use full Kopeikin 95/96 terms - Willem
         logical usefixeddist! flag to use fixed input distance in ann-orb px
         logical jumpbarycenter ! flag to apply jumps in barycenter instead of
                                ! obs frame.  Jumps used to be done in

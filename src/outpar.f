@@ -641,6 +641,32 @@ c --> NW: higher order Shapiro
  2040    format('EPS2DOT',f19.6,a,f20.6)
       endif
 
+      if(nbin.eq.14)then
+         okom_deg = okom * 360.0d0 / twopi
+         okom_err_deg = ferr(52) * 360.0d0 / twopi
+         if(nfit(52).gt.0)then
+            write(71,2100)okom_deg,fit1,okom_err_deg
+         else
+            write(71,2100)okom_deg
+         endif
+ 2100    format('KOM',f23.3,a,f20.3)
+
+         okin_deg = okin * 360.0d0 / twopi
+         okin_err_deg = ferr(53) * 360.0d0 / twopi
+         if(nfit(53).gt.0)then
+            write(71,2150)okin_deg,fit1,okin_err_deg
+         else
+            write(71,2150)okin_deg
+         endif
+ 2150    format('KIN',f23.3,a,f20.3)
+
+         if (k96) then
+            write(71,'("K96",i26)')1
+         else
+            write(*,'("K96 is not true!")')
+         endif
+      endif
+
       if(afac.ne.0.)write (71,2200) 'AFAC  ',afac
       if(dr.ne.0.)  write (71,2200) 'DR    ',dr*1.d6
       if(a0.ne.0.)  write (71,2200) 'A0    ',a0*1.d6

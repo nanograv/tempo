@@ -62,6 +62,7 @@ C  10   BTX (BT plus freq derivatives and jumps)
 C  11	BT, 2 orbits
 C  12	BT, 3 orbits
 C  13   DDS
+C  14   DDK
 
 C  special case: nfit(3)>1 implies that frequency derivatives 1 through nfit(3) 
 C  are to be fit.  (Example: if nfit(3)=5, fit F1 through F5).  Set the relevant flags.
@@ -480,6 +481,8 @@ c  Beginning of iteration loop
           if(gamma.ne.0.)write(31,'(''Gamma (s):'',f22.6)')gamma
           if(si.ne.0.)write(31,'(''sin(i):'',f25.6)')si
           if(shapmax.ne.0.)write(31,'(''SHAPMAX:'',f25.6)')shapmax
+          if(okom.ne.0.)write(31,'(''KOM (deg):'',f22.6)')okom*360./TWOPI
+          if(okin.ne.0.)write(31,'(''KIN (deg):'',f22.6)')okin*360./TWOPI
           if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am
           if(am2.ne.0.)write(31,'(''m2 (solar):'',f21.6)')am2
           if(dr.ne.0.)write(31,'(''dr (-6):'',f24.3)')1.d6*dr
@@ -528,7 +531,7 @@ c  Beginning of iteration loop
 	k=0
 	nfit(1)=1
 
-	do 70 i=1,40				!Set up parameter pointers
+	do 70 i=1,60				!Set up parameter pointers
 	if(nfit(i).eq.0) go to 70
 	k=k+1
 	mfit(k)=i

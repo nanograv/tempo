@@ -199,6 +199,22 @@ c --- output of non-Keplerian parameters, I ---
      +        freq(21),freq(22),freq(23)*e6
            write(31,10523) ferr(14),ferr(15),e6*ferr(18),ferr(20),
      +        ferr(21),ferr(22),ferr(23)*e6
+        else if(nbin.eq.14)then
+           okind = okin * 360.0d0 / twopi
+           okin_errd = ferr(53) * 360.0d0 / twopi
+           okin_reqd = freq(53) * 360.0d0 / twopi
+           okomd = okom * 360.0d0 / twopi
+           okom_errd = ferr(52) * 360.0d0 / twopi
+           okom_reqd = freq(52) * 360.0d0 / twopi
+           write(31,10505)
+10505      format(//'     OMDOT     GAMMA    PBDOT(-12)   KIN',
+     +              '      KOM          m2      DTH(-6)'/)
+           write(31,10525) omdot,gamma,pbdot*e12,okind,okomd,am2,e6*dth
+           write(31,10525) freq(14),freq(15),e6*freq(18),okin_reqd,
+     +        okom_reqd,freq(22),freq(23)*e6
+           write(31,10525) ferr(14),ferr(15),e6*ferr(18),okin_errd,
+     +        okom_errd,ferr(22),ferr(23)*e6
+10525      format(f11.7,f10.7,f13.6,f9.3,f7.1,2f11.4)
 	else
            write(31,10501)
 10501      format(//'     OMDOT     GAMMA        PBDOT(-12)   sin(i)',
@@ -236,6 +252,9 @@ c  Update parameters
 c       --- new in DDS !! ---
         if (nbin.eq.13) then
            shapmax = shapmax + freq(20)
+        else if(nbin.eq.14) then
+           okin   = okin   + freq(53)
+           okom   = okom   + freq(52)
         else
            si     = si     + freq(20)
         endif
@@ -268,6 +287,10 @@ c  Print updated parameters
 	   endif
         else if (nbin.eq.13) then
            write(31,10523) omdot,gamma,pbdot*e12,shapmax,am,am2,e6*dth
+        else if (nbin.eq.14)then
+           okind = okin * 360.0d0 / twopi
+           okomd = okom * 360.0d0 / twopi
+           write(31,10525) omdot,gamma,pbdot*e12,okind,okomd,am2,e6*dth
 	else
 	   write(31,10521) omdot,gamma,pbdot*e12,si,am,am2
 	endif
