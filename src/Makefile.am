@@ -5,9 +5,9 @@ CLEANFILES = $(EXTRA_PROGRAMS) version.h
 
 tempo_SOURCES = \
         a1ut1f.f a1utcf.f ang.f arrtim.f atimfake.f bigendian.f \
-        blkdbat.f bnrybt.f bnrybtx.f bnrydd.f bnryddgr.f bnryddt.f  \
+        blkdbat.f bnrybt.f bnrybtx.f bnrydd.f bnryddgr.f bnryddk.f bnryddt.f  \
         bnryeh.f bnryell1.f bnrymss.f bnrydds.f bootmc.f bt2ell1.f \
-        cfgin.f chebpc.f citem.f clockcor.f covar.f damoyr.f dot.f \
+        cfgin.f chebpc.f citem.f clockcor.f covar.f cross.f damoyr.f dot.f \
         earth.f  ephinit.f ephread.f equ2ecl.f fit.f fk4tofk5.f galco.f \
         gasdev.f getcmdline.f getecliptic.f getflags.f getvalue.f \
         inpar.f interp.f lmst.f mass2dd.f matinv.f mjdadd.f mxprt.f  \
@@ -47,6 +47,7 @@ bnrybt.$(OBJEXT): bnrybt.f dp.h orbit.h dim.h
 bnrybtx.$(OBJEXT): bnrybt.f dp.h orbit.h dim.h
 bnrydd.$(OBJEXT): bnrydd.f dp.h orbit.h acom.h dim.h trnsfr.h
 bnryddgr.$(OBJEXT): bnryddgr.f orbit.h dim.h
+bnryddk.$(OBJEXT): bnrydd.f dp.h orbit.h acom.h dim.h trnsfr.h
 bnrydds.$(OBJEXT): bnrydds.f dim.h acom.h dp.h orbit.h trnsfr.h
 bnryddt.$(OBJEXT): bnryddt.f orbit.h dim.h
 bnryeh.$(OBJEXT): bnryeh.f dp.h orbit.h dim.h
