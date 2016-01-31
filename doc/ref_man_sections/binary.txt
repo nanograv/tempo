@@ -99,7 +99,7 @@ DTHETA                 x                                  x                   x
 XDOT        x    x     x      x             x      x      x      x      x     x
 X2DOT                                                     x               
 XDOT_x                                                                  x
-EDOT        x    x     x      x             x      x      x      x      x
+EDOT        x    x     x      x             x      x      x      x      x     x     x
 EPS1DOT                                                          x
 EPS2DOT                                                          x 
 SHAPMAX                                                                       x
