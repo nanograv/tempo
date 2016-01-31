@@ -57,40 +57,55 @@ BTX   BT model with orbital motion expressed in frequency rather than
       (XDOT_x is x+1'th derivative of X=A SIN I)
       Reference:  Nice, D., unpublished
 
+DDS   Variation of DD which uses SHAPMAX = -ln(1-s) instead of s = sin i.  
+      Also incorporates various higher-order effects for use with 0737.
+      References: Kramer et al. Science 314:97 (2006)
+                  Rafikov & Lai PRD 73:063003 (2006)
+
+DDK  Variation of DD which incorporates secular changes in observed 
+     parameters due to proper motion and also annual-orbital parallax.
+     Coded by Willem van Straten.
+     References: Kopeikin, S. M., ApJ 439:L5 (1995)
+                 Kopeikin, S. M., ApJ 467:L93 (1996)
+
 The following table summarizes the parameters used by each model.  An 'x'
 indicates a parameter fully implemented.  An 'o' indicates the parameter is
 used at a fixed value, but cannot be fitted.  A '*' indicates the parameter
 is used only to calculate other binary parameters, and is then ignored.
 
 
-           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1    BTX
-A1          x    x     x      x      x      x      x      x      x      x
-E           x    x     x      x      x      x      x      x      *      x
-T0          x    x     x      x      x      x      x      x      *      x
-PB          x    x     x      x      x      x      x      x      x      *
-OM          x    x     x      x      x      x      x      x      *      x
+           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1    BTX   DDS   DDK
+A1          x    x     x      x      x      x      x      x      x      x     x     x
+E           x    x     x      x      x      x      x      x      *      x     x     x
+T0          x    x     x      x      x      x      x      x      *      x     x     x
+PB          x    x     x      x      x      x      x      x      x      *     x     x
+OM          x    x     x      x      x      x      x      x      *      x     x     x
 TASC        *                                                    x
 EPS1        *                                                    x
 EPS2        *                                                    x
-FB          *    *     *      *      *      *      *      *      *      x
-FB_1        *    *     *      *      *      *      *      *      *      x
-FB_x                                                                    x
-OMDOT       x    x     x             x      x             x      x      x
-OM2DOT                                                    x             x
+FB          *    *     *      *      *      *      *      *      *      x     *     *
+FB_1        *    *     *      *      *      *      *      *      *      x     *     *
+FB_x                                                                    x     *     *
+OMDOT       x    x     x             x      x             x      x      x     x     
+OM2DOT                                                    x             x     
 XOMDOT                        x
-PBDOT       x    x     x             x      x      x      x      x      *
+PBDOT       x    x     x             x      x      x      x      x      *     x     x
 XPBDOT                        x
-GAMMA       x    x     x             x      x             x             x
+GAMMA       x    x     x             x      x             x             x     x     x
 MTOT                          x                    x
-M2                     x      x                    x      x      x
-SINI             x     x             x             x      x      x
-DTHETA                 x                                  x
-XDOT        x    x     x      x             x      x      x      x      x
-X2DOT                                                     x             
+M2                     x      x                    x      x      x            x     x
+SINI             x     x             x             x      x      x            x    
+DTHETA                 x                                  x                   x
+XDOT        x    x     x      x             x      x      x      x      x     x
+X2DOT                                                     x               
 XDOT_x                                                                  x
 EDOT        x    x     x      x             x      x      x      x      x
 EPS1DOT                                                          x
-EPS2DOT                                                          x
+EPS2DOT                                                          x 
+SHAPMAX                                                                       x
+SHAPHOF                                                                       x
+KOM                                                                                x
+KIN                                                                                x
 DR                     o                           o      o    
 AFAC                          o
 A0                     o                           o      o      o
