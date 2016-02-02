@@ -22,6 +22,7 @@ c      $Id$
         logical usedmdata     ! use input DM measurements as "data"
 
 	integer parunit, nskip, iboot
+        integer fitmode
         integer infolen
         integer ssdmflag
         integer nflagjumps  ! number of tempo2-style flag-based jumps
@@ -58,7 +59,7 @@ c      $Id$
      +    nfit(NPAP1),mfit(NPAP1),n,nscan,nparam,nxoff,nprnt,
      +    nkeep,nfq,ncoord,gro,sim,xitoa,oldpar,psrframe,jumpout,
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
-     +    parunit,nskip,iboot,ndmcalc,nflagjumps,
+     +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
      +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,

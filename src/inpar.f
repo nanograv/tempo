@@ -158,6 +158,8 @@ c      $Id$
       usedmdata = .false.
       dmefac = 1.0
 
+      fitmode = 0
+
       eclcoord = .false.
 
       iboot = 0
@@ -286,6 +288,9 @@ C  Control parameters
 
       else if(key(1:4).eq.'NITS')then
          read(value,*)nits
+
+      else if(key(1:4).eq.'MODE')then
+         read(value,*)fitmode
 
       else if(key(1:4).eq.'IBOO')then
          read(value,*)iboot
