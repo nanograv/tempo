@@ -862,6 +862,8 @@ c End of input file detected
 	start=amjd1-1.d-3
 	finish=amjd2+1.d-3
 
+	fitmode = mode ! store final mode value
+
 	if(.not.tz) then
 	  sigma1=sqrt((sumsq-sum*sum/sumwt)/sumwt)*p0*1000.d0
 	  m=-1
