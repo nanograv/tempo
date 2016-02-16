@@ -59,6 +59,7 @@ BTX   BT model with orbital motion expressed in frequency rather than
 
 DDS   Variation of DD which uses SHAPMAX = -ln(1-s) instead of s = sin i.  
       Also incorporates various higher-order effects for use with 0737.
+      These are experimental and should not be trusted yet! (2016 Feb.)
       References: Kramer et al. Science 314:97 (2006)
                   Rafikov & Lai PRD 73:063003 (2006)
 
@@ -103,7 +104,7 @@ EDOT        x    x     x      x             x      x      x      x      x     x 
 EPS1DOT                                                          x
 EPS2DOT                                                          x 
 SHAPMAX                                                                       x
-SHAPHOF                                                                       x
+SHAPHOF (Experimental)                                                        x
 KOM                                                                                x
 KIN                                                                                x
 DR                     o                           o      o    
