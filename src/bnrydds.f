@@ -21,18 +21,18 @@ c  Changes by Wex, April 2014
 c  - Inversion of timing model done by iteration to achieve maximum precision
 c    Absolute must, if retardation becomes relevant! DD inversion not accurate enough.
  
-c  Changes by Wex, July 2015
+c  Changes by Wex, July 2015 -- still experimental and need verification
 c  - Include higher order corrections in the Shapiro delay
 c    a) 1.5pN corrections
 c    b) lensing delay (leading order)
 c    c) rotational  beding delay
 c    d) latitudinal bending delay
 
-c  Changes by Wex, September 2015
+c  Changes by Wex, September 2015 -- still experimental and need verification
 c  - Scaling factor for a+b+c+d (parameter SHAPHOF) that can be fitted for.
 
 c  Variable name 'x' changed to 'xx' to avoid conflict with variable
-c     'x' defined inacom.h
+c     'x' defined in acom.h
 
 	implicit real*8 (a-h,o-z)
 	include 'dim.h'
@@ -164,11 +164,12 @@ c       version of DK95 is sufficient, and works for the whole orbit
 c   --> Latitudinal delay due to light bending and profile changes
 c       - for parallel rotator (lam = i & eta = -pi/2)
 c       - simplified version of RL06, which works for the whole orbit
+C       Still experimental (2016 Feb.)
 
        cosi = DSQRT(1.d0 - sidds**2) ! choice: > 0 => sign in cotchi0
        dShaBen2 = -2.d0*m2*cosi/(TWOPI*f0*xR)*spsi/brace * cotchi0
 
-c   --> The sum of higher order contributions
+c   --> The sum of higher order contributions -- experimental
        dShapHo = dShaRet + dShaLen + dShaBen1 + dShaBen2
        dSha = dSha + shaphof * dShapHo
 
