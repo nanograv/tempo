@@ -302,6 +302,7 @@ c tempo2-compatibility:
       write(71,'(''TZRMJD '',i5,f16.14)')nx,fx
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
       write(71,'(''TZRSITE '',17x,a)')tzrsite
+      write(71,'(''MODE'',i22)')fitmode
       if(nprnt.gt.0)write(71,'(''NPRNT'',i21)')nprnt
       if(nits.gt.0)write(71,'(''NITS'',i22)')nits
       if(iboot.gt.0)write(71,'(''IBOOT'',i21)')iboot

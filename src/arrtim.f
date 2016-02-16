@@ -94,7 +94,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	ntrk=0
 	dither=0.
         zawgt=0.
-	mode=0
+	mode=fitmode
         dmobs=0.
         dmobserr=0.
 	nxoff=nflagjumps
@@ -861,6 +861,8 @@ c End of input file detected
 
 	start=amjd1-1.d-3
 	finish=amjd2+1.d-3
+
+	fitmode = mode ! store final mode value
 
 	if(.not.tz) then
 	  sigma1=sqrt((sumsq-sum*sum/sumwt)/sumwt)*p0*1000.d0
