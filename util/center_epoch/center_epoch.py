@@ -5,7 +5,7 @@ import argparse, struct
 import subprocess
 import os
 
-parser = argparse.ArgumentParser(description="Sort DMX ranges in MJD order")
+parser = argparse.ArgumentParser(description="Center period, position, and orbital epoch")
 parser.add_argument("infile",   help="input .par file")
 parser.add_argument("timfile",  help="input .tim file")
 parser.add_argument("outfile",  help="output .par file")
