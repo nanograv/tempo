@@ -10,19 +10,25 @@ case-insensitive, although file names are not.
 
 tempo.cfg keywords:
 
-CLKDIR      Directory containing clock offset files
-OBS_NIST    Offsets between observatory clock and UTC(NIST)
-NIST_UTC    Offsets between UTC(NIST) and UTC
-NIST_TT     Offsets between UTC(NIST) and TT(BIPM)
-NIST_PTB    Offsets between UTC(NIST) and UTC(PTB)
-NIST_AT1    Offsets between UTC(NIST) and AT1
-UT1         Offsets between UTC and UT1
-
-EPHDIR      Directory containing ephemeris files
-TDBFILE     Offsets between TDB and TT
-EPHFILE     Solar system ephemeris file (from JPL distribution).  
-            There may be up to five EPHFILE entries.  
-            Optional flags:
+CLKDIR          Directory containing clock offset files
+OBS_NIST        Offsets between observatory clock and UTC(NIST)
+UT1             Offsets between UTC and UT1
+NIST_UTC        Offsets between UTC(NIST) and UTC
+NIST_PTB        Offsets between UTC(NIST) and UTC(PTB)
+NIST_AT1        Offsets between UTC(NIST) and AT1
+NIST_TT(BIPM)   Offsets between UTC(NIST) and TT(BIPM)
+NIST_TT(BIPMxx) Offsets between UTC(NIST) and TT(BIPMxx)
+                   where xx is tyipcally the last two digits of a year
+                   (but it could be anything).
+                Up to 20 clock files may be specified.
+                Typically the TT(BIPM) entry would be set up to point to
+                   the same file as the most recent TT(BIPMxx) entry.
+ 
+EPHDIR         Directory containing ephemeris files
+TDBFILE        Offsets between TDB and TT
+EPHFILE        Solar system ephemeris file (from JPL distribution).  
+               There may be up to five EPHFILE entries.  
+               Optional flags:
                 --endian=little or --endian=big 
                        default is big endian
                 --eph=<ephname> where typical <ephname> is DE200, DE405, etc.

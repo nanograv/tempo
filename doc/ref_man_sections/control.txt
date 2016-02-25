@@ -2,7 +2,9 @@ Control commands allowed in free-format headers:
 
 CLK     Terrestrial time standard  
         Allowed values: 'UNCORR' (default), 'UTC(NIST)', 'UTC(BIPM)', 
-                       'TT(BIPM)', 'PTB', 'AT1'
+           'TT(BIPM)', 'PTB', 'AT1', and 'TT(BIPMxx)' where xx is any value
+            allowed by the entries in $TEMPO/tempo.cfg.
+                       
 
 COORD   Input coordinate system
         Allowed values: 'B1950', 'J2000' (default)
