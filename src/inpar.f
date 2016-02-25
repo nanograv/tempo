@@ -219,6 +219,7 @@ C  The error/comment is ignored by TEMPO
                            !     be fit itself
 
       integer i
+      integer ix0, ix
  
       do i=1, NFMAX
         ffit(i) = -1
@@ -330,13 +331,16 @@ C  Control parameters
 
       else if(key(1:3).eq.'CLK')then
          call upcase(value)
-         do i=0,nclkmax
-            if(value(1:5).eq.clklbl(i)(1:5))then
+         ix0 = index(value," ")-1
+         do i=0,NCLKMAX
+            ix = index(clklbl(i)," ")-1
+            if(ix.gt.0 .and. ix.eq.ix0 .and. 
+     +                          value(1:ix).eq.clklbl(i)(1:ix))then
                nclk=i
                go to 12
             endif
          enddo
-         write(*,'(''Invalid CLK label: '',a)')value(1:5)
+         write(*,'(''Invalid CLK label: '',a)')value(1:ix0)
          stop
  12      continue
 

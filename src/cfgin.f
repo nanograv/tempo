@@ -23,10 +23,12 @@ c     local variables
       character*640 key, val
       integer vall, err
       integer i, j, k
+      integer iclkbipm, ix
 
       open(2,file=cfgfile,status='old',err=990)
 
       clklbl(0)='UNCORR'
+      iclkbipm = 6 ! index number of next-added tt(BIPM) entry
 
       kephem = 0
 
@@ -44,15 +46,27 @@ c     local variables
         else if(label(1:8).eq.'NIST_UTC')then
           clkfile(2)=fname(1:k) ! UTC(NIST) to UTC(BIPM)
           clklbl(2)='UTC(BIPM)'
-        else if(label(1:9).eq.'NIST_BIPM')then
-          clkfile(3)=fname(1:k) ! UTC(NIST) to TT(BIPM)
-          clklbl(3)='TT(BIPM)'
         else if(label(1:8).eq.'NIST_PTB')then
-          clkfile(4)=fname(1:k) ! UTC(NIST) to UTC(PTB)
-          clklbl(4)='PTB'
+          clkfile(3)=fname(1:k) ! UTC(NIST) to UTC(PTB)
+          clklbl(3)='PTB'
         else if(label(1:8).eq.'NIST_AT1')then
-          clkfile(5)=fname(1:k) ! UTC(NIST) to AT1
-          clklbl(5)='AT1'
+          clkfile(4)=fname(1:k) ! UTC(NIST) to AT1
+          clklbl(4)='AT1'
+        else if(label(1:9).eq.'NIST_BIPM')then
+          if (label(10:10).eq.' ') then
+            clkfile(5)=fname(1:k) ! UTC(NIST) to TT(BIPM)
+            clklbl(5)='TT(BIPM)'
+          else
+            if (iclkbipm>NCLKMAX) then
+              print *,"Error, too many clocks listed in tempo.cfg"
+              print *,"Maximum number of clocks is NCLKMAX=",NCLKMAX
+              stop
+            endif
+            ix = index(label," ")
+            clkfile(iclkbipm)=fname(1:k) ! UTC(NIST) to TT(BIPMxx)
+            clklbl(iclkbipm) = 'TT(BIPM' // label(10:ix-1) //')'
+            iclkbipm = iclkbipm + 1
+          endif
         else if(label(1:3).eq.'UT1')then
           ut1file=fname(1:k)  ! UT1 - UT
         else if(label(1:6).eq.'EPHDIR')then
@@ -103,7 +117,7 @@ c     local variables
         else if (label(1:9).eq.'TDBFMT') then
           call upcase(fname)
           if (fname(1:4).eq.'IF99') tdbif99fmt = .true.
-        else
+        else if (label(1:1).ne."#" .and. label(1:1).ne." ") then
           goto 991
         endif
  510  continue ! end of main loop
