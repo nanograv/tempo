@@ -266,14 +266,22 @@ c       (part of common/trnsfr/ and produced at the bottom of timcalc)
 
 c       contributions to proper motion on x and omega
 c       dmurp_di=-xx*orbi_dot*onemecu*sin(omega+u)*tt0
-        dmurp_di=ap*dot(mu, drp_di)*tt0
-        dmurp_dO=ap*dot(mu, drp_dO)*tt0
-        dmurp_dx=dot(mu, rp)*tt0/si
+C IHS 20160302 These should only be computed if using K96
+        if(k96) then
+          dmurp_di=ap*dot(mu, drp_di)*tt0
+          dmurp_dO=ap*dot(mu, drp_dO)*tt0
+          dmurp_dx=dot(mu, rp)*tt0/si
+        else
+          dmurp_di=0.;
+          dmurp_dO=0.;
+          dmurp_dx=0.;
+        endif
 
 C         write(*,211),ci*csi,dmurp_di,daopx_di
  211    format ('d/di ',3e20.13)
 
-c  x contribution from aopx
+c  x contribution from aopx 
+c IHS 20160302 and from the K96 parameters if non-zero; same for 52 and 53.
 	fctn(9)=(cx+daopx_dx+dmurp_dx)*f0
 	fctn(10)=ce*f0
 	fctn(11)=-csigma*an*f0*86400.d0
