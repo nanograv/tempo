@@ -663,8 +663,6 @@ c --> NW: higher order Shapiro
 
          if (k96) then
             write(71,'("K96",i26)')1
-         else
-            write(*,'("K96 is not true!")')
          endif
       endif
 
