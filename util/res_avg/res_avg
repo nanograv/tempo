@@ -12,7 +12,7 @@ use Math::Trig;
 # of the phases and the sum of the cosines of the phases are both accumulated, then an arctan of
 # the sum is taken to recover the average angle.
 
-($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile, $countmin) = &resavg_arg_parse(@ARGV);
+($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $rflag, $infoflag, $infofile, $countmin) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
 
@@ -147,6 +147,7 @@ sub resavg_arg_parse{
   "         are averaged [default: not used]\n".
   "  -h   : help message\n".
   "  -nxxx: minimum number of residuals to average [default: 1]\n".
+  "  -r   : don't adjust uncertainties using reduced chi^2 of averaged points\n.".
   "  -txxx: maximum time (in days) over which residuals are averaged, [default: 1]\n".
   "  -u   : unweighted averages\n".
   "  -z   : ignore input residuals with zero error\n".
@@ -166,6 +167,8 @@ sub resavg_arg_parse{
 
   my($dfflag) = 0; # flag to produce separate averages for separate frequency ranges
   my($df) = 0.25;  # max fracional frequency difference (f-f0)/f0 in a single average
+
+  my($rflag) = 1.; # use reduced chi^2 to adjust uncertainties of average points
 
   my($cflag) = 0;  # calculate avg residual based on fit of both residual and dm
   my($uflag) = 0;  # unweighted average
@@ -202,6 +205,8 @@ sub resavg_arg_parse{
         } elsif ($f eq "n") {#       -n
           $countmin = $par;
           last;
+        } elsif ($f eq "r") {#       -r
+          $rflag = 0;
         } elsif ($f eq "s") {#       -s
           $sflag = 1;
         } elsif ($f eq "t") {#       -t
@@ -226,7 +231,7 @@ sub resavg_arg_parse{
     die $usage;
   }
 
-return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $infoflag, $infofile, $countmin;
+return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $rflag, $infoflag, $infofile, $countmin;
 }
 
 #-----------------------------------------
@@ -260,7 +265,9 @@ sub resavg_calculate_print{
       $rchi2 = 1.0;
   }
   $err = sqrt($err)/$wtsum;
-  $err *= sqrt($rchi2);
+  if ($rflag) {
+    $err *= sqrt($rchi2);
+  }
   if ($err==0) {$err = 1};  # $err can be zero if there are multiple identical TOAs
                             #  (causing rchi2 to be zero).  Shouldn't happen in real data asets,
                             #  it did once, so check for it
