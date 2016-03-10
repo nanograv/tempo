@@ -45,6 +45,7 @@ c                                    ! factor of 2 for TOA+DM
         real*8 VTsvd(NPAP1,NPAP1) ! SVD "V-transpose" result
         real*8 sv(NPAP1) ! The singular values
         real*8 r(2*NPTSDEF) ! The weighted prefit TOA+DM resids
+        real*8 rr(NPTSDEF)  ! red residuals
         real*8 cts(NPTSDEF) ! copy of the times
         real*8 ecorr(NPTSDEF) ! ECORR values per-TOA
         real*8 work(10*NPAP1*NPAP1)
@@ -183,6 +184,7 @@ c   dcov, cov matrix (diagonal part only)
           !cts(i) = ct
           cts(i) = fmjd
           r(i) = y
+          rr(i) = 0.0
           Adm(Admoff+i) = 1d0 ! Constant phase term
           do 66 j=2,nparam
             Adm(Admoff+i+(j-1)*Admrows) = (fctn(j-1)-xmean(j-1))
@@ -439,10 +441,10 @@ c Here is where we compute red residuals
         if (rnamp.gt.0) then
           print *,'  ... computing red residuals'
           call dtpmv('U','N','N',npts,dcov(1+dcovoff),r,1)
-          call dspmv('U',npts,1d0,dcov(1+dcovoff),r,1,0d0,r,1)
+          call dspmv('U',npts,1d0,rcov(1+rcovoff),r,1,0d0,rr,1)
         else
           do i=1,npts
-            r(i) = 0d0
+            rr(i) = 0d0
           enddo
         endif
 
@@ -517,7 +519,7 @@ C Correct tz ref TOA
 	  resr(6) = weight
 	  resr(7) = terr
 	  resr(8) = y
-	  resr(9) = r(i)
+	  resr(9) = rr(i)*p0firs
           if (lw) nwrt = write(fd,resn,80)
           wmax=max(wmax,weight)
           r2mean=r2mean+weight*dt2**2
