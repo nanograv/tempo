@@ -10,7 +10,7 @@ struct residual {
     double weight;
     double err_us;
     double prefit_sec;
-    double ddm;
+    double aux; // This is red resids (s) in GLS mode, ddm in standard mode
 };
 int read_fortran_record(FILE *f, char *buf, int max);
 int read_resid(FILE *f, struct residual **r, int *n);

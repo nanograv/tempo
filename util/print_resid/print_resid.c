@@ -25,9 +25,10 @@ void usage() {
             "  -w, --weight     Weight of point in fit\n"
             "  -e, --err        TOA uncertainty (us)\n"
             "  -i, --prefit_sec Pre-fit residual (sec)\n"
-            "  -d, --ddm        Delta DM used (pc/cc)\n"
+            "  -d, --aux        Delta DM (non-GLS) or red residual (s, GLS)\n"
             "  -I, --info       Labels from info.tmp\n"
             "Other options:\n"
+            "  -W, --white      Print whitened residuals (GLS only)\n"
             "  -s, --stats      Print stats at beginning\n"
             "  -b, --bands      Print blank lines between bands\n"
             "  -z, --zap        Don't print zero-weighted points\n"
@@ -90,6 +91,7 @@ int main(int argc, char *argv[]) {
         {"stats",      0, NULL, 's'},
         {"bands",      0, NULL, 'b'},
         {"zap",        0, NULL, 'z'},
+        {"white",      0, NULL, 'W'},
         {"mjd",        0, NULL, 'm'},
         {"res_phase",  0, NULL, 'p'},
         {"res_sec",    0, NULL, 't'},
@@ -99,7 +101,7 @@ int main(int argc, char *argv[]) {
         {"weight",     0, NULL, 'w'},
         {"err",        0, NULL, 'e'},
         {"prefit_sec", 0, NULL, 'i'},
-        {"ddm",        0, NULL, 'd'},
+        {"aux",        0, NULL, 'd'},
         {"info",       0, NULL, 'I'},
         {0,0,0,0}
     };
@@ -107,8 +109,8 @@ int main(int argc, char *argv[]) {
     char outputs[MAX_OUTS];
     int nout=0;
     outputs[0]='\0';
-    int do_stat=0, do_band=0, zap_zero_wt=0, do_info=0;
-    while ((opt=getopt_long(argc,argv,"hsbzmptrofweidI",long_opts,&opti))!=-1) {
+    int do_stat=0, do_band=0, zap_zero_wt=0, do_info=0, do_white=0;
+    while ((opt=getopt_long(argc,argv,"hsbzWmptrofweidI",long_opts,&opti))!=-1) {
         switch (opt) {
             case 'm':
             case 'p':
@@ -139,6 +141,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'z':
                 zap_zero_wt=1;
+                break;
+            case 'W':
+                do_white=1;
                 break;
             case 'h':
             default:
@@ -211,6 +216,19 @@ int main(int argc, char *argv[]) {
       }
       fclose(info_file);
     }
+
+    /* Whiten residuals if needed.  This only works if the fit was done
+     * in GLS mode.  There is no way to check this from the resid2.tmp
+     * file so we need to trust that people know what they are doing :) 
+     */
+    if (do_white) {
+        for (i=0; i<npts; i++) {
+          double p = r[i].res_sec / r[i].res_phase;
+          r[i].res_sec -= r[i].aux;
+          r[i].res_phase -= r[i].aux/p;
+        }
+    }
+
 
     /* Print some summary statistics at top */
     if (do_stat) {
@@ -303,7 +321,7 @@ int main(int argc, char *argv[]) {
                     printf("%+.8e", r[i].prefit_sec);
                     break;
                 case 'd':
-                    printf("%9.5f", r[i].ddm);
+                    printf("%+.8e", r[i].aux);
                     break;
                 case 'I':
                     printf("%s", info_lines[i]);
