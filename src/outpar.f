@@ -364,7 +364,7 @@ c=======================================================================
       endif
  1011 format('T0',f24.10,a,f20.10)
 
-      if (nbin.ne.10) then
+      if (nbin.ne.10 .and. ((.not.usefb).or.nbin.ne.9)) then
         if(nfit(12).gt.0)then
           write(71,1012)pb(1),fit1,ferr(12)
         else
@@ -445,15 +445,17 @@ c=======================================================================
         if (fb(i).ne.0.or.ferr(NPAR3+i).ne.0) then
          if(nfit(NPAR3+i).gt.0)then
            if (i-1.lt.10) then
-             write(71,1070)i-1,fb(i),fit1,ferr(NPAR3+i)
+             write(71,1070)i-1,fb(i)/(FBFAC**i),fit1,
+     +                               ferr(NPAR3+i)/(FBFAC**i)
            else
-             write(71,1071)i-1,fb(i),fit1,ferr(NPAR3+i)
+             write(71,1071)i-1,fb(i)/(FBFAC**i),fit1,
+     +                               ferr(NPAR3+i)/(FBFAC**i)
            endif
          else
            if (i-1.lt.10) then
-             write(71,1070)i-1,fb(i)
+             write(71,1070)i-1,fb(i)/(FBFAC**i)
            else
-             write(71,1071)i-1,fb(i)
+             write(71,1071)i-1,fb(i)/(FBFAC**i)
            endif
          endif
         endif

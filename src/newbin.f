@@ -428,7 +428,7 @@ c ------ Output of non-Keplerian parameters, III:  FB(n)
 
  100	continue
 
-	if (nbin.eq.10)  then
+	if (nbin.eq.10 .or. usefb.and.nbin.eq.9)  then
           do i = 1, NFBMAX, 3
 	    ii = min(i+2,NFBMAX)
 	    iii = min(i+1,NFBMAX)
@@ -436,13 +436,13 @@ c ------ Output of non-Keplerian parameters, III:  FB(n)
      +          fb(ii).ne.0 .or. freq(NPAR3+ii).ne.0 .or.
      +          fb(iii).ne.0 .or. freq(NPAR3+iii).ne.0) then
   	      write (31,10710) (j-1,j=i,ii)
-	      write (31,10711) (fb(j),j=i,ii)
-	      write (31,10711) (freq(NPAR3+j),j=i,ii)
-	      write (31,10711) (ferr(NPAR3+j),j=i,ii)
+	      write (31,10711) (fb(j)/(FBFAC**j),j=i,ii)
+	      write (31,10711) (freq(NPAR3+j)/(FBFAC**j),j=i,ii)
+	      write (31,10711) (ferr(NPAR3+j)/(FBFAC**j),j=i,ii)
               do j = i, ii
                 fb(j) = fb(j)+freq(NPAR3+j)
               enddo
-	      write (31,10711) (fb(j),j=i,ii)
+	      write (31,10711) (fb(j)/(FBFAC**j),j=i,ii)
             endif
           end do
 

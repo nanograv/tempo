@@ -33,7 +33,11 @@ c  calling program.
       include 'dp.h'
       include 'orbit.h'
 
-      an=twopi/pb(1)
+      if (usefb) then
+        an=twopi*fb(1)/FBFAC
+      else
+        an=twopi/pb(1)
+      endif
       x0=a1(1)
       m2=am2*SUNMASS
 
@@ -41,7 +45,28 @@ c  In TEMPO we use the variable e(1) for eps1, omz(1) for eps2,
 c  edot for eps1dot, and omdot for eps2dot 
 
       tt0=(ct-t0asc)*86400.d0
-      orbits=tt0/pb(1)-0.5d0*(pbdot+xpbdot)*(tt0/pb(1))**2
+      if (usefb) then         ! orbital frequencies specified specified
+        if (nfbj.eq.0) then   ! first use fb(1) and any jumps...
+          orbits = (fb(1)/FBFAC)*tt0
+        else
+          orbits = (fb(1)/FBFAC)*tt0
+          do j = 1, nfbj
+            if (tfbj(j).lt.t0(i) .and. tfbj(j).lt.ct) then
+              orbits = orbits + (ct-t0(i))*86400*fbj(j)
+            elseif (.not. (tfbj(j).gt.t0(i) .and. tfbj(j).gt.ct)) then
+              orbits = orbits + (ct-tfbj(j))*86400*fbj(j)
+            endif
+          enddo
+        endif
+        fac = 1.              ! ...now work out higher order terms
+        do j = 2, NFBMAX
+          fac = fac/j
+          orbits = orbits + fac*fb(j)*tt0**j / (FBFAC**j)
+        enddo
+      else                    ! orbital period specified
+        orbits=tt0/pb(1)-0.5d0*(pbdot+xpbdot)*(tt0/pb(1))**2
+      endif
+
       norbits=orbits
       if(orbits.lt.0.d0) norbits=norbits-1
       phase=twopi*(orbits-norbits)
@@ -88,7 +113,11 @@ c  Now we need the partial derivatives.
       fctn( 9) = Cx*f0
       fctn(10) = Ceps1*f0
       fctn(11) = -Csigma*an*f0*86400.d0
-      fctn(12) = fctn(11)*tt0/(pb(1)*86400.d0)
+      if (usefb) then
+        fctn(12) = fctn(11)*tt0/(86400.d0/(fb(1)/FBFAC)) ! needed to calculate other fctn()s
+      else
+        fctn(12) = fctn(11)*tt0/(pb(1)*86400.d0)
+      endif
       fctn(13) = Ceps2*f0
       fctn(18) = 0.5d-6*tt0*fctn(12)
       fctn(20) = Csi*f0
@@ -105,6 +134,26 @@ c  Now we need the partial derivatives.
          Cedot    = (Ceps1*sw+Ceps2*cw)*tt0
          fctn(14) = Comdot*f0/(RAD*365.25d0*86400.d0)
          fctn(25) = Cedot*f0         
+      endif
+
+      if (usefb) then
+        fctn(NPAR3+1) = -fctn(12)/(fb(1)/FBFAC)**2 / FBFAC
+        do j = 2, NFBMAX
+          fctn(NPAR3+j) = 1.d0/j * tt0 * fctn(NPAR3+j-1) / FBFAC
+        enddo
+        do j = 1, nfbj
+          if (tfbj(j).lt.t0(i) .and. tfbj(j).lt.ct) then
+            fctn(NPAR5+2*j-1) = 
+     +           -fbj(j)/tt0*(fctn(NPAR3+1)*FBFAC)*86400
+            fctn(NPAR5+2*j) =
+     +           ((ct-t0(i))*86400/tt0)*(fctn(NPAR3+1)*FBFAC)*1.d6
+          elseif (.not. (tfbj(j).gt.t0(i) .and. tfbj(j).gt.ct)) then
+            fctn(NPAR5+2*j-1) =
+     +           -fbj(j)/tt0*(fctn(NPAR3+1)*FBFAC)*86400
+            fctn(NPAR5+2*j) =
+     +           ((ct-tfbj(j))*86400/tt0)*(fctn(NPAR3+1)*FBFAC)
+          endif
+        enddo
       endif
 
       RETURN

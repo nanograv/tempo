@@ -26,9 +26,9 @@ C IHS 20120606 Add multiple derivatives for e and om
         if(i.eq.1)then
 C                         fb(1) terms of orbital frequency
            if (nfbj.eq.0) then
-             orbits = fb(1)*tt0 
+             orbits = (fb(1)/FBFAC)*tt0 
            else
-	     orbits = fb(1)*tt0
+	     orbits = (fb(1)/FBFAC)*tt0 
 	     do j = 1, nfbj
 	       if (tfbj(j).lt.t0(i) .and. tfbj(j).lt.ct) then
 		 orbits = orbits + (ct-t0(i))*86400*fbj(j)
@@ -41,7 +41,7 @@ c                         higher order terms
            fac = 1.
 	   do j = 2, NFBMAX
 	     fac = fac/j
-             orbits = orbits + fac*fb(j)*tt0**j
+             orbits = orbits + fac*fb(j)*tt0**j / (FBFAC**j)
            enddo
 	   ecc=e(i)+edot*tt0
 	   fac = 1.
@@ -93,7 +93,7 @@ C  Use Pat Wallace's method of solving Kepler's equation
 	r=-alpha*sbe + beta*cbe
 	s=1.d0/(1.d0-ecc*cbe)
 	if (i.eq.1) then
-	  torb=-q+(twopi*fb(1))*q*r*s + torb
+	  torb=-q+(twopi*fb(1)/FBFAC)*q*r*s + torb
         else
 	  torb=-q+(twopi/pb(i))*q*r*s + torb
         endif
@@ -106,8 +106,8 @@ C  Use Pat Wallace's method of solving Kepler's equation
 	if (i.eq.1) then
 				!note: we won't actually use the fctn(12+0)
 				! value except to calculate other fctn(..)'s.
-	  fctn(11+ii)=-f0*(twopi*fb(1))*r*s*86400.d0 ! T0 (in days)
-	  fctn(12+ii)=fctn(11+ii)*tt0/(86400.d0/fb(1)) ! PB
+	  fctn(11+ii)=-f0*(twopi*fb(1)/FBFAC)*r*s*86400.d0 ! T0 (in days)
+	  fctn(12+ii)=fctn(11+ii)*tt0/(86400.d0/(fb(1)/FBFAC)) ! PB
 	else
 	  fctn(11+ii)=-f0*(twopi/pb(i))*r*s*86400.d0 ! T0 (in days)
 	  fctn(12+ii)=fctn(11+ii)*tt0/(86400.d0*pb(i)) ! PB
@@ -120,9 +120,9 @@ C  Use Pat Wallace's method of solving Kepler's equation
 	   fctn(24)=tt0*fctn(9)           ! xdot
 	   fctn(25)=tt0*fctn(10)          ! edot
 
-	   fctn(NPAR3+1) = -fctn(12)/fb(1)**2
+	   fctn(NPAR3+1) = -fctn(12)/(fb(1)/FBFAC)**2 /FBFAC
            do j = 2, NFBMAX
-             fctn(NPAR3+j) = 1.d0/j * tt0 * fctn(NPAR3+j-1)
+             fctn(NPAR3+j) = 1.d0/j * tt0 * fctn(NPAR3+j-1) /FBFAC
            enddo
            fctn(NPAR4+1) = 0.5d0 * tt0 * fctn(24)  ! More x derivatives
            do j = 3, NXDOTMAX
@@ -138,13 +138,15 @@ C  Use Pat Wallace's method of solving Kepler's equation
            enddo
 	   do j = 1, nfbj
 	     if (tfbj(j).lt.t0(i) .and. tfbj(j).lt.ct) then
-               fctn(NPAR5+2*j-1) = -fbj(j)/tt0*fctn(NPAR3+1)*86400
+               fctn(NPAR5+2*j-1) = 
+     +              -fbj(j)/tt0*(fctn(NPAR3+1)*FBFAC)*86400
                fctn(NPAR5+2*j) = 
-     +              ((ct-t0(i))*86400/tt0)*fctn(NPAR3+1)*1.d6
+     +              ((ct-t0(i))*86400/tt0)*(fctn(NPAR3+1)*FBFAC)*1.d6
              elseif (.not. (tfbj(j).gt.t0(i) .and. tfbj(j).gt.ct)) then
-	       fctn(NPAR5+2*j-1) = -fbj(j)/tt0*fctn(NPAR3+1)*86400
+	       fctn(NPAR5+2*j-1) = 
+     +              -fbj(j)/tt0*(fctn(NPAR3+1)*FBFAC)*86400
                fctn(NPAR5+2*j) = 
-     +              ((ct-tfbj(j))*86400/tt0)*fctn(NPAR3+1)
+     +              ((ct-tfbj(j))*86400/tt0)*(fctn(NPAR3+1)*FBFAC)
 	     endif
 	   enddo
 	endif

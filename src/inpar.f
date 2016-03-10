@@ -116,6 +116,10 @@ c      $Id$
          glepoch(i)=0.
       enddo
 
+      do i = 1, NFBMAX
+        fb(i) = 0.
+      enddo
+
       nfbj = 0
       do i = 1, NFBJMAX
         tfbj(i) = 0.
@@ -710,12 +714,15 @@ c next two lines by sets on 29 Aug 05
          if (lk.eq.2) then   ! "FB" -- treat it as "FB0"
            setfb = .true.
            read(value,*)fb(1)
+           fb(1)=fb(1)*FBFAC
            read(cfit,*)nfit(NPAR3+1)
          else if (key(3:3).ge.'0'.and.key(3:3).le.'9') then
            setfb = .true.
            read(key(3:lk),*)jj
            if (jj.eq.0.or.jj.eq.1) setfb = .true.
            read(value,*)fb(jj+1)
+           ! store internally with a higher exponent
+           fb(jj+1)=fb(jj+1)*FBFAC**(jj+1)
            read(cfit,*)nfit(NPAR3+jj+1)
          endif
  
@@ -1093,9 +1100,9 @@ C DJN modified to allow it if at least one DMX value is held fixed at zero
 
 c     if binary frequencies are input but binary model requires 
 c     binary periods, make the conversion if possible
-      if (setfb .and. nbin.ne.10) then
-        pb(1) = (1.d0/fb(1))/86400.d0
-        pbdot = -fb(2)/(fb(1)*fb(1))*1.d12
+      if (setfb .and. nbin.ne.10 .and. nbin.ne.9) then
+        pb(1) = (1.d0/(fb(1)/FBFAC))/86400.d0
+        pbdot = -fb(2)/FBFAC**2/(fb(1)*fb(1)/FBFAC/FBFAC)*1.d12
         if (nfit(NPAR3+1).ne.0) then
           nfit(12) = nfit(NPAR3+1)
           nfit(NPAR3+1) = 0
@@ -1117,14 +1124,14 @@ c     binary periods, make the conversion if possible
 c     in any case, make sure pb(1) is set, so orbital phase calculations
 c     for tempo.lis, resid2.tmp can be done (albeit with limited accuracy, 
 c     since this will be done with pre-fit orbital period).
-      if (setfb .and. pb(1).eq.0) pb(1) = (1.d0/fb(1))/86400.d0
+      if (setfb .and. pb(1).eq.0) pb(1) = (1.d0/(fb(1)/FBFAC))/86400.d0
 
 
 c     if binary periods are input but binary model requires 
 c     binary frequencies, make the conversion 
       if(setpb .and. nbin.eq.10 .and. pb(1).ne.0) then
-        fb(1) = (1.d0/pb(1))/86400.d0
-        fb(2) = -(pbdot*1.d-12)/(pb(1)*86400.)**2
+        fb(1) = (1.d0/pb(1))/86400.d0 * FBFAC
+        fb(2) = -(pbdot*1.d-12)/(pb(1)*86400.)**2 * FBFAC**2
         if (nfit(12).ne.0) then
           nfit(NPAR3+1) = nfit(12)
           nfit(12) = 0
@@ -1136,6 +1143,22 @@ c     binary frequencies, make the conversion
       endif
 
       call getecliptic
+
+
+c     Model-specific checks.
+c     Binary model numbers are defined implcitly by the
+c        content of array bmodel as declared in tempo.f.
+c     Here they are for reference:
+c           0=None,   1=BT,    2=EH,   3=DD,    4=DDGR, 5=H88
+c           6=BT+,    7=DDT,   8=MSS,  9=ELL1, 10=BTX
+c           11=BT1P, 12=BT2P, 13=DDS, 14=DDK
+
+
+      if(nbin.eq.9.and.setfb .or. nbin.eq.10) then
+        usefb = .true.
+      else
+        usefb = .false.
+      endif
 
 
       if(nbin.eq.0.and.(nfit(9).ne.0.or.nfit(10).ne.0.or.nfit(11).ne.0
