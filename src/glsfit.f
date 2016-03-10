@@ -73,8 +73,9 @@ c packed cov matrix, to be malloced
         logical diagcov
         data diagcov/.true./
         integer ncovpts  
-        integer*8 dcovoff, idx
-        real*8 dcov(1)
+        integer*8 dcovoff, rcovoff, idx
+        real*8 dcov(1) ! data cov matrix
+        real*8 rcov(1) ! red noise portion
         real*8 detcov,cmax,cmin
 
         real*8 rmean, r2mean
@@ -89,6 +90,7 @@ c packed cov matrix, to be malloced
 
 c save the cov matrix stuff so we can iterate faster
         save havecov, ncovpts, dcovoff, dcov, detcov, Adm, Admoff
+	save rcovoff, rcov
 
         lwork = 10*NPAP1*NPAP1
 	mprt=10**nprnt
@@ -144,12 +146,17 @@ c Alloc space for COV matrix.  To access array element i
 c use dcov(i+dcovoff) and pass to calls as dcov(1+dcovoff).
 c Packed upper triangular storage means element (i,j) is accessed
 c using index i+j*(j-1)/2, with i<=j.
+c If red noise is enabled we save a separate copy of the red noise
+c portion of the cov matrix so that 'white' residuals can be calculated
+c at the end.
         if (.not. havecov) then
           print *,'  ... allocate matrices'
           ncovpts = npts*(npts-1)/2 + npts
           call mallocxd(dcov,ncovpts,8,dcovoff)
+          if (rnamp.gt.0) call mallocxd(rcov,ncovpts,8,rcovoff)
           do i=1,ncovpts 
             dcov(dcovoff+i)=0.0
+            if (rnamp.gt.0) rcov(rcovoff+i)=0.0
           enddo
         endif
 
@@ -195,6 +202,26 @@ c   dcov, cov matrix (diagonal part only)
 
         if (.not.havecov) then
 
+C compute red noise here so that we can save it separately
+c Power-law red noise:
+c in "timing power" units (us/sqrt(yr^-1))
+          !rnamp = 0.028997
+          !rnidx = -13d0/3d0
+          if (rnamp.gt.0) then
+C call once to initialize plnoise values:
+            print *,'  ... compute covariance (rn)'
+            z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
+            do i=1,npts
+              cp = p0+p1*(cts(i)-peopch)*86400.d0
+              do j=1,i
+                idx=rcovoff+j+i*(i-1)/2
+                rcov(idx) =
+     +            plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
+     +            / cp**2 / 1d12
+              enddo
+            enddo
+          endif
+
 c read inverted cov matrix from disk here if option selected
 c TODO some kind of check that the file works would be nice... 
           if (dcovfile.ne."") then
@@ -226,26 +253,18 @@ C This should probably be a subroutine?
               enddo
             endif
 
-c Power-law red noise:
-c in "timing power" units (us/sqrt(yr^-1))
-            !rnamp = 0.028997
-            !rnidx = -13d0/3d0
+C Add in red noise component if it exists
             if (rnamp.gt.0) then
-C call once to initialize plnoise values:
-              print *,'  ... compute covariance (rn)'
-              z = plnoise_interp(0d0,rnidx,1d0,rnamp,.true.)
               cmax = dcov(dcovoff+1)
               cmin = dcov(dcovoff+1)
               diagcov = .false.
               do i=1,npts
-                cp = p0+p1*(cts(i)-peopch)*86400.d0
                 do j=1,i
-                  idx=dcovoff+j+i*(i-1)/2
-                  dcov(idx) = dcov(idx) 
-     +              + plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
-     +              / cp**2 / 1d12
-                  if (dcov(idx).gt.cmax) cmax = dcov(idx)
-                  if (dcov(idx).lt.cmin) cmin = dcov(idx)
+                  idx=j+i*(i-1)/2
+                  dcov(dcovoff+idx) = dcov(dcovoff+idx)
+     +              + rcov(rcovoff+idx)
+                  if (dcov(dcovoff+idx).gt.cmax) cmax = dcov(dcovoff+idx)
+                  if (dcov(dcovoff+idx).lt.cmin) cmin = dcov(dcovoff+idx)
                 enddo
               enddo
 c            print *,"dcov(max)=",cmax
@@ -416,6 +435,17 @@ c TODO make tempo report this as "the" chi2?
         endif
         print *,"GLS chisq=", chisq
 
+c Here is where we compute red residuals
+        if (rnamp.gt.0) then
+          print *,'  ... computing red residuals'
+          call dtpmv('U','N','N',npts,dcov(1+dcovoff),r,1)
+          call dspmv('U',npts,1d0,dcov(1+dcovoff),r,1,0d0,r,1)
+        else
+          do i=1,npts
+            r(i) = 0d0
+          enddo
+        endif
+
 c Computes the post-fit param values in a
 	do i=1,nparam
           atmp(i) = atmp(i)/sv(i)
@@ -487,7 +517,7 @@ C Correct tz ref TOA
 	  resr(6) = weight
 	  resr(7) = terr
 	  resr(8) = y
-	  resr(9) = ddmch(i)
+	  resr(9) = r(i)
           if (lw) nwrt = write(fd,resn,80)
           wmax=max(wmax,weight)
           r2mean=r2mean+weight*dt2**2
