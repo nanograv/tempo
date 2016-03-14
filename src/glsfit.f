@@ -74,9 +74,9 @@ c packed cov matrix, to be malloced
         logical diagcov
         data diagcov/.true./
         integer ncovpts  
-        integer*8 dcovoff, rcovoff, idx
-        real*8 dcov(1) ! data cov matrix
-        real*8 rcov(1) ! red noise portion
+        integer*8 idx
+        real*8,allocatable :: dcov(:) ! data cov matrix
+        real*8,allocatable :: rcov(:) ! red noise portion
         real*8 detcov,cmax,cmin
 
         real*8 rmean, r2mean
@@ -90,8 +90,8 @@ c packed cov matrix, to be malloced
  	integer open, close, write
 
 c save the cov matrix stuff so we can iterate faster
-        save havecov, ncovpts, dcovoff, dcov, detcov, Adm, Admoff
-	save rcovoff, rcov
+        save havecov, ncovpts, dcov, detcov, Adm, Admoff
+	save rcov
 
         lwork = 10*NPAP1*NPAP1
 	mprt=10**nprnt
@@ -143,8 +143,7 @@ c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
         write (*,'(''  glsfit Ntoa='',i6)') npts
         if (nz.gt.0) print *,"Warning: nz>0 in glsfit"
 
-c Alloc space for COV matrix.  To access array element i
-c use dcov(i+dcovoff) and pass to calls as dcov(1+dcovoff).
+c Alloc space for COV matrix.  
 c Packed upper triangular storage means element (i,j) is accessed
 c using index i+j*(j-1)/2, with i<=j.
 c If red noise is enabled we save a separate copy of the red noise
@@ -153,11 +152,17 @@ c at the end.
         if (.not. havecov) then
           print *,'  ... allocate matrices'
           ncovpts = npts*(npts-1)/2 + npts
-          call mallocxd(dcov,ncovpts,8,dcovoff)
-          if (rnamp.gt.0) call mallocxd(rcov,ncovpts,8,rcovoff)
+          allocate(dcov(ncovpts),stat=istat)
+          if (istat.ne.0)
+     +      stop "glsfit: can't allocate memory for dcov"
+          if (rnamp.gt.0) then
+            allocate(rcov(ncovpts),stat=istat)
+            if (istat.ne.0)
+     +        stop "glsfit: can't allocate memory for rcov"
+          endif
           do i=1,ncovpts 
-            dcov(dcovoff+i)=0.0
-            if (rnamp.gt.0) rcov(rcovoff+i)=0.0
+            dcov(i)=0.0
+            if (rnamp.gt.0) rcov(i)=0.0
           enddo
         endif
 
@@ -199,7 +204,7 @@ c   dcov, cov matrix (diagonal part only)
               ndmparam = ndmparam + 1
             endif
  66       continue
-          if (.not.havecov) dcov(dcovoff+i+i*(i-1)/2) = 1d0/weight
+          if (.not.havecov) dcov(i+i*(i-1)/2) = 1d0/weight
  67     continue
 
         if (.not.havecov) then
@@ -216,7 +221,7 @@ C call once to initialize plnoise values:
             do i=1,npts
               cp = p0+p1*(cts(i)-peopch)*86400.d0
               do j=1,i
-                idx=rcovoff+j+i*(i-1)/2
+                idx=j+i*(i-1)/2
                 rcov(idx) =
      +            plnoise_interp(abs(cts(i)-cts(j)),rnidx,1d0,rnamp,.false.)
      +            / cp**2 / 1d12
@@ -231,7 +236,7 @@ c TODO some kind of check that the file works would be nice...
             print *,'  ... read cov matrix from disk'
 	    open(39,file=dcovfile,form='unformatted',
      +            status='unknown')
-	    read(39) (dcov(dcovoff+i), i=1,ncovpts)
+	    read(39) (dcov(i), i=1,ncovpts)
 	    close(39)
 
           else
@@ -247,7 +252,7 @@ C This should probably be a subroutine?
                 cp = p0+p1*(cts(i)-peopch)*86400.d0
                 ecorr(i) = getecorr(stflags(i)) * 1d-6 / cp
                 do j=1,i
-                  idx=dcovoff+j+i*(i-1)/2
+                  idx=j+i*(i-1)/2
                   if (abs(cts(i)-cts(j)).lt.tcorr) then
                     dcov(idx) = dcov(idx) + ecorr(i)*ecorr(j)
                   endif
@@ -257,22 +262,22 @@ C This should probably be a subroutine?
 
 C Add in red noise component if it exists
             if (rnamp.gt.0) then
-              cmax = dcov(dcovoff+1)
-              cmin = dcov(dcovoff+1)
+              cmax = dcov(1)
+              cmin = dcov(1)
               diagcov = .false.
               do i=1,npts
                 do j=1,i
                   idx=j+i*(i-1)/2
-                  dcov(dcovoff+idx) = dcov(dcovoff+idx)
-     +              + rcov(rcovoff+idx)
-                  if (dcov(dcovoff+idx).gt.cmax) cmax = dcov(dcovoff+idx)
-                  if (dcov(dcovoff+idx).lt.cmin) cmin = dcov(dcovoff+idx)
+                  dcov(idx) = dcov(idx)
+     +              + rcov(idx)
+                  if (dcov(idx).gt.cmax) cmax = dcov(idx)
+                  if (dcov(idx).lt.cmin) cmin = dcov(idx)
                 enddo
               enddo
 c            print *,"dcov(max)=",cmax
 c            print *,"dcov(min)=",cmin
 c            do i=1,10
-c              print *,i,dcov(dcovoff+i)
+c              print *,i,dcov(i)
 c            enddo
             endif
 
@@ -281,7 +286,7 @@ C if cov matrix is diagonal just do it the easy way
 
               print *,'  ... invert diagonal matrix'
               do i=1,npts
-                idx=dcovoff+i+i*(i-1)/2
+                idx=i+i*(i-1)/2
                 dcov(idx) = 1.0/sqrt(dcov(idx))
               enddo
 
@@ -291,14 +296,14 @@ C Non-diagonal cov, do the full cholesky thing
 c Notes for GLS:
 c Cholesky factorize: dpotrf() or dpptrf() for packed
               print *,'  ... Cholesky decomp'
-              call dpptrf('U',npts,dcov(1+dcovoff),inforv)
+              call dpptrf('U',npts,dcov,inforv)
               !print *,"dpptrf info=",inforv
               if (inforv.ne.0) stop "glsfit: Cholesky decomp failed"
               detcov=0d0
-              cmax = dcov(dcovoff+1)
-              cmin = dcov(dcovoff+1)
+              cmax = dcov(1)
+              cmin = dcov(1)
               do i=1,npts
-                idx = dcovoff+i+i*(i-1)/2
+                idx = i+i*(i-1)/2
                 detcov = detcov + log(dcov(idx))
                 if (dcov(idx).gt.cmax) cmax = dcov(idx)
                 if (dcov(idx).lt.cmin) cmin = dcov(idx)
@@ -309,7 +314,7 @@ c Cholesky factorize: dpotrf() or dpptrf() for packed
 
 c invert triangular matrix: dtrtri() or dtptri() for packed
               print *,'  ... matrix inverse'
-              call dtptri('U','N',npts,dcov(1+dcovoff),inforv)
+              call dtptri('U','N',npts,dcov,inforv)
               if (inforv.ne.0) stop "glsfit: invert cov matrix failed"
 
             endif
@@ -321,7 +326,7 @@ c TODO make this optional
               open(39,file='datacov.tmp',form='unformatted',
      +              status='unknown')
               rewind(39)
-              write(39) (dcov(dcovoff+i), i=1,ncovpts)
+              write(39) (dcov(i), i=1,ncovpts)
               close(39)
             endif
 
@@ -333,14 +338,14 @@ c TODO make this optional
         endif ! not havecov
 
 c        do i=1,10
-c          print *,i,dcov(dcovoff+i)
+c          print *,i,dcov(i)
 c        enddo
 
 c Multiply by inv cov matrix
         print *,'  ... matrix multiply'
-        call dtpmv('U','T','N',npts,dcov(1+dcovoff),r,1)
+        call dtpmv('U','T','N',npts,dcov,r,1)
         do 68 i=1,nparam
-          call dtpmv('U','T','N',npts,dcov(1+dcovoff),
+          call dtpmv('U','T','N',npts,dcov,
      +      Adm(Admoff+1+(i-1)*Admrows),1)
  68     continue
 
@@ -440,8 +445,8 @@ c TODO make tempo report this as "the" chi2?
 c Here is where we compute red residuals
         if (rnamp.gt.0) then
           print *,'  ... computing red residuals'
-          call dtpmv('U','N','N',npts,dcov(1+dcovoff),r,1)
-          call dspmv('U',npts,1d0,rcov(1+rcovoff),r,1,0d0,rr,1)
+          call dtpmv('U','N','N',npts,dcov,r,1)
+          call dspmv('U',npts,1d0,rcov,r,1,0d0,rr,1)
         else
           do i=1,npts
             rr(i) = 0d0
