@@ -491,58 +491,77 @@ c=======================================================================
       endif
  1038 format('XPBDOT',f20.7,a,f20.7)
 
-      if((si.ne.0.).and.(shapmax.eq.0)) then
-         if(nfit(20).gt.0)then
-            write(71,1020)si,fit1,ferr(20)
-         else
-            write(71,1020)si
-         endif
-      endif
- 1020 format('SINI',f22.6,a,f20.6)
+c --- JMW distinguish ddfwhiecc model(14) where nfit20 is varsigma and nfit22 is h3:
 
-      if(shapmax.ne.0.)then
-         if(nfit(20).gt.0)then
-            write(71,1099) shapmax,fit1,ferr(20)
-         else
-            write(71,1099) shapmax
-         endif
-      endif
- 1099 format('SHAPMAX',f19.6,a,f20.6)
-
-c --> NW: higher order Shapiro
-      if(nshapho.eq.1.)then
-
-         if(nfit(39).gt.0)then
-                write(71,1199) shaphof,fit1,ferr(39)
+      if(nbin.eq.14)then
+          if(varsigma.ne.0.)then
+              if(nfit(20).gt.0)then
+                  write(71,1120)varsigma,fit1,ferr(20)
+              else
+                  write(71,1120)varsigma
+              endif
+          endif
+1120      format('VARSIGMA',f22.6,a,f20.6)
+          if(h3.ne.0.)then
+              if(nfit(22).gt.0)then
+                  write(71,1122)h3,fit1,ferr(22)
+              else
+                  write(71,1122)h3
+              endif
+          endif
+1122      format('H3',f24.12,a,f20.12)
+      else
+          if((si.ne.0.).and.(shapmax.eq.0))then
+             if(nfit(20).gt.0)then
+                write(71,1020)si,fit1,ferr(20)
              else
-                write(71,1199) shaphof
+                write(71,1020)si
              endif
+          endif
+1020      format('SINI',f22.6,a,f20.6)
 
-             if(cotchi0.ne.0.)then
-            write(71,1399) cotchi0
-         endif
+          if(shapmax.ne.0.)then
+             if(nfit(20).gt.0)then
+                write(71,1099) shapmax,fit1,ferr(20)
+             else
+                write(71,1099) shapmax
+             endif
+          endif
+1099      format('SHAPMAX',f19.6,a,f20.6)
 
+c         --> NW: higher order Shapiro
+          if(nshapho.eq.1.)then
+             if(nfit(39).gt.0)then
+                    write(71,1199) shaphof,fit1,ferr(39)
+                 else
+                    write(71,1199) shaphof
+                 endif
+
+                 if(cotchi0.ne.0.)then
+                write(71,1399) cotchi0
+             endif
+          endif
+1199      format('SHAPHOF',f19.6,a,f20.6)
+1399      format('COTCHI0',f19.6)
+
+          if(am.ne.0.)then
+             if(nfit(21).gt.0)then
+                write(71,1021)am,fit1,ferr(21)
+             else
+                write(71,1021)am
+             endif
+          endif
+1021      format('MTOT',f22.6,a,f20.6)
+
+          if((am2.ne.0.).and.(h3.eq.0))then
+             if(nfit(22).gt.0)then
+                write(71,1022)am2,fit1,ferr(22)
+             else
+                write(71,1022)am2
+             endif
+          endif
+1022      format('M2',f24.6,a,f20.6)
       endif
- 1199 format('SHAPHOF',f19.6,a,f20.6)
- 1399 format('COTCHI0',f19.6)
-
-      if(am.ne.0.)then
-         if(nfit(21).gt.0)then
-            write(71,1021)am,fit1,ferr(21)
-         else
-            write(71,1021)am
-         endif
-      endif
- 1021 format('MTOT',f22.6,a,f20.6)
-
-      if(am2.ne.0.)then
-         if(nfit(22).gt.0)then
-            write(71,1022)am2,fit1,ferr(22)
-         else
-            write(71,1022)am2
-         endif
-      endif
- 1022 format('M2',f24.6,a,f20.6)
 
       if(dth.ne.0.)then
          if(nfit(23).gt.0)then

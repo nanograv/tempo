@@ -1,6 +1,6 @@
 c      $Id$
 
-        parameter(NMODELS=14)
+        parameter(NMODELS=15)
         parameter(FBFAC=1.d10)
         ! fb(i) quantities  are scaled by FBFAC**i
         !    input values are multipiled by FBFAC**i
@@ -17,7 +17,7 @@ c      $Id$
      +       eps1,eps2,eps1dot,eps2dot,t0asc,okom,okin,
      +       omdot,gamma,pbdot,si,am,am2,dth,xomdot,xpbdot,dr,a0,b0,xk,
      +       bp,bpp,xdot,edot,a0aligned,afac,om2dot,x2dot, shapmax,
-     +       shaphof, cotchi0, 
+     +       varsigma,h3, shaphof, cotchi0,
      +       fb(NFBMAX), xdot2(NXDOTMAX), fbj(NFBJMAX), tfbj(NFBJMAX),
      +       edot2(NEDOTMAX),omdot2(NOMDOTMAX), 
      +       usefb
