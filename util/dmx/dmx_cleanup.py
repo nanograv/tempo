@@ -34,7 +34,6 @@ for idx in dmx.keys():
     print "Error: no DMXR1 key for DMX range ",idx
     sys.exit() 
   if float(dmx[idx]["R1"][0])<1. and float(dmx[idx]["R2"][0])<1.:
-    print "removing ",idx," to due to zeros"
     del dmx[idx]
 k = dmx.keys()
 k = sorted(k,key=lambda x:dmx[x]["R1"])
