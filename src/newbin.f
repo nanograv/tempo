@@ -7,7 +7,7 @@ c      $Id$
 	include 'orbit.h'
         logical err
 cvk     Parameters for finding mass function
-	parameter (TWOPI=6.28318530717958648d0)
+	parameter (TWOPI=6.28318530717958648d0,SUNMASS=4.925490947d-6)
       	parameter (gm=1.3271243999e26)
 	parameter (cvel=2.99792458e10)
 	data e12/1.d12/,e6/1.d6/
@@ -131,6 +131,7 @@ c --- output of non-Keplerian parameters, I ---
      +     .and.si.eq.0.0      .and.am.eq.0.0      .and.am2.eq.0.0
      +     .and.dth.eq.0.0     .and.xdot.eq.0.0    .and.edot.eq.0.0
      +     .and.xomdot.eq.0.0  .and.xpbdot.eq.0.0   .and.shapmax.eq.0.0
+     +     .and.varsigma.eq.0.0    .and.h3.eq.0.0
      +     .and.om2dot.eq.0.0  .and.x2dot.eq.0.0
      +     .and.ferr(14).eq.0.0.and.ferr(15).eq.0.0.and.ferr(18).eq.0.0
      +     .and.ferr(20).eq.0.0.and.ferr(21).eq.0.0.and.ferr(22).eq.0.0
@@ -148,7 +149,7 @@ c --- output of non-Keplerian parameters, I ---
      +        freq(21),freq(22),freq(23)*e6
            write(31,10523) ferr(14),ferr(15),e6*ferr(18),ferr(20),
      +        ferr(21),ferr(22),ferr(23)*e6
-10523      format(f11.7,f12.9,f14.6,f11.6,f11.7,f12.5,f11.4)
+10523      format(f11.7,f13.9,f14.6,f11.6,f11.7,f12.5,f11.4)
         else if(nbin.eq.4)then
            write(31,10504)
 10504      format(//'    XOMDOT     XPBDOT(-12)     M         m2'/)
@@ -199,6 +200,20 @@ c --- output of non-Keplerian parameters, I ---
      +        freq(21),freq(22),freq(23)*e6
            write(31,10523) ferr(14),ferr(15),e6*ferr(18),ferr(20),
      +        ferr(21),ferr(22),ferr(23)*e6
+
+        else if(nbin.eq.15)then !!!!!JMW YH AC: bnryddfwhiecc parameters
+           	   write(31,10613)
+10613	   format(//'     OMDOT     GAMMA          PBDOT(-12) ',
+     +              '     DTH(-6)  VARSIGMA    H3(-6)'/)
+           write(31,10713)omdot,gamma,pbdot*e12,e6*dth,varsigma,
+     +								e6*h3
+10713      format(f11.7,f14.9,f14.6, x,  x,   f11.4,2f11.6)
+           write(31,10713) freq(14),freq(15),e6*freq(18),
+     +       	e6*freq(23), freq(20),e6*freq(22)
+10813      format(f11.7,f14.9,f14.6,  x, x,f11.4,2f11.6)
+           write(31,10713) ferr(14),ferr(15),e6*ferr(18),
+     +        	ferr(23)*e6 ,ferr(20),e6*ferr(22)
+
         else if(nbin.eq.14)then
            okind = okin * 360.0d0 / twopi
            okin_errd = ferr(53) * 360.0d0 / twopi
@@ -249,17 +264,41 @@ c  Update parameters
         omdot  = omdot  + freq(14)
 	gamma  = gamma  + freq(15)
         pbdot  = pbdot  + freq(18)/e6
-c       --- new in DDS !! ---
+
+c       --- new in DDS      (nbin.eq.13): appropriate freq(20) forshapmax !! ---
         if (nbin.eq.13) then
            shapmax = shapmax + freq(20)
+
+c      ---- new in DDFWHE  (nbin.eq.15): appropriate freq(20) for varsigma---
+        else if (nbin.eq.15) then
+           varsigma = varsigma + freq(20)
+c	calculate Mtot,m2,sini, derived from DDFWHIECC post-Keplerian parameters  
+c		for printout below  
+           omdotinradpersec=omdot*twopi/ (86400.0*365.25*360.0)  
+           amtotfromomegadot=(  omdotinradpersec * (1.-e(1)**2) *
+     1		(pb(1)*86400./twopi)**(5./3.)   / 3.)**(3./2.)
+     2		 / sunmass
+           sinifromvarsigma=2.0 * varsigma / (varsigma**2 + 1.0)
+           cosifromvarsigma=sqrt(1.0-sinifromvarsigma**2)
+           am2fromvarsigandh3=(h3/varsigma**3) / sunmass
+
         else if(nbin.eq.14) then
            okin   = okin   + freq(53)
            okom   = okom   + freq(52)
+
         else
            si     = si     + freq(20)
         endif
+        
 	am     = am     + freq(21)
-	am2    = am2    + freq(22)
+	
+c     ------ new in DDFWHE (nbin.eq.15): appropriate freq(22) for h3 ----
+        if (nbin.eq.15) then
+           h3 = h3 + freq(22)
+        else
+	    am2    = am2    + freq(22)
+        endif
+        
 	dth    = dth    + freq(23)
 	xpbdot = xpbdot + freq(38)/e6
 	xomdot = xomdot + freq(37)
@@ -285,12 +324,25 @@ c  Print updated parameters
 	      write(31,10529) xdot*e12,eps1dot*e12,eps2dot*e12,
      +           pbdot*e12,si,am2
 	   endif
-        else if (nbin.eq.13) then
+
+        else if (nbin.eq.13) then	!DDS:
            write(31,10523) omdot,gamma,pbdot*e12,shapmax,am,am2,e6*dth
+
+	else if (nbin.eq.15) then	!DDFWHIECC
+           write(31,10713)omdot,gamma,pbdot*e12,        e6*dth,varsigma,
+     +								e6*h3
+cccccccccccccccccccccalc and print derived mass, sin i m2 here
+	  write(31,10739)amtotfromomegadot, sinifromvarsigma,
+     1			cosifromvarsigma,am2fromvarsigandh3
+10739	  format(/, 'Mtot (derived from omegadot) =',f8.4,' Msun',/,
+     1          'sin(i) and cos(i) (derived from varsigma) =',2f7.3,/
+     2          'M2 (derived from varsigma and h3) =',f7.3,' Msun') 
+
         else if (nbin.eq.14)then
            okind = okin * 360.0d0 / twopi
            okomd = okom * 360.0d0 / twopi
            write(31,10525) omdot,gamma,pbdot*e12,okind,okomd,am2,e6*dth
+
 	else
 	   write(31,10521) omdot,gamma,pbdot*e12,si,am,am2
 	endif

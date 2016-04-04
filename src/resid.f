@@ -45,6 +45,7 @@ c      $Id$
 	if(nbin.eq.9) call bnryell1(torb,x)
 	if(nbin.eq.10) call bnrybtx(torb,x)
 	if(nbin.eq.13) call bnrydds(torb,x)
+        if(nbin.eq.15) call bnryddfwhiecc(torb,x)
 	if(nbin.eq.14) call bnryddk(torb,x)
 
 	ntpd=nct-nepoch

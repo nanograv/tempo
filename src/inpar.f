@@ -69,6 +69,9 @@ c      $Id$
       cotchi0=0.  ! NW: higher order Shapiro in DDS - latitudinal time delay (RL06)
       am=0.
       am2=0.
+c	new in DDFWHE
+      varsigma=0.
+      h3=0.
       dr=0.
       dth=0.
       a0=0.
@@ -738,12 +741,22 @@ c next two lines by sets on 29 Aug 05
          read(value,*)si
          read(cfit,*)nfit(20)
 
+c	JMW et al. nfit(20) slot for VARSIGMA if using bnryfwhiecc
+      else if(key(1:8).eq.'VARSIGMA')then
+         read(value,*)varsigma
+         read(cfit,*)nfit(20)
+
       else if(key(1:4).eq.'MTOT')then
          read(value,*)am
          read(cfit,*)nfit(21)
 
       else if(key(1:2).eq.'M2')then
          read(value,*)am2
+         read(cfit,*)nfit(22)
+
+c	 JMW et al. nfit(22) slot for H3 if using bnryfwhiecc
+      else if(key(1:2).eq.'H3')then
+         read(value,*)h3
          read(cfit,*)nfit(22)
 
       else if(key(1:5).eq.'DTHET')then

@@ -63,6 +63,7 @@ C  11	BT, 2 orbits
 C  12	BT, 3 orbits
 C  13   DDS
 C  14   DDK
+c  15   DDFWHE 
 
 C  special case: nfit(3)>1 implies that frequency derivatives 1 through nfit(3) 
 C  are to be fit.  (Example: if nfit(3)=5, fit F1 through F5).  Set the relevant flags.
@@ -481,6 +482,8 @@ c  Beginning of iteration loop
           if(gamma.ne.0.)write(31,'(''Gamma (s):'',f22.6)')gamma
           if(si.ne.0.)write(31,'(''sin(i):'',f25.6)')si
           if(shapmax.ne.0.)write(31,'(''SHAPMAX:'',f25.6)')shapmax
+          if(varsigma.ne.0.)write(31,'(''VARSIGMA:'',f25.6)')varsigma
+          if(h3.ne.0.)write(31,'(''H3:'',f25.6)')h3
           if(okom.ne.0.)write(31,'(''KOM (deg):'',f22.6)')okom*360./TWOPI
           if(okin.ne.0.)write(31,'(''KIN (deg):'',f22.6)')okin*360./TWOPI
           if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am
