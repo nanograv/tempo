@@ -491,9 +491,9 @@ c=======================================================================
       endif
  1038 format('XPBDOT',f20.7,a,f20.7)
 
-c --- JMW distinguish ddfwhiecc model(14) where nfit20 is varsigma and nfit22 is h3:
+c --- JMW distinguish ddfwhiecc model(15) where nfit20 is varsigma and nfit22 is h3:
 
-      if(nbin.eq.14)then
+      if(nbin.eq.15)then
           if(varsigma.ne.0.)then
               if(nfit(20).gt.0)then
                   write(71,1120)varsigma,fit1,ferr(20)

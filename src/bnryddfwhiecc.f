@@ -1,11 +1,9 @@
 c      $Id$
         subroutine bnryddfwhiecc(torb,fctn)
-c   Copied from /usr4/tempo11005 and modified to be compatible with
-c   tempo13 (the git version)
-c   modified Dec 22,2014 to correct definition of sini found by Yuping Huang
 c   modified version of bnrydd (Damour-Deruelle), with Shapiro
 c   terms re-parameterized as per Freire & Wex 2010, for
-c   high eccentricity orbits.  Joel Weisberg & Andrew Chael Feb 2012
+c   high eccentricity orbits.  Joel Weisberg, Yuping Huang, & Andrew Chael.
+c   See Weisberg & Huang APJ 2016 for first use.
 c   requires inputs of h3 and varsigma instead 
 c   of m2 (aka r) and sini (aka s)
 
