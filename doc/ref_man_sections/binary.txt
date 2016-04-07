@@ -69,48 +69,57 @@ DDK  Variation of DD which incorporates secular changes in observed
      References: Kopeikin, S. M., ApJ 439:L5 (1995)
                  Kopeikin, S. M., ApJ 467:L93 (1996)
 
+DDFWHE Variation of DD which implements the Freire&Wex(2010) orthometric 
+       Shapiro delay parametrization in the high eccentricity case with
+       h3 and varsigma instead of m2 and sini. Implemented by
+       J. Weisberg, Y. Huang, & A. Chael.
+       References: Freire, P. C. C.& Wex, N., MNRAS 409:199 (2010)
+                   Weisberg & Huang, APJ 2016
+
 The following table summarizes the parameters used by each model.  An 'x'
 indicates a parameter fully implemented.  An 'o' indicates the parameter is
 used at a fixed value, but cannot be fitted.  A '*' indicates the parameter
 is used only to calculate other binary parameters, and is then ignored.
 
 
-           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1    BTX   DDS   DDK
-A1          x    x     x      x      x      x      x      x      x      x     x     x
-E           x    x     x      x      x      x      x      x      *      x     x     x
-T0          x    x     x      x      x      x      x      x      *      x     x     x
-PB          x    x     x      x      x      x      x      x      x      *     x     x
-OM          x    x     x      x      x      x      x      x      *      x     x     x
+           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1    BTX   DDS   DDK   DDFWHE
+A1          x    x     x      x      x      x      x      x      x      x     x     x      x
+E           x    x     x      x      x      x      x      x      *      x     x     x      x
+T0          x    x     x      x      x      x      x      x      *      x     x     x      x
+PB          x    x     x      x      x      x      x      x      x      *     x     x      x
+OM          x    x     x      x      x      x      x      x      *      x     x     x      x
 TASC        *                                                    x
 EPS1        *                                                    x
 EPS2        *                                                    x
-FB          *    *     *      *      *      *      *      *      *      x     *     *
-FB_1        *    *     *      *      *      *      *      *      *      x     *     *
+FB          *    *     *      *      *      *      *      *      *      x     *     *      *
+FB_1        *    *     *      *      *      *      *      *      *      x     *     *      *
 FB_x                                                                    x     *     *
-OMDOT       x    x     x             x      x             x      x      x     x     
+OMDOT       x    x     x             x      x             x      x      x     x            x  
 OM2DOT                                                    x             x     
 XOMDOT                        x
-PBDOT       x    x     x             x      x      x      x      x      *     x     x
+PBDOT       x    x     x             x      x      x      x      x      *     x     x      x
 XPBDOT                        x
-GAMMA       x    x     x             x      x             x             x     x     x
+GAMMA       x    x     x             x      x             x             x     x     x      x
 MTOT                          x                    x
 M2                     x      x                    x      x      x            x     x
 SINI             x     x             x             x      x      x            x    
-DTHETA                 x                                  x                   x
-XDOT        x    x     x      x             x      x      x      x      x     x
+DTHETA                 x                                  x                   x            x
+XDOT        x    x     x      x             x      x      x      x      x     x            x
 X2DOT                                                     x               
 XDOT_x                                                                  x
-EDOT        x    x     x      x             x      x      x      x      x     x     x
+EDOT        x    x     x      x             x      x      x      x      x     x     x      x
 EPS1DOT                                                          x
 EPS2DOT                                                          x 
 SHAPMAX                                                                       x
 SHAPHOF (Experimental)                                                        x
+VARSIGMA                                                                                   x
+H3                                                                                         x
 KOM                                                                                x
 KIN                                                                                x
-DR                     o                           o      o    
+DR                     o                           o      o                                o
 AFAC                          o
-A0                     o                           o      o      o
-B0                     o                                  o      o
+A0                     o                           o      o      o                         o
+B0                     o                                  o      o                         o
 BP                                                 o
 BPP                                                o
 
