@@ -667,18 +667,18 @@ c         --> NW: higher order Shapiro
          okom_deg = okom * 360.0d0 / twopi
          okom_err_deg = ferr(52) * 360.0d0 / twopi
          if(nfit(52).gt.0)then
-            write(71,2100)okom_deg,fit1,okom_err_deg
+            write(71,2100)90.d0-okom_deg,fit1,okom_err_deg
          else
-            write(71,2100)okom_deg
+            write(71,2100)90.d0-okom_deg
          endif
  2100    format('KOM',f23.3,a,f20.3)
 
          okin_deg = okin * 360.0d0 / twopi
          okin_err_deg = ferr(53) * 360.0d0 / twopi
          if(nfit(53).gt.0)then
-            write(71,2150)okin_deg,fit1,okin_err_deg
+            write(71,2150)180.d0-okin_deg,fit1,okin_err_deg
          else
-            write(71,2150)okin_deg
+            write(71,2150)180.d0-okin_deg
          endif
  2150    format('KIN',f23.3,a,f20.3)
 

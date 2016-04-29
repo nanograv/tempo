@@ -224,9 +224,10 @@ c --- output of non-Keplerian parameters, I ---
            write(31,10505)
 10505      format(//'     OMDOT     GAMMA    PBDOT(-12)   KIN',
      +              '      KOM          m2      DTH(-6)'/)
-           write(31,10525) omdot,gamma,pbdot*e12,okind,okomd,am2,e6*dth
-           write(31,10525) freq(14),freq(15),e6*freq(18),okin_reqd,
-     +        okom_reqd,freq(22),freq(23)*e6
+           write(31,10525) omdot,gamma,pbdot*e12,180.d0-okind,
+     +        90.d0-okomd,am2,e6*dth
+           write(31,10525) freq(14),freq(15),e6*freq(18),-okin_reqd,
+     +        -okom_reqd,freq(22),freq(23)*e6
            write(31,10525) ferr(14),ferr(15),e6*ferr(18),okin_errd,
      +        okom_errd,ferr(22),ferr(23)*e6
 10525      format(f11.7,f10.7,f13.6,f9.3,f7.1,2f11.4)
@@ -341,7 +342,8 @@ cccccccccccccccccccccalc and print derived mass, sin i m2 here
         else if (nbin.eq.14)then
            okind = okin * 360.0d0 / twopi
            okomd = okom * 360.0d0 / twopi
-           write(31,10525) omdot,gamma,pbdot*e12,okind,okomd,am2,e6*dth
+           write(31,10525) omdot,gamma,pbdot*e12,180.d0-okind,
+     +                      90.d0-okomd,am2,e6*dth
 
 	else
 	   write(31,10521) omdot,gamma,pbdot*e12,si,am,am2

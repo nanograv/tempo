@@ -225,6 +225,10 @@ C  The error/comment is ignored by TEMPO
                            !     set on or off bad has a higher derivative being fit will also
                            !     be fit itself
 
+      ! temporarily values while reading in numbers
+      real*8 tmp
+      integer itmp
+
       integer i
       integer ix0, ix
  
@@ -802,11 +806,13 @@ c	 JMW et al. nfit(22) slot for H3 if using bnryfwhiecc
          set2dot=.true.
 
       else if(key(1:3).eq.'KOM')then
-         read(value,*)okom
+         read(value,*)tmp      ! read in as north-through-east
+         okom = 90.d0 - tmp    ! convert to east-through-north
          read(cfit,*)nfit(52)
 
       else if(key(1:3).eq.'KIN')then
-         read(value,*)okin
+         read(value,*)tmp      ! read using tempo2 convention
+         okin = 180.d0 - tmp   ! flip to convention used in bnryddk
          read(cfit,*)nfit(53)
 
       else if(key(1:3).eq.'K96')then
