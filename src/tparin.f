@@ -72,6 +72,7 @@ c     default values of parameters
       npulsein = .false.
       npulseout = .false.
       phisunout = .false.
+      dmxnout = .false.
       nonewdmx = .false.
       oldpar = .false.
       psrframe = .false.
@@ -144,6 +145,8 @@ c     default values of parameters
               jumpout = .true.
             else if (s(i:i).eq.'J') then
               jumpbarycenter = .true.
+            else if (s(i:i).eq.'k') then
+              dmxnout = .true.
             else if (s(i:i).eq.'l') then
               s2 = getparm(s,i,ii,iarg,narg)
               read (s2,*) nparmax

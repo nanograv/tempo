@@ -112,9 +112,11 @@ C  32	resid2.tmp		tempo
 C  33	gro.1			tempo
 C  34	gro.2			newbin
 C  35   pulse number file       tempo
-C  36   info.tmp                tempo
+C  36   info.tmp                tempo/arrtim
 c  37   design.tmp              tparin
 C  38   phisun.tmp              tempo
+C  39   <dcovfile>              glsfit
+C  40   dmxn.tmp                tempo/arrtim
 C  42	ut1.dat			tempo
 C  43   TDB-TDT ephemeris       tempo/tdbinit
 C  44   BC ephemeris            newsrc/ephinit
@@ -149,7 +151,7 @@ C  99	gro.99			newval
         character*640 obsyfile
         character*80 path
         character*160 cfgpath
-	character*160 npulsefile, infofile, phisunfile
+	character*160 npulsefile, infofile, phisunfile, dmxnfile
 	character date*9,date2*9,damoyr*9,label*12,parfile*160
 	integer time
         real*8 xmean(NPA),alng(36)
@@ -160,6 +162,7 @@ C  99	gro.99			newval
 	data resfile1/'resid1.tmp'/
         data infofile/'info.tmp'/
         data phisunfile/'phisun.tmp'/
+        data dmxnfile/'dmxn.tmp'/
 	data listfile/'tempo.lis'/
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
      +       'MSS','ELL1','BTX','BT1P','BT2P','DDS','DDK','DDFWHE'/
@@ -415,6 +418,7 @@ C         The main loop:
  60       continue
 
 	  if (phisunout) open (38,file=phisunfile)
+	  if (dmxnout) open (40,file=dmxnfile)
           call newsrc(nits,jits,nboot)
 
  62       continue  ! re-entry point after re-allocating arrays

@@ -60,6 +60,7 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 1	xmean(j)=0.
 
         if (npulsein.or.npulseout) rewind 35
+        if (dmxnout) rewind 40
         if (.not.stflag) then
           rewind 50
 	  do i=1,nskip
@@ -588,6 +589,14 @@ C                write(*,*) 'Adding at ',fmjd,dmx(idmx) + dmx1(idmx)*
 C     +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
           dmtot = dmtot + dmx(idmx) + dmx1(idmx)*
      +          ((nfmjd+ffmjd-dmxep(idmx))/365.25)
+        endif
+
+        if (dmxnout) then
+          if (usedmx .and. idmx>0) then
+             write (40,*) idmx
+          else
+             write (40,*) 0
+          endif
         endif
 
 	bval=dmtot/2.41d-16

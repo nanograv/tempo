@@ -13,7 +13,8 @@ options:
   -G            Generalized least squares fit 
   -h            Help (prints this message)
   -j            Output JUMP values in xxx.par file
-  -J            Apply JUMPs after barycenter correction (normally done before)
+  -J            Apply JUMPs after barycenter correction (normally done before) 
+  -k            Write dmx range number of each TOA to dmxn.tmp
   -l<xx>        Max number of parameters to be fit (guides memory allocation)
   -m<xx>        Max number of TOAs to be fit (guides memory allocation)
   -no<file>     Write out absolute pulse numbers to file

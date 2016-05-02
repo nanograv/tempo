@@ -5,6 +5,7 @@ c      $Id$
         logical usedmx, firstdmx, nonewdmx
         logical npulsein, npulseout, infoout, quiet, polystdout
         logical phisunout
+        logical dmxnout
         logical tz
         logical autotz
         logical useannorb   ! flag to use annual-orbital parallax
@@ -61,7 +62,8 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
-     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,ssdmflag,
+     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,dmxnout,
+     +    ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
      +    usedmdata,
