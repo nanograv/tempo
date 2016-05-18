@@ -271,6 +271,8 @@ c       --- new in DDS      (nbin.eq.13): appropriate freq(20) forshapmax !! ---
            shapmax = shapmax + freq(20)
 
 c      ---- new in DDFWHE  (nbin.eq.15): appropriate freq(20) for varsigma---
+c TODO this part will need tweaking if/when varsigma is implemented in 
+c ELL1H or any other model.
         else if (nbin.eq.15) then
            varsigma = varsigma + freq(20)
 c	calculate Mtot,m2,sini, derived from DDFWHIECC post-Keplerian parameters  
@@ -293,8 +295,8 @@ c		for printout below
         
 	am     = am     + freq(21)
 	
-c     ------ new in DDFWHE (nbin.eq.15): appropriate freq(22) for h3 ----
-        if (nbin.eq.15) then
+c     ------ freq(22) is either H3 or M2 depending on Shapro params
+        if (usefw10) then
            h3 = h3 + freq(22)
         else
 	    am2    = am2    + freq(22)
@@ -319,6 +321,7 @@ c  Print updated parameters
 	else if (nbin.eq.7)then
 	   write(31,10527) omdot,gamma,pbdot*e12,si,am,am2,bp,bpp
 	else if (nbin.eq.9)then
+        ! TODO handle the usefw10 (ELL1H) case here
 	   if(nell1.eq.1)then
 	      write(31,10579) xdot*e12,omdot,edot*e12,pbdot*e12,si,am2
 	   else

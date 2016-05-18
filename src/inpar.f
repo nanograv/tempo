@@ -174,6 +174,8 @@ c	new in DDFWHE
       useannorb = .false.
       usefixeddist = .false.
 
+      usefw10 = .false.
+
       solarn0 = 10      
       solarn01 = 0      
 
@@ -617,6 +619,13 @@ C  Binary parameters
          goto 22         
 c 20      nbin=i-1  ! ### Check this !!! (Works in Linux/Intel)
  20      nbin=i
+         if (nbin.eq.16) then
+	 ! nbin=16 is ELL1H which is implemented as a special case
+	 ! inside ELL1 (nbin=9)
+           nbin=9 
+           usefw10=.true.
+         endif
+         if (nbin.eq.15) usefw10=.true. 
          if(value(1:2).eq.'BT'.and.value(4:4).eq.'P')
      +      read(value,'(2x,i1)') nplanets
  22      continue

@@ -333,7 +333,10 @@ c=======================================================================
 
       fit1='  1'
 
-      write(71,'(''BINARY'',12x,a)')bmodel(nbin)
+      nbinout = nbin
+      if (nbin.eq.9.and.usefw10) nbinout=16
+
+      write(71,'(''BINARY'',12x,a)')bmodel(nbinout)
       
       if(nbin.eq.10 .and. nplanets.gt.0)then
         write(71,'(''PLAN'',1x,i2)')nplanets
@@ -491,9 +494,10 @@ c=======================================================================
       endif
  1038 format('XPBDOT',f20.7,a,f20.7)
 
-c --- JMW distinguish ddfwhiecc model(15) where nfit20 is varsigma and nfit22 is h3:
+c --- params 20 and 22 have different meaning depending on Shapiro
+c --- parameterization (standard vs FW10):
 
-      if(nbin.eq.15)then
+      if(usefw10)then
           if(varsigma.ne.0.)then
               if(nfit(20).gt.0)then
                   write(71,1120)varsigma,fit1,ferr(20)

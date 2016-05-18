@@ -165,7 +165,8 @@ C  99	gro.99			newval
         data dmxnfile/'dmxn.tmp'/
 	data listfile/'tempo.lis'/
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
-     +       'MSS','ELL1','BTX','BT1P','BT2P','DDS','DDK','DDFWHE'/
+     +       'MSS','ELL1','BTX','BT1P','BT2P','DDS','DDK','DDFWHE',
+     +       'ELL1H'/
 
         resfile2 = 'resid2.tmp'//char(0)
 

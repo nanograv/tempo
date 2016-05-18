@@ -91,9 +91,15 @@ c  edot for eps1dot, and omdot for eps2dot
       drep=x*DCOS(phase)
       drepp=-x*DSIN(phase)
 
-      brace=1-si*DSIN(phase)
-      dlogbr=dlog(brace)
-      ds=-2*m2*dlogbr
+c Shapiro delay part
+      if (usefw10) then
+        ds = -4.0/3.0 * h3 * DSIN(3.0*phase)
+      else
+        brace=1-si*DSIN(phase)
+        dlogbr=dlog(brace)
+        ds=-2*m2*dlogbr
+      endif
+
       da=a0*sin(phase)+b0*cos(phase)
 
 c  Now compute d2bar (cf. DD 52)
@@ -109,6 +115,7 @@ c  Now we need the partial derivatives.
       Ceps2    =  0.5*x*DSIN(2*phase)
       Cm2      = -2*dlogbr
       Csi      = 2*m2*DSIN(phase)/brace
+      Ch3      = -4.0/3.0*DSIN(3.0*phase)
 
       fctn( 9) = Cx*f0
       fctn(10) = Ceps1*f0
@@ -120,8 +127,14 @@ c  Now we need the partial derivatives.
       endif
       fctn(13) = Ceps2*f0
       fctn(18) = 0.5d-6*tt0*fctn(12)
-      fctn(20) = Csi*f0
-      fctn(22) = Cm2*f0*SUNMASS
+      if (usefw10) then
+        fctn(20) = 0.0
+        fctn(22) = Ch3*f0
+      else
+        fctn(20) = Csi*f0
+        fctn(22) = Cm2*f0*SUNMASS
+      endif
+
       fctn(24) = tt0*fctn(9)
 
       if(nell1.eq.0)then
