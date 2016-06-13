@@ -868,8 +868,8 @@ c End of input file detected
         if(mod(n,modscrn).ne.1.and..not.quiet) 
      +    write(*,1100)n,fmjdlast,dt,1d6*dt*p0,jits+1
 
-	start=amjd1-1.d-3
-	finish=amjd2+1.d-3
+	if(.not.usestart) start=amjd1-1.d-3
+	if(.not.usefinish) finish=amjd2+1.d-3
 
 	fitmode = mode ! store final mode value
 
