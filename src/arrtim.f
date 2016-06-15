@@ -180,6 +180,11 @@ C       The main loop starts here!
           if(card(1:4).eq.'END ') go to 45
           if(card(1:7).eq.'INCLUDE') then
             lu=lu+1
+            if (lu.gt.70) then
+              write (*,*) "INCLUDE statements nested too deeply;",
+     +                    " maximum 21 levels nesting allowed."
+              STOP
+            endif
             j1 = 8
             call citem(card,640,j1,infile,ilen)
             if (.not.quiet)write(31,1012) card(1:78)
