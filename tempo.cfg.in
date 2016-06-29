@@ -13,6 +13,7 @@ UT1          ut1.dat                         UT1 - UT
 EPHDIR       @abs_top_srcdir@/ephem/
 EPHFILE      DE200.1950.2050 --eph=DE200 --endian=big
 EPHFILE      DE405.1950.2050 --eph=DE405 --endian=big
+EPHFILE      DE418.1950.2050 --eph=DE418 --endian=big
 EPHFILE      DE421.1950.2050 --eph=DE421 --endian=little
 EPHFILE      DE430.1950.2050 --eph=DE430 --endian=little
 TDBFILE      TDB.1950.2050
