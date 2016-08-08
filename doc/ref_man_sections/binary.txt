@@ -43,6 +43,10 @@ ELL1  Model for low eccentricity orbits using Laplace parameters
       (EPS1=e times sin(omega), EPS2=e times cos(omega)) instead of e, omega.
       Reference:  Lange et al, MNRAS 326: 274 (2001), appendix A
 
+ELL1H Variant on ELL1 which parameterizes Shapiro delay using formalism
+      of Freire & Wex (2010), but presently only implements an "H3-only"
+      version of the model.
+
 BT1P  BT model with two orbits:  the first may be relativistic, the 
       second must be Keplerian
 
@@ -82,45 +86,45 @@ used at a fixed value, but cannot be fitted.  A '*' indicates the parameter
 is used only to calculate other binary parameters, and is then ignored.
 
 
-           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1    BTX   DDS   DDK   DDFWHE
-A1          x    x     x      x      x      x      x      x      x      x     x     x      x
-E           x    x     x      x      x      x      x      x      *      x     x     x      x
-T0          x    x     x      x      x      x      x      x      *      x     x     x      x
-PB          x    x     x      x      x      x      x      x      x      *     x     x      x
-OM          x    x     x      x      x      x      x      x      *      x     x     x      x
-TASC        *                                                    x
-EPS1        *                                                    x
-EPS2        *                                                    x
-FB          *    *     *      *      *      *      *      *      *      x     *     *      *
-FB_1        *    *     *      *      *      *      *      *      *      x     *     *      *
-FB_x                                                                    x     *     *
-OMDOT       x    x     x             x      x             x      x      x     x            x  
-OM2DOT                                                    x             x     
-XOMDOT                        x
-PBDOT       x    x     x             x      x      x      x      x      *     x     x      x
-XPBDOT                        x
-GAMMA       x    x     x             x      x             x             x     x     x      x
-MTOT                          x                    x
-M2                     x      x                    x      x      x            x     x
-SINI             x     x             x             x      x      x            x    
-DTHETA                 x                                  x                   x            x
-XDOT        x    x     x      x             x      x      x      x      x     x            x
-X2DOT                                                     x               
-XDOT_x                                                                  x
-EDOT        x    x     x      x             x      x      x      x      x     x     x      x
-EPS1DOT                                                          x
-EPS2DOT                                                          x 
-SHAPMAX                                                                       x
-SHAPHOF (Experimental)                                                        x
-VARSIGMA                                                                                   x
-H3                                                                                         x
-KOM                                                                                x
-KIN                                                                                x
-DR                     o                           o      o                                o
-AFAC                          o
-A0                     o                           o      o      o                         o
-B0                     o                                  o      o                         o
-BP                                                 o
-BPP                                                o
+           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1   ELL1H   BTX   DDS   DDK   DDFWHE
+A1          x    x     x      x      x      x      x      x      x      x      x     x     x      x
+E           x    x     x      x      x      x      x      x      *      *      x     x     x      x
+T0          x    x     x      x      x      x      x      x      *      *      x     x     x      x
+PB          x    x     x      x      x      x      x      x      x      x      *     x     x      x
+OM          x    x     x      x      x      x      x      x      *      *      x     x     x      x
+TASC        *                                                    x      x                          
+EPS1        *                                                    x      x                          
+EPS2        *                                                    x      x                          
+FB          *    *     *      *      *      *      *      *      *      *      x     *     *      *
+FB_1        *    *     *      *      *      *      *      *      *      *      x     *     *      *
+FB_x                                                                           x     *     *       
+OMDOT       x    x     x             x      x             x      x      x      x     x            x  
+OM2DOT                                                    x                    x                   
+XOMDOT                        x                                                                    
+PBDOT       x    x     x             x      x      x      x      x      x      *     x     x      x
+XPBDOT                        x                                                                    
+GAMMA       x    x     x             x      x             x                    x     x     x      x
+MTOT                          x                    x                                               
+M2                     x      x                    x      x      x                   x     x       
+SINI             x     x             x             x      x      x                   x             
+DTHETA                 x                                  x                          x            x
+XDOT        x    x     x      x             x      x      x      x      x      x     x            x
+X2DOT                                                     x                                        
+XDOT_x                                                                         x                   
+EDOT        x    x     x      x             x      x      x      x      x      x     x     x      x
+EPS1DOT                                                          x      x                          
+EPS2DOT                                                          x      x                          
+SHAPMAX                                                                              x             
+SHAPHOF (Experimental)                                                               x             
+VARSIGMA                                                                                          x
+H3                                                                      x                         x
+KOM                                                                                       x        
+KIN                                                                                       x        
+DR                     o                           o      o                                       o
+AFAC                          o                                                                    
+A0                     o                           o      o      o      o                         o
+B0                     o                                  o      o      o                         o
+BP                                                 o                                               
+BPP                                                o                                               
 
 

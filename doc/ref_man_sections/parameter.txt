@@ -44,6 +44,7 @@ EPS1     First Laplace parameter [eccentricity times sin(omega)]
 EPS2     Second Laplace parameter [eccentricity times cos(omega)]
 EPS1DOT  Time derivative of EPS1
 EPS2DOT  Time derivative of EPS2
+H3       Shapiro delay parameter H3 as in Freire and Wex 2010
 OMDOT    Rate of periastron advance (deg/yr) 
 OM2DOT   Second time derivative of angle of periastron (rad/s^2)
 XOMDOT   Rate of periastron advance minus GR prediction (deg/yr)
