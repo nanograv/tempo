@@ -86,45 +86,45 @@ used at a fixed value, but cannot be fitted.  A '*' indicates the parameter
 is used only to calculate other binary parameters, and is then ignored.
 
 
-           BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1   ELL1H   BTX   DDS   DDK   DDFWHE
-A1          x    x     x      x      x      x      x      x      x      x      x     x     x      x
-E           x    x     x      x      x      x      x      x      *      *      x     x     x      x
-T0          x    x     x      x      x      x      x      x      *      *      x     x     x      x
-PB          x    x     x      x      x      x      x      x      x      x      *     x     x      x
-OM          x    x     x      x      x      x      x      x      *      *      x     x     x      x
-TASC        *                                                    x      x                          
-EPS1        *                                                    x      x                          
-EPS2        *                                                    x      x                          
-FB          *    *     *      *      *      *      *      *      *      *      x     *     *      *
-FB_1        *    *     *      *      *      *      *      *      *      *      x     *     *      *
-FB_x                                                                           x     *     *       
-OMDOT       x    x     x             x      x             x      x      x      x     x            x  
-OM2DOT                                                    x                    x                   
-XOMDOT                        x                                                                    
-PBDOT       x    x     x             x      x      x      x      x      x      *     x     x      x
-XPBDOT                        x                                                                    
-GAMMA       x    x     x             x      x             x                    x     x     x      x
-MTOT                          x                    x                                               
-M2                     x      x                    x      x      x                   x     x       
-SINI             x     x             x             x      x      x                   x             
-DTHETA                 x                                  x                          x            x
-XDOT        x    x     x      x             x      x      x      x      x      x     x            x
-X2DOT                                                     x                                        
-XDOT_x                                                                         x                   
-EDOT        x    x     x      x             x      x      x      x      x      x     x     x      x
-EPS1DOT                                                          x      x                          
-EPS2DOT                                                          x      x                          
-SHAPMAX                                                                              x             
-SHAPHOF (Experimental)                                                               x             
-VARSIGMA                                                                                          x
-H3                                                                      x                         x
-KOM                                                                                       x        
-KIN                                                                                       x        
-DR                     o                           o      o                                       o
-AFAC                          o                                                                    
-A0                     o                           o      o      o      o                         o
-B0                     o                                  o      o      o                         o
-BP                                                 o                                               
-BPP                                                o                                               
+            BT   EH    DD    DDGR    H88    BT+    DDT    MSS   ELL1   ELL1H   BTX   DDS   DDK   DDFWHE
+A1           x    x     x      x      x      x      x      x      x      x      x     x     x      x
+E            x    x     x      x      x      x      x      x      *      *      x     x     x      x
+T0           x    x     x      x      x      x      x      x      *      *      x     x     x      x
+PB           x    x     x      x      x      x      x      x      x      x      *     x     x      x
+OM           x    x     x      x      x      x      x      x      *      *      x     x     x      x
+TASC         *                                                    x      x                          
+EPS1         *                                                    x      x                          
+EPS2         *                                                    x      x                          
+FB           *    *     *      *      *      *      *      *      *      *      x     *     *      *
+FB1          *    *     *      *      *      *      *      *      *      *      x     *     *      *
+FB2,FB3,etc.                                                      x             x     *     *       
+OMDOT        x    x     x             x      x             x      x      x      x     x            x  
+OM2DOT                                                     x                    x                   
+XOMDOT                         x                                                                    
+PBDOT        x    x     x             x      x      x      x      x      x      *     x     x      x
+XPBDOT                         x                                                                    
+GAMMA        x    x     x             x      x             x                    x     x     x      x
+MTOT                           x                    x                                               
+M2                      x      x                    x      x      x                   x     x       
+SINI              x     x             x             x      x      x                   x             
+DTHETA                  x                                  x                          x            x
+XDOT         x    x     x      x             x      x      x      x      x      x     x            x
+X2DOT                                                      x                                        
+XDOT_x                                                                          x                   
+EDOT         x    x     x      x             x      x      x      x      x      x     x     x      x
+EPS1DOT                                                           x      x                          
+EPS2DOT                                                           x      x                          
+SHAPMAX                                                                               x             
+SHAPHOF (Experimental)                                                                x             
+VARSIGMA                                                                                           x
+H3                                                                       x                         x
+KOM                                                                                        x        
+KIN                                                                                        x        
+DR                      o                           o      o                                       o
+AFAC                           o                                                                    
+A0                      o                           o      o      o      o                         o
+B0                      o                                  o      o      o                         o
+BP                                                  o                                               
+BPP                                                 o                                               
 
 
