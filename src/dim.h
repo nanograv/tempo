@@ -36,7 +36,7 @@ c       NUTMAX   max number of ut1 corrections
 c       NFLAGERR max number of flag-based EFAC/EQUAD
 
 	parameter (NPTSDEF=60000)
-	parameter (NPT=100000)
+	parameter (NPT=200000)
         parameter (NFMAX=20)
 	parameter (NGLT=9,NGLP=5)
 	parameter (NJUMP=250)
