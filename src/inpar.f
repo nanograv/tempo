@@ -138,6 +138,19 @@ c	new in DDFWHE
 	dmxf2(i) = 0.
       enddo
 
+      nxmx = 0
+      xmxfrq0 = 1000.d0 
+      usexmxfrq0 = .false.
+      do i = 1, NXMXMAX
+        xmx(i) = 0.
+        xmxexp(i) = 1.
+	xmxr1(i) = -1.
+	xmxr2(i) = -1.
+	xmxf1(i) = -1.
+	xmxf2(i) = -1.
+      enddo
+
+
       ndmcalc=0
 
       do i=1, NFDMAX
@@ -573,6 +586,60 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          endif
          ndmx = max(ndmx,ikey)
          read(value,*)dmxr2(ikey)
+
+      else if(key(1:8).eq.'XMXFRQ0') then
+         read(value,*)xmxfrq0
+	 usexmxfrq0 = .true.
+
+      else if(key(1:4).eq.'XMX_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmx(ikey)
+         read(cfit,*)nfit(NPAR12+2*ikey-1)
+
+      else if(key(1:7).eq.'XMXEXP_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxexp(ikey)
+         read(cfit,*)nfit(NPAR12+2*ikey)
+
+      else if(key(1:6).eq.'XMXR1_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxr1(ikey)
+         
+      else if(key(1:6).eq.'XMXR2_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxr2(ikey)
+         
+      else if(key(1:6).eq.'XMXF1_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxf1(ikey)
+         
+      else if(key(1:6).eq.'XMXF2_') then
+         if (ikey.gt.NXMXMAX) then
+           write(*,'(''XMX key too high: '',a)')key
+           stop
+         endif
+         nxmx = max(nxmx,ikey)
+         read(value,*)xmxf2(ikey)
          
       else if((key(1:3).eq.'DM0'.and.lk.eq.3).or.
      +         key(1:2).eq.'DM'.and.lk.eq.2)then

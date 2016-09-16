@@ -293,8 +293,34 @@ C  Compute braking index
 	end if
 
         do i=1, NFDMAX
-	  fdcof(i) = fdcof(i) + freq(NPAR10+i)
-	enddo 
+          fdcof(i) = fdcof(i) + freq(NPAR10+i)
+        enddo 
+
+
+	koff = NPAR12
+	do j = 1, (nxmx+3)/4
+	  ib = j*4
+	  ia = ib-3
+	  ib = min(ib,nxmx)
+	  write (31,1059) ("XMX",i,i=ia,ib)
+	  write (31,1060) (xmxr1(i),xmxr2(i),i=ia,ib)
+	  write (31,1061) (xmx(i),i=ia,ib)
+          write (31,1061) (freq(k),k=koff+2*ia-1,koff+2*ib-1,2)
+          write (31,1061) (ferr(k),k=koff+2*ia-1,koff+2*ib-1,2)
+	  do i = ia, ib
+	    xmx(i) = xmx(i)+freq(koff+2*i-1)
+	  end do
+          write (31,1061) (xmx(i),i=ia,ib)
+          write (31,1059) ("XMXEXP",i,i=ia,ib)
+          write (31,1060) (xmxr1(i),xmxr2(i),i=ia,ib)
+          write (31,1061) (xmxexp(i),i=ia,ib)
+          write (31,1061) (freq(k),k=koff+2*ia,koff+2*ib,2)
+          write (31,1061) (ferr(k),k=koff+2*ia,koff+2*ib,2)
+          do i = ia, ib
+            xmxexp(i) = xmxexp(i)+freq(koff+2*i)
+          end do
+          write (31,1061) (xmxexp(i),i=ia,ib)
+	end do
 	      
 
 C Get rms residuals and ntoa for output

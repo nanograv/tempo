@@ -21,6 +21,7 @@ c      $Id$
         logical nofitjump     ! blocks fitting for a given JUMP
         logical useglsfit     ! use generalized-least-squares fit
         logical usedmdata     ! use input DM measurements as "data"
+	logical usexmxfrq0    ! non-default xmxfrq0, write it to output
 
 	integer parunit, nskip, iboot
         integer fitmode
@@ -30,6 +31,9 @@ c      $Id$
         integer nflagefac   ! number of tempo2-style flag-based EFAC
         integer nflagequad  ! number of tempo2-style flag-based EQUAD
         integer nflagecorr  ! number of flag-based ecorr/jitter terms
+
+	integer nxmx        ! number of xmx terms used
+
         real*8 phimin
         real*8 PAAscNode    ! position angle of ascending node
         real*8 solarn0      ! solar wind electron density at 1 AU (e-/cc)
@@ -69,7 +73,10 @@ c      $Id$
      +    usedmdata,
      +    tdbif99fmt
 
-
+        common /xmxcom/ xmx(NXMXMAX), xmxexp(NXMXMAX),
+     +                  xmxr1(NXMXMAX), xmxr2(NXMXMAX),
+     +                  xmxf1(NXMXMAX), xmxf2(NXMXMAX),
+     +                  xmxfrq0, usexmxfrq0, nxmx
 
 	character psrname*64,obsflag*1,pardir*80,infotxt*160
         character obskey*5

@@ -274,6 +274,22 @@ c work correctly in tempo2:
 	endif
       enddo
 
+      if (usexmxfrq0) then
+         write (71, 1201) xmxfrq0
+ 1201    format('XMXFRQ0',12x,f16.5)
+      endif
+      do i= 1, nxmx
+          write (71,1202) i,xmx(i),nfit(NPAR12+2*i-1),ferr(NPAR12+2*i-1)
+ 1202     format('XMX_',i4.4,1p,d18.8,i3,d20.8)
+          write (71,1203) i,xmxexp(i),nfit(NPAR12+2*i),ferr(NPAR12+2*i)
+ 1203     format('XMXEXP_',i4.4,1p,d18.8,i3,d20.8)
+          if (xmxr1(i).gt.0.) write(71,1204) "R1",i,xmxr1(i)
+          if (xmxr2(i).gt.0.) write(71,1204) "R2",i,xmxr2(i)
+          if (xmxf1(i).gt.0.) write(71,1204) "F1",i,xmxf1(i)
+          if (xmxf2(i).gt.0.) write(71,1204) "F2",i,xmxf2(i)
+ 1204     format('XMX',a2,'_',i4.4,f16.5)
+      enddo
+
       write(71,'(''SOLARN0'',f19.2)')solarn0
       write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
       if (eclcon.ne."DEFAULT") then

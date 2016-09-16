@@ -819,6 +819,23 @@ C TODO allow arb reference freq instead of 1 GHz?
 899       continue
 	endif
 
+C  XM-related partial derivatives
+
+        do i = 1, nxmx
+          if (    (xmxf1(i).lt.0.d0 .or. frq.ge.xmxf1(i))
+     +      .and. (xmxf2(i).lt.0.d0 .or. frq.le.xmxf2(i))
+     +      .and. (xmxr1(i).lt.0.d0 .or. nmjd+fmjd.ge.xmxr1(i))
+     +      .and. (xmxr2(i).lt.0.d0 .or. nmjd+fmjd.lt.xmxr2(i)) ) then
+            x(NPAR12+2*i-1) = f0 * (frq/xmxfrq0)**xmxexp(i)
+            x(NPAR12+2*i  ) = x(NPAR12+2*i-1)* xmx(i) *  
+     +                                          log(frq/xmxfrq0)
+          else
+            x(NPAR12+2*i-1) = 0.d0
+            x(NPAR12+2*i  ) = 0.d0
+          endif
+        enddo
+
+
 C Save the TOA flags for use elsewhere
 C The NPTSDEF check could be removed if this array were to be 
 C dynamically allocated.
