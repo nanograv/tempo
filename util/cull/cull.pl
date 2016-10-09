@@ -293,7 +293,7 @@ if ($rflag) {  # preparatory work for cull-by-residual
 
 open (A,$infile);
 while (<A>) {
-  if (uc((split)[0]) eq "TOA") {
+  if (length>1 && uc((split)[0]) eq "TOA") {
     $hdrflag = 1;
     last;
   }
