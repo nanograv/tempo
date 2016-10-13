@@ -293,6 +293,7 @@ if ($rflag) {  # preparatory work for cull-by-residual
 
 open (A,$infile);
 while (<A>) {
+  $_ =~ s/^\s+|\s+$//g ; # remove leading or trailing whitespace
   if (length>1 && uc((split)[0]) eq "TOA") {
     $hdrflag = 1;
     last;
