@@ -40,6 +40,8 @@ usetasc = False
 for s in fin:
   ftmp.write(s)
   ss = s.split()
+  if len(ss)==0:
+    continue
   if len(ss)>1:
     par, val = ss[0:2]
   if par=="START":
