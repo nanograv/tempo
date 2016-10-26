@@ -6,9 +6,9 @@ NIST_UTC       utccorr.tot                     UTC(NIST) to UTC
 NIST_BIPM12    bipmnist.12.extrap              UTC(NIST) to TT(BIPM12)
 NIST_BIPM14    bipmnist.14                     UTC(NIST) to TT(BIPM14)
 NIST_BIPM15    bipmnist.15.extrap              UTC(NIST) to TT(BIPM15)
-NIST_BIPM2012  bipmnist.12.extrap              UTC(NIST) to TT(BIPM12)
-NIST_BIPM2014  bipmnist.14                     UTC(NIST) to TT(BIPM14)
-NIST_BIPM2015  bipmnist.15.extrap              UTC(NIST) to TT(BIPM15)
+NIST_BIPM2012  bipmnist.12.extrap              UTC(NIST) to TT(BIPM2012)
+NIST_BIPM2014  bipmnist.14                     UTC(NIST) to TT(BIPM2014)
+NIST_BIPM2015  bipmnist.15.extrap              UTC(NIST) to TT(BIPM2015)
 NIST_BIPM      bipmnist.15.extrap              UTC(NIST) to TT(BIPM)
 NIST_PTB       ptbnist.90                      UTC(NIST) to UTC(PTB)
 NIST_AT1       at1nist.90                      UTC(NIST) to AT1
