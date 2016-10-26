@@ -66,6 +66,6 @@ c       NFLAGERR max number of flag-based EFAC/EQUAD
         parameter (NPAP1=NPA+1)
 	parameter (NPARDEF=28)
         parameter (NBOOTMAX=1024)
-        parameter (NTZMAX=1000,NCLKMAX=20,NEPHMAX=5,NUTMAX=6000)
+        parameter (NTZMAX=1000,NCLKMAX=40,NEPHMAX=5,NUTMAX=6000)
         parameter (NTZARR=1500)
         parameter (NFLAGERR=64)

@@ -1,5 +1,5 @@
 c      $Id$
-        character clkfile(NCLKMAX)*80, clklbl(0:NCLKMAX)*12,clkdir*80
+        character clkfile(NCLKMAX)*80, clklbl(0:NCLKMAX)*32,clkdir*80
 	integer ckflag(NPT)
 
 	common/clocks/ tdate(NPT),ckcorr(NPT),jsite(NPT),ndate,nclk,
