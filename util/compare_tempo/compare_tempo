@@ -127,8 +127,9 @@ while ($idxa<=$#a && $idxb<=$#b) {
   if ($aname ne $bname) {
     $matchflag = 0;
   A: foreach $i ($idxb+1..$#b) {
-      ($bnamex,$boff) = &get_par_name($b[$i]);
+      ($bnamex,$boffx) = &get_par_name($b[$i]);
       if ($bnamex eq $aname) {
+        $boff = $boffx;
         foreach $j($idxb..$i-1) {
           $out = ' 'x 120;  
           substr($out,60,length($b[$j])) = $b[$j];
@@ -141,8 +142,9 @@ while ($idxa<=$#a && $idxb<=$#b) {
     }
     if ($matchflag==0) {
     B: foreach $i ($idxa+1..$#a) {
-        ($anamex,$aoff) = &get_par_name($a[$i]);
+        ($anamex,$aoffx) = &get_par_name($a[$i]);
         if ($anamex eq $bname) {
+          $aoff = $aoffx;
           foreach $j ($idxa..$i-1) {
             $out = ' ' x 120;
             substr($out,0,length($a[$j])) = $a[$j];
@@ -154,41 +156,46 @@ while ($idxa<=$#a && $idxb<=$#b) {
         }
       }
     }
-    if ($matchflag==0) {
-      print "cannot reconcile parameter files starting with these lines:\n";
-      $out = ' 'x 120;  
-      substr($out,0,length($a[$idxa])) = $a[$idxa];
-      substr($out,60,length($b[$idxb])) = $b[$idxb];
-    }
+  } else {
+    $matchflag = 1;
   }
-  $out = ' 'x 120;  
-  substr($out,0,length($a[$idxa])) = $a[$idxa];
-  substr($out,60,length($b[$idxb])) = $b[$idxb];
-  $a[$idxa] =~ s/D/E/g;
-  $b[$idxb] =~ s/D/E/g;
-  ($atmp1,$aflag,$aerr) = (split(" ",$a[$idxa]))[$aoff..$aoff+2];
-  ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[$boff..$boff+2];
+  if ($matchflag==1) {
+    $out = ' 'x 120;  
+    substr($out,0,length($a[$idxa])) = $a[$idxa];
+    substr($out,60,length($b[$idxb])) = $b[$idxb];
+    $a[$idxa] =~ s/D/E/g;
+    $b[$idxb] =~ s/D/E/g;
+    ($atmp1,$aflag,$aerr) = (split(" ",$a[$idxa]))[$aoff..$aoff+2];
+    ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[$boff..$boff+2];
 
-  if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
-    @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
-    @btmp = split(":",$btmp1);   #but also works for single number-entries
-    $aparam = 0.;
-    foreach $i (0..$#atmp) {
-      $aparam = 60*$aparam + shift(@atmp);
+    if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
+      @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
+      @btmp = split(":",$btmp1);   #but also works for single number-entries
+      $aparam = 0.;
+      foreach $i (0..$#atmp) {
+        $aparam = 60*$aparam + shift(@atmp);
+      }
+      $bparam = 0.;
+      foreach $i (0..$#btmp) {
+        $bparam = 60*$bparam + shift(@btmp);
+      }
+      $diff = $bparam-$aparam;
+      $diffx = $diff/(0.5*($aparam+$bparam));
+      $diffsig = abs($diff)/$aerr if ($berr<=$aerr);
+      $diffsig = abs($diff)/$berr if ($berr>$aerr);
+      $ratsig = 0;
+      $ratsig = $berr/$aerr if ($aerr>0);
+      $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f",$diff,$diffsig,$diffx,$ratsig);
     }
-    $bparam = 0.;
-    foreach $i (0..$#btmp) {
-      $bparam = 60*$bparam + shift(@btmp);
-    }
-    $diff = $bparam-$aparam;
-    $diffx = $diff/(0.5*($aparam+$bparam));
-    $diffsig = abs($diff)/$aerr if ($berr<=$aerr);
-    $diffsig = abs($diff)/$berr if ($berr>$aerr);
-    $ratsig = 0;
-    $ratsig = $berr/$aerr if ($aerr>0);
-    $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f",$diff,$diffsig,$diffx,$ratsig);
+    print "$out\n";
+  } else {
+    $out = ' 'x 120;  
+    substr($out,0,length($a[$idxa])) = $a[$idxa];
+    print "$out\n";
+    $out = ' 'x 120;  
+    substr($out,60,length($b[$idxb])) = $b[$idxb];
+    print "$out\n";
   }
-  print "$out\n";
   $idxa++;
   $idxb++;
 }
