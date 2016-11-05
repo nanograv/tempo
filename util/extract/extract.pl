@@ -26,6 +26,8 @@ $help =  "\n".
 "            negative jump in the MJDs\n".
 "        14. MJD-50000   (less quantization problems in mongo....)\n".
 "        15. weight of point in tempo fit\n".
+"        16. red noise model (in microsec) or ddm*1e6\n".
+"        17. residual minus red noise model (in microsec)\n".
 "\n";
 
 
@@ -61,8 +63,8 @@ $mjd0 = 0 ;
 $i = 0;
 $i2 = -10;
 while (read(A,$buf,80)) { 
-  ($mjd,$res,$ressec,$phase,$freq,$wgt,$terr,$dt1) = 
-    unpack("x4d8",$buf);
+  ($mjd,$res,$ressec,$phase,$freq,$wgt,$terr,$dt1,$resred) = 
+    unpack("x4d9",$buf);
   $mjd+= 39126 if ($mjd<20000);  # convert 1966 day number to MJD if needed
   $ct = $mjd-39126;              # now convert MJD to 1966 day number
   $p = $ressec/$res if ($p==0 && $res!=0);
@@ -81,10 +83,11 @@ while (read(A,$buf,80)) {
   $mjd0 = $mjd;
   $dayyr = $ct - 365.25*int($ct/365.25);
   $fmt = "%17.11f %14.8f %13.2f %10.3f %12.3f %9.7f %16.10f %6.1f ".
-    "%5d %8.4f %9.3f %12.6f %5d %16.10f %10.5f\n";
+    "%5d %8.4f %9.3f %12.6f %5d %16.10f %10.5f %13.2f %13.2f\n";
   printf B $fmt,
     $ct, $res, $ressec*1.e6,$terr,$dt1*1.e6*$p, $phase, $mjd, $ptype, 
-    $i, $dayyr, $freq, ($ct-int($ct))*86400., $i2, $mjd-50000, $wgt;
+    $i, $dayyr, $freq, ($ct-int($ct))*86400., $i2, $mjd-50000, $wgt, $resred*1.e6,  
+    ($ressec-$resred)*1.e6;
   
 }
 
