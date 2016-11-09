@@ -119,54 +119,31 @@ $out = $out . "  sigb/siga";
 print "$out\n";
 print "\n";
 
-$idxa = 0; 
-$idxb = 0;
-while ($idxa<=$#a && $idxb<=$#b) {
-  ($aname,$aoff) = &get_par_name($a[$idxa]);
-  ($bname,$boff) = &get_par_name($b[$idxb]);
-  if ($aname ne $bname) {
-    $matchflag = 0;
-  A: foreach $i ($idxb+1..$#b) {
-      ($bnamex,$boffx) = &get_par_name($b[$i]);
-      if ($bnamex eq $aname) {
-        $boff = $boffx;
-        foreach $j($idxb..$i-1) {
-          $out = ' 'x 120;  
-          substr($out,60,length($b[$j])) = $b[$j];
-          print "$out\n";
-        }
-        $matchflag = 1;
-        $idxb=$i;
-        last A;
-      }
+foreach $i (0..$#a) {
+while ($#a>-1) {
+  $astring = shift(@a);
+  $matchflag = 0;
+  ($aname,$aoff) = &get_par_name($astring);
+  foreach $i (0..$#b) {
+    ($bname,$boff) = &get_par_name($b[$i]);
+    if ($aname eq $bname) {
+      $matchflag = 1;
+      $bstring = splice(@b,$i,1);
+      last;
     }
-    if ($matchflag==0) {
-    B: foreach $i ($idxa+1..$#a) {
-        ($anamex,$aoffx) = &get_par_name($a[$i]);
-        if ($anamex eq $bname) {
-          $aoff = $aoffx;
-          foreach $j ($idxa..$i-1) {
-            $out = ' ' x 120;
-            substr($out,0,length($a[$j])) = $a[$j];
-            print "$out\n";
-          }
-          $matchflag = 1;
-          $idxa=$i;
-          last B;
-        }
-      }
-    }
-  } else {
-    $matchflag = 1;
   }
-  if ($matchflag==1) {
+  if ($matchflag==0) {
     $out = ' 'x 120;  
-    substr($out,0,length($a[$idxa])) = $a[$idxa];
-    substr($out,60,length($b[$idxb])) = $b[$idxb];
-    $a[$idxa] =~ s/D/E/g;
-    $b[$idxb] =~ s/D/E/g;
-    ($atmp1,$aflag,$aerr) = (split(" ",$a[$idxa]))[$aoff..$aoff+2];
-    ($btmp1,$bflag,$berr) = (split(" ",$b[$idxb]))[$boff..$boff+2];
+    substr($out,0,length($astring)) = $astring;
+    print "$out\n";
+  } else {
+    $out = ' 'x 120;  
+    substr($out,0,length($astring)) = $astring;
+    substr($out,60,length($bstring)) = $bstring;
+    $astring =~ s/D/E/g;
+    $bstring =~ s/D/E/g;
+    ($atmp1,$aflag,$aerr) = (split(" ",$astring))[$aoff..$aoff+2];
+    ($btmp1,$bflag,$berr) = (split(" ",$bstring))[$boff..$boff+2];
 
     if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
       @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
@@ -188,29 +165,13 @@ while ($idxa<=$#a && $idxb<=$#b) {
       $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f",$diff,$diffsig,$diffx,$ratsig);
     }
     print "$out\n";
-  } else {
-    $out = ' 'x 120;  
-    substr($out,0,length($a[$idxa])) = $a[$idxa];
-    print "$out\n";
-    $out = ' 'x 120;  
-    substr($out,60,length($b[$idxb])) = $b[$idxb];
-    print "$out\n";
-  }
-  $idxa++;
-  $idxb++;
-}
-if ($idxa<=$#a) {
-  foreach $j ($idxa..$#a) {
-    $out = ' ' x 120;
-    substr($out,0,length($a[$j])) = $a[$j];
-    print "$out\n";
   }
 }
-if ($idxb<=$#b) {
-  foreach $j ($idxb..$#b) {
-    $out = ' ' x 120;
-    substr($out,60,length($b[$j])) = $b[$j];
-    print "$out\n";
+while ($#b>-1) {
+  $bstring = pop(@b);
+  $out = ' ' x 120;
+  substr($out,60,length($bstring)) = $bstring;
+  print "$out\n";
   }
 }
 
