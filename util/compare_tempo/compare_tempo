@@ -8,7 +8,7 @@
 $tpo1default = "tempo";
 $tpo2default = "tempo";
 
-($file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo) = 
+($file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo, $sigflag) = 
         compare_tempo_command_line_parse($tpo1default,$tpo2default,@ARGV);
 
 $parfile1 = " -f $parfile1 " if ($parfile1 ne "");
@@ -162,7 +162,11 @@ while ($#a>-1) {
       $diffsig = abs($diff)/$berr if ($berr>$aerr);
       $ratsig = 0;
       $ratsig = $berr/$aerr if ($aerr>0);
-      $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f",$diff,$diffsig,$diffx,$ratsig);
+      $outflag = "";
+      if ($sigflag>0. && $diffsig>$sigflag) {
+        $outflag = "*****";
+      }
+      $out = $out . sprintf("  %13.6e  %20.15f  %20.15f  %7.3f   %s",$diff,$diffsig,$diffx,$ratsig,$outflag);
     }
     print "$out\n";
   }
@@ -313,6 +317,7 @@ sub compare_tempo_command_line_parse {
   my($parfile1) = "";
   my($parfile2) = "";
   my($runtpo) = 1;
+  my($sigflag) = 0.;
 
   foreach $par (@_) {
     if ($par=~/^-/) {           # flags
@@ -344,6 +349,9 @@ sub compare_tempo_command_line_parse {
         } elsif ($f eq "F") {#       -F
           $parfile2 = $par;
           last;
+        } elsif ($f eq "s") {#       -F
+          $sigflag = $par;
+          last;
         } elsif ($f eq "h") {#       -h
           die $usage;
         } elsif ($f eq "p") {#       -t
@@ -366,6 +374,6 @@ sub compare_tempo_command_line_parse {
   my($file2) = $file1;
   $file2 = $param[1] if ($#param>0);
 
-  return $file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo;
+  return $file1, $file2, $tpo1, $tpo2, $env1, $env2, $dir1, $dir2, $parfile1, $parfile2, $runtpo, $sigflag;
 }
 
