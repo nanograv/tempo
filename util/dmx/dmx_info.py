@@ -32,7 +32,7 @@ for s in fpar:
     parname = ss[0]
     if s.startswith("DMXR"):
       irange = int(ss[0].split("_")[-1])-1  # DMX ranges start with 1, arrays start with 0
-      parval  = float(ss[1])
+      parval  = float(ss[1].replace("D","E"))
       while irange>len(dmxr)-1:
         dmxr.append([0.,0.])
       if s.startswith("DMXR1"):
@@ -62,7 +62,6 @@ for t in toas:
   t.parse_line()
   mjd = t.mjd
   info = t.flags['f']
-
 
   if not info in infolist:
     infolist.append(info)
