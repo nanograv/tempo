@@ -4,7 +4,7 @@ c      $Id$
 	logical usestart, usefinish
         logical usedmx, firstdmx, nonewdmx
         logical npulsein, npulseout, infoout, quiet, polystdout
-        logical phisunout
+        logical phisunout, dopplerout
         logical dmxnout
         logical tz
         logical autotz
@@ -66,8 +66,8 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
-     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,dmxnout,
-     +    ssdmflag,
+     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,
+     +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
      +    usedmdata,

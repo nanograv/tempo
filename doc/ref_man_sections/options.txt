@@ -9,6 +9,7 @@ options:
   -c            Do all requested iterations, even if apparently converged
   -d<path>      Path to 'tempo.cfg', default: environment variable 'TEMPO'
   -D            Write design matrix to design.tmp (unformatted)
+  -e            Write barycenter-topocenter doppler factors to doppler.tmp
   -f<par>       Over-rides the default parameter file name with <par>
   -g[O]         GRO mode; 'O' is single-letter observatory code
   -G            Generalized least squares fit 
@@ -69,6 +70,9 @@ OPTIONS
 -d <path> 
    override environment variable 'TEMPO' with <path>. Path may be '.'. 
 
+-e
+   write the barycneter-topocenter doppler factor for each TOA
+   to doppler.tmp.  There is one line per TOA in this file.
 -D
    write design matrix to design.tmp
 

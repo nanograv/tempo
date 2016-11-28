@@ -117,6 +117,7 @@ c  37   design.tmp              tparin
 C  38   phisun.tmp              tempo
 C  39   <dcovfile>              glsfit
 C  40   dmxn.tmp                tempo/arrtim
+C  41   doppler.tmp             tempo
 C  42	ut1.dat			tempo
 C  43   TDB-TDT ephemeris       tempo/tdbinit
 C  44   BC ephemeris            newsrc/ephinit
@@ -152,6 +153,7 @@ C  99	gro.99			newval
         character*80 path
         character*160 cfgpath
 	character*160 npulsefile, infofile, phisunfile, dmxnfile
+        character*160 dopplerfile
 	character date*9,date2*9,damoyr*9,label*12,parfile*160
 	integer time
         real*8 xmean(NPA),alng(36)
@@ -162,6 +164,7 @@ C  99	gro.99			newval
 	data resfile1/'resid1.tmp'/
         data infofile/'info.tmp'/
         data phisunfile/'phisun.tmp'/
+        data dopplerfile/'doppler.tmp'/
         data dmxnfile/'dmxn.tmp'/
 	data listfile/'tempo.lis'/
 	data bmodel /'None','BT','EH','DD','DDGR','H88','BT+','DDT',
@@ -420,6 +423,7 @@ C         The main loop:
 
 	  if (phisunout) open (38,file=phisunfile)
 	  if (dmxnout) open (40,file=dmxnfile)
+	  if (dopplerout) open (41,file=dopplerfile)
           call newsrc(nits,jits,nboot)
 
  62       continue  ! re-entry point after re-allocating arrays
@@ -478,6 +482,7 @@ C         The main loop:
      +		.not.nostop) go to 9999
 
           if (phisunout) close(38)
+          if (dopplerout) close(41)
 
           if(jits.lt.nits .or. nits.eq.9) go to 60
 
