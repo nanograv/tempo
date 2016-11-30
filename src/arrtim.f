@@ -439,8 +439,17 @@ C Include any TIME offset (deltat)
 C It is OK if ftzrmjd is a little outside the range [0,1],
 C this will be accounted for when the final value is calcualted
 C and printed out.
-	if(ntzref.eq.0.and.fmjd.gt.pepoch.and..not.tz)then
-	   ntzref=n
+	if(ntzref.eq.0.and..not.tz)then
+	   if(fmjd.gt.pepoch) ntzref = n
+           ! either:
+           !   ntzref has just been set by the above if statement,
+           !   in which case we want to store the tzr info
+           ! or:     
+           !   ntzref has not yet been set (so ntzref==0), in
+           !   which case it may never be set within this
+           !   part of the code, in which case we want to save
+           !   the tzr info in case this is the last TOA and
+           !   we set ntzref later.
 	   ntzrmjd=nfmjd
 	   ftzrmjd=ffmjd + deltat/86400.d0
 	   tzrsite=asite
@@ -886,6 +895,8 @@ C Save the DM "residual" and error (could make this part of vmemrw stuff?)
 
 c End of input file detected
 100	continue
+
+        if(ntzref.eq.0) ntzref=n
 
         if(mod(n,modscrn).ne.1.and..not.quiet) 
      +    write(*,1100)n,fmjdlast,dt,1d6*dt*p0,jits+1
