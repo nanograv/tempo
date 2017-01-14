@@ -58,7 +58,7 @@ C Parse numerical parameter
                 ii = index(card(i:i+12),' ')
                 if (ii.eq.0) ii=14
                 ii = i + ii - 2
-		read(card(i:ii),fmt='(f13.0)') parm
+		read(card(i:ii),fmt='(f13.0)',err=990) parm
 		goto 19
 	    endif
  18         continue
@@ -241,6 +241,10 @@ c       don't do anything -- just skip over this card
 
 200	parsed=.true.
 	return
+
+990	print *,"*** PCARD: error parsing the following TOA line:"
+	print *, card
+	stop
 
 999	if (nfmt.eq.3) return
 	print*,'*** PCARD: unknown command ',card(1:6)
