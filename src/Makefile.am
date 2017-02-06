@@ -62,7 +62,7 @@ covar.$(OBJEXT): acom.h dim.h
 cutil.$(OBJEXT): cutil.c
 ell12bt.$(OBJEXT): ell12bt.f dim.h orbit.h
 ephinit.$(OBJEXT): ephinit.f ephcom.h
-ephread.$(OBJEXT): ephread.f ephcom.h
+ephread.$(OBJEXT): ephread.f eph.h ephcom.h 
 equ2ecl.$(ObJEXT): equ2ecl.f dim.h acom.h
 fit.$(OBJEXT): fit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
 getcmdline.$(OBJEXT): getcmdline.f
