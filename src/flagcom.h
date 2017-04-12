@@ -1,6 +1,6 @@
 c      $Id$
         integer NFLAGMAX 
-        parameter(NFLAGMAX=20)
+        parameter(NFLAGMAX=32)
         integer nflag
         character flagname(NFLAGMAX)*80
         character flagvalue(NFLAGMAX)*80
