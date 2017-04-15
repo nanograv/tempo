@@ -9,6 +9,10 @@ BETA     Ecliptic latitude (degrees)
 LAMBDA   Ecliptic longitude (degrees)
 PMBETA   Proper motion in ecliptic latitude (mas/yr)
 PMLAMBDA Proper motion in ecliptic longitude (mas/yr)
+ELAT     Alternate input name for BETA
+ELONG    Alternate input name for LAMBDA
+PMELAT   Alternate input name for PMBETA
+PMELONG  Alternate input name for PMLAMBDA
 PX       Parallax (mas)
 PEPOCH   Epoch of period/frequency parameters and position (MJD) (not fit)
 POSEPOCH Epoch of position (MJD); default is PEPOCH (not fit)
