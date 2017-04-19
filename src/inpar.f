@@ -505,22 +505,22 @@ C  Position parameters
          read(cfit,*)nfit(8)
          setequ = .true.
 
-      else if(key(1:4).eq.'BETA')then
+      else if(key(1:4).eq.'BETA'.or.key(1:4).eq.'ELAT')then
          read(value,*)pdec
          read(cfit,*)nfit(5)
 	 setecl = .true.
 
-      else if(key(1:6).eq.'LAMBDA')then
+      else if(key(1:6).eq.'LAMBDA'.or.key(1:5).eq.'ELONG')then
          read(value,*)pra
          read(cfit,*)nfit(6)
 	 setecl = .true.
 
-      else if(key(1:6).eq.'PMBETA')then
+      else if(key(1:6).eq.'PMBETA'.or.key(1:6).eq.'PMELAT')then
          read(value,*)pmdec
          read(cfit,*)nfit(7)
 	 setecl = .true.
 
-      else if(key(1:8).eq.'PMLAMBDA')then
+      else if(key(1:8).eq.'PMLAMBDA'.or.key(1:7).eq.'PMELONG')then
          read(value,*)pmra
          read(cfit,*)nfit(8)
          setecl = .true.
