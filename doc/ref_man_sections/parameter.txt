@@ -34,7 +34,7 @@ DMX1_n   DM time derivative in n'th DMX segment
 DMXEP_n  Epoch of n'th DMX segment (MJD) (not fit)
 DMXR1_n  Start date of n'th DMX segment (MJD) (not fit)
 DMXR2_n  End date of n'th DMX segment (MJD) (not fit)
-A1_n     Projected pulsar semi-major axis of n'th orbit    (n=1,2,3; default 1)
+A1_n     Projected pulsar semi-major axis, n'th orbit (s)  (n=1,2,3; default 1)
 E_n      Eccentricity of n'th orbit                        (n=1,2,3; default 1)
 T0_n     Epoch of periastron passage of n'th orbit (MJD)   (n=1,2,3; default 1)
 TASC     Epoch of ascending node passage (MJD)
