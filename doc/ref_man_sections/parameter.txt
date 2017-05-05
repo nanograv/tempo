@@ -16,7 +16,7 @@ PMELONG  Alternate input name for PMLAMBDA
 PX       Parallax (mas)
 PEPOCH   Epoch of period/frequency parameters and position (MJD) (not fit)
 POSEPOCH Epoch of position (MJD); default is PEPOCH (not fit)
-F0       Pulsar rotation frequency (s-2)
+F0       Pulsar rotation frequency (s^-1)
 F        Alternative for F0
 F1       Pulsar rotation frequency derivative (s^-2)
          (if flag 2..9,A..C, fit multiple rotation frequency derivatives)
