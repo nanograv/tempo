@@ -61,8 +61,8 @@ covar.$(OBJEXT): acom.h dim.h
 cutil.$(OBJEXT): cutil.c
 ell12bt.$(OBJEXT): ell12bt.f dim.h orbit.h
 ephinit.$(OBJEXT): ephinit.f ephcom.h
-ephread.$(OBJEXT): ephread.f eph.h ephcom.h 
-equ2ecl.$(ObJEXT): equ2ecl.f dim.h acom.h
+ephread.$(OBJEXT): dim.h ephread.f eph.h ephcom.h 
+equ2ecl.$(OBJEXT): equ2ecl.f dim.h acom.h
 fit.$(OBJEXT): fit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
 getcmdline.$(OBJEXT): getcmdline.f
 getecliptic.$(OBJEXT): getecliptic.f dim.h acom.h eph.h
@@ -81,7 +81,7 @@ resid.$(OBJEXT): resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.$(OBJEXT): setup.f acom.h dim.h version.h
 tdbinit.$(OBJEXT): tdbinit.f tdbcom.h
 tdbinit2.$(OBJEXT): tdbinit2.f tdbcom.h
-tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h
+tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h dim.h
 tempo.$(OBJEXT): tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h toa.h
 timcalc.$(OBJEXT): timcalc.f acom.h dim.h dp.h trnsfr.h
 tmalloc.$(OBJEXT): array.h
