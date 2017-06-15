@@ -145,11 +145,11 @@ c                                                  --DJN 19 Dec 2001
 	  write(paramj,1102) jj-NPAR11+2
  1102     format(' f',i1)
 	else					! XMX parameters
-          if (mod(jj-NPAR6,2).eq.1) then
-	    write (paramj,1111) (jj-NPAR11+1)/2
+          if (mod(jj-NPAR12,2).eq.1) then
+	    write (paramj,1111) (jj-NPAR12+1)/2
  1111	    format('XX',i3.3)
           else 
-	    write (paramj,1112) (jj-NPAR11)/2
+	    write (paramj,1112) (jj-NPAR12)/2
  1112	    format('XE',i3.3)
           endif
 	endif

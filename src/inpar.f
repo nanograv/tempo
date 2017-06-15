@@ -148,6 +148,7 @@ c	new in DDFWHE
 	xmxr2(i) = -1.
 	xmxf1(i) = -1.
 	xmxf2(i) = -1.
+        xmxuse = .false.
       enddo
 
 
@@ -599,6 +600,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          nxmx = max(nxmx,ikey)
          read(value,*)xmx(ikey)
          read(cfit,*)nfit(NPAR12+2*ikey-1)
+         xmxuse(ikey) = .true.
 
       else if(key(1:7).eq.'XMXEXP_') then
          if (ikey.gt.NXMXMAX) then
@@ -608,6 +610,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          nxmx = max(nxmx,ikey)
          read(value,*)xmxexp(ikey)
          read(cfit,*)nfit(NPAR12+2*ikey)
+         xmxuse(ikey) = .true.
 
       else if(key(1:6).eq.'XMXR1_') then
          if (ikey.gt.NXMXMAX) then
@@ -616,6 +619,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          endif
          nxmx = max(nxmx,ikey)
          read(value,*)xmxr1(ikey)
+         xmxuse(ikey) = .true.
          
       else if(key(1:6).eq.'XMXR2_') then
          if (ikey.gt.NXMXMAX) then
@@ -624,6 +628,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          endif
          nxmx = max(nxmx,ikey)
          read(value,*)xmxr2(ikey)
+         xmxuse(ikey) = .true.
          
       else if(key(1:6).eq.'XMXF1_') then
          if (ikey.gt.NXMXMAX) then
@@ -632,6 +637,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          endif
          nxmx = max(nxmx,ikey)
          read(value,*)xmxf1(ikey)
+         xmxuse(ikey) = .true.
          
       else if(key(1:6).eq.'XMXF2_') then
          if (ikey.gt.NXMXMAX) then
@@ -640,6 +646,7 @@ C          if((nfit(NPAR6+2*ikey)).gt.0) write(*,'(''Fitting anyway'')')
          endif
          nxmx = max(nxmx,ikey)
          read(value,*)xmxf2(ikey)
+         xmxuse(ikey) = .true.
          
       else if((key(1:3).eq.'DM0'.and.lk.eq.3).or.
      +         key(1:2).eq.'DM'.and.lk.eq.2)then

@@ -308,7 +308,9 @@ C  Compute braking index
           write (31,1061) (freq(k),k=koff+2*ia-1,koff+2*ib-1,2)
           write (31,1061) (ferr(k),k=koff+2*ia-1,koff+2*ib-1,2)
 	  do i = ia, ib
-	    xmx(i) = xmx(i)+freq(koff+2*i-1)
+            if (xmxuse(i)) then
+   	      xmx(i) = xmx(i)+freq(koff+2*i-1)
+            endif
 	  end do
           write (31,1061) (xmx(i),i=ia,ib)
           write (31,1059) ("XMXEXP",i,i=ia,ib)
@@ -317,7 +319,9 @@ C  Compute braking index
           write (31,1061) (freq(k),k=koff+2*ia,koff+2*ib,2)
           write (31,1061) (ferr(k),k=koff+2*ia,koff+2*ib,2)
           do i = ia, ib
-            xmxexp(i) = xmxexp(i)+freq(koff+2*i)
+            if (xmxuse(i)) then
+              xmxexp(i) = xmxexp(i)+freq(koff+2*i)
+            endif
           end do
           write (31,1061) (xmxexp(i),i=ia,ib)
 	end do
