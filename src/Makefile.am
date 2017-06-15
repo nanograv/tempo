@@ -13,7 +13,6 @@ tempo_SOURCES = \
         inpar.f interp.f lmst.f mass2dd.f matinv.f mjdadd.f mxprt.f  \
         newbin.f newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
-	plnoise.f \
         setup.f sitea2n.f siten2a.f \
 	sort.f space_motion.f ell12bt.f tdbinit.f tdbinit2.f tdbread.f tempo.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
@@ -23,7 +22,7 @@ tempo_SOURCES = \
 	orbit.h tdbcom.h trnsfr.h tz.h vcom.h toa.h 
 
 if HAVE_LAPACK
-tempo_SOURCES += glsfit.f
+tempo_SOURCES += glsfit.f plnoise.f
 tempo_LDADD = $(LDADD) @LAPACK_LIBS@ @BLAS_LIBS@
 glsfit.$(OBJEXT): glsfit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
 else
