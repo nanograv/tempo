@@ -1,15 +1,26 @@
 #!/usr/bin/env python
 
-import sys
-import argparse, struct
+import argparse, os, struct, subprocess, sys
+
+FNULL = open(os.devnull, 'w')
 
 parser = argparse.ArgumentParser(description="Sort DMX ranges in MJD order")
 parser.add_argument("infile",   help="input .par file")
 parser.add_argument("outfile",  help="output .par file")
+parser.add_argument("-t","--timfile",help="TOA file (delete DMX ranges with no TOAs in this file)",default="")
  
 args = parser.parse_args()
 infile   = args.infile
 outfile  = args.outfile
+timfile  = args.timfile
+
+if timfile:
+  subprocess.call(["tempo","-f",infile,timfile,"-k"], stdout=FNULL, stderr=subprocess.STDOUT)
+  dmxused = []
+  with open("dmxn.tmp") as f:
+    for s in f:
+      dmxused.append(int(s.strip()))
+  dmxused = set(dmxused)
 
 # read in the DMX ranges
 
@@ -17,17 +28,26 @@ fin  = open(infile,"r")
 fout = open(outfile,"w")
 
 dmx = {}
+deleteddmx = []
 for s in fin:
   ss = s.split()
   if ss[0].startswith("DMX") and len(ss[0])>3:
     sss = ss[0].split("_")
     idx = int(sss[1])
-    key = sss[0][3:]
-    if not idx in dmx.keys():
-      dmx[idx] = {}
-    dmx[idx][key] = ss[1:]
+    if not timfile or idx in dmxused:
+      key = sss[0][3:]
+      if not idx in dmx.keys():
+        dmx[idx] = {}
+      dmx[idx][key] = ss[1:]
+    else:
+      deleteddmx.append(idx)
   else:
     fout.write(s)
+
+deleteddmx = set(deleteddmx)
+deleteddmx = sorted(deleteddmx)
+if deleteddmx:
+  print "These original dmx ranges were empty and are now removed: ", " ".join(str(n) for n in deleteddmx)
 
 for idx in dmx.keys():
   if not "R1" in dmx[idx].keys():
