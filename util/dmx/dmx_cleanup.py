@@ -31,7 +31,7 @@ dmx = {}
 deleteddmx = []
 for s in fin:
   ss = s.split()
-  if ss[0].startswith("DMX") and len(ss[0])>3:
+  if len(ss)>0 and ss[0].startswith("DMX") and len(ss[0])>3:
     sss = ss[0].split("_")
     idx = int(sss[1])
     if not timfile or idx in dmxused:
