@@ -27,7 +27,9 @@ DDGR  Variation of DD model in which general relativity is assumed
                      M. A. H. MacCallum (Cambridge Univ. Press), p. 209 (1987)
                    Taylor, J. H., & Weisberg, J. M., ApJ 345:454 (1989)
 
-H88   Re-parameterized EH model 
+                   
+
+H88   Re-parametrized EH model 
       Reference:  Haugan, M. P. 1988.  Preprint.  (See Taylor & Weisberg 1989.)
 
 BT+   BT model with nonlinear periastron advance.
@@ -69,9 +71,11 @@ DDS   Variation of DD which uses SHAPMAX = -ln(1-s) instead of s = sin i.
 
 DDK  Variation of DD which incorporates secular changes in observed 
      parameters due to proper motion and also annual-orbital parallax.
-     Coded by Willem van Straten.
+     Coded by Willem's van Straten.
      References: Kopeikin, S. M., ApJ 439:L5 (1995)
                  Kopeikin, S. M., ApJ 467:L93 (1996)
+                 van Straten, W., and Bailes, M., Radio Pulsars, 
+                       ASP Conference Proceedings, Vol. 302, p. 65 (2003)
 
 DDFWHE Variation of DD which implements the Freire&Wex(2010) orthometric 
        Shapiro delay parametrization in the high eccentricity case with
