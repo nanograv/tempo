@@ -9,7 +9,8 @@ NIST_BIPM15    bipmnist.15.extrap              UTC(NIST) to TT(BIPM15)
 NIST_BIPM2012  bipmnist.12.extrap              UTC(NIST) to TT(BIPM2012)
 NIST_BIPM2014  bipmnist.14                     UTC(NIST) to TT(BIPM2014)
 NIST_BIPM2015  bipmnist.15.extrap              UTC(NIST) to TT(BIPM2015)
-NIST_BIPM      bipmnist.15.extrap              UTC(NIST) to TT(BIPM)
+NIST_BIPM2016  bipmnist.16.extrap              UTC(NIST) to TT(BIPM2015)
+NIST_BIPM      bipmnist.16.extrap              UTC(NIST) to TT(BIPM)
 NIST_PTB       ptbnist.90                      UTC(NIST) to UTC(PTB)
 NIST_AT1       at1nist.90                      UTC(NIST) to AT1
 UT1            ut1.dat                         UT1 - UT
