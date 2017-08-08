@@ -95,6 +95,10 @@ c     default values of parameters
 
       call getenv ('TEMPO',path)
       lpth = index(path,' ')-1
+      if (lpth.eq.0) then
+        print *, "You must set the $TEMPO environment variable in order to run tempo."
+        stop
+      endif
       hlpfile = path(1:lpth)//'/tempo.hlp'	
 
 
