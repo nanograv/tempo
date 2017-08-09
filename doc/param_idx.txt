@@ -149,6 +149,14 @@ NPAR11+1                   f3                 Third spin frequency derivative
 NPAR11+2                   f4(1)              Fourth spin frequency derivative
 NPAR11+3                   f4(2)              Fifth spin frequency derivative
   ...                        ...                   ...
-NPA=NPAR11+NFMAX-2         f4(NFMAX)          NFXMAX spin frequency derivative
+NPAR12=NPAR11+NFMAX-2      f4(NFMAX)          NFXMAX spin frequency derivative
+
+NPAR12+1                   xmx(1)             xmx amplitude 1
+NPAR12+2                   xmxexp(1)          xmx exponent 1
+NPAR12+3                   xmx(2)             xmx amplitude 2
+NPAR12+4                   xmxexp(2)          xmx exponent 2
+  ...                        ...                   ...
+NPAR12+2*NXMXMAX-1         xmx(NXMXMAX)       xmx amlitude NXMXMAX
+NPAR=NPAR12+2*NXMXMAX      xmxexp(NXMXMAX)    xmx exponent NXMXMAX
 
 

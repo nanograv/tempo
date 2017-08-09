@@ -141,9 +141,17 @@ c                                                  --DJN 19 Dec 2001
 	elseif (jj.lt.NPAR11) then              ! FD values
 	  write(paramj,1101) jj-NPAR10
  1101     format('FD',i1)
-	else					! More frequency derivatives
+	elseif (jj.lt.NPAR12) then              ! More frequency derivatives
 	  write(paramj,1102) jj-NPAR11+2
  1102     format(' f',i1)
+	else					! XMX parameters
+          if (mod(jj-NPAR12,2).eq.1) then
+	    write (paramj,1111) (jj-NPAR12+1)/2
+ 1111	    format('XX',i3.3)
+          else 
+	    write (paramj,1112) (jj-NPAR12)/2
+ 1112	    format('XE',i3.3)
+          endif
 	endif
 
 	write(72) nn,j,paramj,gcor(j),sig(j),

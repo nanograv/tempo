@@ -276,7 +276,8 @@ C     freq-dependent arrival time shifts
 C     calculate xmx delays
            txmx = 0.d0
            do i = 1, nxmx
-             if (    (xmxf1(i).lt.0.d0 .or. freqf.ge.xmxf1(i))
+             if (      xmxuse(i)
+     +        .and.(xmxf1(i).lt.0.d0 .or. freqf.ge.xmxf1(i))
      +        .and.(xmxf2(i).lt.0.d0 .or. freqf.le.xmxf2(i))
      +        .and.(xmxr1(i).lt.0.d0 .or. nmjdu+fmjdu.ge.xmxr1(i))
      +        .and.(xmxr2(i).lt.0.d0 .or. nmjdu+fmjdu.le.xmxr2(i)))then

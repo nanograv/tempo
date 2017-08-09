@@ -16,7 +16,7 @@ PMELONG  Alternate input name for PMLAMBDA
 PX       Parallax (mas)
 PEPOCH   Epoch of period/frequency parameters and position (MJD) (not fit)
 POSEPOCH Epoch of position (MJD); default is PEPOCH (not fit)
-F0       Pulsar rotation frequency (s-2)
+F0       Pulsar rotation frequency (s^-1)
 F        Alternative for F0
 F1       Pulsar rotation frequency derivative (s^-2)
          (if flag 2..9,A..C, fit multiple rotation frequency derivatives)
@@ -34,7 +34,16 @@ DMX1_n   DM time derivative in n'th DMX segment
 DMXEP_n  Epoch of n'th DMX segment (MJD) (not fit)
 DMXR1_n  Start date of n'th DMX segment (MJD) (not fit)
 DMXR2_n  End date of n'th DMX segment (MJD) (not fit)
-A1_n     Projected pulsar semi-major axis of n'th orbit    (n=1,2,3; default 1)
+DMXF1_n  Lowest frequncy in n'th DMX segment (MJD) (output only)
+DMXF2_n  Highest frequncy in n'th DMX segment (MJD) (output only)
+XMX_m    Amplitude value in m'th XMX segment (pc cm^-3)  dt=XMX*(FREQ/XMXFRQ0)^XMXEXP
+XMXEXP_m Frequency index m'th XMX segment 
+XMXR1_m  Start date of m'th XMX segment (MJD) (not fit)
+XMXR2_m  End date of m'th XMX segment (MJD) (not fit)
+XMXF1_m  Lowest frequency to apply m'th XMX segment (MHz) (default=unused)
+XMXF2_m  Highest frequency to apply m'th XMX segment (MHz) (default=unused)
+XMXFRQ0  Fiducial frequency for XMX delays (default 1000 MHz)
+A1_n     Projected pulsar semi-major axis, n'th orbit (s)  (n=1,2,3; default 1)
 E_n      Eccentricity of n'th orbit                        (n=1,2,3; default 1)
 T0_n     Epoch of periastron passage of n'th orbit (MJD)   (n=1,2,3; default 1)
 TASC     Epoch of ascending node passage (MJD)

@@ -831,7 +831,8 @@ C TODO allow arb reference freq instead of 1 GHz?
 C  XM-related partial derivatives
 
         do i = 1, nxmx
-          if (    (xmxf1(i).lt.0.d0 .or. frq.ge.xmxf1(i))
+          if (         xmxuse(i) 
+     +      .and. (xmxf1(i).lt.0.d0 .or. frq.ge.xmxf1(i))
      +      .and. (xmxf2(i).lt.0.d0 .or. frq.le.xmxf2(i))
      +      .and. (xmxr1(i).lt.0.d0 .or. nmjd+fmjd.ge.xmxr1(i))
      +      .and. (xmxr2(i).lt.0.d0 .or. nmjd+fmjd.lt.xmxr2(i)) ) then

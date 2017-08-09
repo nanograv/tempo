@@ -279,6 +279,7 @@ c work correctly in tempo2:
  1201    format('XMXFRQ0',12x,f16.5)
       endif
       do i= 1, nxmx
+        if (xmxuse(i)) then
           write (71,1202) i,xmx(i),nfit(NPAR12+2*i-1),ferr(NPAR12+2*i-1)
  1202     format('XMX_',i4.4,1p,d18.8,i3,d20.8)
           write (71,1203) i,xmxexp(i),nfit(NPAR12+2*i),ferr(NPAR12+2*i)
@@ -288,6 +289,7 @@ c work correctly in tempo2:
           if (xmxf1(i).gt.0.) write(71,1204) "F1",i,xmxf1(i)
           if (xmxf2(i).gt.0.) write(71,1204) "F2",i,xmxf2(i)
  1204     format('XMX',a2,'_',i4.4,f16.5)
+        endif
       enddo
 
       write(71,'(''SOLARN0'',f19.2)')solarn0

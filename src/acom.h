@@ -23,6 +23,8 @@ c      $Id$
         logical usedmdata     ! use input DM measurements as "data"
 	logical usexmxfrq0    ! non-default xmxfrq0, write it to output
 
+	logical xmxuse        ! whether to use a given xmx range
+
 	integer parunit, nskip, iboot
         integer fitmode
         integer infolen
@@ -76,6 +78,7 @@ c      $Id$
         common /xmxcom/ xmx(NXMXMAX), xmxexp(NXMXMAX),
      +                  xmxr1(NXMXMAX), xmxr2(NXMXMAX),
      +                  xmxf1(NXMXMAX), xmxf2(NXMXMAX),
+     +                  xmxuse(NXMXMAX),
      +                  xmxfrq0, usexmxfrq0, nxmx
 
 	character psrname*64,obsflag*1,pardir*80,infotxt*160

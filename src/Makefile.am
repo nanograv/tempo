@@ -13,7 +13,6 @@ tempo_SOURCES = \
         inpar.f interp.f lmst.f mass2dd.f matinv.f mjdadd.f mxprt.f  \
         newbin.f newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
-	plnoise.f \
         setup.f sitea2n.f siten2a.f \
 	sort.f space_motion.f ell12bt.f tdbinit.f tdbinit2.f tdbread.f tempo.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
@@ -23,7 +22,7 @@ tempo_SOURCES = \
 	orbit.h tdbcom.h trnsfr.h tz.h vcom.h toa.h 
 
 if HAVE_LAPACK
-tempo_SOURCES += glsfit.f
+tempo_SOURCES += glsfit.f plnoise.f
 tempo_LDADD = $(LDADD) @LAPACK_LIBS@ @BLAS_LIBS@
 glsfit.$(OBJEXT): glsfit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
 else
@@ -62,8 +61,8 @@ covar.$(OBJEXT): acom.h dim.h
 cutil.$(OBJEXT): cutil.c
 ell12bt.$(OBJEXT): ell12bt.f dim.h orbit.h
 ephinit.$(OBJEXT): ephinit.f ephcom.h
-ephread.$(OBJEXT): ephread.f eph.h ephcom.h 
-equ2ecl.$(ObJEXT): equ2ecl.f dim.h acom.h
+ephread.$(OBJEXT): dim.h ephread.f eph.h ephcom.h 
+equ2ecl.$(OBJEXT): equ2ecl.f dim.h acom.h
 fit.$(OBJEXT): fit.f acom.h bcom.h orbit.h dim.h tz.h vcom.h
 getcmdline.$(OBJEXT): getcmdline.f
 getecliptic.$(OBJEXT): getecliptic.f dim.h acom.h eph.h
@@ -82,7 +81,7 @@ resid.$(OBJEXT): resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.$(OBJEXT): setup.f acom.h dim.h version.h
 tdbinit.$(OBJEXT): tdbinit.f tdbcom.h
 tdbinit2.$(OBJEXT): tdbinit2.f tdbcom.h
-tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h
+tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h dim.h
 tempo.$(OBJEXT): tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h toa.h
 timcalc.$(OBJEXT): timcalc.f acom.h dim.h dp.h trnsfr.h
 tmalloc.$(OBJEXT): array.h

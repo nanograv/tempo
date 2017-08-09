@@ -308,7 +308,9 @@ C  Compute braking index
           write (31,1061) (freq(k),k=koff+2*ia-1,koff+2*ib-1,2)
           write (31,1061) (ferr(k),k=koff+2*ia-1,koff+2*ib-1,2)
 	  do i = ia, ib
-	    xmx(i) = xmx(i)+freq(koff+2*i-1)
+            if (xmxuse(i)) then
+   	      xmx(i) = xmx(i)+freq(koff+2*i-1)
+            endif
 	  end do
           write (31,1061) (xmx(i),i=ia,ib)
           write (31,1059) ("XMXEXP",i,i=ia,ib)
@@ -317,7 +319,9 @@ C  Compute braking index
           write (31,1061) (freq(k),k=koff+2*ia,koff+2*ib,2)
           write (31,1061) (ferr(k),k=koff+2*ia,koff+2*ib,2)
           do i = ia, ib
-            xmxexp(i) = xmxexp(i)+freq(koff+2*i)
+            if (xmxuse(i)) then
+              xmxexp(i) = xmxexp(i)+freq(koff+2*i)
+            endif
           end do
           write (31,1061) (xmxexp(i),i=ia,ib)
 	end do
@@ -382,12 +386,26 @@ C Close output .par file
 1101	format(/' Weighted RMS residual: pre-fit',f10.3,
      +  ' us. Predicted post-fit',f10.3,' us.')
 	if(chisqr.ne.0.d0) then
-	  write(31,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
-          if (.not.quiet)
-     +      write(*,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
-1110	  format(' Chisqr/nfree:',f9.2,'/',i5,' =',f15.9,
+          if (chisqr.le.999999.) then
+ 	    write(31,1108) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+            if (.not.quiet) 
+     +        write(*,1108) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+          else if (chisqr.le.9999999.) then
+ 	    write(31,1109) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+            if (.not.quiet)
+     +        write(*,1109) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+          else
+ 	    write(31,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+            if (.not.quiet) 
+     +        write(*,1110) chisqr*nfree,nfree,chisqr,rms0/rms1,wmax
+          endif
+        endif
+1108	  format(' Chisqr/nfree: ',f9.2,'/',i5,' = ',f15.9,
      +    '   pre/post:',f7.2,'   Wmax:',f7.1)
-	endif
+1109	  format(' Chisqr/nfree: ',f10.2,'/',i5,' = ',f15.9,
+     +    '   pre/post:',f8.2,'   Wmax:',f7.1)
+1110	  format(' Chisqr/nfree: ',f11.2,'/',i5,' = ',f15.9,
+     +    '   pre/post:',f9.2,'   Wmax:',f7.1)
 
 	if(gro.and.(nits.eq.0.or.jits.eq.nits)) then
 	  open(33,file='gro.1',status='unknown')

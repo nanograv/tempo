@@ -25,16 +25,16 @@ unsorted = args.unsorted
 # read in the DMX ranges
 
 fpar = open(parfile,"r")
-dmxr = []
+dmxr = {}
 for s in fpar:
   if s.startswith("DMXR"):
     ss = s.split()
     parname = ss[0]
     if s.startswith("DMXR"):
-      irange = int(ss[0].split("_")[-1])-1  # DMX ranges start with 1, arrays start with 0
+      irange = int(ss[0].split("_")[-1])
+      if not irange in dmxr:
+        dmxr[irange] = [0.,0.]
       parval  = float(ss[1].replace("D","E"))
-      while irange>len(dmxr)-1:
-        dmxr.append([0.,0.])
       if s.startswith("DMXR1"):
         dmxr[irange][0] = parval
       elif s.startswith("DMXR2"):
@@ -53,8 +53,11 @@ toas = tempo_utils.read_toa_file(timfile)
 
 infolist = []
 orphans = []
-dmxn = [[] for i in range(len(dmxr))]
 norange = []
+
+dmxn = {}
+for k in dmxr:
+  dmxn[k] = []
 
 for t in toas:
   if not t.is_toa():
@@ -65,15 +68,15 @@ for t in toas:
 
   if not info in infolist:
     infolist.append(info)
-    for i in range(len(dmxn)):
-      dmxn[i].append(0)
+    for k in dmxn:
+      dmxn[k].append(0)
     norange.append(0)
   iinfo = infolist.index(info) 
 
   idx = -1
-  for i,r in zip(range(len(dmxr)),dmxr):
-    if mjd>=r[0] and mjd<=r[1]:
-      dmxn[i][iinfo] += 1
+  for k in dmxr:
+    if mjd>=dmxr[k][0] and mjd<=dmxr[k][1]:
+      dmxn[k][iinfo] += 1
       break
   else:
     norange[iinfo] += 1
@@ -99,20 +102,15 @@ if len(orphans)>0:
 print "#"
 
 
-print ("# %4s %8s  %8s  %6s  "+("   I%2.2d ")*len(infolist)) % \
-    tuple( [ "DMXn" , "  start","   end"," days" ] + range(len(infolist)) )
+print ("# %4s %10s  %10s  %10s  "+("   I%2.2d ")*len(infolist)) % \
+    tuple( [ "DMXn" , "  start","   end"," length" ] + range(len(infolist)) )
 
-k = range(len(dmxr))
-if not unsorted:
-  k = sorted(k, key=lambda x: dmxr[x][0])
+klist = dmxr.keys()
+klist.sort()
 
-# for i,n,r in zip(range(len(dmxn)),dmxn,dmxr):
-#   print ("  %3d  %8.2f  %8.2f  %6.2f  "+(" %5d ")*len(n)) % tuple( [i+1,r[0],r[1],r[1]-r[0]] + n)
-
-for i in k:
-  print ("  %3d  %8.2f  %8.2f  %6.2f  "+(" %5d ")*len(dmxn[i])) % \
-            tuple( [i+1,dmxr[i][0],dmxr[i][1],dmxr[i][1]-dmxr[i][0]] + dmxn[i] )
-
+for k in klist:
+  print ("  %3d  %10.4f  %10.4f  %10.4f  "+(" %5d ")*len(dmxn[k])) % \
+            tuple( [k,dmxr[k][0],dmxr[k][1],dmxr[k][1]-dmxr[k][0]] + dmxn[k] )
 
 if len(orphans)>0:
   print "#"
