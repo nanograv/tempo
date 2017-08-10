@@ -580,7 +580,7 @@ c         it doesn't fit into any existing range, so create a new range
           ndmx = ndmx + 1
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
-          idmx = ndmx
+          idmx = ndmx	
 	  if (ndmx.gt.1 .or. firstdmx) then ! Skip 1st DMX if needed
             nfit(NPAR6+2*ndmx-1)=1
             nparam=nparam+1

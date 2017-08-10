@@ -451,6 +451,7 @@ C         The main loop:
             nbuf = nptsmax * (nparmax+8) 
             call tmalloc(nptsmax,nbuf) ! allocate large arrays
             nparam = nparam0    ! un-do any change to nparam from arrtim call
+            ndmx = ndmx0        ! un-do any change to ndmx from arrtim call
             goto 62
           endif
 

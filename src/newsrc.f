@@ -577,7 +577,10 @@ c  Beginning of iteration loop
 	if (.not.quiet) write(31,1060) nparam
 1060	format(/'Fit for',i3,
      +      ' parameters, including phase but excluding jumps')
+c       store original values in case we need to read through TOAs twice
+c       and re-do determination of new DMX and JUMP parameters
 	nparam0 = nparam  
+        ndmx0 = ndmx
 
 	return
 

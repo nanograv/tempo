@@ -68,7 +68,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
-     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,
+     +    nfcalc,ntoa,nparam0,ndmx0,infolen,infoout,phisunout,
      +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
