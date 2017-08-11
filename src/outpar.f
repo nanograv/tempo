@@ -16,6 +16,9 @@ c      $Id$
       include 'eph.h'
       include 'tz.h'
 
+      character*1 siten2a  ! external function
+      character*2 siten2b  ! external function
+
       c1=360.d0/TWOPI
       c=360.*3600./TWOPI
       cc=1.d-9*c*365.25*8.64d7
@@ -319,7 +322,11 @@ c tempo2-compatibility:
       endif
       write(71,'(''TZRMJD '',i5,f16.14)')nx,fx
       write(71,'(''TZRFRQ '',f19.3)')tzrfrq
-      write(71,'(''TZRSITE '',17x,a)')tzrsite
+      if (nsite.le.0 .or. siten2b(ntzrsite).eq.'--') then
+        write(71,'(''TZRSITE '',17x,a)')siten2a(ntzrsite)
+      else
+        write(71,'(''TZRSITE '',17x,a)')siten2b(ntzrsite)
+      endif
       write(71,'(''MODE'',i22)')fitmode
       if(nprnt.gt.0)write(71,'(''NPRNT'',i21)')nprnt
       if(nits.gt.0)write(71,'(''NITS'',i22)')nits

@@ -3,7 +3,8 @@ c      $Id$
 
 	implicit real*8 (A-H,O-Z)
 	character DECSGN*1,path*160,str1*80,str2*80
-	character*1 ctmp, dtmp, ntmp
+	character*1 asite, dtmp, ntmp
+        character*80 bsite
         parameter (TWOPI=6.28318530717958648d0)
 
 	include 'dim.h'
@@ -15,6 +16,8 @@ c      $Id$
 	include 'orbit.h'
 	include 'eph.h'
 	include 'glitch.h'
+
+        integer sitea2n  ! external function
 
              ! jits = iteration number
              ! jits==0: first time through, initialize
@@ -304,20 +307,34 @@ C Read clock corrections
                 goto 430
 	      endif
 
-	      read(str1,1451) tdate(i),xlor,xjup,ctmp,dtmp
+              if (str2(1:6).eq.'OFFSET') then
+
+	        call citem(str1,80,idx,str2,lstr2)    ! Flexible format
+                jsite(i) = sitea2n(str2)
+	        call citem(str1,80,idx,str2,lstr2)
+                read (str2,*) tdate(i)
+	        call citem(str1,80,idx,str2,lstr2)
+                read (str2,*) ckcorr(i)
+	        call citem(str1,80,idx,str2,lstr2)
+                ckflag(i) = 0
+                if (lstr2.gt.0) then
+                  if (str2(1:5).eq.'FIXED') ckflag(i) = 1
+                endif
+
+              else                                   ! Fixed format
+              
+  	        read(str1,1451) tdate(i),xlor,xjup,asite,dtmp
 		
-	      
- 1451	      format(f9.0,2f12.0,1x,a1,1x,a1)
-	      jsite(i) = 99
-	      call upcase(ctmp)
-	      call upcase(dtmp)
-	      if (ctmp.ge.'0' .and. ctmp.le.'9') jsite(i) = ichar(ctmp)-48
-	      if (ctmp.ge.'A' .and. ctmp.le.'Z') jsite(i) = ichar(ctmp)-55
-	      if (ctmp.eq.'@') jsite(i) = -1
-	      if(xlor.gt.800.d0) xlor=xlor-818.8d0
-	      ckcorr(i)=xjup-xlor
-	      ckflag(i) = 0
-	      if (dtmp.eq.'F') ckflag(i) = 1  ! "fixed" -- no interpolation
+ 1451	        format(f9.0,2f12.0,1x,a1,1x,a1)
+	        jsite(i) = sitea2n(asite)
+	        call upcase(dtmp)
+	        if(xlor.gt.800.d0) xlor=xlor-818.8d0
+	        ckcorr(i)=xjup-xlor
+	        ckflag(i) = 0
+  	        if (dtmp.eq.'F') ckflag(i) = 1  ! "fixed" -- no interpolation
+
+              endif
+
  451	   continue
 	   i=NPT
 	   k=index(clkfile(1),' ')-1
