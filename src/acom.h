@@ -47,7 +47,7 @@ c      $Id$
         real*8 ceecl, seecl ! cosine and sine of obliquity of the ecliptic
 
 	common pdec,pra,ba(3),bc(3),dm,dt,dt2,freq(NPAP1),
-     +    ferr(NPAP1),fmin,hlt(36),hrd(36),siteused(36),
+     +    ferr(NPAP1),fmin,hlt(NOBSMAX),hrd(NOBSMAX),siteused(NOBSMAX),
      +    wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),nofitjump(NJUMP),
@@ -68,7 +68,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
-     +    nfcalc,ntoa,nparam0,infolen,infoout,phisunout,
+     +    nfcalc,ntoa,nparam0,ndmx0,infolen,infoout,phisunout,
      +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
      +    useannorb,usefixeddist,jumpbarycenter,useglsfit,
@@ -91,7 +91,7 @@ c      $Id$
         character eclcon*80
         character dcovfile*80
 
-        common/acomch/psrname,pardir,obsflag,infotxt,obskey(36),
+        common/acomch/psrname,pardir,obsflag,infotxt,obskey(NOBSMAX),
      +    eclcon,dcovfile,
      +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag,
      +    efacflag(NFLAGERR),efacflagval(NFLAGERR),

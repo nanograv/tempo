@@ -1,18 +1,19 @@
 c      $Id$
-	subroutine tzinit(obsyfile,sitelng,num)
+	subroutine tzinit(alng,sitelng,num)
 
 	implicit real*8 (a-h,o-z)
+	include 'dim.h'
+	include 'tz.h'
+        include 'acom.h'
+
+        real*8 alng(NOBSMAX)
 	character path*96
-        character *(*) obsyfile
 	character line*80,item*40
 	character*5 obskey0
 	real*8 maxhadef
 
 	integer sitea2n ! external function
 
-	include 'dim.h'
-	include 'tz.h'
-        include 'acom.h'
 
 	kd=index(tzdir,' ')-1
 	path=tzdir(1:kd)//tzfile
@@ -31,12 +32,12 @@ c Free format, but must be in order
 	jn=1
 	ll=80
 	call citem(line,ll,jn,item,jl)                  ! asite
-	if(jl.ne.1)then
-	   write(*,'(''Invalid asite in tz.in: '',a)')item(1:jl)
+	tzsite=item
+	nsite = sitea2n(tzsite)
+        if (nsite.eq.-2) then
+	   write(*,'(''Invalid site in tz.in: '',a)')item(1:jl)
 	   stop
 	endif
-	tzsite=item(1:1)
-	nsite = sitea2n(tzsite)
 
 	call citem(line,ll,jn,item,jl) ! maxha
 	read(item,*)maxhadef
@@ -126,44 +127,11 @@ C Read pulsar list and nspan, ncoeff, maxha and freq overrides
  320	num=i-1
 	close(11)
 
-	open(11,file=obsyfile,status='old')
-	do j = 1, 36
-	   siteused(j) = .false.
-	enddo
-C  Allow for xyz observatory coordinates  djn 17 aug 92
-	do 330 i=1,36
-	  read(11,1020,end=340) alat,along,elev,icoord,obsnam,obskey0
- 1020	  format(3f15.0,2x,i1,2x,a12,8x,a5)
-          if (obskey0(1:1).eq.' ') then
-            jsite = j
-          else
-            jsite = sitea2n(obskey0)  ! only first char of obskey0 is used by sitea2n
-          endif
-          if (siteused(jsite)) then
-            print *,"Error, site ",jsite, "listed more than once in"
-            print *,obsyfile
-            stop
-          endif
-          siteused(jsite) = .true.
-          obskey(jsite) = obskey0
-	  if (jsite.eq.nsite) then
-	    if (icoord.eq.0) then
-	      sitelng=ang(1,along)
-	    else
-	      sitelng = datan2(-along,alat)
-	    endif
-	  endif
- 330	continue
- 340	continue
-	close(11)
         if(nsite.le.0) then    ! geocentric, barycentric
           sitelng = 0.
-        else
-          if (siteused(nsite).eqv..false.) then
-	    print *,' Site',nsite,' not found in ',obsyfile
-	    stop
-          endif
-	endif
+        else	
+          sitelng=alng(nsite)
+        endif
 
 	return
 	end

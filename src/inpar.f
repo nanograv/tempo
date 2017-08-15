@@ -12,6 +12,7 @@ c      $Id$
       include 'orbit.h'
       include 'eph.h'
       include 'glitch.h'
+      include 'tz.h'
 
 
       integer i
@@ -96,7 +97,7 @@ c	new in DDFWHE
       ntzrmjd = 0.
       ftzrmjd = 0.
       tzrfrq = 0.
-      tzrsite = 0.
+      tzrsite = ""
 
       nxoff=0
       nflagjumps=0
@@ -404,7 +405,7 @@ C  Control parameters
          read(value,*)tzrfrq
 
       else if(key(1:7).eq.'TZRSITE')then
-         tzrsite=value(1:1)
+         tzrsite=value
          
       else if(key(1:5).eq.'START')then
          read(value,*)start

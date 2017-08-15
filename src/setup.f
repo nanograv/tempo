@@ -3,21 +3,28 @@ c       $Id$
 
 	implicit real*8 (a-h,o-z)
 	parameter (TWOPI=6.28318530717958648d0)
-	real*8 alng(36)
 	include 'dim.h'
 	include 'acom.h'
         include 'version.h'
+	real*8 alng(NOBSMAX)
 	integer time
-	character timstr*24,obsnam*12,obsnum*35,damoyr*9,parfile*160
+	character timstr*24,obsnam*12,damoyr*9,parfile*160
 	character*640 infile
         character*(*) obsyfile
         character*640 tpocmd
         character*5 obskey0
 	data ault/499.004786d0/
-	data obsnum/'123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
 
+        character*1 siten2a      ! external function
+        character*2 siten2b      ! external function
         integer sitea2n          ! external function
         character*640 getcmdline ! external function
+
+        integer nobs             ! if non-single-character obs codes are used, this
+                                 !   is set to the maximum value used; otherwise it
+                                 !   is 35 (max of 1-9 and a-z).
+
+        nobs = 35
 
 	nsec=time()
 	timstr=damoyr(40587+nsec/86400)
@@ -43,22 +50,32 @@ c       $Id$
      +    5x,'Observatory     Geodetic lat   Geodetic long   Elevation'/
      +    22x,'ddmmss.ss       ddmmss.ss         m'/)
 
-C  Read the geodetic coordinates of up to 36 observatories.
+C  Read the geodetic coordinates of up to NOBXMAX observatories.
 C  Icoord = 0 if geodetic; 1 = X, Y, Z geocentric coordinates, where
 C  alat = X, along = Y, and elev = Z
+C
+C  numerical code         one-character code    one-character code
+C  internal to tempo         in obsys.dat         in TOA files
+C  and used in polyco.dat                  
+C     1 .. 9                    1 .. 9              1 .. 9
+C    10 .. 35                   a .. z              a .. z
+C    36 .. NOBSMAX                -                  (none)
 
 	open(2,file=obsyfile,status='old',err=32)
 	goto 34
  32	write(*,'(''Error opening Observatory file: '',a)')obsyfile
         stop
  34     continue
-        do j = 1, 36
+        do j = 1, NOBSMAX
           siteused(j) = .false.
         enddo
-   	do 10 j=1,36
+   	do 10 j=1,NOBSMAX
 	  read(2,40,end=11) alat,along,elev,icoord,obsnam,obskey0
           if (obskey0(1:1).eq.' ') then
             jsite = j
+          else if (obskey0(1:1).eq.'-') then
+            nobs = nobs + 1
+            jsite = nobs
           else
             jsite = sitea2n(obskey0)  ! only first char of obskey0 is used by sitea2n
           endif
@@ -71,8 +88,9 @@ C  alat = X, along = Y, and elev = Z
           obskey(jsite) = obskey0
  40	  format(3f15.0,2x,i1,2x,a12,8x,a5)
 	  if(alat.ne.0..and..not.quiet) 
-     +         write(31,50) obsnum(jsite:jsite),obsnam,alat,along,elev
- 50	  format(a1,3x,a12,f15.2,f16.2,f12.1)
+     +         write(31,50) siten2a(jsite),siten2b(jsite),
+     +            obsnam,alat,along,elev
+ 50	  format(a1,x,a2,x,a12,f15.2,f16.2,f12.1)
  
 	  if(icoord.eq.0)then
 	    alat=ang(1,alat)
@@ -109,6 +127,10 @@ c     +        8.d-9*dcos(6.d0*hlt(jsite)))+elev
 	    hrd(jsite)=erad/(2.99792458d8*ault)
 	  endif
  10	continue
+        print *, "Error: too many observatory codes in obsys.dat"
+        print *, "Please increase NOBSMAX in dim.h and recompile tempo"
+        stop
+
  11     continue
 	close(2)
 

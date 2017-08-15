@@ -13,7 +13,7 @@ tempo_SOURCES = \
         inpar.f interp.f lmst.f mass2dd.f matinv.f mjdadd.f mxprt.f  \
         newbin.f newsrc.f newval.f nutation.f obsite.f outpar.f pcard.f pcshft.f \
         pospm_conv.f prcnut.f precession.f propmo.f radian.f ran1.f resid.f \
-        setup.f sitea2n.f siten2a.f \
+        setup.f sitea2n.f siten2a.f siten2b.f \
 	sort.f space_motion.f ell12bt.f tdbinit.f tdbinit2.f tdbread.f tempo.f \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
         vmemw.f  ztim.f \
