@@ -1,8 +1,10 @@
 c      $Id$
-       character tzdir*80,tzfile*80,tztfile*80,tzrsite*1,tzsite*1
+       character tzdir*80,tzfile*80,tztfile*80,tzsite*80
+       character tzrsite*80
        character tzsitedef*1
        character polycofile*160
        character name(NTZMAX)*12,pname*12,params(6)*80
+       integer ntzsite,ntzrsite
        integer nsp(NTZMAX),nco(NTZMAX)
        real*8 mxha(NTZMAX)
        integer ntmjd(NTZARR)
@@ -14,8 +16,9 @@ c      $Id$
 
 c      non-character variables:
        common/tz/tzrfrq,ftzrmjd,ftmjd,tmin,tzof,mxha,
-     +    ntzref,nsp,nco,nsets,params,nsite,ntzrmjd,ntmjd,
-     +    tzmjdstart,lupolyco
+     +    ntzref,nsp,nco,nsets,params,nsite,
+     +    ntzrmjd,ntmjd,
+     +    tzmjdstart,lupolyco,ntzsite,ntzrsite
 c      character variables:
        common/tzch/tzdir,tzfile,tztfile,tzrsite,tzsite,name,pname,
      +    tzsitedef,polycofile

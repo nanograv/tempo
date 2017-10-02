@@ -156,8 +156,13 @@ c                                                  --DJN 19 Dec 2001
 
 	write(72) nn,j,paramj,gcor(j),sig(j),
      +    (a(j,k)/(sig(j)*sig(k)),k=1,nn)
-20	write(31,1020) float(j),paramj,agcor,(line(i),i=1,nn)
-1020	format(f4.0,2x,a5,'|',a1,2x,500a1)
+        write(31,1020,advance="no") float(j),paramj,agcor
+1020	format(f4.0,2x,a5,'|',a1,2x)
+        do i = 1, nn
+          write (31,fmt="(a1)",advance="no") line(i)
+        end do
+        write (31,*)  ! end line
+20      continue
 
 	write(31,1006) ('-',i=1,nn)
 	write(31,1005) (mod(i,10),i=1,nn)

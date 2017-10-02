@@ -33,10 +33,10 @@ c time order, but entries for different sites can be in any order.
 	      if(ii.gt.ndate)then
 		 nmsg=nmsg+1
 		 if(nmsg.le.maxmsg.and..not.quiet) then
-		    write(*,1005) fmjd,csite(nsite:nsite)
-		    write(31,1005) fmjd,csite(nsite:nsite)
+		    write(*,1005) fmjd,nsite
+		    write(31,1005) fmjd,nsite
  1005		    format(' Clk corr error: TOA at',f12.5,
-     +             ' greater than last clk file entry for nsite ',a1)
+     +             ' greater than last clk file entry for nsite ',i3)
 		 endif
 		 if(nmsg.eq.maxmsg+1.and..not.quiet) print*,
      +      '*** Additional clock-correction messages suppressed. ***'
@@ -67,9 +67,9 @@ c time order, but entries for different sites can be in any order.
 		 go to 10
 	      else
 		 if(ii.eq.1)then
-		    write(*,1010)fmjd,td2,csite(nsite:nsite)
- 1010		    format(' Clk corr error: TOA at',f12.5,
-     +             ' less than first clk entry',f12.5,' for nsite ',a1)
+		    write(*,1010)fmjd,td2,nsite
+ 1010		    format(' Clk corr error: TOA at',f12.5,' less ',
+     +             ' than first clk entry',f12.5,' for nsite ',i3)
 		    stop
 		 end if
 		 if (ckflag(ii).eq.0 .and. flag1.eq.0) then

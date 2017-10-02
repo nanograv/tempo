@@ -42,6 +42,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	include 'tz.h'
         include 'toa.h'
         integer sitea2n ! external function
+        character*1 siten2a ! external function
+        character*2 siten2b ! external function
         character*80 getvalue ! external function
 
 	common /CONST/ PI,TWOPI,SECDAY,CONVD,CONVS,AULTSC,VELC,EMRAT,OBLQ,
@@ -51,8 +53,6 @@ C  DJN 18-Aug-92  Allow up to 36 sites
      +    tdis,bclt
 	common/obsp/ site(3),pos(3),freqhz,bval,sitvel(3)
 	data first/.true./,card2/'JUMP'/,idum/-1/
-
-        character*1 siten2a  ! external function
 
 	offset=.true.
 	jdcatc=.false.
@@ -244,9 +244,9 @@ c blank out temp flag variable
           rawflags = ''
 
           if(nfmt.eq.0) then				! Princeton format
-
             read(card,10500) asite,rfrq,amjd,aterr,ddm
 10500       format(a1,14x,f9.0,a20,a9,15x,f10.0)
+            nsite = sitea2n(asite)
 
             ! Clean up MJD and separate out integer and
             ! fractional parts.  It can have either of these forms:
@@ -278,17 +278,19 @@ c blank out temp flag variable
             read(card,1051) rfrq,nfmjd,ffmjd,phs,terr,asite
  1051       format(25x,f9.0,i7,f14.13,f8.6,f8.1,8x,a1)
             ffmjd=ffmjd+phs*p0/86400.d0
+            nsite = sitea2n(asite)
             
           else if(nfmt.eq.2) then ! ITOAF format
             read(card,1052) nfmjd,ffmjd,terr,rfrq,ddm,bsite,comment
  1052       format(9x,i5,f14.13,f6.2,f11.4,f10.6,2x,a2,2x,a8)
+            nsite = sitea2n(bsite)
             asite=' '
-            do iobs=1,36
-              if(bsite.eq.obskey(iobs)(4:5))then
-		asite=obskey(iobs)(1:1)
-		goto 56
-              endif
-            enddo
+            if (nsite.eq.-2) then
+              print *,"Error: no such obervatory code as: ",bsite
+              print *,"Problem TOA line:"
+              print *,card
+              stop
+            endif
 
           else if(nfmt.eq.3) then ! TEMPO2 format
 c First 5 fields are file, freq, TOA, err, site
@@ -306,16 +308,17 @@ c Then everything after that are flags (ignored for now)
             call citem(card,640,j1,aitem,ilen) ! site
             if (ilen.eq.1) then
               asite=aitem(1:1)
+              nsite = sitea2n(asite)
             else 
               asite=' '
               bsite=aitem(1:2)
-	      call upcase(bsite)
-              do iobs=1,36
-                if(bsite.eq.obskey(iobs)(4:5))then
-                  asite=obskey(iobs)(1:1)
-                  goto 55
-                endif
-              enddo
+              nsite=sitea2n(bsite)
+              if (nsite.eq.-2) then
+                print *,"Error: no such obervatory code as: ",bsite
+                print *,"Problem TOA line:"
+                print *,card
+                stop
+              endif
             endif
 
  55         continue
@@ -415,7 +418,7 @@ c Then everything after that are flags (ignored for now)
             nfmjd=nfmjd+1
             ffmjd=ffmjd-1.d0
           endif
-          nsite = sitea2n(asite)
+          ! nsite = sitea2n(asite)  ! this is now done earlier
 
         endif  ! end of read-data-from-file-or-memory if statement
 
@@ -452,7 +455,7 @@ C and printed out.
            !   we set ntzref later.
 	   ntzrmjd=nfmjd
 	   ftzrmjd=ffmjd + deltat/86400.d0
-	   tzrsite=asite
+	   ntzrsite=nsite
 	   tzrfrq=rfrq
 	endif
 
@@ -580,7 +583,7 @@ c         it doesn't fit into any existing range, so create a new range
           ndmx = ndmx + 1
           dmxr1(ndmx) = nfmjd+ffmjd
           dmxr2(ndmx) = nfmjd+ffmjd
-          idmx = ndmx
+          idmx = ndmx	
 	  if (ndmx.gt.1 .or. firstdmx) then ! Skip 1st DMX if needed
             nfit(NPAR6+2*ndmx-1)=1
             nparam=nparam+1
@@ -720,13 +723,7 @@ C  Arecibo only.  NB: HA is abs(hour angle) in days
 C  Write itoa file correctly, including observatory code.  (VMK, June94)
 	  write(afmjd,1079) ffmjd
 1079	  format(f15.13)
-	  bsite='??'
-	  do iobs=1,36
-	     if (asite.eq.obskey(iobs)(1:1)) then
-		bsite=obskey(iobs)(4:5)
-		goto 70
-	     endif
-	  enddo
+	  bsite=siten2b(nsite)
 
  70	  write(45,1080) psrname,nfmjd,afmjd(2:),terr,rfrq,
      +      ddmch(n),bsite,comment

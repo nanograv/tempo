@@ -12,6 +12,7 @@ c       NXDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NEDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NOMDOTMAX maximum number of orbital size (x) derivatives, orbit 1
 c       NFBJMAX  paximum number of orbital period jumps, orbit 1
+c       NOBSMAX  maximum number of observatories
 
 c                parameters are in following order:
 c       1       to NPAR1  sixty basic parameters
@@ -69,3 +70,4 @@ c       NFLAGERR max number of flag-based EFAC/EQUAD
         parameter (NTZMAX=1000,NCLKMAX=40,NEPHMAX=10,NUTMAX=6000)
         parameter (NTZARR=1500)
         parameter (NFLAGERR=64)
+        parameter (NOBSMAX=500)

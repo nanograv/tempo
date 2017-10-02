@@ -203,9 +203,9 @@ c     default values of parameters
                 nsp(1) = 60
                 mxha(1) = 1
                 tzof(1) = 1420 ! arbitrary default frequency
-                tzsite = ' '
+                tzsite = ''
                 tzmjdstart = -1
-                nsite = sitea2n(tzsite)
+                ! nsite = sitea2n(tzsite)
               endif
               s2 = getparm(s,i,ii,iarg,narg)
               call spliteq(s2,key,val,vall,err)
@@ -254,8 +254,8 @@ c     default values of parameters
                 else if (key(1:4).eq."FREQ") then
                   read (val,*) tzof(1)
                 else if (key(1:4).eq."SITE".or.key(1:3).eq."OBS") then
-                  tzsite = val(1:1)
-                  nsite = sitea2n(tzsite)
+                  tzsite = val
+                  ! nsite = sitea2n(tzsite)
                 else if (key(1:5).eq."START") then
                   read (val,*) tzmjdstart
                 else

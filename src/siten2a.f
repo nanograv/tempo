@@ -9,6 +9,8 @@ C     convert integer n into an ASCII observatory code
 
       integer n
 
+      siten2a = "-"   ! default for no assigned single-character code
+
       if (n.eq.-1) then
         siten2a = '@'
       else if (n.ge.0.and.n.le.9) then

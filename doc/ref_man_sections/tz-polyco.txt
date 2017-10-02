@@ -14,7 +14,7 @@ Line  Columns     Item
         80-86   Log_10 of fit rms residual in periods
   2      1-20   Reference Phase (RPHASE)
         21-38   Reference rotation frequency (F0)
-        39-43   Observatory number 
+        39-43   Observatory number (see note ** below)
         44-49   Data span (minutes)
         50-54   Number of coefficients
         55-75   Observing frequency (MHz)
@@ -30,6 +30,8 @@ The pulse phase and frequency at time T are then calculated as:
     PHASE = RPHASE + DT*60*F0 + COEFF(1) + DT*COEFF(2) + DT^2*COEFF(3) + ....
  FREQ(Hz) = F0 + (1/60)*(COEFF(2) + 2*DT*COEFF(3) + 3*DT^2*COEFF(4) + ....)
         
-
+** Observatory numbers are integers based on the observatory code.
+   See documentation file obsys.txt (describing file obsys.dat) for
+   more details.
 
 
