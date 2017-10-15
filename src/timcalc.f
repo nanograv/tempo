@@ -257,6 +257,7 @@ c Compute interplanetary effect assuming 10 e-/cc at 1 AU
          THETH = DACOS(CTH)
          if (freqhz.le.1.d-1) then
            TDIS = 0D0
+           txmx = 0.d0
          else
            if (SSDMFLAG.eq.0) then
              PLDIS = 0
