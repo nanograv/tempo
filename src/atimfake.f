@@ -24,7 +24,6 @@
 	   write(50,1000) (params(i),i=1,np)
  1000	   format(a80)
 	   read(params(np),1013) tzrsite, tzrfrq, amjd
-           ntzrsite = sitea2n(tzrsite)
  1013	   format(a1,14x,f9.0,a20)
 c          parse TOA into int+fracion (code from arrtim.f; see notes there)
            i1 = index(amjd,'.')
@@ -43,6 +42,7 @@ c          parse TOA into int+fracion (code from arrtim.f; see notes there)
 c       store reference TOA line
         stflag = .true.
         stntoa = 1
+        ntzrsite = sitea2n(tzrsite)
         stnsite(stntoa) = ntzrsite
         stfrq(stntoa) = tzrfrq
         stnmjd(stntoa) = ntzrmjd
