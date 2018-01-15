@@ -14,7 +14,6 @@ c      $Id$
       include 'glitch.h'
       include 'tz.h'
 
-
       integer i
 
       do i=1,NPAP1
@@ -94,10 +93,10 @@ c	new in DDFWHE
       tcorr = 0.
       dcovfile = ""
 
-      ntzrmjd = 0.
+      ntzrmjd = 0
       ftzrmjd = 0.
-      tzrfrq = 0.
-      tzrsite = ""
+      tzrfrq = -1.
+      tzrsite = " "
 
       nxoff=0
       nflagjumps=0
@@ -194,6 +193,13 @@ c	new in DDFWHE
       solarn0 = 10      
       solarn01 = 0      
 
+      ! arbitrary reference toa, frequency, site
+      ! used if none are set in tzmode
+      ntzrmjddefault = 53005
+      ftzrmjddefault = 0.
+      tzrfrqdefault = 0.      ! infinite frequency
+      tzrsitedefault = "@"    ! barycenter
+
       return
       end
 
@@ -219,6 +225,7 @@ C  The error/comment is ignored by TEMPO
       include 'glitch.h'
 
       character line*80, key*32, value*64, cfit*8, temp*80, cifit
+      character*80 note
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -1337,9 +1344,35 @@ c           11=BT1P, 12=BT2P, 13=DDS, 14=DDK
 
       endif
 
-      if(tz.and.(ntzrmjd.eq.0)) 
-     +  write (*,'('' WARNING: TZ mode, reference TOA not set'')')
-
+      if(tz) then
+        if(ntzrmjd.eq.0) then
+          ntzrmjd = ntzrmjddefault
+          ftzrmjd = ftzrmjddefault
+          write (*,9001), ntzrmjd+ftzrmjd
+ 9001     format ("WARNING: TZ mode, ref mjd  not set, using ",f11.5)
+        endif
+        if(tzrfrq.lt.0) then
+          tzrfrq = tzrfrqdefault
+          note = ""
+          if (tzrfrq.eq.0.) note = " (infinite freq)"
+          write (*,9002), tzrfrq, note
+ 9002     format ("WARNING: TZ mode, ref freq not set, using ",f11.5,a20)
+        endif
+        if(tzrsite.eq." ") then
+          tzrsite = tzrsitedefault
+          note = ""
+          if (tzrsite.eq."0") note = " (geocenter)"
+          if (tzrsite.eq."@") note = " (geocenter)"
+          write (*,9003), tzrsite(1:(index(tzrsite,' ')-1)), note
+ 9003     format ("WARNING: TZ mode, ref site not set, using ",a,a20)
+        endif
+        if(nits.ne.1) then
+          write (*,9004) nits
+ 9004     format ("WARNING: TZ mode, par file nits=",I2,
+     +                                ", using 1 instead")
+          nits = 1
+        endif
+      endif
 
       return
       end
