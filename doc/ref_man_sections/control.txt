@@ -56,11 +56,11 @@ SOLARN0 Solar system electron density parameter "n0"
         r0=1AU, r=Distance from Sun, n0 is density at 1 AU in electrons/cm^3
         Default value is 10.
 
-SOLARN01 Linear time rate of change of solar electron density in units
-         of electrons/cm^3/yr.  If this parameter is used then 
-         SOLARN0 is taken as correct at epoch PEPOCH and SOLARN01 gives
-         the change at other dates.
-         Default value is 0.
+SOLARN0_1 Linear time rate of change of solar electron density in units
+          of electrons/cm^3/yr.  If this parameter is used then 
+          SOLARN0 is taken as correct at epoch PEPOCH and SOLARN01 gives
+          the change at other dates.
+          Default value is 0.
 
 START   Ignore TOAs before this date (MJD) (if flag is nonzero)
         Allowed values:  single-precision real numbers

@@ -313,7 +313,7 @@ C  Get key, value and cfit
       ! this happens when a par file is produced by the atnf catalogue
       ! and errors are printed in column 3.  Here we set cfit to '0'
       ! if it is determined to be floating point (checked for by
-      ! the precense of a period)
+      ! the presence of a period)
       if(index(cfit,'.').ne.0) cfit = '0'
       ikey = keyidx(key)        ! extract xx in keys of form ssss_xx
 

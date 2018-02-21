@@ -296,6 +296,9 @@ c work correctly in tempo2:
       enddo
 
       write(71,'(''SOLARN0'',f19.2)')solarn0
+      if (solarn01.ne.0.) then
+        write(71,'(''SOLARN0_1'',f19.2)')solarn01
+      endif
       write(71,'(''EPHEM'',15x,a)')ephfile(nephem)(1:5)
       if (eclcon.ne."DEFAULT") then
         write(71,'(''ECL'',17x,a)')eclcon(1:index(eclcon," ")-1)
