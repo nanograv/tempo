@@ -19,7 +19,8 @@ c     2*pi/(360*3600)
       call upcase(eclcon)
 
       k = index(ephdir,' ')-1
-      open (2,file=ephdir(1:k)//'ecliptic.dat')
+      open (2,action='read',status='old',
+     +              file=ephdir(1:k)//'ecliptic.dat')
 
       do while (.TRUE.)
         read (2,fmt='(a640)',end=2001) s
