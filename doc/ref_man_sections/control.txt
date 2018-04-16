@@ -9,7 +9,7 @@ CLK     Terrestrial time standard
 COORD   Input coordinate system
         Allowed values: 'B1950', 'J2000' (default)
 
-DMVAR1  Earlist MJD for which DM variations will be applied
+DMVAR1  Earliest MJD for which DM variations will be applied
         Allowed values: floating point MJD
  
 DMVAR2  Latest MJD for which DM variations will be applied
@@ -29,7 +29,7 @@ IBOOT   Bootstrap error analysis, with 2^n iterations
 INFO    Use the specified Tempo2-style flag for INFO values.
         Allowed values:  flag name including leading '-'
 
-NDDM    Use delta-DM values spedivied on TOA lines (added to .par DM value).
+NDDM    Use delta-DM values specified on TOA lines (added to .par DM value).
         Allowed value:  integer 1
 
 NITS    Iterate solution n times, or fewer if it converges.
@@ -46,9 +46,21 @@ PHIMIN  Minimum Earth-Pulsar-Sun angle for inclusion in analysis
 PSR     Pulsar name (normally without the leading B or J)
         Allowed values:  up to 12 characters
 
-BINARY  Binary model to use (see BINARY MODELS, below)
+BINARY  Binary model to use (see separate BINARY MODELS documentation)
         Allowed values:  'NONE', 'BT', 'EH', 'DD', 'DDGR', 'H88',
-                         'BT+', 'DDT', 'MSS', 'ELL1', 'BT1P', 'BT2P'
+                         'BT+', 'DDT', 'MSS', 'ELL1', 'ELL1H', 'BTX',
+                         'DDS', 'DDK', 'DDFWHE', 'BT1P', 'BT2P'
+
+SOLARN0 Solar system electron density parameter "n0"
+        Solar system electron density modeled as n(r)=n0*(r0/r)^2, 
+        r0=1AU, r=Distance from Sun, n0 is density at 1 AU in electrons/cm^3
+        Default value is 10.
+
+SOLARN0_1 Linear time rate of change of solar electron density in units
+          of electrons/cm^3/yr.  If this parameter is used then 
+          SOLARN0 is taken as correct at epoch PEPOCH and SOLARN01 gives
+          the change at other dates.
+          Default value is 0.
 
 START   Ignore TOAs before this date (MJD) (if flag is nonzero)
         Allowed values:  single-precision real numbers
@@ -68,6 +80,6 @@ TZRMJD  Reference toa for phase prediction
 TZRFRQ  Frequency of reference TOA for phase prediction
         Allowed values:  float
 
-TZRSITE Observatory of referendce TOA for phase prediction
+TZRSITE Observatory of reference TOA for phase prediction
         Allowed values:  observatory site codes
 

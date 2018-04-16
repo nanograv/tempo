@@ -49,10 +49,10 @@ T0_n     Epoch of periastron passage of n'th orbit (MJD)   (n=1,2,3; default 1)
 TASC     Epoch of ascending node passage (MJD)
 PB_n     Period of n'th orbit (days)                       (n=1,2,3; default 1)
 OM_n     Longitude of periastron passage, n'th orbit (deg) (n=1,2,3; default 1)
-FB       Frequency of orbit                                (n=10)
-FB_n     n'th time derivative of frequency of orbit        (n=10)
-FBJ_n    Jump in orbital frequency                         (n=10)
-TFBJ_n   Time of n'th jump in orbital frequency            (n=10)
+FB0      Orbital frequency (1/PB but different units) (s^-1)   
+FB1      n'th time derivative of frequency of orbit (s^-(1+n))  (n=1..9)
+FBJ0n    Jump in orbital frequency                         
+TFBJ0n   Time of n'th jump in orbital frequency            
 EPS1     First Laplace parameter [eccentricity times sin(omega)]
 EPS2     Second Laplace parameter [eccentricity times cos(omega)]
 EPS1DOT  Time derivative of EPS1
