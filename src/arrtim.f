@@ -463,10 +463,10 @@ C  Get clock corrections
 	if(nsite.eq.-1)then         ! no correction for sites 0 and @
 	   clk2=deltat/86400.d0      
 	else if (nsite.eq.0) then
-           nfmt = 2                 ! this hack tells clockcor to treat the
+                                    ! this hack tells clockcor to treat the
                                     ! TOA as UTC.  clockcor can convert it
                                     ! to TT(BIPM) if requested in the tempo header
-	   call clockcor(fmjd,nsite,n,deltat,clk2,nfmt)
+	   call clockcor(fmjd,nsite,n,deltat,clk2,2)
 	else 
 	   call clockcor(fmjd,nsite,n,deltat,clk2,nfmt)
 	endif
