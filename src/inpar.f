@@ -380,6 +380,13 @@ C  Control parameters
          stop
  12      continue
 
+      else if(key(1:5).eq.'NHARM')then
+         read(value,*)itmp 	 
+         if (itmp.gt.4) then
+            write(*,'(''Invalid NHARM>4: '',i2)')itmp
+            stop
+         endif
+
       else if(key(1:5).eq.'UNITS')then
          call upcase(value)
          if(value(1:3).ne.'TDB')then
