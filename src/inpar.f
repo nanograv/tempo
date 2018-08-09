@@ -72,6 +72,7 @@ c      $Id$
 c	new in DDFWHE
       varsigma=0.
       h3=0.
+      h4=0.
       dr=0.
       dth=0.
       a0=0.
@@ -834,6 +835,10 @@ c next two lines by sets on 29 Aug 05
 
       else if(key(1:2).eq.'SI')then
          read(value,*)si
+         read(cfit,*)nfit(20)
+
+      else if(key(1:2).eq.'H4')then
+         read(value,*)h4
          read(cfit,*)nfit(20)
 
 c	JMW et al. nfit(20) slot for VARSIGMA if using bnryfwhiecc

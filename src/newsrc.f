@@ -501,6 +501,7 @@ c  Beginning of iteration loop
           if(shapmax.ne.0.)write(31,'(''SHAPMAX:'',f25.6)')shapmax
           if(varsigma.ne.0.)write(31,'(''VARSIGMA:'',f25.6)')varsigma
           if(h3.ne.0.)write(31,'(''H3:'',f25.6)')h3
+          if(h4.ne.0.)write(31,'(''H4:'',f25.6)')h4
           if(okom.ne.0.)write(31,'(''KOM (deg):'',f22.6)')okom*360./TWOPI
           if(okin.ne.0.)write(31,'(''KIN (deg):'',f22.6)')okin*360./TWOPI
           if(am.ne.0.)write(31,'(''M (solar):'',f22.6)')am

@@ -289,7 +289,7 @@ c		for printout below
            okin   = okin   + freq(53)
            okom   = okom   + freq(52)
 
-        else
+        else if (.not. usefw10) then
            si     = si     + freq(20)
         endif
         
@@ -310,6 +310,7 @@ c     ------ freq(22) is either H3 or M2 depending on Shapro params
 	   edot    = edot    + freq(25)
 	   eps1dot = eps1dot + freq(39)
 	   eps2dot = eps2dot + freq(40)
+	  if (usefw10) h4 = h4 + freq(20)
 	endif
 
 c  Print updated parameters

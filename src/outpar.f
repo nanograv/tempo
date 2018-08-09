@@ -542,6 +542,14 @@ c --- parameterization (standard vs FW10):
               endif
           endif
 1122      format('H3',f24.12,a,f20.12)
+          if(h4.ne.0.)then
+              if(nfit(20).gt.0)then
+                  write(71,1124)h4,fit1,ferr(20)
+              else
+                  write(71,1124)h4
+              endif
+          endif
+1124      format('H4',f24.12,a,f20.12)
       else
           if((si.ne.0.).and.(shapmax.eq.0))then
              if(nfit(20).gt.0)then

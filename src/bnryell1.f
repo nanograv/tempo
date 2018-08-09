@@ -93,7 +93,7 @@ c  edot for eps1dot, and omdot for eps2dot
 
 c Shapiro delay part
       if (usefw10) then
-        ds = -4.0/3.0 * h3 * DSIN(3.0*phase)
+        ds = -4.0/3.0*h3*DSIN(3.0*phase) + h4*DCOS(4.0*phase)
       else
         brace=1-si*DSIN(phase)
         dlogbr=dlog(brace)
@@ -115,7 +115,9 @@ c  Now we need the partial derivatives.
       Ceps2    =  0.5*x*DSIN(2*phase)
       Cm2      = -2*dlogbr
       Csi      = 2*m2*DSIN(phase)/brace
+c Note, these two assume nharm<=4:
       Ch3      = -4.0/3.0*DSIN(3.0*phase)
+      Ch4      = DCOS(4.0*phase)
 
       fctn( 9) = Cx*f0
       fctn(10) = Ceps1*f0
@@ -128,7 +130,7 @@ c  Now we need the partial derivatives.
       fctn(13) = Ceps2*f0
       fctn(18) = 0.5d-6*tt0*fctn(12)
       if (usefw10) then
-        fctn(20) = 0.0
+        fctn(20) = Ch4*f0
         fctn(22) = Ch3*f0
       else
         fctn(20) = Csi*f0
