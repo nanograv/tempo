@@ -83,6 +83,7 @@ c      $Id$
 	      path=parfile
 	   endif
 	   open(49,file=path,status='old',err=998)
+	   call zeropar(nits)	! To get TZ ref params
 	   call rdpar(nits)	! To get TZ ref params
 	   rewind 49
 	endif

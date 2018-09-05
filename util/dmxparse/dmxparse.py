@@ -44,7 +44,7 @@ class tempo_cov:
                 run = False
 
 class dmxparse:
-    def __init__(self,parfile):
+    def __init__(self,parfile,xmx=False):
         self.val = {}
         self.err = {}
         self.epoch = {}
@@ -52,8 +52,12 @@ class dmxparse:
         self.r2 = {}
         self.f1 = {}
         self.f2 = {}
+        if xmx:
+          d = 'X'
+        else:
+          d = 'D'
         for l in open(parfile).readlines():
-            if not l.startswith('DMX'): continue
+            if not l.startswith(d+'MX'): continue
             fields = l.split()
             key = fields[0]
             val = fields[1].replace('D','e')
@@ -65,15 +69,25 @@ class dmxparse:
             (pfx,idx,newkey) = (None,None,None)
             if '_' in key: 
                 (pfx, idx) = key.split('_')
-                newkey = "DX%03d" % int(idx)
-            if l.startswith('DMX_') and flag==1:
+                newkey = d+"X%03d" % int(idx)
+            if l.startswith(d+'MX_') and flag==1:
                 self.val[newkey] = float(val)
                 self.err[newkey] = float(err)
-            if l.startswith('DMXEP_'): self.epoch[newkey] = float(val)
-            if l.startswith('DMXR1_'): self.r1[newkey] = float(val)
-            if l.startswith('DMXR2_'): self.r2[newkey] = float(val)
-            if l.startswith('DMXF1_'): self.f1[newkey] = float(val)
-            if l.startswith('DMXF2_'): self.f2[newkey] = float(val)
+            if l.startswith(d+'MXEP_'): self.epoch[newkey] = float(val)
+            if l.startswith(d+'MXR1_'): self.r1[newkey] = float(val)
+            if l.startswith(d+'MXR2_'): self.r2[newkey] = float(val)
+            if l.startswith(d+'MXF1_'): self.f1[newkey] = float(val)
+            if l.startswith(d+'MXF2_'): self.f2[newkey] = float(val)
+        # the following are intended for xmx, in which epochs and frequency
+        #   ranges aren't defined (as of 2018-Jun-18, when I am adding this)
+        for key in self.r1.keys():
+            if not key in self.epoch:
+                self.epoch[key] = 0.5*(self.r1[key]+self.r2[key])
+            if not key in self.f1:
+                self.f1[key] = 0.
+            if not key in self.f2:
+                self.f1[key] = 0.
+                self.f2[key] = 0.
 
     def fix_errs(self,tmp_cov):
         self.verr = {}
@@ -105,12 +119,13 @@ def get_base_dm(parfile):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description="Parse DMX values from tempo .par file.\nSubtract mean DM value (default, may be over-ridden by flags.")
+    parser = argparse.ArgumentParser(description="Parse DMX (or XMX) values from tempo .par file.\nSubtract mean DM value (default, may be over-ridden by flags.")
     parser.add_argument('parfile',    metavar='par_file', help="Parameter file (output from tempo)")
     parser.add_argument('matrixfile', metavar='cov_matrix_file',nargs="?",default="matrix.tmp",help="Covariance file (output from tempo)")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-d','--dmfull',      action="store_true", help="Report full DM value at each epoch (no offset)")
     group.add_argument('-o','--originaldmx', action="store_true", help="Report original DMX values (no mean subtracttion)")
+    group.add_argument('-x','--xmx',         action="store_true", help="Analyze XMX coefficient values instead of DMX values")
 
     args = parser.parse_args()
 
@@ -118,29 +133,41 @@ if __name__ == '__main__':
     originaldmx = args.originaldmx
     parfile = args.parfile
     matrixfile = args.matrixfile
+    xmx = args.xmx
 
-    d = dmxparse(parfile)
+    d = dmxparse(parfile,xmx)
     c = tempo_cov(matrixfile)
 
+    if xmx:
+      dx = 'XX'
+      dmx = 'XMX'
+      dm = 'XMX'
+    else:
+      dx = 'DX'
+      dmx = 'DMX'
+      dm = 'DM'
     # Check that DMX's match up
-    ndmx1 = ['DX' in p for p in c.params].count(True)
+    ndmx1 = [dx in p for p in c.params].count(True)
     ndmx2 = len(d.err)
     if ndmx1 != ndmx2:
-        print >>sys.stderr, "Error: DMX entries do not match up"
-        print >>sys.stderr, "  parfile NDMX = %d, matrix NDMX = %d" % (ndmx1, ndmx2)
+        print >>sys.stderr, "Error: "+dmx+" entries do not match up"
+        print >>sys.stderr, "  parfile N%s = %d, matrix N%s = %d" % (dmx, ndmx1, dmx, ndmx2)
         sys.exit(1)
 
     d.fix_errs(c)
-    print "# Mean DMX value = %+.6e" % d.mean
-    print "# Uncertainty in average DM = %.5e" % d.mean_err
-    print "# Columns: DMXEP DMX_value DMX_var_err DMXR1 DMXR2 DMXF1 DMXF2 DMX_bin"
+    print "# Mean %s value = %+.6e" % (dmx,d.mean)
+    print "# Uncertainty in average %s = %.5e" % (dm,d.mean_err)
+    print "# Columns: %sEP %s_value %s_var_err %sR1 %sR2 %sF1 %sF2 %s_bin" % (dmx,dmx,dmx,dmx,dmx,dmx,dmx,dmx)
     doffset = 0.
-    if dmfull: 
-        doffset = get_base_dm(parfile)
+    if dmfull:
+        if xmx:
+            doffset = 0.
+        else: 
+            doffset = get_base_dm(parfile)
     elif not originaldmx:
         doffset = -d.mean
     for k in sorted(d.val.keys()):
-        #print d.epoch[k], d.val[k], d.err[k], d.verr[k], k
+        # print d.epoch[k], d.val[k], d.err[k], d.verr[k], k
         print "%.4f %+.7e %.3e %.4f %.4f %7.2f %7.2f %s" % (d.epoch[k], 
                 d.val[k]+doffset, d.verr[k], 
                 d.r1[k], d.r2[k], d.f1[k], d.f2[k], k)

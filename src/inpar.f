@@ -14,7 +14,6 @@ c      $Id$
       include 'glitch.h'
       include 'tz.h'
 
-
       integer i
 
       do i=1,NPAP1
@@ -73,6 +72,7 @@ c      $Id$
 c	new in DDFWHE
       varsigma=0.
       h3=0.
+      h4=0.
       dr=0.
       dth=0.
       a0=0.
@@ -94,10 +94,10 @@ c	new in DDFWHE
       tcorr = 0.
       dcovfile = ""
 
-      ntzrmjd = 0.
+      ntzrmjd = 0
       ftzrmjd = 0.
-      tzrfrq = 0.
-      tzrsite = ""
+      tzrfrq = -1.
+      tzrsite = " "
 
       nxoff=0
       nflagjumps=0
@@ -194,6 +194,13 @@ c	new in DDFWHE
       solarn0 = 10      
       solarn01 = 0      
 
+      ! arbitrary reference toa, frequency, site
+      ! used if none are set in tzmode
+      ntzrmjddefault = 53005
+      ftzrmjddefault = 0.
+      tzrfrqdefault = 0.      ! infinite frequency
+      tzrsitedefault = "@"    ! barycenter
+
       return
       end
 
@@ -219,6 +226,7 @@ C  The error/comment is ignored by TEMPO
       include 'glitch.h'
 
       character line*80, key*32, value*64, cfit*8, temp*80, cifit
+      character*80 note
 
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
@@ -306,7 +314,7 @@ C  Get key, value and cfit
       ! this happens when a par file is produced by the atnf catalogue
       ! and errors are printed in column 3.  Here we set cfit to '0'
       ! if it is determined to be floating point (checked for by
-      ! the precense of a period)
+      ! the presence of a period)
       if(index(cfit,'.').ne.0) cfit = '0'
       ikey = keyidx(key)        ! extract xx in keys of form ssss_xx
 
@@ -371,6 +379,13 @@ C  Control parameters
          write(*,'(''Invalid CLK label: '',a)')value(1:ix0)
          stop
  12      continue
+
+      else if(key(1:5).eq.'NHARM')then
+         read(value,*)itmp 	 
+         if (itmp.gt.4) then
+            write(*,'(''Invalid NHARM>4: '',i2)')itmp
+            stop
+         endif
 
       else if(key(1:5).eq.'UNITS')then
          call upcase(value)
@@ -827,6 +842,10 @@ c next two lines by sets on 29 Aug 05
 
       else if(key(1:2).eq.'SI')then
          read(value,*)si
+         read(cfit,*)nfit(20)
+
+      else if(key(1:2).eq.'H4')then
+         read(value,*)h4
          read(cfit,*)nfit(20)
 
 c	JMW et al. nfit(20) slot for VARSIGMA if using bnryfwhiecc
@@ -1337,9 +1356,35 @@ c           11=BT1P, 12=BT2P, 13=DDS, 14=DDK
 
       endif
 
-      if(tz.and.(ntzrmjd.eq.0)) 
-     +  write (*,'('' WARNING: TZ mode, reference TOA not set'')')
-
+      if(tz) then
+        if(ntzrmjd.eq.0) then
+          ntzrmjd = ntzrmjddefault
+          ftzrmjd = ftzrmjddefault
+          write (*,9001), ntzrmjd+ftzrmjd
+ 9001     format ("WARNING: TZ mode, ref mjd  not set, using ",f11.5)
+        endif
+        if(tzrfrq.lt.0) then
+          tzrfrq = tzrfrqdefault
+          note = ""
+          if (tzrfrq.eq.0.) note = " (infinite freq)"
+          write (*,9002), tzrfrq, note
+ 9002     format ("WARNING: TZ mode, ref freq not set, using ",f11.5,a20)
+        endif
+        if(tzrsite.eq." ") then
+          tzrsite = tzrsitedefault
+          note = ""
+          if (tzrsite.eq."0") note = " (geocenter)"
+          if (tzrsite.eq."@") note = " (geocenter)"
+          write (*,9003), tzrsite(1:(index(tzrsite,' ')-1)), note
+ 9003     format ("WARNING: TZ mode, ref site not set, using ",a,a20)
+        endif
+        if(nits.ne.1) then
+          write (*,9004) nits
+ 9004     format ("WARNING: TZ mode, par file nits=",I2,
+     +                                ", using 1 instead")
+          nits = 1
+        endif
+      endif
 
       return
       end

@@ -58,9 +58,9 @@ BT2P  BT model with three orbits:  the first may be relativistic, the
 BTX   BT model with orbital motion expressed in frequency rather than
       period.  Orbital frequency may vary, either through instantaneous
       jumps in binary frequency (jump size FBJ_x at time TFBJ_x) or through a
-      Taylor expansion around T0 (FB_x is x'th derivative of binary 
-      frequency).  Orbit size may also be written as a taylor expansion
-      (XDOT_x is x+1'th derivative of X=A SIN I)
+      Taylor expansion around T0 (FB0 is orbital frequency in s^-1; FBx is x'th 
+      derivative of binary frequency).  Orbit size may also be written as a 
+      Taylor expansion (XDOT_x is x+1'th derivative of X=A SIN I)
       Reference:  Nice, D., unpublished
 
 DDS   Variation of DD which uses SHAPMAX = -ln(1-s) instead of s = sin i.  
@@ -99,7 +99,7 @@ OM           x    x     x      x      x      x      x      x      *      *      
 TASC         *                                                    x      x                          
 EPS1         *                                                    x      x                          
 EPS2         *                                                    x      x                          
-FB           *    *     *      *      *      *      *      *      *      *      x     *     *      *
+FB0          *    *     *      *      *      *      *      *      *      *      x     *     *      *
 FB1          *    *     *      *      *      *      *      *      *      *      x     *     *      *
 FB2,FB3,etc.                                                      x             x     *     *       
 OMDOT        x    x     x             x      x             x      x      x      x     x            x  
