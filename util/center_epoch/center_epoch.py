@@ -71,29 +71,33 @@ for s in fin:
   elif ss[0]=="PSR":
     psr = val
 
+
 newepoch = int(0.5*(start+finish))
 newf0 = f0 + f1*(newepoch-pepoch)*86400.
 ftmp.write("POSEPOCH %20.10f\n" % newepoch)
 ftmp.write("PEPOCH   %20.10f\n" % newepoch)
 ftmp.write("F0       %20.15e 1\n" % newf0)
+
+if usefb:
+  pb = 1./(86400.*fb)  # fb is in s^-1
+  usepb = True
+
 if uset0:
   if usepb:
     newt0 = t0 + pb*int((newepoch-t0)/pb+0.5)
-  elif usefb:
-    newt0 = t0 + 1./(86400.*fb)*int((newepoch-t0)/pb+0.5)  # fb is in s^-1
   else:
     print "Error: T0 is present but neither PB nor FB0 is set"
     sys.exit(1)
   ftmp.write("T0     %20.15e 1\n" % newt0)
+
 if usetasc:
   if usepb:
     newtasc = tasc + pb*int((newepoch-tasc)/pb+0.5)
-  elif usefb:
-    newtasc = tasc + 1/(86400.*fb)*int((newepoch-tasc)/pb+0.5)  # fb is in s^-1
   else:
     print "Error: T0 is present but neither PB nor FB0 is set"
     sys.exit(1)
   ftmp.write("TASC   %20.15e 1\n" % newtasc)
+
 ftmp.close()
 
 
