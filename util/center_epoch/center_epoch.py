@@ -36,6 +36,8 @@ ftmp = open(tmpfile,"w")
 
 uset0 = False
 usetasc = False
+usepb = False
+usefb = False
 
 for s in fin:
   ftmp.write(s)
@@ -55,7 +57,11 @@ for s in fin:
   elif ss[0]=="PEPOCH":
     pepoch = float(val.replace("D","E"))
   elif ss[0]=="PB":
+    usepb = True
     pb = float(val.replace("D","E"))
+  elif ss[0]=="FB0":
+    usefb = True
+    fb = float(val.replace("D","E"))
   elif ss[0]=="T0":
     t0 = float(val.replace("D","E"))
     uset0 = True
@@ -71,10 +77,22 @@ ftmp.write("POSEPOCH %20.10f\n" % newepoch)
 ftmp.write("PEPOCH   %20.10f\n" % newepoch)
 ftmp.write("F0       %20.15e 1\n" % newf0)
 if uset0:
-  newt0 = t0 + pb*int((newepoch-t0)/pb+0.5)
+  if usepb:
+    newt0 = t0 + pb*int((newepoch-t0)/pb+0.5)
+  elif usefb:
+    newt0 = t0 + 1./(86400.*fb)*int((newepoch-t0)/pb+0.5)  # fb is in s^-1
+  else:
+    print "Error: T0 is present but neither PB nor FB0 is set"
+    sys.exit(1)
   ftmp.write("T0     %20.15e 1\n" % newt0)
 if usetasc:
-  newtasc = tasc + pb*int((newepoch-tasc)/pb+0.5)
+  if usepb:
+    newtasc = tasc + pb*int((newepoch-tasc)/pb+0.5)
+  elif usefb:
+    newtasc = tasc + 1/(86400.*fb)*int((newepoch-tasc)/pb+0.5)  # fb is in s^-1
+  else:
+    print "Error: T0 is present but neither PB nor FB0 is set"
+    sys.exit(1)
   ftmp.write("TASC   %20.15e 1\n" % newtasc)
 ftmp.close()
 
