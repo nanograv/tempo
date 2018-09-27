@@ -200,7 +200,9 @@ c   dcov, cov matrix (diagonal part only)
               !  TODO:
               !    - This assumes(!) only DMXs (no DMX1s) are set.
               !    - Extend to deal with DM polynomials.
-              Adm(Admoff+i+npts+(j-1)*Admrows) = 1.0
+              ! The test for fctn!=0 makes sure this TOA is affected by
+              ! this param (ie is in the relevant DMX bin).
+              if (fctn(j-1).ne.0d0) Adm(Admoff+i+npts+(j-1)*Admrows) = 1.0
               ndmparam = ndmparam + 1
             endif
  66       continue
@@ -357,7 +359,6 @@ c allow diagonal DM cov matrix for now)
             dmwt = 0.0
             if (dmerr(i).gt.0.0) dmwt=1.0/dmerr(i)
             r(i+npts) = dmres(i)*dmwt
-            !print *,i,dmres(i),dmerr(i)
             do j=1,nparam
               Adm(Admoff+i+npts+(j-1)*Admrows) = 
      +          Adm(Admoff+i+npts+(j-1)*Admrows)*dmwt
