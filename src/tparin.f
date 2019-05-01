@@ -23,7 +23,7 @@ c     following variables are set in this routine:
       real*8 version
       character*160 npulsefile
       character*640 infile
-      character*80 path
+      character*640 path
       character*80 resfile1
       character*80 hlpfile
       character*160 parfile
