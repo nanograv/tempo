@@ -398,7 +398,7 @@ c  Open parameter and residual files
 		   if(n.lt.0)n=index(infile,' ')-1
 		   parfile=infile(1:n)//'.par'
 		endif
-		open(49,file=parfile,status='old')
+		open(49,file=parfile,status='old',err=9990)
 		parunit = 49
 	     endif
 	     rewind(50)
@@ -497,6 +497,10 @@ C         The main loop:
 
 	endif
 	go to 9999
+
+ 9990   write(*,'(/''Error opening '',a/)')
+     +            parfile(1:index(parfile,' ')-1)
+        goto 9999
 
  9997	write(*,'(/''File '',a,'' not found'')')infile(1:nfl)
         goto 9999
