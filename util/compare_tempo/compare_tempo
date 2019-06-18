@@ -5,6 +5,8 @@
 
 #   see usage_die below for usage
 
+use Scalar::Util qw(looks_like_number);
+
 $tpo1default = "tempo";
 $tpo2default = "tempo";
 
@@ -164,7 +166,7 @@ while ($#a>-1) {
     ($atmp1,$aflag,$aerr) = (split(" ",$astring))[$aoff..$aoff+2];
     ($btmp1,$bflag,$berr) = (split(" ",$bstring))[$boff..$boff+2];
 
-    if (defined($aflag) && defined($bflag) && $aflag>0 && $bflag>0) {    
+    if (defined($aflag) && defined($bflag) && looks_like_number($aflag) && looks_like_number($bflag) && $aflag>0 && $bflag>0) {    
       @atmp = split(":",$atmp1);   #this fixes entries of the form aa:bb:cc
       @btmp = split(":",$btmp1);   #but also works for single number-entries
       $aparam = 0.;
