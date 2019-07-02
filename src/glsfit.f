@@ -5,6 +5,7 @@ c      $Id$
      +     resfile2)
 
 	implicit real*8 (a-h,o-z)
+	implicit integer*8 (i-k)
 	include 'dim.h'
 	include 'acom.h'
 	include 'bcom.h'
@@ -151,7 +152,7 @@ c portion of the cov matrix so that 'white' residuals can be calculated
 c at the end.
         if (.not. havecov) then
           print *,'  ... allocate matrices'
-          ncovpts = npts*(npts-1)/2 + npts
+          ncovpts = int(npts,8)*(npts-1)/2 + npts
           allocate(dcov(ncovpts),stat=istat)
           if (istat.ne.0)
      +      stop "glsfit: can't allocate memory for dcov"
