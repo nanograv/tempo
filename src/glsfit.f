@@ -73,7 +73,7 @@ c packed cov matrix, to be malloced
         data havecov/.false./
         logical diagcov
         data diagcov/.true./
-        integer ncovpts  
+        integer*8 ncovpts  
         integer*8 idx
         real*8,allocatable :: dcov(:) ! data cov matrix
         real*8,allocatable :: rcov(:) ! red noise portion
