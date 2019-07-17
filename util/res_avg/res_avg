@@ -12,7 +12,7 @@ use Math::Trig;
 # of the phases and the sum of the cosines of the phases are both accumulated, then an arctan of
 # the sum is taken to recover the average angle.
 
-($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $rflag, $infoflag, $infofile, $countmin) = &resavg_arg_parse(@ARGV);
+($dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $rflag, $infoflag, $infofile, $ecorrfile, $countmin) = &resavg_arg_parse(@ARGV);
 
 &resavg_read;
 
@@ -24,6 +24,11 @@ if ($infoflag) {
 
 chomp(@infolist);
 
+if ($ecorrfile ne "") {
+  &resavg_ecorr_read($ecorrfile);
+} else {
+  %ecorr = ();
+}
 
 # These hold info needed to compute the (W)RMS of the averaged residuals
 $r2_tot = 0.0;
@@ -97,6 +102,14 @@ while ($#mjda>-1) {
     
 }
 
+if ($ecorrfile ne "") {
+  print sprintf("# Incorporated ECORR values from '%s':\n",
+    $ecorrfile);
+  for $ecorrflag (keys %ecorr) {
+    print sprintf("#   %20s %.3f us\n", $ecorrflag, $ecorr{$ecorrflag});
+  }
+  print "#\n";
+}
 print sprintf("# WRMS = %.3f us\n", sqrt($wr2_tot/$wt_tot));
 print sprintf("#  RMS = %.3f us\n", sqrt($r2_tot/$ct_tot));
 foreach $grp (keys %wr2_grp) {
@@ -141,6 +154,8 @@ sub resavg_arg_parse{
   "  -bxxx,yyy,zzz,.... divide residuals into bands 0<f<xxx, xxx<f<yyy, etc.\n".
   "  -c:    calculate weighted avg residual from fit of resid and dm at each epoch\n".
   "         (experimental!  use with care!)\n".
+  "  -Exxx: read ECORR values from parfile xxx, apply to averaged uncertainties\n".
+  "         (requires -i to be used also).\n". 
   "  -fxxx: maximum fractional frequency range, abs(f-f0)/f0, over which residuals\n".
   "         are averaged [default: not used]\n".
   "  -ixxx: read info.tmp-style file xxx and only average whose entries match\n".
@@ -174,6 +189,7 @@ sub resavg_arg_parse{
   my($uflag) = 0;  # unweighted average
   my($infoflag) = 0;  # use info file
   my($infofile) = "";
+  my($ecorrfile) = ""; # Use ECORR from specified par file
   my($sflag) = 0;  # input residuals in sec (tempo2) not microsec (tempo)
   my($zflag) = 0;  # ignore zero-error points
   my($countmin) = 1; # minimum number of residuals to average
@@ -192,6 +208,9 @@ sub resavg_arg_parse{
           last;
         } elsif ($f eq "c")      {#       -c
           $cflag = 1;
+        } elsif ($f eq "E") {#       -E
+          $ecorrfile = $par;
+          last;
         } elsif ($f eq "f") {#       -f
           $dfflag = 1;
           $df = $par;
@@ -217,7 +236,7 @@ sub resavg_arg_parse{
         } elsif ($f eq "z") {#       -z
           $zflag = 1;
         }  else {            #       invalid flag
-          print "\nERROR: Invalid flag -$f\n\n";
+          print STDERR "\nERROR: Invalid flag -$f\n\n";
           die $usage;
         }
       }
@@ -227,11 +246,16 @@ sub resavg_arg_parse{
   }
 
   if ($#param>=0) {
-    print "\nERROR: following parameters have no meaning: ",join(" ",@param),"\n";
+    print STDERR "\nERROR: following parameters have no meaning: ",join(" ",@param),"\n";
     die $usage;
   }
 
-return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $rflag, $infoflag, $infofile, $countmin;
+  if ($ecorrfile ne "" and not $infoflag) {
+    print STDERR "\nERROR: -E option requires -i also be used\n";
+    die $usage;
+  }
+
+return $dt, $df, $bflag, $blist, $dfflag, $cflag, $sflag, $zflag, $uflag, $rflag, $infoflag, $infofile, $ecorrfile, $countmin;
 }
 
 #-----------------------------------------
@@ -271,6 +295,12 @@ sub resavg_calculate_print{
   if ($err==0) {$err = 1};  # $err can be zero if there are multiple identical TOAs
                             #  (causing rchi2 to be zero).  Shouldn't happen in real data asets,
                             #  it did once, so check for it
+  
+  # Add in ECORR if we have it
+  if (exists $ecorr{$info}) {
+    $err = sqrt($err*$err + $ecorr{$info}*$ecorr{$info});
+  }
+
   $wr2_tot += $res*$res*(1.0/($err*$err));
   $r2_tot += $res*$res;
   $wt_tot += (1.0/($err*$err));
@@ -330,6 +360,36 @@ sub resavg_info_read{
   open INFO, $infofile;
   @infolist = <INFO>;  
   close INFO;
+}
+
+sub resavg_ecorr_read{
+  # Read ECORR values from a parfile, associate with TOAs via INFO
+  local *PAR;
+  my($parfile) = shift(@_);
+  my($infotoaflag) = "";
+  my(@ecorrflags) = ();
+  %ecorr = ();
+  open PAR, $parfile;
+  while (<PAR>) {
+    chomp;
+    if (/^#/ or /^C /) { next; }
+    @fields = split;
+    if ($fields[0] eq "INFO") { $infotoaflag = $fields[1]; }
+    elsif ($fields[0] eq "ECORR") {
+      push @ecorrflags, $fields[1];
+      $ecorr{$fields[2]} = $fields[3];
+    }
+  }
+  close PAR;
+  # If any of the ECORR flags are not the same as INFO flag,
+  # warn about it.
+  foreach $ecorrflag (@ecorrflags) {
+    if ($ecorrflag ne $infotoaflag) {
+      print sprintf(
+        "# WARNING: ECORR flag '%s' does not match INFO flag '%s'\n",
+        $ecorrflag, $infotoaflag);
+    }
+  }
 }
 
 #-----------------------------------------
