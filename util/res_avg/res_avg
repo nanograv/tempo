@@ -341,6 +341,7 @@ sub resavg_read{
   @ophasea = ();
   while (<STDIN>) {
     chomp;
+    if (/^#/) { next; }
     ($mjd0, $freq0, $res0, $err0, $ophase0) = split;
     if ($err0>0 or $zflag==0) {
       $res0 *= 1.e6 if ($sflag);
