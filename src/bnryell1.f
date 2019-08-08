@@ -87,9 +87,33 @@ c  edot for eps1dot, and omdot for eps2dot
          e2=ecc*cw
       endif
 
-      dre=x*(DSIN(phase)-0.5*(e1*DCOS(2*phase)-e2*DSIN(2*phase)))
-      drep=x*DCOS(phase)
-      drepp=-x*DSIN(phase)
+      ! o(e^2) expression for Roemer delay from Norbert Wex and Weiwei Zhu
+      ! This is equaiton (1) of Zhu et al (2019) but with a corrected typo:
+      !    In the first line of that equation, ex->e1 and ey->e2
+      !    In the other lines, ex->e2 and ey->e1
+      ! See Email from Norbert and Weiwei to David on 2019-Aug-08
+      ! The dre expression comes from Norbert and Weiwei; the derivatives
+      ! were calculated by hand for tempo
+
+      dre = x*(DSIN(phase)-0.5*(e1*DCOS(2.0*phase)-e2*DSIN(2.0*phase)))+
+     +       (-x/8.)*(-2.*e1*e2*DCOS(phase) + 6.*e1*e2*DCOS(3.*phase) +
+     +           3.*e1*e1*DSIN(phase) + 5.*e2*e2*DSIN(phase) +
+     +           3.*e1*e1*DSIN(3.*phase) - 3.*e2*e2*DSIN(3.*phase))
+
+      drep  = x*(DCOS(phase)+(e1*DSIN(2.0*phase)+e2*DCOS(2.0*phase))) +
+     +       (-x/8.)*(2.*e1*e2*DSIN(phase) - 18.*e1*e2*DSIN(3.*phase) +
+     +           3.*e1*e1*DCOS(phase) + 5.*e2*e2*DCOS(phase) +
+     +           9.*e1*e1*DCOS(3.*phase) - 9.*e2*e2*DCOS(3.*phase))
+
+      drepp  = x*(-DSIN(phase)+2.*(e1*DCOS(2.0*phase)-e2*DSIN(2.0*phase))) +
+     +       (-x/8.)*(2.*e1*e2*DCOS(phase) - 54.*e1*e2*DCOS(3.*phase) +
+     +           (-3.)*e1*e1*DSIN(phase) - 5.*e2*e2*DSIN(phase) +
+     +           (-27.)*e1*e1*DSIN(3.*phase) + 27.*e2*e2*DSIN(3.*phase))
+     
+      ! old first-order equations 
+      ! dre=x*(DSIN(phase)-0.5*(e1*DCOS(2*phase)-e2*DSIN(2*phase)))
+      ! drep=x*DCOS(phase)
+      ! drepp=-x*DSIN(phase)
 
 c Shapiro delay part
       if (usefw10) then
