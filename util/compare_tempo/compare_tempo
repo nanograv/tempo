@@ -323,7 +323,7 @@ sub compare_tempo_command_line_parse {
   "   -sXXX   = flag error differences greater than XXX sigma [default=not done]\n".
   "   -n      = don't print header or file information, only print parameters\n".
   "   -p      = don't run tempo; read file1 and file2 as tempo .par files\n".
-  "   -l      = in the output, remove any path before listing input file anems\n".
+  "   -l      = in the output, remove any path before listing input file names\n".
   "\n";
 
   my($f);
