@@ -238,6 +238,7 @@ C  The error/comment is ignored by TEMPO
 	                        ! equatorial coordinate has been set
       logical setpb, setfb      ! indicate when orbital period/pdot or
                                 ! orbital frequency/fdot has been set
+      logical seth3h4           ! indicate when H3, H4, or varsigma has been set
 
       integer ffit(NFMAX)  ! local flags for which frequency derivatives f1 through f12 to fit
                            !  -1: not set at all
@@ -272,6 +273,7 @@ C  The error/comment is ignored by TEMPO
       setequ    = .false.
       setpb     = .false.
       setfb     = .false.
+      seth3h4   = .false.
 
       ll=80
 
@@ -847,11 +849,13 @@ c next two lines by sets on 29 Aug 05
       else if(key(1:2).eq.'H4')then
          read(value,*)h4
          read(cfit,*)nfit(20)
+         seth3h4 = .true.
 
 c	JMW et al. nfit(20) slot for VARSIGMA if using bnryfwhiecc
       else if(key(1:8).eq.'VARSIGMA')then
          read(value,*)varsigma
          read(cfit,*)nfit(20)
+         seth3h4 = .true.
 
       else if(key(1:4).eq.'MTOT')then
          read(value,*)am
@@ -865,6 +869,7 @@ c	 JMW et al. nfit(22) slot for H3 if using bnryfwhiecc
       else if(key(1:2).eq.'H3')then
          read(value,*)h3
          read(cfit,*)nfit(22)
+         seth3h4 = .true.
 
       else if(key(1:5).eq.'DTHET')then
          read(value,*)dth
@@ -1219,6 +1224,13 @@ C DJN modified to allow it if at least one DMX value is held fixed at zero
      +       '' orbital frequency/fbdot'')')
         stop
       endif
+
+      if (seth3h4 .and. nbin.eq.9 .and. .not.usefw10) then
+        write (*,'(''ERROR: do not use H3, H4, or VARSIG with '',
+     +       ''binary model ELL1.  Use ELL1H instead.'')')
+        stop
+      endif
+
 
 c     if binary frequencies are input but binary model requires 
 c     binary periods, make the conversion if possible
