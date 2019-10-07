@@ -33,6 +33,8 @@ c      $Id$
         integer nflagefac   ! number of tempo2-style flag-based EFAC
         integer nflagequad  ! number of tempo2-style flag-based EQUAD
         integer nflagecorr  ! number of flag-based ecorr/jitter terms
+        integer nflagdmefac   ! number of tempo2-style flag-based DMEFAC
+        integer nflagdmjumps  ! number of tempo2-style flag-based DMJUMP
 
 	integer nxmx        ! number of xmx terms used
 
@@ -51,10 +53,11 @@ c      $Id$
      +    wt,x(NPAP1),era,ec,
      +    erd,fmax,emax,tmax,phimin,start,finish,amjd1,amjd2,posepoch,
      +    posep,dither,xjdoff(2,NJUMP),dct(NJUMP),nofitjump(NJUMP),
-     +    dmepoch,dmep,dmefac,
+     +    dmepoch,dmep,
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
      +    flagefac(NFLAGERR),flagequad(NFLAGERR),flagecorr(NFLAGERR),
+     +    flagdmefac(NFLAGERR),flagdmjump(NFLAGERR),
      +    usedmx1,
      +    fdcof(NFDMAX),
      +    rnamp,rnidx,
@@ -68,6 +71,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
+     +    nflagdmefac,nflagdmjump,
      +    nfcalc,ntoa,nparam0,ndmx0,infolen,infoout,phisunout,
      +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
@@ -88,6 +92,8 @@ c      $Id$
         character efacflag*32, efacflagval*32
         character equadflag*32, equadflagval*32
         character ecorrflag*32, ecorrflagval*32
+        character dmefacflag*32, dmefacflagval*32
+        character dmjumpflag*32, dmjumpflagval*32
         character eclcon*80
         character dcovfile*80
 
@@ -96,7 +102,9 @@ c      $Id$
      +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag,
      +    efacflag(NFLAGERR),efacflagval(NFLAGERR),
      +    equadflag(NFLAGERR),equadflagval(NFLAGERR),
-     +    ecorrflag(NFLAGERR),ecorrflagval(NFLAGERR)
+     +    ecorrflag(NFLAGERR),ecorrflagval(NFLAGERR),
+     +    dmefacflag(NFLAGERR),dmefacflagval(NFLAGERR),
+     +    dmjumpflag(NFLAGERR),dmjumpflagval(NFLAGERR)
 
 
         real*8 array(NPA,NPA) ! moved here from fit.f, djn, 8-Sep-98

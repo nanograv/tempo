@@ -283,6 +283,8 @@ C  The error/comment is ignored by TEMPO
       iefac  = 0  ! used for counting tempo2-style efac params
       iequad = 0  ! used for counting tempo2-style equad params
       iecorr = 0  ! used for counting ecorr params
+      idmefac  = 0  ! used for counting efac params for DM measurements
+      idmjump  = 0  ! used for counting DM offsets
 
       nskip = 0  ! counts parameter lines, which are skipped if TOAs are
 		 !    read from this file
@@ -360,9 +362,6 @@ C  Control parameters
       else if(key(1:6).eq.'DMDATA')then
          read(value,*)itmp
          if(itmp.gt.0)usedmdata=.true.
-
-      else if(key(1:6).eq.'DMEFAC')then
-         read(value,*)dmefac
 
       else if(key(1:4).eq.'COOR')then
          if(value(1:5).eq.'B1950')ncoord=0
@@ -1106,6 +1105,40 @@ c JUMP -flag flag_value jump_value fitflag jump_err
            endif
          else
            print *, "Error: specify a flag/value pair for ECORR"
+           stop
+         endif
+
+       else if(key(1:6).eq.'DMEFAC') then
+         idmefac = idmefac+1
+         nflagdmefac = idmefac
+         if (value(1:1).eq.'-') then
+           dmefacflag(idmefac) = value
+           dmefacflagval(idmefac) = temp
+           call citem(line,ll,jn,temp,lf) ! read value from line
+           if (lf.eq.0) then ! no value, default to 1.0 (?)
+             flagdmefac(idmefac) = 1.0
+           else
+             read(temp,*) flagdmefac(idmefac)
+           endif
+         else
+           print *, "Error: specify a flag/value pair for DMEFAC"
+           stop
+         endif
+
+       else if(key(1:6).eq.'DMJUMP') then
+         idmjump = idmjump+1
+         nflagdmjump = idmjump
+         if (value(1:1).eq.'-') then
+           dmjumpflag(idmjump) = value
+           dmjumpflagval(idmjump) = temp
+           call citem(line,ll,jn,temp,lf) ! read value from line
+           if (lf.eq.0) then ! no value, default to 0.0 (?)
+             flagdmjump(idmjump) = 0.0
+           else
+             read(temp,*) flagdmjump(idmjump)
+           endif
+         else
+           print *, "Error: specify a flag/value pair for DMJUMP"
            stop
          endif
 

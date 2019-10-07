@@ -412,6 +412,18 @@ c Then everything after that are flags (ignored for now)
                 equad = flagequad(i)
               endif
             enddo
+            do i=1,nflagdmefac
+              tmp = getvalue(dmefacflag(i)(2:32))
+              if (tmp.eq.dmefacflagval(i)) then
+                dmefac = flagdmefac(i)
+              endif
+            enddo
+            do i=1,nflagdmjump
+              tmp = getvalue(dmjumpflag(i)(2:32))
+              if (tmp.eq.dmjumpflagval(i)) then
+                dmjump = flagdmjump(i)
+              endif
+            enddo
           endif
 
  56       if(ffmjd.gt.1.d0) then
@@ -851,7 +863,7 @@ C dynamically allocated.
 C Save the DM "residual" and error (could make this part of vmemrw stuff?)
 	if (usedmdata) then
           if (dmobserr.gt.0.d0) then
-            dmres(n) = dmobs - dmtot
+            dmres(n) = dmobs + dmjump - dmtot
             dmerr(n) = dmobserr*dmefac
           else
             dmres(n) = 0.0
