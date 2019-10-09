@@ -80,6 +80,10 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	emin = 0.d0
 	efac = 1.d0
 	efacsave = 1.d0
+        dmefac = 1.d0
+        dmefacsave = 1.d0
+        dmjump = 0.d0
+        dmjumpsave = 0.d0
 	sigm = 0.d0
 	amjd1=1000000.0
 	amjd2=0.
@@ -240,6 +244,8 @@ c Apply the default equad and efac settings.  These may be altered
 c by flag-based settings for tempo2 TOAs
           efac = efacsave
           equad = equadsave
+          dmefac = dmefacsave
+          dmjump = dmjumpsave
 c blank out temp flag variable
           rawflags = ''
 
