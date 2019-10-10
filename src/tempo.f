@@ -485,8 +485,13 @@ C         The main loop:
      +         ddmch(1+ddmchoff),
      +         buf(1+bufoff),npmsav(1+npmsavoff),ksav(1+ksavoff),
      +         resfile2)
-          call newval(chisqr,n-nz-nparam,rms0,rms1,nits,jits,wmax,
-     +                nboot)
+          if (usedmdata.and.useglsfit) then
+            call newval(chisqr*(n-nz-nparam)/(2*n-nz-nparam),
+     +       2*n-nz-nparam,rms0,rms1,nits,jits,wmax,nboot)
+          else
+            call newval(chisqr,n-nz-nparam,rms0,rms1,nits,jits,wmax,
+     +                  nboot)
+          endif
 	  if(abs(rms1 - rms0).le.max(1.d-4*abs(rms0),0.1d0).and.
      +		.not.nostop) go to 9999
 
