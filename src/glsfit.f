@@ -25,7 +25,7 @@ c PBD 2014/04
 c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	real*8 xmean(NPA),fctn(NPAP1)
 	real*8 a(NPAP1),atmp(NPAP1),sigmaa(NPAP1),gcor(NPA)
-        real*8 mcov(NPAP1), mscal(NPAP1)
+        real*8 mcov(NPAP1)
 	logical lw
 	real*8 ddmch(*)
         real*8 buf(*)
@@ -136,7 +136,6 @@ c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
           sigmaa(j)=0.
           sv(j)=0.
           mcov(j)=0.
-          mscal(j)=0.
           do 30 k=1,NPAP1
             VTsvd(k,j)=0.
  30       continue
@@ -345,16 +344,6 @@ c        do i=1,10
 c          print *,i,dcov(i)
 c        enddo
 
-c scale columns of design matrix
-        do j=1,nparam
-          mscal(j) = dnrm2(npts,Adm(Admoff+1+(j-1)*Admrows),1)
-        enddo
-	do i=1,npts
-	  do j=1,nparam
-            Adm(Admoff+i+(j-1)*Admrows)=Adm(Admoff+i+(j-1)*Admrows)/mscal(j)
-	  enddo
-	enddo
-
 c Multiply by inv cov matrix
         print *,'  ... matrix multiply'
         call dtpmv('U','T','N',npts,dcov,r,1)
@@ -408,11 +397,6 @@ c Fill in "array" param cov matrix values
               array(j,k)=array(j,k)+VTsvd(i,j+1)*VTsvd(i,k+1)/sv(i)/sv(i)
           enddo
         enddo
-       enddo
-       do j=1,nterms
-         do k=1,nterms
-           array(j,k) = array(j,k)/mscal(j+1)/mscal(k+1)
-         enddo
        enddo
 
 c uncertainty on mean
@@ -476,9 +460,6 @@ c Computes the post-fit param values in a
           atmp(i) = atmp(i)/sv(i)
         enddo
         call dgemv('T',nparam,nparam,1d0,VTsvd,NPAP1,atmp,1,0d0,a,1)
-        do i=1,nparam
-          a(i) = a(i)/mscal(i)
-        enddo
 
 c Note a(1) is the const phase term, aa0 is var name from orig fit.f
         aa0 = a(1)
@@ -500,7 +481,7 @@ c them to resid2.tmp and tempo.lis
           weight=weight/wmean
           do 107 j=1,nterms
 c j+1 here due to a(1)==aa0
-            dt2=dt2-a(j+1)*(fctn(j)-xmean(j)-mcov(j+1)*mscal(j+1)/mscal(1))
+            dt2=dt2-a(j+1)*(fctn(j)-xmean(j)-mcov(j+1))
  107      continue
           nct=ct
           mark=char(mod(nct,26)+65)
