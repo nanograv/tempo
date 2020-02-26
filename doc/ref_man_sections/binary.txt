@@ -46,8 +46,7 @@ ELL1  Model for low eccentricity orbits using Laplace parameters
       Reference:  Lange et al, MNRAS 326: 274 (2001), appendix A
 
 ELL1H Variant on ELL1 which parameterizes Shapiro delay using formalism
-      of Freire & Wex (2010), but presently only implements an "H3-only"
-      version of the model.
+      of Freire & Wex (2010).
 
 BT1P  BT model with two orbits:  the first may be relativistic, the 
       second must be Keplerian
@@ -122,6 +121,7 @@ SHAPMAX                                                                         
 SHAPHOF (Experimental)                                                                x             
 VARSIGMA                                                                                           x
 H3                                                                       x                         x
+H4                                                                       x                          
 KOM                                                                                        x        
 KIN                                                                                        x        
 DR                      o                           o      o                                       o

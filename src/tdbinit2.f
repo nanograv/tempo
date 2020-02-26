@@ -22,7 +22,7 @@ c     DJN 30 July 2004; based on tdbinit
 
 c     inputs:
       integer tdbunitin         ! fortran unit number for the file
-      character*256 tdbfile     ! ephemeris file name
+      character*640 tdbfile     ! ephemeris file name
 
       integer nfl
 

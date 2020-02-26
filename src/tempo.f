@@ -150,7 +150,7 @@ C  99	gro.99			newval
         character*80 ut1file,resfile1,
      +       resfile2,listfile,fname,line,tdbfile,s,hlpfile
         character*640 obsyfile
-        character*80 path
+        character*640 path
         character*160 cfgpath
 	character*160 npulsefile, infofile, phisunfile, dmxnfile
         character*160 dopplerfile
@@ -226,8 +226,10 @@ c  Open ut1 file (if present)
         open(42,file=path,status='old',err=10)
 	ut1flag=.true.
 	go to 11
- 10	write(*,1005)path
-	write(31,1005)path
+ 10     continue
+        lpth=index(path,' ')-1
+   	write(*,1005)path(1:lpth)
+	write(31,1005)path(1:lpth)
  1005	format(' **** Warning - Cannot open UT1 file at ',a/
      +    ' No UT1 correction'/)
 	ut1flag=.false.
@@ -396,7 +398,7 @@ c  Open parameter and residual files
 		   if(n.lt.0)n=index(infile,' ')-1
 		   parfile=infile(1:n)//'.par'
 		endif
-		open(49,file=parfile,status='old')
+		open(49,file=parfile,status='old',err=9990)
 		parunit = 49
 	     endif
 	     rewind(50)
@@ -495,6 +497,10 @@ C         The main loop:
 
 	endif
 	go to 9999
+
+ 9990   write(*,'(/''Error opening '',a/)')
+     +            parfile(1:index(parfile,' ')-1)
+        goto 9999
 
  9997	write(*,'(/''File '',a,'' not found'')')infile(1:nfl)
         goto 9999

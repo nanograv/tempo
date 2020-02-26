@@ -16,7 +16,7 @@ c     DJN 19 August 1997
 
 c     inputs:
       integer tdbunitin         ! fortran unit number for the file
-      character*256 tdbfile     ! ephemeris file name
+      character*640 tdbfile     ! ephemeris file name
 
       integer nfl
 

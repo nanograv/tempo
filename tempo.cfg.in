@@ -11,7 +11,8 @@ NIST_BIPM2014  bipmnist.14                     UTC(NIST) to TT(BIPM2014)
 NIST_BIPM2015  bipmnist.15.extrap              UTC(NIST) to TT(BIPM2015)
 NIST_BIPM2016  bipmnist.16.extrap              UTC(NIST) to TT(BIPM2016)
 NIST_BIPM2017  bipmnist.17.extrap              UTC(NIST) to TT(BIPM2017)
-NIST_BIPM      bipmnist.17.extrap              UTC(NIST) to TT(BIPM)
+NIST_BIPM2018  bipmnist.18.extrap              UTC(NIST) to TT(BIPM2018)
+NIST_BIPM      bipmnist.18.extrap              UTC(NIST) to TT(BIPM)
 NIST_PTB       ptbnist.90                      UTC(NIST) to UTC(PTB)
 NIST_AT1       at1nist.90                      UTC(NIST) to AT1
 UT1            ut1.dat                         UT1 - UT
@@ -23,6 +24,7 @@ EPHFILE        DE421.1950.2050 --eph=DE421 --endian=little
 EPHFILE        DE430.1950.2050 --eph=DE430 --endian=little
 EPHFILE        DE435.1950.2050 --eph=DE435 --endian=little
 EPHFILE        DE436.1950.2050 --eph=DE436 --endian=little
+EPHFILE        DE438.1950.2050 --eph=DE438 --endian=little
 TDBFILE        TDB.1950.2050
 OBSYS          @abs_top_srcdir@/obsys.dat      Observatory list
 TZTOT          tztot.dat
