@@ -347,9 +347,9 @@ c        enddo
 
 c scale columns of design matrix
         do j=1,nparam
-          mscal(j) = dnrm2(npts,Adm(Admoff+1+(j-1)*Admrows),1)
+          mscal(j) = dnrm2(Admrows,Adm(Admoff+1+(j-1)*Admrows),1)
         enddo
-	do i=1,npts
+	do i=1,Admrows
 	  do j=1,nparam
             Adm(Admoff+i+(j-1)*Admrows)=Adm(Admoff+i+(j-1)*Admrows)/mscal(j)
 	  enddo
