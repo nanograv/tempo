@@ -25,7 +25,7 @@ c PBD 2014/04
 c       moved declaration of real*8 array(NPA,NPA) to acom.h, djn, 8 Sep 98
 	real*8 xmean(NPA),fctn(NPAP1)
 	real*8 a(NPAP1),atmp(NPAP1),sigmaa(NPAP1),gcor(NPA)
-        real*8 mcov(NPAP1)
+        real*8 mcov(NPAP1), mscal(NPAP1)
 	logical lw
 	real*8 ddmch(*)
         real*8 buf(*)
@@ -57,9 +57,9 @@ c                                    ! factor of 2 for TOA+DM
 c Design matrix to be allocated. Sizes:
 c   Ntoa * Nparam normally
 c   2 * Ntoa * Nparam if DMDATA
-        real*8 Adm(1)
+        real*8,allocatable :: Adm(:)
         integer Admrows
-        integer*8 Admoff
+C        integer*8 Admoff
 
 c DM-data-related stuff
 c Currently requires:
@@ -91,7 +91,7 @@ c packed cov matrix, to be malloced
  	integer open, close, write
 
 c save the cov matrix stuff so we can iterate faster
-        save havecov, ncovpts, dcov, detcov, Adm, Admoff
+        save havecov, ncovpts, dcov, detcov, Adm
 	save rcov
 
         lwork = 10*NPAP1*NPAP1
@@ -125,9 +125,12 @@ c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
         else 
           Admrows = npts
         endif
-        if (.not. havecov) call mallocxd(Adm,Admrows*nparam,8,Admoff)
+        if (.not. havecov) then 
+          allocate(Adm(Admrows*nparam),stat=istat)
+          if (istat.ne.0) stop "glsfit: can't allocate Adm"
+        endif
         do i=1,Admrows*nparam
-          Adm(Admoff+i) = 0.
+          Adm(i) = 0.
         enddo
 
         do 32 j=1,NPAP1
@@ -136,6 +139,7 @@ c index using Adm(i,j) -> Adm(Admoff + i + (j-1)*Admrows)
           sigmaa(j)=0.
           sv(j)=0.
           mcov(j)=0.
+          mscal(j)=0.
           do 30 k=1,NPAP1
             VTsvd(k,j)=0.
  30       continue
@@ -191,9 +195,9 @@ c   dcov, cov matrix (diagonal part only)
           cts(i) = fmjd
           r(i) = y
           rr(i) = 0.0
-          Adm(Admoff+i) = 1d0 ! Constant phase term
+          Adm(i) = 1d0 ! Constant phase term
           do 66 j=2,nparam
-            Adm(Admoff+i+(j-1)*Admrows) = (fctn(j-1)-xmean(j-1))
+            Adm(i+(j-1)*Admrows) = (fctn(j-1)-xmean(j-1))
             if (usedmdata .and. (mfit(j).eq.16 .or. 
      +        (mfit(j).gt.NPAR6 .and. mfit(j).le.NPAR7))) then
               ! This is a DM/DMX param, fill in the "extra" DM part of
@@ -203,7 +207,7 @@ c   dcov, cov matrix (diagonal part only)
               !    - Extend to deal with DM polynomials.
               ! The test for fctn!=0 makes sure this TOA is affected by
               ! this param (ie is in the relevant DMX bin).
-              if (fctn(j-1).ne.0d0) Adm(Admoff+i+npts+(j-1)*Admrows) = 1.0
+              if (fctn(j-1).ne.0d0) Adm(i+npts+(j-1)*Admrows) = 1.0
               ndmparam = ndmparam + 1
             endif
  66       continue
@@ -344,12 +348,22 @@ c        do i=1,10
 c          print *,i,dcov(i)
 c        enddo
 
+c scale columns of design matrix
+        do j=1,nparam
+          mscal(j) = dnrm2(Admrows,Adm(1+(j-1)*Admrows),1)
+        enddo
+	do i=1,Admrows
+	  do j=1,nparam
+            Adm(i+(j-1)*Admrows)=Adm(i+(j-1)*Admrows)/mscal(j)
+	  enddo
+	enddo
+
 c Multiply by inv cov matrix
         print *,'  ... matrix multiply'
         call dtpmv('U','T','N',npts,dcov,r,1)
         do 68 i=1,nparam
           call dtpmv('U','T','N',npts,dcov,
-     +      Adm(Admoff+1+(i-1)*Admrows),1)
+     +      Adm(1+(i-1)*Admrows),1)
  68     continue
 
 c Scale DM and DM part of Adm by inv DM uncertainties (only
@@ -361,8 +375,8 @@ c allow diagonal DM cov matrix for now)
             if (dmerr(i).gt.0.0) dmwt=1.0/dmerr(i)
             r(i+npts) = dmres(i)*dmwt
             do j=1,nparam
-              Adm(Admoff+i+npts+(j-1)*Admrows) = 
-     +          Adm(Admoff+i+npts+(j-1)*Admrows)*dmwt
+              Adm(i+npts+(j-1)*Admrows) = 
+     +          Adm(i+npts+(j-1)*Admrows)*dmwt
             enddo
           enddo
         endif
@@ -371,19 +385,19 @@ c remove cov with mean from other params
 c Not sure how necessary this is since functions were already
 c mean-subtracted (unweighted)..
         do j=1,nparam
-          mcov(j) = ddot(npts,Adm(Admoff+1),1,
-     +                     Adm(Admoff+1+(j-1)*Admrows),1)
+          mcov(j) = ddot(npts,Adm(1),1,
+     +                     Adm(1+(j-1)*Admrows),1)
           if (j.gt.1) then
             mcov(j) = mcov(j)/mcov(1)
-            call daxpy(npts,-mcov(j),Adm(Admoff+1),1,
-     +                    Adm(Admoff+1+(j-1)*Admrows),1)
+            call daxpy(npts,-mcov(j),Adm(1),1,
+     +                    Adm(1+(j-1)*Admrows),1)
           endif
         enddo
 
 c Call SVD routine.  On output, Adm will be replaced by "U".
         print *,'  ... SVD'
-        call dgesdd('O',Admrows,nparam,Adm(Admoff+1),Admrows,sv,
-     +    Adm(Admoff+1),Admrows,VTsvd,NPAP1,work,lwork,iwork,inforv)
+        call dgesdd('O',Admrows,nparam,Adm(1),Admrows,sv,
+     +    Adm(1),Admrows,VTsvd,NPAP1,work,lwork,iwork,inforv)
 
 c TODO could test for low SV's here
         write(*,'(''      log10(cond number) = '',f5.2)')
@@ -397,6 +411,11 @@ c Fill in "array" param cov matrix values
               array(j,k)=array(j,k)+VTsvd(i,j+1)*VTsvd(i,k+1)/sv(i)/sv(i)
           enddo
         enddo
+       enddo
+       do j=1,nterms
+         do k=1,nterms
+           array(j,k) = array(j,k)/mscal(j+1)/mscal(k+1)
+         enddo
        enddo
 
 c uncertainty on mean
@@ -428,9 +447,9 @@ c          gcor(i)=sqrt(abs(1.d0 - zzz/array(i,i)))
 c Compute post-fit resids in "whitened" basis
 c r_post = r_pre - U U^t r_pre
 c TODO make tempo report this as "the" chi2?
-        call dgemv('T',Admrows,nparam,1d0,Adm(Admoff+1),
+        call dgemv('T',Admrows,nparam,1d0,Adm(1),
      +              Admrows,r,1,0d0,atmp,1)
-        call dgemv('N',Admrows,nparam,-1d0,Adm(Admoff+1),
+        call dgemv('N',Admrows,nparam,-1d0,Adm(1),
      +              Admrows,atmp,1,1d0,r,1)
         if (usedmdata) then
           toa_chisq = ddot(npts,r,1,r,1)
@@ -460,6 +479,9 @@ c Computes the post-fit param values in a
           atmp(i) = atmp(i)/sv(i)
         enddo
         call dgemv('T',nparam,nparam,1d0,VTsvd,NPAP1,atmp,1,0d0,a,1)
+        do i=1,nparam
+          a(i) = a(i)/mscal(i)
+        enddo
 
 c Note a(1) is the const phase term, aa0 is var name from orig fit.f
         aa0 = a(1)
@@ -481,7 +503,7 @@ c them to resid2.tmp and tempo.lis
           weight=weight/wmean
           do 107 j=1,nterms
 c j+1 here due to a(1)==aa0
-            dt2=dt2-a(j+1)*(fctn(j)-xmean(j)-mcov(j+1))
+            dt2=dt2-a(j+1)*(fctn(j)-xmean(j)-mcov(j+1)*mscal(j+1)/mscal(1))
  107      continue
           nct=ct
           mark=char(mod(nct,26)+65)
