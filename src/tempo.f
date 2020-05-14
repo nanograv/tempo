@@ -173,7 +173,7 @@ C  99	gro.99			newval
 
         resfile2 = 'resid2.tmp'//char(0)
 
-	version = 13.000
+	version = 13.100
 
 	memerr = .false.
         infoout = .false.
