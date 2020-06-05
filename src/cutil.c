@@ -1,6 +1,10 @@
 /*  $Id$   */
 
-#include <stdio.h>
+#include <stdio.h> 
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
@@ -74,7 +78,7 @@ int *fd,*offset,*origin;
 int times_(buf)
 int buf[];
 {
-  return (times(buf));
+  return (times((struct tms *)buf));
 }
 /* returns 32 bit random numbers to FORTRAN program */
 int iran_(xsubi)
@@ -82,7 +86,7 @@ unsigned short xsubi[];
 {
   return (jrand48(xsubi));
 }
-exit_(n)
+int exit_(n)
 int *n;
 {
   printf("\n\n");
@@ -146,6 +150,8 @@ for(j=0;j<*n;j++) {
 }
 }
 
+/*
+
 double hrtime_()
 {
   int tv[2],tz[2];
@@ -153,15 +159,19 @@ double hrtime_()
   return(tv[0]+1.e-6*tv[1]);
 }
 
+*/
+
 int time_()
 {
   return(time(0));
 }
 
+/*
 int lstat_(char *filename, int *buf)
 {
   return(lstat(filename,buf));
 }
+*/
 
 void usleep_(long int *n)
 {
