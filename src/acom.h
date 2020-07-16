@@ -34,6 +34,7 @@ c      $Id$
         integer nflagequad  ! number of tempo2-style flag-based EQUAD
         integer nflagecorr  ! number of flag-based ecorr/jitter terms
         integer nflagdmefac   ! number of tempo2-style flag-based DMEFAC
+        integer nflagdmequad  ! number of tempo2-style flag-based DMEQUAD
         integer nflagdmjumps  ! number of tempo2-style flag-based DMJUMP
 
 	integer nxmx        ! number of xmx terms used
@@ -57,7 +58,7 @@ c      $Id$
      +    dmx(NDMXMAX),dmxr1(NDMXMAX),dmxr2(NDMXMAX),dmxt,ndmx,usedmx,
      +    dmx1(NDMXMAX),dmxep(NDMXMAX),dmxf1(NDMXMAX),dmxf2(NDMXMAX),
      +    flagefac(NFLAGERR),flagequad(NFLAGERR),flagecorr(NFLAGERR),
-     +    flagdmefac(NFLAGERR),flagdmjump(NFLAGERR),
+     +    flagdmefac(NFLAGERR),flagdmequad(NFLAGERR),flagdmjump(NFLAGERR),
      +    usedmx1,
      +    fdcof(NFDMAX),
      +    rnamp,rnidx,
@@ -71,7 +72,7 @@ c      $Id$
      +	  eclcoord,usestart,usefinish,npulsein,npulseout,
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
-     +    nflagdmefac,nflagdmjump,
+     +    nflagdmefac,nflagdmequad,nflagdmjump,
      +    nfcalc,ntoa,nparam0,ndmx0,infolen,infoout,phisunout,
      +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
@@ -93,6 +94,7 @@ c      $Id$
         character equadflag*32, equadflagval*32
         character ecorrflag*32, ecorrflagval*32
         character dmefacflag*32, dmefacflagval*32
+        character dmequadflag*32, dmequadflagval*32
         character dmjumpflag*32, dmjumpflagval*32
         character eclcon*80
         character dcovfile*80
@@ -104,6 +106,7 @@ c      $Id$
      +    equadflag(NFLAGERR),equadflagval(NFLAGERR),
      +    ecorrflag(NFLAGERR),ecorrflagval(NFLAGERR),
      +    dmefacflag(NFLAGERR),dmefacflagval(NFLAGERR),
+     +    dmequadflag(NFLAGERR),dmequadflagval(NFLAGERR),
      +    dmjumpflag(NFLAGERR),dmjumpflagval(NFLAGERR)
 
 

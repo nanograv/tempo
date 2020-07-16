@@ -82,6 +82,8 @@ C  DJN 18-Aug-92  Allow up to 36 sites
 	efacsave = 1.d0
         dmefac = 1.d0
         dmefacsave = 1.d0
+        dmequad = 0.d0
+        dmequadsave = 0.d0
         dmjump = 0.d0
         dmjumpsave = 0.d0
 	sigm = 0.d0
@@ -245,6 +247,7 @@ c by flag-based settings for tempo2 TOAs
           efac = efacsave
           equad = equadsave
           dmefac = dmefacsave
+          dmequad = dmequadsave
           dmjump = dmjumpsave
 c blank out temp flag variable
           rawflags = ''
@@ -422,6 +425,12 @@ c Then everything after that are flags (ignored for now)
               tmp = getvalue(dmefacflag(i)(2:32))
               if (tmp.eq.dmefacflagval(i)) then
                 dmefac = flagdmefac(i)
+              endif
+            enddo
+            do i=1,nflagdmequad
+              tmp = getvalue(dmequadflag(i)(2:32))
+              if (tmp.eq.dmequadflagval(i)) then
+                dmequad = flagdmequad(i)
               endif
             enddo
             do i=1,nflagdmjump
@@ -870,7 +879,7 @@ C Save the DM "residual" and error (could make this part of vmemrw stuff?)
 	if (usedmdata) then
           if (dmobserr.gt.0.d0) then
             dmres(n) = dmobs + dmjump - dmtot
-            dmerr(n) = dmobserr*dmefac
+            dmerr(n) = dmefac * sqrt(dmobserr**2 + dmequad**2)
           else
             dmres(n) = 0.0
             dmerr(n) = 0.0

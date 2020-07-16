@@ -877,10 +877,18 @@ c=======================================================================
       endif
 
       if (useglsfit) then
+        do i=1,nflagdmequad
+          write(71,1098) trim(dmequadflag(i)),trim(dmequadflagval(i)),
+     +      flagdmequad(i)
+1098      format('DMEQUAD ',a,' ',a,' ',f9.5)
+        enddo
+      endif
+
+      if (useglsfit) then
         do i=1,nflagdmjump
-          write(71,1098) trim(dmjumpflag(i)),trim(dmjumpflagval(i)),
+          write(71,1099) trim(dmjumpflag(i)),trim(dmjumpflagval(i)),
      +      flagdmjump(i)
-1098      format('DMJUMP ',a,' ',a,' ',f9.5)
+1099      format('DMJUMP ',a,' ',a,' ',f9.5)
         enddo
       endif
 
