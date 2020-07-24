@@ -179,6 +179,7 @@ c	new in DDFWHE
       
       usedmdata = .false.
       dmefac = 1.0
+      dmequad = 0.0
 
       fitmode = 0
 
@@ -284,6 +285,7 @@ C  The error/comment is ignored by TEMPO
       iequad = 0  ! used for counting tempo2-style equad params
       iecorr = 0  ! used for counting ecorr params
       idmefac  = 0  ! used for counting efac params for DM measurements
+      idmequad  = 0 ! used for counting equad params for DM measurements
       idmjump  = 0  ! used for counting DM offsets
 
       nskip = 0  ! counts parameter lines, which are skipped if TOAs are
@@ -1122,6 +1124,23 @@ c JUMP -flag flag_value jump_value fitflag jump_err
            endif
          else
            print *, "Error: specify a flag/value pair for DMEFAC"
+           stop
+         endif
+
+       else if(key(1:7).eq.'DMEQUAD') then
+         idmequad = idmequad+1
+         nflagdmequad = idmequad
+         if (value(1:1).eq.'-') then
+           dmequadflag(idmequad) = value
+           dmequadflagval(idmequad) = temp
+           call citem(line,ll,jn,temp,lf) ! read value from line
+           if (lf.eq.0) then ! no value, default to 0.0 (?)
+             flagdmequad(idmequad) = 0.0
+           else
+             read(temp,*) flagdmequad(idmequad)
+           endif
+         else
+           print *, "Error: specify a flag/value pair for DMEQUAD"
            stop
          endif
 
