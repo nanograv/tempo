@@ -311,7 +311,7 @@ c           No, because this routine is not called if nsite<0
       endif
 
       if (phisun.lt.phimin) wflag = 0
-      if (phisunout) write (38,fmt='(f7.3)') phisun
+      if (phisunout) write (38,fmt='(f10.6)') phisun
       if (dopplerout) write (41,fmt='(e16.9)') voverc
 
 C     SET UP NECESSARY PARAMETERS FOR TEMPO: (JMW)
