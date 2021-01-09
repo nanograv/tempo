@@ -35,7 +35,7 @@ c      $Id$
         integer nflagecorr  ! number of flag-based ecorr/jitter terms
         integer nflagdmefac   ! number of tempo2-style flag-based DMEFAC
         integer nflagdmequad  ! number of tempo2-style flag-based DMEQUAD
-        integer nflagdmjumps  ! number of tempo2-style flag-based DMJUMP
+        integer nflagdmjump   ! number of tempo2-style flag-based DMJUMP
         integer psrkeyl     ! length of PSR key in input/output .par file
 
 	integer nxmx        ! number of xmx terms used
