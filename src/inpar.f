@@ -202,6 +202,10 @@ c	new in DDFWHE
       tzrfrqdefault = 0.      ! infinite frequency
       tzrsitedefault = "@"    ! barycenter
 
+      psrkey = 'PSR'
+      psrkeyl = 3
+      psrname = ''
+
       return
       end
 
@@ -502,6 +506,8 @@ C  Position parameters
 
       else if(key(1:3).eq.'PSR')then
          psrname=value
+         psrkey(1:lk) = key(1:lk)  ! save keys like PSRJ to use in output
+         psrkeyl = lk
 
       else if(key(1:3).eq.'DEC')then
          call decolon(value)

@@ -36,8 +36,10 @@ c      $Id$
         integer nflagdmefac   ! number of tempo2-style flag-based DMEFAC
         integer nflagdmequad  ! number of tempo2-style flag-based DMEQUAD
         integer nflagdmjumps  ! number of tempo2-style flag-based DMJUMP
+        integer psrkeyl     ! length of PSR key in input/output .par file
 
 	integer nxmx        ! number of xmx terms used
+
 
         real*8 phimin
         real*8 PAAscNode    ! position angle of ascending node
@@ -73,6 +75,7 @@ c      $Id$
      +    parunit,nskip,iboot,fitmode,ndmcalc,nflagjumps,
      +    nflagefac,nflagequad,nflagecorr,
      +    nflagdmefac,nflagdmequad,nflagdmjump,
+     +    psrkeyl,
      +    nfcalc,ntoa,nparam0,ndmx0,infolen,infoout,phisunout,
      +    dopplerout,dmxnout,ssdmflag,
      +    quiet,polystdout,tz,autotz,firstdmx,nonewdmx,
@@ -87,6 +90,7 @@ c      $Id$
      +                  xmxfrq0, usexmxfrq0, nxmx
 
 	character psrname*64,obsflag*1,pardir*80,infotxt*160
+        character psrkey*32
         character obskey*5
         character jumpflag*32, jumpflagval*32
         character infoflag*32
@@ -99,7 +103,8 @@ c      $Id$
         character eclcon*80
         character dcovfile*80
 
-        common/acomch/psrname,pardir,obsflag,infotxt,obskey(NOBSMAX),
+        common/acomch/psrname,pardir,obsflag,infotxt,psrkey,
+     +    obskey(NOBSMAX),
      +    eclcon,dcovfile,
      +    jumpflag(NJUMP),jumpflagval(NJUMP),infoflag,
      +    efacflag(NFLAGERR),efacflagval(NFLAGERR),

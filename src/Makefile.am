@@ -79,6 +79,8 @@ outpar.$(OBJEXT): outpar.f acom.h bcom.h dp.h trnsfr.h orbit.h clocks.h dim.h gl
 pcard.$(OBJEXT): pcard.f acom.h dim.h dp.h
 resid.$(OBJEXT): resid.f acom.h bcom.h orbit.h dp.h dim.h glitch.h
 setup.$(OBJEXT): setup.f acom.h dim.h version.h
+sitea2n.$(OBJEXT): sitea2n.f acom.h dim.h
+siten2b.$(OBJEXT): siten2b.f acom.h dim.h
 tdbinit.$(OBJEXT): tdbinit.f tdbcom.h
 tdbinit2.$(OBJEXT): tdbinit2.f tdbcom.h
 tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h dim.h

@@ -24,7 +24,8 @@ c      $Id$
       cc=1.d-9*c*365.25*8.64d7
       fit1='  1'
 
-      write(71,'(''PSR              '',a)')psrname(1:index(psrname," ")-1)
+      write(71,'(a,''              '',a)')
+     +      psrkey(1:psrkeyl),psrname(1:index(psrname," ")-1)
 
       if(eclcoord)then
          if(nfit(6).gt.0)then
