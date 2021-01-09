@@ -1,5 +1,6 @@
 Parameters which may be set in free-format headers:
 
+PSRxxx   Pulsar name (parameter name must start "PSR", can have further characters)
 RA       Right Ascension ('hhmmss.sssssss' or 'hh:mm:ss.sssssss')
 DEC      Declination ('-ddmmss.ssssss' or '-dd:mm:ss.ssssss')
 PMRA     Proper motion in RA direction (mas/yr)
