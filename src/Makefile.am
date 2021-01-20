@@ -18,7 +18,7 @@ tempo_SOURCES = \
         timcalc.f tmalloc.f tparin.f tpohdr.f tzfit.f tzinit.f ut1red.f \
         vmemw.f  ztim.f \
         cutil.c \
-        acom.h array.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h glitch.h \
+        acom.h array.h dim.h bcom.h clocks.h dp.h eph.h ephcom.h flagcom.h glitch.h \
 	orbit.h tdbcom.h trnsfr.h tz.h vcom.h toa.h 
 
 if HAVE_LAPACK
@@ -34,8 +34,15 @@ matrix_SOURCES = matrix.f
 
 tdbgen_SOURCES = tdbgen.f tdb1ns.f bigendian.f cutil.c
 
+
 version.h: get_version_id.sh $(tempo_SOURCES)
 	./get_version_id.sh
+
+EXTRA_DIST = version.h
+dist-hook:
+	echo "#! /bin/sh" > $(distdir)/get_version_id.sh
+	echo "touch version.h" >> $(distdir)/get_version_id.sh
+	chmod a+x $(distdir)/get_version_id.sh
 
 # dependencies of Tempo subroutines
 
@@ -84,7 +91,7 @@ siten2b.$(OBJEXT): siten2b.f acom.h dim.h
 tdbinit.$(OBJEXT): tdbinit.f tdbcom.h
 tdbinit2.$(OBJEXT): tdbinit2.f tdbcom.h
 tdbread.$(OBJEXT): tdbread.f acom.h tdbcom.h dim.h
-tempo.$(OBJEXT): tempo.f acom.h bcom.h dp.h array.h clocks.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h toa.h
+tempo.$(OBJEXT): tempo.f acom.h bcom.h dp.h array.h clocks.h config.h eph.h vcom.h orbit.h dim.h trnsfr.h tz.h toa.h
 timcalc.$(OBJEXT): timcalc.f acom.h dim.h dp.h trnsfr.h
 tmalloc.$(OBJEXT): array.h
 tparin.$(OBJEXT): tparin.f acom.h dim.h vcom.h tz.h version.h

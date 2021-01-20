@@ -136,6 +136,7 @@ C  99	gro.99			newval
         include 'array.h'
 	include 'bcom.h'
 	include 'clocks.h'
+	include 'config.h'
 	include 'dp.h'
         include 'orbit.h'
 	include 'vcom.h'
@@ -173,7 +174,7 @@ C  99	gro.99			newval
 
         resfile2 = 'resid2.tmp'//char(0)
 
-	version = 13.102
+	version = CONFIGVERSION
 
 	memerr = .false.
         infoout = .false.
