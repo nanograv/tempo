@@ -26,6 +26,7 @@ EPHFILE        DE430.1950.2050 --eph=DE430 --endian=little
 EPHFILE        DE435.1950.2050 --eph=DE435 --endian=little
 EPHFILE        DE436.1950.2050 --eph=DE436 --endian=little
 EPHFILE        DE438.1950.2050 --eph=DE438 --endian=little
+EPHFILE        DE440.1950.2050 --eph=DE440 --endian=little
 TDBFILE        TDB.1950.2050
 OBSYS          @abs_top_srcdir@/obsys.dat      Observatory list
 TZTOT          tztot.dat
