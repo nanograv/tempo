@@ -366,13 +366,13 @@ C  Control parameters
 	 read(value,*)usedmx1
 
       else if(key(1:6).eq.'DMDATA')then
-         read(value,*)itmp
-         if(itmp.gt.0)usedmdata=.true.
+         read(value,*)atmp
+         if(atmp.gt.0)usedmdata=.true.
 
       else if(key(1:4).eq.'COOR')then
          if(value(1:5).eq.'B1950')ncoord=0
 
-      else if(key(1:3).eq.'CLK')then
+      else if(key(1:3).eq.'CLK' .or. key(1:5).eq.'CLOCK')then
          call upcase(value)
          ix0 = index(value," ")-1
          do i=0,NCLKMAX
@@ -1170,7 +1170,8 @@ c JUMP -flag flag_value jump_value fitflag jump_err
        else if(key(1:4).eq.'INFO') then
          read (value,*) infoflag
 
-       else if(key(1:7).eq.'SOLARN0'.and.(lk.eq.7.or.ikey.eq.0)) then
+       else if( key(1:7).eq.'SOLARN0'.and.(lk.eq.7.or.ikey.eq.0) .or.
+     +      key(1:5).eq.'NE_SW') then
          read (value,*) solarn0
        else if(key(1:7).eq.'SOLARN0'.and.ikey.eq.1) then
          read (value,*) solarn01
