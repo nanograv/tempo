@@ -35,8 +35,9 @@ matrix_SOURCES = matrix.f
 tdbgen_SOURCES = tdbgen.f tdb1ns.f bigendian.f cutil.c
 
 
-version.h: get_version_id.sh $(tempo_SOURCES)
+version.h: get_version_id.sh FORCE
 	./get_version_id.sh
+FORCE:
 
 EXTRA_DIST = version.h
 dist-hook:
