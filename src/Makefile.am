@@ -42,7 +42,9 @@ FORCE:
 EXTRA_DIST = version.h
 dist-hook:
 	echo "#! /bin/sh" > $(distdir)/get_version_id.sh
-	echo "touch version.h" >> $(distdir)/get_version_id.sh
+	echo "cat <<HERE >version.h" >> $(distdir)/get_version_id.sh
+	cat version.h >> $(distdir)/get_version_id.sh
+	echo "HERE" >> $(distdir)/get_version_id.sh
 	chmod a+x $(distdir)/get_version_id.sh
 
 # dependencies of Tempo subroutines
