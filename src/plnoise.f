@@ -94,7 +94,7 @@ c ===================================================================
         if (init) then
           lu(1) = plnoise(0d0,alpha,f0,amp,.true.)
 c          print *,"PL0 =", lu(1)
-          do i=1,NPTS
+          do i=1,NPTS-1
             lu(i+1) = plnoise(i/365.24d0,alpha,f0,amp,.false.)
           enddo
         endif
