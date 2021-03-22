@@ -55,8 +55,8 @@ Tempo parameter indexes
  49  DMCOF(8)    Dispersion measure ninth derivative   [superseded by NPAR9 group, below?]
  50  DMCOF(9)    Dispersion measure tenth derivative   [superseded by NPAR9 group, below?]
  51  DMCOF(10)   Dispersion measure eleventh derivative  (fomerlay also f3)  [superseded?]
- 52              Unused (formerly frequency fourth derivative)
- 53              Unused (formerly frequency fifth derivative)
+ 52  KOM         Kopeikin Omega parameter in DDK binary model
+ 53  KIN         Kopeikin inclination parameter in DDK binary model
  54              Unused (formerly frequency sixth derivative)
  55              Unused (formerly frequency seventh derivative)
  56              Unused (formerly frequency eighth derivative)

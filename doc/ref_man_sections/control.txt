@@ -1,13 +1,17 @@
 Control commands allowed in free-format headers:
 
-CLK     Terrestrial time standard  
+CLK     [or CLOCK]
+        Terrestrial time standard  
         Allowed values: 'UNCORR' (default), 'UTC(NIST)', 'UTC(BIPM)', 
            'TT(BIPM)', 'PTB', 'AT1', and 'TT(BIPMxx)' where xx is any value
             allowed by the entries in $TEMPO/tempo.cfg.
-                       
+
+CLOCK   alias for CLK
 
 COORD   Input coordinate system
         Allowed values: 'B1950', 'J2000' (default)
+
+DMDATA  Use per-TOA DM data from wideband TOAs
 
 DMVAR1  Earliest MJD for which DM variations will be applied
         Allowed values: floating point MJD
@@ -32,6 +36,8 @@ INFO    Use the specified Tempo2-style flag for INFO values.
 NDDM    Use delta-DM values specified on TOA lines (added to .par DM value).
         Allowed value:  integer 1
 
+NE_SW   Aalias for SOLARN0
+
 NITS    Iterate solution n times, or fewer if it converges.
         Allowed values:  integers n
         Special case: n=9: iterate until convergence
@@ -51,7 +57,8 @@ BINARY  Binary model to use (see separate BINARY MODELS documentation)
                          'BT+', 'DDT', 'MSS', 'ELL1', 'ELL1H', 'BTX',
                          'DDS', 'DDK', 'DDFWHE', 'BT1P', 'BT2P'
 
-SOLARN0 Solar system electron density parameter "n0"
+SOLARN0 [or NE_SW] 
+        Solar system electron density parameter "n0"
         Solar system electron density modeled as n(r)=n0*(r0/r)^2, 
         r0=1AU, r=Distance from Sun, n0 is density at 1 AU in electrons/cm^3
         Default value is 10.
