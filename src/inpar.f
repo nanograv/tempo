@@ -388,9 +388,9 @@ C  Control parameters
  12      continue
 
       else if(key(1:5).eq.'NHARM')then
-         read(value,*)itmp 	 
-         if (itmp.gt.4) then
-            write(*,'(''Invalid NHARM>4: '',i2)')itmp
+         read(value,*)atmp 	 
+         if (atmp.gt.4) then
+            write(*,'(''Invalid NHARM>4: '',f4.2)')atmp
             stop
          endif
 
