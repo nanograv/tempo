@@ -233,6 +233,8 @@ C  The error/comment is ignored by TEMPO
       character line*80, key*32, value*64, cfit*8, temp*80, cifit
       character*80 note
 
+      logical boolean_value     ! function defined at the end of this file
+
       logical seteps            ! indicate when eps1 and/or eps2
                                 ! had been set
       logical setepsdot         ! indicate when eps1dot and/or eps2dot
@@ -359,15 +361,13 @@ C  Control parameters
          read(value,*)dmxt
 
       else if(key(1:7).eq.'DMXFIX')then
-         read(value,*)itmp
-         if(itmp.gt.0)firstdmx=.false.
+         firstdmx = .not. boolean_value(value)
 
       else if(key(1:5).eq.'DMX1'.and.lk.eq.4)then
 	 read(value,*)usedmx1
 
       else if(key(1:6).eq.'DMDATA')then
-         read(value,*)atmp
-         if(atmp.gt.0)usedmdata=.true.
+         usedmdata = boolean_value(value)
 
       else if(key(1:4).eq.'COOR')then
          if(value(1:5).eq.'B1950')ncoord=0
@@ -431,13 +431,11 @@ C  Control parameters
          
       else if(key(1:5).eq.'START')then
          read(value,*)start
-         read(cfit,*)itmp
-         if (itmp.gt.0) usestart=.true.
+         usestart = boolean_value(cfit)
 
       else if(key(1:6).eq.'FINISH')then
          read(value,*)finish
-         read(cfit,*)itmp
-         if (itmp.gt.0) usefinish=.true.
+         usefinish = boolean_value(cfit)
 
 C  Period/Frequency parameters
 
@@ -1037,8 +1035,7 @@ C  Glitches
 
        else if(key(1:4).eq.'JUMP'.and.ikey.ge.1.and.ikey.le.NJUMP) then
          read(value,*) dct(ikey)
-         read(cfit,*) itmp
-         if (itmp.eq.0) nofitjump(ikey) = .true.
+         nofitjump(ikey) = .not. boolean_value(cfit)
 
        else if(key(1:4).eq.'JUMP'.and.ikey.eq.-1) then
 	 ijump = ijump+1 ! could check that this does not exceed NJUMP..
@@ -1057,8 +1054,7 @@ c JUMP -flag flag_value jump_value fitflag jump_err
 	     read(temp,*) dct(ijump)
 	     temp = '0'                     ! default to no fit
 	     call citem(line,ll,jn,temp,lf) ! read fit flag
-	     read(temp,*) itmp
-	     if (itmp.eq.0) nofitjump(ijump) = .true.
+	     nofitjump(ijump) = .not. boolean_value(temp)
 	   endif
          else
            print *,"Error: only flag-based TEMPO2-style JUMPs allowed"
@@ -1521,6 +1517,50 @@ C  Returns 0 if underscore but no number is found
  10     continue
  20     continue
       endif
+
+      return
+      end
+
+c=======================================================================
+
+      logical function boolean_value(s)
+
+      implicit none
+
+C  Reads a key value and returns True of Fase
+C  The following return True:
+C     Strings starting with 'T'
+C     Strings starting with 'Y'
+C     Numbers greater than zero
+C  The following return False:
+C     Strings starting with 'F'
+C     Strings starting with 'N'
+C     Numbers less than zero
+
+      character s*(*)
+      real atmp
+
+      call upcase(s)
+
+      if (s(1:1).eq.'T' .or. s(1:1).eq.'Y') then
+        boolean_value = .true.
+      else if (s(1:1).eq.'F' .or. s(1:1).eq.'N') then
+        boolean_value = .false.
+      else 
+        read(s,*,err=900) atmp
+        if (atmp.gt.0.) then
+          boolean_value = .true.
+        else
+          boolean_value = .false.
+        endif
+      endif
+
+      goto 990
+
+ 900  write(*,'(''Error: cannot decipher boolean value: '',a)') s
+      stop
+
+ 990  continue
 
       return
       end
